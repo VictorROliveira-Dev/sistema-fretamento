@@ -1,3 +1,5 @@
+"use client";
+
 import painel from "@/app/assets/painel-de-controle.png";
 import motorista from "@/app/assets/motorista.png";
 import clientes from "@/app/assets/pessoas.png";
@@ -11,8 +13,15 @@ import sino from "@/app/assets/sino.svg";
 import passagens from "@/app/assets/passagens.png";
 
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
+  const pathname = usePathname(); // Obtém a rota atual
+
+  const getActiveClass = (route: string) =>
+    pathname === route ? "bg-[#220071] border-[#220071] text-white" : "";
+
   return (
     <header>
       <div className="h-6 bg-black">
@@ -22,26 +31,51 @@ export default function Header() {
       </div>
       <nav className="h-28 bg-white flex items-center justify-between mx-10">
         <div className="flex items-center gap-4">
-          <span className="flex flex-col items-center gap-2 p-4 bg-transparent border-2 rounded-md cursor-pointer w-[110px] h-[100px] hover:bg-[#220071] hover:border-[#220071] hover:text-white transition-all">
+          <Link
+            href="/"
+            className={`flex flex-col items-center gap-2 p-4 bg-transparent border-2 rounded-md cursor-pointer w-[110px] h-[100px] hover:bg-[#220071] hover:border-[#220071] hover:text-white transition-all ${getActiveClass(
+              "/"
+            )}`}
+          >
             <Image src={painel} alt="Painel de controle" width={45} />
             <p className="font-bold text-sm">Painel</p>
-          </span>
-          <span className="flex flex-col items-center gap-2 p-4 bg-transparent border-2 rounded-md cursor-pointer w-[110px] h-[100px] hover:bg-[#220071]  hover:border-[#220071] hover:text-white transition-all">
+          </Link>
+          <Link
+            href="/motoristas"
+            className={`flex flex-col items-center gap-2 p-4 bg-transparent border-2 rounded-md cursor-pointer w-[110px] h-[100px] hover:bg-[#220071] hover:border-[#220071] hover:text-white transition-all ${getActiveClass(
+              "/motoristas"
+            )}`}
+          >
             <Image src={motorista} alt="Motoristas" width={45} />
             <p className="font-bold text-sm">Motoristas</p>
-          </span>
-          <span className="flex flex-col items-center gap-2 p-4 bg-transparent border-2 rounded-md cursor-pointer w-[110px] h-[100px] hover:bg-[#220071]  hover:border-[#220071] hover:text-white transition-all">
+          </Link>
+          <Link
+            href="/clientes"
+            className={`flex flex-col items-center gap-2 p-4 bg-transparent border-2 rounded-md cursor-pointer w-[110px] h-[100px] hover:bg-[#220071] hover:border-[#220071] hover:text-white transition-all ${getActiveClass(
+              "/clientes"
+            )}`}
+          >
             <Image src={clientes} alt="Clientes" width={45} />
             <p className="font-bold text-sm">Clientes</p>
-          </span>
-          <span className="flex flex-col items-center gap-2 p-4 bg-transparent border-2 rounded-md cursor-pointer w-[110px] h-[100px] hover:bg-[#220071]  hover:border-[#220071] hover:text-white transition-all">
+          </Link>
+          <Link
+            href="/fornecedores"
+            className={`flex flex-col items-center gap-2 p-4 bg-transparent border-2 rounded-md cursor-pointer w-[110px] h-[100px] hover:bg-[#220071] hover:border-[#220071] hover:text-white transition-all ${getActiveClass(
+              "/fornecedores"
+            )}`}
+          >
             <Image src={fornecedores} alt="Fornecedores" width={45} />
             <p className="font-bold text-sm">Fornecedores</p>
-          </span>
-          <span className="flex flex-col items-center gap-2 p-4 bg-transparent border-2 rounded-md cursor-pointer w-[110px] h-[100px] hover:bg-[#220071]  hover:border-[#220071] hover:text-white transition-all">
+          </Link>
+          <Link
+            href="/veiculos"
+            className={`flex flex-col items-center gap-2 p-4 bg-transparent border-2 rounded-md cursor-pointer w-[110px] h-[100px] hover:bg-[#220071] hover:border-[#220071] hover:text-white transition-all ${getActiveClass(
+              "/veiculos"
+            )}`}
+          >
             <Image src={veiculos} alt="Veículos" width={45} />
             <p className="font-bold text-sm">Veículos</p>
-          </span>
+          </Link>
           <span className="flex flex-col items-center gap-2 p-4 bg-transparent border-2 rounded-md cursor-pointer w-[110px] h-[100px] hover:bg-[#220071]  hover:border-[#220071] hover:text-white transition-all">
             <Image src={viagens} alt="Viagens" width={45} />
             <p className="font-bold text-sm">Viagens</p>
