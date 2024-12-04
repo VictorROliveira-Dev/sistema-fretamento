@@ -20,15 +20,13 @@ export default function Motoristas() {
         </div>
         <div className="flex items-center md:h-screen h-[800px]">
           <div className="mx-auto md:max-w-4xl md:w-[1000px] w-[350px] space-y-4">
-            <h1 className="md:text-4xl text-2xl font-semibold">
-              Motoristas:
-            </h1>
 
             <div className="flex items-center justify-between">
-              <form className="flex items-center gap-2">
+              <form className="flex flex-col gap-2 font-bold">
+                <label htmlFor="name">Nome de Escala:</label>
                 <Input
                   name="name"
-                  className="border-2 text-white w-[250px]"
+                  className="border-2 font-medium text-white w-[250px]"
                   placeholder="Digite o nome de escala..."
                 />
               </form>
