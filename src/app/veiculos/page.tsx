@@ -200,25 +200,28 @@ export default function Veiculos() {
               <TableHeader className="border-b-2">
                 <TableRow>
                   <TableHead className="text-black font-bold text-center">
-                    Nome
+                    Prefixo
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
-                    Fantasia
+                    Placa
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
-                    CPF
+                    KM Atual
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
-                    Endereço
+                    Marca
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
-                    Cidade
+                    Tanque
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
-                    UF
+                    Tipo
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
-                    Insc. Estadual
+                    Qtd. Poltronas
+                  </TableHead>
+                  <TableHead className="text-black font-bold text-center">
+                    Ano
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -232,6 +235,7 @@ export default function Veiculos() {
                   <TableCell>(74)98877-0044</TableCell>
                   <TableCell>00123493411</TableCell>
                   <TableCell>456-7</TableCell>
+                  <TableCell>45654-0</TableCell>
                   <TableCell>45654-0</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">

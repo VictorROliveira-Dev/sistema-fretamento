@@ -43,7 +43,7 @@ export default function ViagensServicos() {
           </p>
         </div>
         <div className="flex items-center md:h-screen h-[800px]">
-          <div className="mx-auto  space-y-4">
+          <div className="mx-auto space-y-4">
             <div className="flex items-center justify-between">
               <form className="flex gap-2 font-bold">
                 <div>
