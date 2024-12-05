@@ -142,12 +142,14 @@ export default function Motoristas() {
                     ))}
 
                     <div className="flex flex-col gap-2">
-                      <label htmlFor="documento">Documento:</label>
-                      <Input
-                        name="documento"
-                        className="border-2 font-medium text-white w-[250px]"
-                        placeholder="Digite o número do documento..."
-                      />
+                      <div>
+                        <label htmlFor="documento">Documento:</label>
+                        <Input
+                          name="documento"
+                          className="border-2 font-medium text-white w-[250px]"
+                          placeholder="Digite o número do documento..."
+                        />
+                      </div>
                       <RadioGroup defaultValue="rg" className="flex">
                         <div className="flex items-center space-x-2">
                           <RadioGroupItem value="rg" id="r2" />
@@ -210,7 +212,7 @@ export default function Motoristas() {
                             <Image
                               src={editIcon}
                               alt="Editar"
-                              width={30}
+                              width={25}
                               className="hover:scale-110"
                             />
                           </Button>
@@ -234,12 +236,14 @@ export default function Motoristas() {
                             ))}
 
                             <div className="flex flex-col gap-2">
-                              <label htmlFor="documento">Documento:</label>
-                              <Input
-                                name="documento"
-                                className="border-2 font-medium text-white w-[250px]"
-                                placeholder="Digite o número do documento..."
-                              />
+                              <div>
+                                <label htmlFor="documento">Documento:</label>
+                                <Input
+                                  name="documento"
+                                  className="border-2 font-medium text-white w-[250px]"
+                                  placeholder="Digite o número do documento..."
+                                />
+                              </div>
                               <RadioGroup defaultValue="rg" className="flex">
                                 <div className="flex items-center space-x-2">
                                   <RadioGroupItem value="rg" id="r2" />
@@ -264,7 +268,7 @@ export default function Motoristas() {
                         <Image
                           src={removeIcon}
                           alt="Remover"
-                          width={30}
+                          width={25}
                           className="hover:scale-110"
                         />
                       </Button>

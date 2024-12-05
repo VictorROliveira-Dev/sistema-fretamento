@@ -217,7 +217,7 @@ export default function Clientes() {
                             <Image
                               src={editIcon}
                               alt="Editar"
-                              width={30}
+                              width={25}
                               className="hover:scale-110"
                             />
                           </Button>
@@ -355,7 +355,7 @@ export default function Clientes() {
                         <Image
                           src={removeIcon}
                           alt="Remover"
-                          width={30}
+                          width={25}
                           className="hover:scale-110"
                         />
                       </Button>
