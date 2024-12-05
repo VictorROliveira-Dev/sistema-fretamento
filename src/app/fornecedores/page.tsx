@@ -26,14 +26,14 @@ import Image from "next/image";
 export default function Fornecedores() {
   return (
     <section className="bg-[#070180] pt-12 h-[424px] max-h-[1000px]">
-      <div className="h-[300px] w-[1000px] max-h-screen mx-auto rounded-md bg-white flex flex-col">
+      <div className="h-[300px] w-[1200px] max-h-screen mx-auto rounded-md bg-white flex flex-col">
         <div className=" bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Fornecedores
           </p>
         </div>
-        <div className="flex items-center md:h-screen h-[800px]">
-          <div className="mx-auto md:max-w-4xl md:w-[1000px] w-[350px] space-y-4">
+        <div className="flex items-center h-[800px]">
+          <div className="mx-auto space-y-4">
             <div className="flex items-center justify-between">
               <form className="flex gap-2 font-bold">
                 <div>
@@ -188,13 +188,13 @@ export default function Fornecedores() {
               <TableHeader className="border-b-2">
                 <TableRow>
                   <TableHead className="text-black font-bold text-center">
-                    Nome
+                    Nome Completo
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
-                    Fantasia
+                    Data Nascimento
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
-                    CPF
+                    Documento
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
                     Endereço
@@ -206,7 +206,10 @@ export default function Fornecedores() {
                     UF
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
-                    Insc. Estadual
+                    Tipo Pessoa
+                  </TableHead>
+                  <TableHead className="text-black font-bold text-center">
+                    Telefone
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -220,6 +223,7 @@ export default function Fornecedores() {
                   <TableCell>(74)98877-0044</TableCell>
                   <TableCell>00123493411</TableCell>
                   <TableCell>456-7</TableCell>
+                  <TableCell>45654-0</TableCell>
                   <TableCell>45654-0</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
