@@ -24,8 +24,8 @@ import Image from "next/image";
 
 export default function Clientes() {
   return (
-    <section className="bg-[#070180] pt-12 h-[500px] max-h-[1000px]">
-      <div className="h-[350px] w-[1000px] max-h-screen mx-auto rounded-md bg-white flex flex-col">
+    <section className="bg-[#070180] pt-12 h-[424px] max-h-[1000px]">
+      <div className="h-[300px] w-[1000px] max-h-[430px] mx-auto rounded-md bg-white flex flex-col">
         <div className=" bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Clientes

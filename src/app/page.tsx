@@ -43,7 +43,7 @@ const invoices = [
 export default function Home() {
   return (
     <>
-      <main className="h-[400px] max-h-[500px] bg-[#070180] pt-10">
+      <main className="h-[424px] max-h-[500px] bg-[#070180] pt-10">
         <div className="h-[350px] w-[1200px] mx-auto rounded-md bg-white flex items-center justify-around">
           <div className="w-[380px] h-[300px] rounded-md shadow-lg shadow-black/40 flex flex-col items-center gap-4">
             <p className="font-bold">Viagens/Serviços nos próximos 30 dias</p>
