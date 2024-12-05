@@ -1,3 +1,4 @@
+import CustomTable from "@/components/custom-table";
 import {
   Table,
   TableBody,
@@ -45,105 +46,54 @@ export default function Home() {
     <>
       <main className="h-[424px] max-h-[500px] bg-[#070180] pt-10">
         <div className="h-[350px] w-[1200px] mx-auto rounded-md bg-white flex items-center justify-around">
-          <div className="w-[380px] h-[300px] rounded-md shadow-lg shadow-black/40 flex flex-col items-center gap-4">
-            <p className="font-bold">Viagens/Serviços nos próximos 30 dias</p>
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-white">
-                  <TableHead className="text-black font-black">Dia</TableHead>
-                  <TableHead className="text-black font-black">Data</TableHead>
-                  <TableHead className="text-black font-black">
-                    Orçamento
-                  </TableHead>
-                  <TableHead className="text-black font-black">
-                    Veículo
-                  </TableHead>
-                  <TableHead className="text-black font-black">
-                    Motorista
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody className="bg-white">
-                {invoices.map((invoice) => (
-                  <TableRow key={invoice.invoice}>
-                    <TableCell className="">{invoice.invoice}</TableCell>
-                    <TableCell>{invoice.paymentStatus}</TableCell>
-                    <TableCell>{invoice.paymentMethod}</TableCell>
-                    <TableCell>{invoice.totalAmount}</TableCell>
-                    <TableCell>{invoice.totalAmount}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-          <div className="w-[350px] h-[300px] rounded-md shadow-lg shadow-black/40 flex flex-col items-center gap-4">
-            <p className="font-bold ">
-              Veículos utilizados nos próximos 30 dias
-            </p>
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-white">
-                  <TableHead className="text-black font-black text-center">
-                    Dia
-                  </TableHead>
-                  <TableHead className="text-black font-black text-center">
-                    Data
-                  </TableHead>
-                  <TableHead className="text-black font-black text-center">
-                    Placa
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody className="bg-white">
-                {invoices.map((invoice) => (
-                  <TableRow key={invoice.invoice}>
-                    <TableCell className="text-center">
-                      {invoice.invoice}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {invoice.paymentStatus}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {invoice.paymentMethod}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-          <div className="w-[380px] h-[300px] rounded-md shadow-lg shadow-black/40 flex flex-col items-center gap-4">
-            <p className="font-bold ">Vencimento de Doc/Certificados</p>
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-white">
-                  <TableHead className="text-black font-black text-center">
-                    Vencimento
-                  </TableHead>
-                  <TableHead className="text-black font-black text-center">
-                    Referência
-                  </TableHead>
-                  <TableHead className="text-black font-black text-center">
-                    Doc/Certificado
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody className="bg-white">
-                {invoices.map((invoice) => (
-                  <TableRow key={invoice.invoice}>
-                    <TableCell className="text-center">
-                      {invoice.invoice}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {invoice.paymentStatus}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      {invoice.paymentMethod}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+          <CustomTable
+            title="Viagens/Serviços nos próximos 30 dias"
+            headers={["Dia", "Data", "Orçamento", "Veículo", "Motorista"]}
+            rows={invoices}
+            renderRow={(invoice) => (
+              <>
+                <TableCell>{invoice.invoice}</TableCell>
+                <TableCell>{invoice.paymentStatus}</TableCell>
+                <TableCell>{invoice.paymentMethod}</TableCell>
+                <TableCell>{invoice.totalAmount}</TableCell>
+                <TableCell>{invoice.totalAmount}</TableCell>
+              </>
+            )}
+          />
+
+          <CustomTable
+            title="Veículos utilizados nos próximos 30 dias"
+            headers={["Dia", "Data", "Placa"]}
+            rows={invoices}
+            renderRow={(invoice) => (
+              <>
+                <TableCell className="text-center">{invoice.invoice}</TableCell>
+                <TableCell className="text-center">
+                  {invoice.paymentStatus}
+                </TableCell>
+                <TableCell className="text-center">
+                  {invoice.paymentMethod}
+                </TableCell>
+              </>
+            )}
+          />
+
+          <CustomTable
+            title="Vencimento de Doc/Certificados"
+            headers={["Vencimento", "Referência", "Doc/Certificado"]}
+            rows={invoices}
+            renderRow={(invoice) => (
+              <>
+                <TableCell className="text-center">{invoice.invoice}</TableCell>
+                <TableCell className="text-center">
+                  {invoice.paymentStatus}
+                </TableCell>
+                <TableCell className="text-center">
+                  {invoice.paymentMethod}
+                </TableCell>
+              </>
+            )}
+          />
         </div>
       </main>
     </>
