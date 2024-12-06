@@ -70,21 +70,23 @@ export default function ViagensServicos() {
                     Adicionar Viagem/Serviço
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="w-[800px] max-h-[520px] flex flex-col items-center overflow-scroll">
+                <DialogContent className="w-[1200px] max-h-[520px] flex flex-col items-center overflow-scroll">
                   <DialogHeader className="mb-5">
                     <DialogTitle className="font-black">
                       Cadastro de Viagem/Serviço
                     </DialogTitle>
                   </DialogHeader>
-                  <div className="flex items-center justify-around gap-10">
-                    <div className="flex flex-col gap-2">
-                      <p className="font-bold text-center">Dados de Saída</p>
-                      <div className="flex flex-col gap-4 w-full justify-center">
+                  <div className="grid grid-cols-2 gap-8">
+                    <div>
+                      <p className="font-bold text-center mb-4">
+                        Dados de Saída
+                      </p>
+                      <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col">
                           <label htmlFor="ufsaida">UF Saída:</label>
                           <Input
                             name="ufsaida"
-                            className="border-2 font-medium text-white w-[250px]"
+                            className="border-2 font-medium text-white w-full"
                             placeholder="Digite o UF de saída..."
                           />
                         </div>
@@ -92,27 +94,15 @@ export default function ViagensServicos() {
                           <label htmlFor="cidadesaida">Cidade Saída:</label>
                           <Input
                             name="cidadesaida"
-                            className="border-2 font-medium w-[250px]"
+                            className="border-2 font-medium w-full"
                             placeholder="Digite a cidade de saída..."
                           />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <div className="flex flex-col">
-                            <label htmlFor="cidadedestino">
-                              Cidade Destino:
-                            </label>
-                            <Input
-                              name="cidadedestino"
-                              className="border-2 font-medium text-white w-[250px]"
-                              placeholder="Digite a cidade de destino..."
-                            />
-                          </div>
                         </div>
                         <div className="flex flex-col">
                           <label htmlFor="localsaida">Local Saída:</label>
                           <Input
                             name="localsaida"
-                            className="border-2 font-medium text-white w-[250px]"
+                            className="border-2 font-medium text-white w-full"
                             placeholder="Digite o local de saída..."
                           />
                         </div>
@@ -120,150 +110,81 @@ export default function ViagensServicos() {
                           <label htmlFor="datasaida">Data de Saída:</label>
                           <Input
                             name="datasaida"
-                            className="border-2 font-medium w-[250px]"
+                            className="border-2 font-medium w-full"
                             type="date"
                           />
                         </div>
                         <div className="flex flex-col">
-                          <label htmlFor="horariosaida">Horario Saída:</label>
+                          <label htmlFor="horariosaida">Horário Saída:</label>
                           <Input
                             name="horariosaida"
-                            className="border-2 font-medium text-white w-[250px]"
+                            className="border-2 font-medium text-white w-full"
                             placeholder="Digite o horário..."
                           />
                         </div>
                         <div className="flex flex-col">
                           <label htmlFor="datasaidagaragem">
-                            Data de Saída Garagem:
+                            Data Saída Garagem:
                           </label>
                           <Input
                             name="datasaidagaragem"
-                            className="border-2 font-medium w-[250px]"
+                            className="border-2 font-medium w-full"
                             type="date"
                           />
                         </div>
                         <div className="flex flex-col">
-                          <label htmlFor="horariosaidagaragem">
-                            Horario Saída Garagem:
-                          </label>
-                          <Input
-                            name="horariosaidagaragem"
-                            className="border-2 font-medium text-white w-[250px]"
-                            placeholder="Digite o horário..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="dataretorno">Data de Retorno:</label>
-                          <Input
-                            name="dataretorno"
-                            className="border-2 font-medium w-[250px]"
-                            type="date"
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="horarioretorno">
-                            Horario Retorno:
-                          </label>
-                          <Input
-                            name="horarioretorno"
-                            className="border-2 font-medium text-white w-[250px]"
-                            placeholder="Digite o horário..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="datachegada">Data de Chegada:</label>
-                          <Input
-                            name="datachegada"
-                            className="border-2 font-medium w-[250px]"
-                            type="date"
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="horariochegada">
-                            Horario Chegada:
-                          </label>
-                          <Input
-                            name="horariochegada"
-                            className="border-2 font-medium text-white w-[250px]"
-                            placeholder="Digite o horário..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="clientesaida">Cliente:</label>
-                          <Select>
+                          <label htmlFor="tipoviagem">Tipo de Viagem:</label>
+                          <Select name="tipoviagem">
                             <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Cliente" />
+                              <SelectValue placeholder="Selecione o tipo..." />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
-                                <SelectLabel>Clientes</SelectLabel>
-                                <SelectItem value="1">João</SelectItem>
-                                <SelectItem value="2">Pedro</SelectItem>
-                                <SelectItem value="2">Angélica</SelectItem>
+                                <SelectLabel>Viagens</SelectLabel>
+                                <SelectItem value="v1">Viagem 1</SelectItem>
+                                <SelectItem value="v2">Viagem 2</SelectItem>
                               </SelectGroup>
                             </SelectContent>
                           </Select>
                         </div>
                         <div className="flex flex-col">
-                          <label htmlFor="servico">Tipo Serviço:</label>
-                          <Select>
+                          <label htmlFor="tiposervico">Tipo de Serviço:</label>
+                          <Select name="tiposervico">
                             <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Serviço" />
+                              <SelectValue placeholder="Selecione o tipo..." />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
                                 <SelectLabel>Serviços</SelectLabel>
-                                <SelectItem value="1">Serviço 1</SelectItem>
-                                <SelectItem value="2">Serviço 2</SelectItem>
-                                <SelectItem value="2">Serviço 3</SelectItem>
+                                <SelectItem value="s1">Serviço 1</SelectItem>
+                                <SelectItem value="s2">Serviço 2</SelectItem>
                               </SelectGroup>
                             </SelectContent>
                           </Select>
                         </div>
+                      </div>
+
+                      <hr className="border-t border-2 border-black my-4" />
+                      <p className="font-bold text-center mt-4">
+                        Veículos, Motoristas e Clientes
+                      </p>
+
+                      <div className="grid grid-cols-2 gap-4 mt-4">
                         <div className="flex flex-col">
-                          <label htmlFor="tipoviagem">Tipo Viagem:</label>
+                          <label htmlFor="veiculo">Veículo:</label>
                           <Select>
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Tipo" />
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione o veículo" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
-                                <SelectLabel>Tipo Viagem</SelectLabel>
-                                <SelectItem value="1">Tipo 1</SelectItem>
-                                <SelectItem value="2">Tipo 2</SelectItem>
-                                <SelectItem value="2">Tipo 3</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="statusviagem">Status Viagem:</label>
-                          <Select>
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Status Viagem</SelectLabel>
-                                <SelectItem value="1">STATUS 1</SelectItem>
-                                <SelectItem value="2">STATUS 2</SelectItem>
-                                <SelectItem value="2">STATUS 3</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="veiculo">Veiculo:</label>
-                          <Select>
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Veículo" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Veículos</SelectLabel>
-                                <SelectItem value="1">veiculo 1</SelectItem>
-                                <SelectItem value="2">veiculo 2</SelectItem>
-                                <SelectItem value="2">veiculo 3</SelectItem>
+                                <SelectLabel>Veículos Disponíveis</SelectLabel>
+                                <SelectItem value="veiculo1">
+                                  Ônibus 1
+                                </SelectItem>
+                                <SelectItem value="veiculo2">
+                                  Ônibus 2
+                                </SelectItem>
                               </SelectGroup>
                             </SelectContent>
                           </Select>
@@ -271,31 +192,67 @@ export default function ViagensServicos() {
                         <div className="flex flex-col">
                           <label htmlFor="motorista">Motorista:</label>
                           <Select>
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Motorista" />
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione o motorista" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
-                                <SelectLabel>Motoristas</SelectLabel>
-                                <SelectItem value="1">Motorista 1</SelectItem>
-                                <SelectItem value="2">Motorista 2</SelectItem>
-                                <SelectItem value="2">Motorista 3</SelectItem>
+                                <SelectLabel>
+                                  Motoristas Disponíveis
+                                </SelectLabel>
+                                <SelectItem value="motorista1">João</SelectItem>
+                                <SelectItem value="motorista2">
+                                  Maria
+                                </SelectItem>
                               </SelectGroup>
                             </SelectContent>
                           </Select>
                         </div>
                         <div className="flex flex-col">
-                          <label htmlFor="pagamento">Tipo Pagamento:</label>
+                          <label htmlFor="clientes">Clientes:</label>
                           <Select>
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Pagamento" />
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione o cliente" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
-                                <SelectLabel>Tipos</SelectLabel>
-                                <SelectItem value="1">PIX</SelectItem>
-                                <SelectItem value="2">Dinheiro</SelectItem>
-                                <SelectItem value="2">Cartão</SelectItem>
+                                <SelectLabel>Clientes</SelectLabel>
+                                <SelectItem value="motorista1">João</SelectItem>
+                                <SelectItem value="motorista2">
+                                  Maria
+                                </SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="flex flex-col">
+                          <label htmlFor="observacoes">Intinerário:</label>
+                          <Textarea
+                            name="observacoes"
+                            className="border-2 font-medium w-full h-20 resize-none"
+                            placeholder="Adicione observações sobre a viagem..."
+                          />
+                        </div>
+                      </div>
+
+                      <hr className="border-t border-2 border-black my-4" />
+                      <p className="font-bold text-center mt-4">Valores</p>
+
+                      <div className="grid grid-cols-2 gap-4 mt-4">
+                        <div className="flex flex-col">
+                          <label htmlFor="tipopagamento">Tipo Pagamento:</label>
+                          <Select>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione o tipo" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Pagamentos</SelectLabel>
+                                <SelectItem value="veiculo1">PIX</SelectItem>
+                                <SelectItem value="veiculo2">
+                                  Dinheiro
+                                </SelectItem>
+                                <SelectItem value="veiculo2">Cartão</SelectItem>
                               </SelectGroup>
                             </SelectContent>
                           </Select>
@@ -304,8 +261,7 @@ export default function ViagensServicos() {
                           <label htmlFor="parcelas">Parcelas:</label>
                           <Input
                             name="parcelas"
-                            className="border-2 font-medium text-white w-[250px]"
-                            placeholder="Digite a quantidade..."
+                            placeholder="Digite o número de parcelas..."
                           />
                         </div>
                         <div className="flex flex-col">
@@ -315,7 +271,6 @@ export default function ViagensServicos() {
                           <Input
                             type="number"
                             name="valorcontratado"
-                            className="border-2 font-medium text-white w-[250px]"
                             placeholder="Digite o valor..."
                           />
                         </div>
@@ -324,55 +279,38 @@ export default function ViagensServicos() {
                           <Input
                             type="number"
                             name="valorpago"
-                            className="border-2 font-medium text-white w-[250px]"
                             placeholder="Digite o valor..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="intinerario">Intinerário:</label>
-                          <Textarea
-                            name="intinerario"
-                            placeholder="Digite aqui..."
                           />
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <p className="font-bold text-center">Dados de Chegada</p>
-                      <div className="flex flex-col gap-4 w-full justify-center">
+
+                    <div>
+                      <p className="font-bold text-center mb-4">
+                        Dados de Chegada
+                      </p>
+                      <div className="grid grid-cols-2 gap-4">
                         <div className="flex flex-col">
                           <label htmlFor="ufchegada">UF Chegada:</label>
                           <Input
                             name="ufchegada"
-                            className="border-2 font-medium text-white w-[250px]"
+                            className="border-2 font-medium text-white w-full"
                             placeholder="Digite o UF de chegada..."
                           />
                         </div>
                         <div className="flex flex-col">
-                          <label htmlFor="cidadechegada">Cidade Chegada:</label>
+                          <label htmlFor="cidadesaida">Cidade Saída:</label>
                           <Input
-                            name="cidadechegada"
-                            className="border-2 font-medium w-[250px]"
-                            placeholder="Digite a cidade da chegada..."
+                            name="cidadesaida"
+                            className="border-2 font-medium w-full"
+                            placeholder="Digite a cidade de saída..."
                           />
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <div className="flex flex-col">
-                            <label htmlFor="cidadedestino">
-                              Cidade Destino:
-                            </label>
-                            <Input
-                              name="cidadedestino"
-                              className="border-2 font-medium text-white w-[250px]"
-                              placeholder="Digite a cidade de destino..."
-                            />
-                          </div>
                         </div>
                         <div className="flex flex-col">
                           <label htmlFor="localsaida">Local Saída:</label>
                           <Input
                             name="localsaida"
-                            className="border-2 font-medium text-white w-[250px]"
+                            className="border-2 font-medium text-white w-full"
                             placeholder="Digite o local de saída..."
                           />
                         </div>
@@ -380,150 +318,81 @@ export default function ViagensServicos() {
                           <label htmlFor="datasaida">Data de Saída:</label>
                           <Input
                             name="datasaida"
-                            className="border-2 font-medium w-[250px]"
+                            className="border-2 font-medium w-full"
                             type="date"
                           />
                         </div>
                         <div className="flex flex-col">
-                          <label htmlFor="horariosaida">Horario Saída:</label>
+                          <label htmlFor="horariosaida">Horário Saída:</label>
                           <Input
                             name="horariosaida"
-                            className="border-2 font-medium text-white w-[250px]"
+                            className="border-2 font-medium text-white w-full"
                             placeholder="Digite o horário..."
                           />
                         </div>
                         <div className="flex flex-col">
                           <label htmlFor="datasaidagaragem">
-                            Data de Saída Garagem:
+                            Data Saída Garagem:
                           </label>
                           <Input
                             name="datasaidagaragem"
-                            className="border-2 font-medium w-[250px]"
+                            className="border-2 font-medium w-full"
                             type="date"
                           />
                         </div>
                         <div className="flex flex-col">
-                          <label htmlFor="horariosaidagaragem">
-                            Horario Saída Garagem:
-                          </label>
-                          <Input
-                            name="horariosaidagaragem"
-                            className="border-2 font-medium text-white w-[250px]"
-                            placeholder="Digite o horário..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="dataretorno">Data de Retorno:</label>
-                          <Input
-                            name="dataretorno"
-                            className="border-2 font-medium w-[250px]"
-                            type="date"
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="horarioretorno">
-                            Horario Retorno:
-                          </label>
-                          <Input
-                            name="horarioretorno"
-                            className="border-2 font-medium text-white w-[250px]"
-                            placeholder="Digite o horário..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="datachegada">Data de Chegada:</label>
-                          <Input
-                            name="datachegada"
-                            className="border-2 font-medium w-[250px]"
-                            type="date"
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="horariochegada">
-                            Horario Chegada:
-                          </label>
-                          <Input
-                            name="horariochegada"
-                            className="border-2 font-medium text-white w-[250px]"
-                            placeholder="Digite o horário..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="clientesaida">Cliente:</label>
-                          <Select>
+                          <label htmlFor="tipoviagem">Tipo de Viagem:</label>
+                          <Select name="tipoviagem">
                             <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Cliente" />
+                              <SelectValue placeholder="Selecione o tipo..." />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
-                                <SelectLabel>Clientes</SelectLabel>
-                                <SelectItem value="1">João</SelectItem>
-                                <SelectItem value="2">Pedro</SelectItem>
-                                <SelectItem value="2">Angélica</SelectItem>
+                                <SelectLabel>Viagens</SelectLabel>
+                                <SelectItem value="v1">Viagem 1</SelectItem>
+                                <SelectItem value="v2">Viagem 2</SelectItem>
                               </SelectGroup>
                             </SelectContent>
                           </Select>
                         </div>
                         <div className="flex flex-col">
-                          <label htmlFor="servico">Tipo Serviço:</label>
-                          <Select>
+                          <label htmlFor="tiposervico">Tipo de Serviço:</label>
+                          <Select name="tiposervico">
                             <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Serviço" />
+                              <SelectValue placeholder="Selecione o tipo..." />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
                                 <SelectLabel>Serviços</SelectLabel>
-                                <SelectItem value="1">Serviço 1</SelectItem>
-                                <SelectItem value="2">Serviço 2</SelectItem>
-                                <SelectItem value="2">Serviço 3</SelectItem>
+                                <SelectItem value="s1">Serviço 1</SelectItem>
+                                <SelectItem value="s2">Serviço 2</SelectItem>
                               </SelectGroup>
                             </SelectContent>
                           </Select>
                         </div>
+                      </div>
+
+                      <hr className="border-t border-2 border-black my-4" />
+                      <p className="font-bold text-center mt-4">
+                        Veículos, Motoristas e Clientes
+                      </p>
+
+                      <div className="grid grid-cols-2 gap-4 mt-4">
                         <div className="flex flex-col">
-                          <label htmlFor="tipoviagem">Tipo Viagem:</label>
+                          <label htmlFor="veiculo">Veículo:</label>
                           <Select>
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Tipo" />
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione o veículo" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
-                                <SelectLabel>Tipo Viagem</SelectLabel>
-                                <SelectItem value="1">Tipo 1</SelectItem>
-                                <SelectItem value="2">Tipo 2</SelectItem>
-                                <SelectItem value="2">Tipo 3</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="statusviagem">Status Viagem:</label>
-                          <Select>
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Status Viagem</SelectLabel>
-                                <SelectItem value="1">STATUS 1</SelectItem>
-                                <SelectItem value="2">STATUS 2</SelectItem>
-                                <SelectItem value="2">STATUS 3</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="veiculo">Veiculo:</label>
-                          <Select>
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Veículo" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Veículos</SelectLabel>
-                                <SelectItem value="1">veiculo 1</SelectItem>
-                                <SelectItem value="2">veiculo 2</SelectItem>
-                                <SelectItem value="2">veiculo 3</SelectItem>
+                                <SelectLabel>Veículos Disponíveis</SelectLabel>
+                                <SelectItem value="veiculo1">
+                                  Ônibus 1
+                                </SelectItem>
+                                <SelectItem value="veiculo2">
+                                  Ônibus 2
+                                </SelectItem>
                               </SelectGroup>
                             </SelectContent>
                           </Select>
@@ -531,31 +400,67 @@ export default function ViagensServicos() {
                         <div className="flex flex-col">
                           <label htmlFor="motorista">Motorista:</label>
                           <Select>
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Motorista" />
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione o motorista" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
-                                <SelectLabel>Motoristas</SelectLabel>
-                                <SelectItem value="1">Motorista 1</SelectItem>
-                                <SelectItem value="2">Motorista 2</SelectItem>
-                                <SelectItem value="2">Motorista 3</SelectItem>
+                                <SelectLabel>
+                                  Motoristas Disponíveis
+                                </SelectLabel>
+                                <SelectItem value="motorista1">João</SelectItem>
+                                <SelectItem value="motorista2">
+                                  Maria
+                                </SelectItem>
                               </SelectGroup>
                             </SelectContent>
                           </Select>
                         </div>
                         <div className="flex flex-col">
-                          <label htmlFor="pagamento">Tipo Pagamento:</label>
+                          <label htmlFor="clientes">Clientes:</label>
                           <Select>
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o Pagamento" />
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione o cliente" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectGroup>
-                                <SelectLabel>Tipos</SelectLabel>
-                                <SelectItem value="1">PIX</SelectItem>
-                                <SelectItem value="2">Dinheiro</SelectItem>
-                                <SelectItem value="2">Cartão</SelectItem>
+                                <SelectLabel>Clientes</SelectLabel>
+                                <SelectItem value="motorista1">João</SelectItem>
+                                <SelectItem value="motorista2">
+                                  Maria
+                                </SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div className="flex flex-col">
+                          <label htmlFor="observacoes">Intinerário:</label>
+                          <Textarea
+                            name="observacoes"
+                            className="border-2 font-medium w-full h-20 resize-none"
+                            placeholder="Adicione observações sobre a viagem..."
+                          />
+                        </div>
+                      </div>
+
+                      <hr className="border-t border-2 border-black my-4" />
+                      <p className="font-bold text-center mt-4">Valores</p>
+
+                      <div className="grid grid-cols-2 gap-4 mt-4">
+                        <div className="flex flex-col">
+                          <label htmlFor="tipopagamento">Tipo Pagamento:</label>
+                          <Select>
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Selecione o tipo" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Pagamentos</SelectLabel>
+                                <SelectItem value="veiculo1">PIX</SelectItem>
+                                <SelectItem value="veiculo2">
+                                  Dinheiro
+                                </SelectItem>
+                                <SelectItem value="veiculo2">Cartão</SelectItem>
                               </SelectGroup>
                             </SelectContent>
                           </Select>
@@ -564,8 +469,7 @@ export default function ViagensServicos() {
                           <label htmlFor="parcelas">Parcelas:</label>
                           <Input
                             name="parcelas"
-                            className="border-2 font-medium text-white w-[250px]"
-                            placeholder="Digite a quantidade..."
+                            placeholder="Digite o número de parcelas..."
                           />
                         </div>
                         <div className="flex flex-col">
@@ -575,7 +479,6 @@ export default function ViagensServicos() {
                           <Input
                             type="number"
                             name="valorcontratado"
-                            className="border-2 font-medium text-white w-[250px]"
                             placeholder="Digite o valor..."
                           />
                         </div>
@@ -584,20 +487,13 @@ export default function ViagensServicos() {
                           <Input
                             type="number"
                             name="valorpago"
-                            className="border-2 font-medium text-white w-[250px]"
                             placeholder="Digite o valor..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="intinerario">Intinerário:</label>
-                          <Textarea
-                            name="intinerario"
-                            placeholder="Digite aqui..."
                           />
                         </div>
                       </div>
                     </div>
                   </div>
+
                   <DialogFooter className="flex items-center gap-2 mt-10">
                     <Button variant="outline">Fechar</Button>
                     <Button>Salvar</Button>
@@ -672,23 +568,23 @@ export default function ViagensServicos() {
                             />
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="w-[800px] max-h-[520px] flex flex-col items-center overflow-scroll">
+                        <DialogContent className="w-[1200px] max-h-[520px] flex flex-col items-center overflow-scroll">
                           <DialogHeader className="mb-5">
                             <DialogTitle className="font-black">
-                              Edição de Viagem/Serviço
+                              Cadastro de Viagem/Serviço
                             </DialogTitle>
                           </DialogHeader>
-                          <div className="flex items-center justify-around gap-10">
-                            <div className="flex flex-col gap-2">
-                              <p className="font-bold text-center">
+                          <div className="grid grid-cols-2 gap-8">
+                            <div>
+                              <p className="font-bold text-center mb-4">
                                 Dados de Saída
                               </p>
-                              <div className="flex flex-col gap-4 w-full justify-center">
+                              <div className="grid grid-cols-2 gap-4">
                                 <div className="flex flex-col">
                                   <label htmlFor="ufsaida">UF Saída:</label>
                                   <Input
                                     name="ufsaida"
-                                    className="border-2 font-medium text-white w-[250px]"
+                                    className="border-2 font-medium text-white w-full"
                                     placeholder="Digite o UF de saída..."
                                   />
                                 </div>
@@ -698,21 +594,9 @@ export default function ViagensServicos() {
                                   </label>
                                   <Input
                                     name="cidadesaida"
-                                    className="border-2 font-medium w-[250px]"
+                                    className="border-2 font-medium w-full"
                                     placeholder="Digite a cidade de saída..."
                                   />
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                  <div className="flex flex-col">
-                                    <label htmlFor="cidadedestino">
-                                      Cidade Destino:
-                                    </label>
-                                    <Input
-                                      name="cidadedestino"
-                                      className="border-2 font-medium text-white w-[250px]"
-                                      placeholder="Digite a cidade de destino..."
-                                    />
-                                  </div>
                                 </div>
                                 <div className="flex flex-col">
                                   <label htmlFor="localsaida">
@@ -720,7 +604,7 @@ export default function ViagensServicos() {
                                   </label>
                                   <Input
                                     name="localsaida"
-                                    className="border-2 font-medium text-white w-[250px]"
+                                    className="border-2 font-medium text-white w-full"
                                     placeholder="Digite o local de saída..."
                                   />
                                 </div>
@@ -730,185 +614,96 @@ export default function ViagensServicos() {
                                   </label>
                                   <Input
                                     name="datasaida"
-                                    className="border-2 font-medium w-[250px]"
+                                    className="border-2 font-medium w-full"
                                     type="date"
                                   />
                                 </div>
                                 <div className="flex flex-col">
                                   <label htmlFor="horariosaida">
-                                    Horario Saída:
+                                    Horário Saída:
                                   </label>
                                   <Input
                                     name="horariosaida"
-                                    className="border-2 font-medium text-white w-[250px]"
+                                    className="border-2 font-medium text-white w-full"
                                     placeholder="Digite o horário..."
                                   />
                                 </div>
                                 <div className="flex flex-col">
                                   <label htmlFor="datasaidagaragem">
-                                    Data de Saída Garagem:
+                                    Data Saída Garagem:
                                   </label>
                                   <Input
                                     name="datasaidagaragem"
-                                    className="border-2 font-medium w-[250px]"
+                                    className="border-2 font-medium w-full"
                                     type="date"
                                   />
                                 </div>
                                 <div className="flex flex-col">
-                                  <label htmlFor="horariosaidagaragem">
-                                    Horario Saída Garagem:
+                                  <label htmlFor="tipoviagem">
+                                    Tipo de Viagem:
                                   </label>
-                                  <Input
-                                    name="horariosaidagaragem"
-                                    className="border-2 font-medium text-white w-[250px]"
-                                    placeholder="Digite o horário..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="dataretorno">
-                                    Data de Retorno:
-                                  </label>
-                                  <Input
-                                    name="dataretorno"
-                                    className="border-2 font-medium w-[250px]"
-                                    type="date"
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="horarioretorno">
-                                    Horario Retorno:
-                                  </label>
-                                  <Input
-                                    name="horarioretorno"
-                                    className="border-2 font-medium text-white w-[250px]"
-                                    placeholder="Digite o horário..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="datachegada">
-                                    Data de Chegada:
-                                  </label>
-                                  <Input
-                                    name="datachegada"
-                                    className="border-2 font-medium w-[250px]"
-                                    type="date"
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="horariochegada">
-                                    Horario Chegada:
-                                  </label>
-                                  <Input
-                                    name="horariochegada"
-                                    className="border-2 font-medium text-white w-[250px]"
-                                    placeholder="Digite o horário..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="clientesaida">Cliente:</label>
-                                  <Select>
+                                  <Select name="tipoviagem">
                                     <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Cliente" />
+                                      <SelectValue placeholder="Selecione o tipo..." />
                                     </SelectTrigger>
                                     <SelectContent>
                                       <SelectGroup>
-                                        <SelectLabel>Clientes</SelectLabel>
-                                        <SelectItem value="1">João</SelectItem>
-                                        <SelectItem value="2">Pedro</SelectItem>
-                                        <SelectItem value="2">
-                                          Angélica
+                                        <SelectLabel>Viagens</SelectLabel>
+                                        <SelectItem value="v1">
+                                          Viagem 1
+                                        </SelectItem>
+                                        <SelectItem value="v2">
+                                          Viagem 2
                                         </SelectItem>
                                       </SelectGroup>
                                     </SelectContent>
                                   </Select>
                                 </div>
                                 <div className="flex flex-col">
-                                  <label htmlFor="servico">Tipo Serviço:</label>
-                                  <Select>
+                                  <label htmlFor="tiposervico">
+                                    Tipo de Serviço:
+                                  </label>
+                                  <Select name="tiposervico">
                                     <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Serviço" />
+                                      <SelectValue placeholder="Selecione o tipo..." />
                                     </SelectTrigger>
                                     <SelectContent>
                                       <SelectGroup>
                                         <SelectLabel>Serviços</SelectLabel>
-                                        <SelectItem value="1">
+                                        <SelectItem value="s1">
                                           Serviço 1
                                         </SelectItem>
-                                        <SelectItem value="2">
+                                        <SelectItem value="s2">
                                           Serviço 2
                                         </SelectItem>
-                                        <SelectItem value="2">
-                                          Serviço 3
-                                        </SelectItem>
                                       </SelectGroup>
                                     </SelectContent>
                                   </Select>
                                 </div>
+                              </div>
+
+                              <hr className="border-t border-2 border-black my-4" />
+                              <p className="font-bold text-center mt-4">
+                                Veículos, Motoristas e Clientes
+                              </p>
+
+                              <div className="grid grid-cols-2 gap-4 mt-4">
                                 <div className="flex flex-col">
-                                  <label htmlFor="tipoviagem">
-                                    Tipo Viagem:
-                                  </label>
+                                  <label htmlFor="veiculo">Veículo:</label>
                                   <Select>
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Tipo" />
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue placeholder="Selecione o veículo" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       <SelectGroup>
-                                        <SelectLabel>Tipo Viagem</SelectLabel>
-                                        <SelectItem value="1">
-                                          Tipo 1
+                                        <SelectLabel>
+                                          Veículos Disponíveis
+                                        </SelectLabel>
+                                        <SelectItem value="veiculo1">
+                                          Ônibus 1
                                         </SelectItem>
-                                        <SelectItem value="2">
-                                          Tipo 2
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                          Tipo 3
-                                        </SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="statusviagem">
-                                    Status Viagem:
-                                  </label>
-                                  <Select>
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectGroup>
-                                        <SelectLabel>Status Viagem</SelectLabel>
-                                        <SelectItem value="1">
-                                          STATUS 1
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                          STATUS 2
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                          STATUS 3
-                                        </SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="veiculo">Veiculo:</label>
-                                  <Select>
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Veículo" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectGroup>
-                                        <SelectLabel>Veículos</SelectLabel>
-                                        <SelectItem value="1">
-                                          veiculo 1
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                          veiculo 2
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                          veiculo 3
+                                        <SelectItem value="veiculo2">
+                                          Ônibus 2
                                         </SelectItem>
                                       </SelectGroup>
                                     </SelectContent>
@@ -917,41 +712,79 @@ export default function ViagensServicos() {
                                 <div className="flex flex-col">
                                   <label htmlFor="motorista">Motorista:</label>
                                   <Select>
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Motorista" />
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue placeholder="Selecione o motorista" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       <SelectGroup>
-                                        <SelectLabel>Motoristas</SelectLabel>
-                                        <SelectItem value="1">
-                                          Motorista 1
+                                        <SelectLabel>
+                                          Motoristas Disponíveis
+                                        </SelectLabel>
+                                        <SelectItem value="motorista1">
+                                          João
                                         </SelectItem>
-                                        <SelectItem value="2">
-                                          Motorista 2
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                          Motorista 3
+                                        <SelectItem value="motorista2">
+                                          Maria
                                         </SelectItem>
                                       </SelectGroup>
                                     </SelectContent>
                                   </Select>
                                 </div>
                                 <div className="flex flex-col">
-                                  <label htmlFor="pagamento">
-                                    Tipo Pagamento:
-                                  </label>
+                                  <label htmlFor="clientes">Clientes:</label>
                                   <Select>
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Pagamento" />
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue placeholder="Selecione o cliente" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       <SelectGroup>
-                                        <SelectLabel>Tipos</SelectLabel>
-                                        <SelectItem value="1">PIX</SelectItem>
-                                        <SelectItem value="2">
+                                        <SelectLabel>Clientes</SelectLabel>
+                                        <SelectItem value="motorista1">
+                                          João
+                                        </SelectItem>
+                                        <SelectItem value="motorista2">
+                                          Maria
+                                        </SelectItem>
+                                      </SelectGroup>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div className="flex flex-col">
+                                  <label htmlFor="observacoes">
+                                    Intinerário:
+                                  </label>
+                                  <Textarea
+                                    name="observacoes"
+                                    className="border-2 font-medium w-full h-20 resize-none"
+                                    placeholder="Adicione observações sobre a viagem..."
+                                  />
+                                </div>
+                              </div>
+
+                              <hr className="border-t border-2 border-black my-4" />
+                              <p className="font-bold text-center mt-4">
+                                Valores
+                              </p>
+
+                              <div className="grid grid-cols-2 gap-4 mt-4">
+                                <div className="flex flex-col">
+                                  <label htmlFor="tipopagamento">
+                                    Tipo Pagamento:
+                                  </label>
+                                  <Select>
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue placeholder="Selecione o tipo" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectGroup>
+                                        <SelectLabel>Pagamentos</SelectLabel>
+                                        <SelectItem value="veiculo1">
+                                          PIX
+                                        </SelectItem>
+                                        <SelectItem value="veiculo2">
                                           Dinheiro
                                         </SelectItem>
-                                        <SelectItem value="2">
+                                        <SelectItem value="veiculo2">
                                           Cartão
                                         </SelectItem>
                                       </SelectGroup>
@@ -962,8 +795,7 @@ export default function ViagensServicos() {
                                   <label htmlFor="parcelas">Parcelas:</label>
                                   <Input
                                     name="parcelas"
-                                    className="border-2 font-medium text-white w-[250px]"
-                                    placeholder="Digite a quantidade..."
+                                    placeholder="Digite o número de parcelas..."
                                   />
                                 </div>
                                 <div className="flex flex-col">
@@ -973,7 +805,6 @@ export default function ViagensServicos() {
                                   <Input
                                     type="number"
                                     name="valorcontratado"
-                                    className="border-2 font-medium text-white w-[250px]"
                                     placeholder="Digite o valor..."
                                   />
                                 </div>
@@ -982,55 +813,34 @@ export default function ViagensServicos() {
                                   <Input
                                     type="number"
                                     name="valorpago"
-                                    className="border-2 font-medium text-white w-[250px]"
                                     placeholder="Digite o valor..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="intinerario">
-                                    Intinerário:
-                                  </label>
-                                  <Textarea
-                                    name="intinerario"
-                                    placeholder="Digite aqui..."
                                   />
                                 </div>
                               </div>
                             </div>
-                            <div className="flex flex-col gap-2">
-                              <p className="font-bold text-center">
+
+                            <div>
+                              <p className="font-bold text-center mb-4">
                                 Dados de Chegada
                               </p>
-                              <div className="flex flex-col gap-4 w-full justify-center">
+                              <div className="grid grid-cols-2 gap-4">
                                 <div className="flex flex-col">
                                   <label htmlFor="ufchegada">UF Chegada:</label>
                                   <Input
                                     name="ufchegada"
-                                    className="border-2 font-medium text-white w-[250px]"
+                                    className="border-2 font-medium text-white w-full"
                                     placeholder="Digite o UF de chegada..."
                                   />
                                 </div>
                                 <div className="flex flex-col">
-                                  <label htmlFor="cidadechegada">
-                                    Cidade Chegada:
+                                  <label htmlFor="cidadesaida">
+                                    Cidade Saída:
                                   </label>
                                   <Input
-                                    name="cidadechegada"
-                                    className="border-2 font-medium w-[250px]"
-                                    placeholder="Digite a cidade da chegada..."
+                                    name="cidadesaida"
+                                    className="border-2 font-medium w-full"
+                                    placeholder="Digite a cidade de saída..."
                                   />
-                                </div>
-                                <div className="flex flex-col gap-2">
-                                  <div className="flex flex-col">
-                                    <label htmlFor="cidadedestino">
-                                      Cidade Destino:
-                                    </label>
-                                    <Input
-                                      name="cidadedestino"
-                                      className="border-2 font-medium text-white w-[250px]"
-                                      placeholder="Digite a cidade de destino..."
-                                    />
-                                  </div>
                                 </div>
                                 <div className="flex flex-col">
                                   <label htmlFor="localsaida">
@@ -1038,7 +848,7 @@ export default function ViagensServicos() {
                                   </label>
                                   <Input
                                     name="localsaida"
-                                    className="border-2 font-medium text-white w-[250px]"
+                                    className="border-2 font-medium text-white w-full"
                                     placeholder="Digite o local de saída..."
                                   />
                                 </div>
@@ -1048,185 +858,96 @@ export default function ViagensServicos() {
                                   </label>
                                   <Input
                                     name="datasaida"
-                                    className="border-2 font-medium w-[250px]"
+                                    className="border-2 font-medium w-full"
                                     type="date"
                                   />
                                 </div>
                                 <div className="flex flex-col">
                                   <label htmlFor="horariosaida">
-                                    Horario Saída:
+                                    Horário Saída:
                                   </label>
                                   <Input
                                     name="horariosaida"
-                                    className="border-2 font-medium text-white w-[250px]"
+                                    className="border-2 font-medium text-white w-full"
                                     placeholder="Digite o horário..."
                                   />
                                 </div>
                                 <div className="flex flex-col">
                                   <label htmlFor="datasaidagaragem">
-                                    Data de Saída Garagem:
+                                    Data Saída Garagem:
                                   </label>
                                   <Input
                                     name="datasaidagaragem"
-                                    className="border-2 font-medium w-[250px]"
+                                    className="border-2 font-medium w-full"
                                     type="date"
                                   />
                                 </div>
                                 <div className="flex flex-col">
-                                  <label htmlFor="horariosaidagaragem">
-                                    Horario Saída Garagem:
+                                  <label htmlFor="tipoviagem">
+                                    Tipo de Viagem:
                                   </label>
-                                  <Input
-                                    name="horariosaidagaragem"
-                                    className="border-2 font-medium text-white w-[250px]"
-                                    placeholder="Digite o horário..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="dataretorno">
-                                    Data de Retorno:
-                                  </label>
-                                  <Input
-                                    name="dataretorno"
-                                    className="border-2 font-medium w-[250px]"
-                                    type="date"
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="horarioretorno">
-                                    Horario Retorno:
-                                  </label>
-                                  <Input
-                                    name="horarioretorno"
-                                    className="border-2 font-medium text-white w-[250px]"
-                                    placeholder="Digite o horário..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="datachegada">
-                                    Data de Chegada:
-                                  </label>
-                                  <Input
-                                    name="datachegada"
-                                    className="border-2 font-medium w-[250px]"
-                                    type="date"
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="horariochegada">
-                                    Horario Chegada:
-                                  </label>
-                                  <Input
-                                    name="horariochegada"
-                                    className="border-2 font-medium text-white w-[250px]"
-                                    placeholder="Digite o horário..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="clientesaida">Cliente:</label>
-                                  <Select>
+                                  <Select name="tipoviagem">
                                     <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Cliente" />
+                                      <SelectValue placeholder="Selecione o tipo..." />
                                     </SelectTrigger>
                                     <SelectContent>
                                       <SelectGroup>
-                                        <SelectLabel>Clientes</SelectLabel>
-                                        <SelectItem value="1">João</SelectItem>
-                                        <SelectItem value="2">Pedro</SelectItem>
-                                        <SelectItem value="2">
-                                          Angélica
+                                        <SelectLabel>Viagens</SelectLabel>
+                                        <SelectItem value="v1">
+                                          Viagem 1
+                                        </SelectItem>
+                                        <SelectItem value="v2">
+                                          Viagem 2
                                         </SelectItem>
                                       </SelectGroup>
                                     </SelectContent>
                                   </Select>
                                 </div>
                                 <div className="flex flex-col">
-                                  <label htmlFor="servico">Tipo Serviço:</label>
-                                  <Select>
+                                  <label htmlFor="tiposervico">
+                                    Tipo de Serviço:
+                                  </label>
+                                  <Select name="tiposervico">
                                     <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Serviço" />
+                                      <SelectValue placeholder="Selecione o tipo..." />
                                     </SelectTrigger>
                                     <SelectContent>
                                       <SelectGroup>
                                         <SelectLabel>Serviços</SelectLabel>
-                                        <SelectItem value="1">
+                                        <SelectItem value="s1">
                                           Serviço 1
                                         </SelectItem>
-                                        <SelectItem value="2">
+                                        <SelectItem value="s2">
                                           Serviço 2
                                         </SelectItem>
-                                        <SelectItem value="2">
-                                          Serviço 3
-                                        </SelectItem>
                                       </SelectGroup>
                                     </SelectContent>
                                   </Select>
                                 </div>
+                              </div>
+
+                              <hr className="border-t border-2 border-black my-4" />
+                              <p className="font-bold text-center mt-4">
+                                Veículos, Motoristas e Clientes
+                              </p>
+
+                              <div className="grid grid-cols-2 gap-4 mt-4">
                                 <div className="flex flex-col">
-                                  <label htmlFor="tipoviagem">
-                                    Tipo Viagem:
-                                  </label>
+                                  <label htmlFor="veiculo">Veículo:</label>
                                   <Select>
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Tipo" />
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue placeholder="Selecione o veículo" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       <SelectGroup>
-                                        <SelectLabel>Tipo Viagem</SelectLabel>
-                                        <SelectItem value="1">
-                                          Tipo 1
+                                        <SelectLabel>
+                                          Veículos Disponíveis
+                                        </SelectLabel>
+                                        <SelectItem value="veiculo1">
+                                          Ônibus 1
                                         </SelectItem>
-                                        <SelectItem value="2">
-                                          Tipo 2
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                          Tipo 3
-                                        </SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="statusviagem">
-                                    Status Viagem:
-                                  </label>
-                                  <Select>
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Status" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectGroup>
-                                        <SelectLabel>Status Viagem</SelectLabel>
-                                        <SelectItem value="1">
-                                          STATUS 1
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                          STATUS 2
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                          STATUS 3
-                                        </SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="veiculo">Veiculo:</label>
-                                  <Select>
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Veículo" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectGroup>
-                                        <SelectLabel>Veículos</SelectLabel>
-                                        <SelectItem value="1">
-                                          veiculo 1
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                          veiculo 2
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                          veiculo 3
+                                        <SelectItem value="veiculo2">
+                                          Ônibus 2
                                         </SelectItem>
                                       </SelectGroup>
                                     </SelectContent>
@@ -1235,41 +956,79 @@ export default function ViagensServicos() {
                                 <div className="flex flex-col">
                                   <label htmlFor="motorista">Motorista:</label>
                                   <Select>
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Motorista" />
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue placeholder="Selecione o motorista" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       <SelectGroup>
-                                        <SelectLabel>Motoristas</SelectLabel>
-                                        <SelectItem value="1">
-                                          Motorista 1
+                                        <SelectLabel>
+                                          Motoristas Disponíveis
+                                        </SelectLabel>
+                                        <SelectItem value="motorista1">
+                                          João
                                         </SelectItem>
-                                        <SelectItem value="2">
-                                          Motorista 2
-                                        </SelectItem>
-                                        <SelectItem value="2">
-                                          Motorista 3
+                                        <SelectItem value="motorista2">
+                                          Maria
                                         </SelectItem>
                                       </SelectGroup>
                                     </SelectContent>
                                   </Select>
                                 </div>
                                 <div className="flex flex-col">
-                                  <label htmlFor="pagamento">
-                                    Tipo Pagamento:
-                                  </label>
+                                  <label htmlFor="clientes">Clientes:</label>
                                   <Select>
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione o Pagamento" />
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue placeholder="Selecione o cliente" />
                                     </SelectTrigger>
                                     <SelectContent>
                                       <SelectGroup>
-                                        <SelectLabel>Tipos</SelectLabel>
-                                        <SelectItem value="1">PIX</SelectItem>
-                                        <SelectItem value="2">
+                                        <SelectLabel>Clientes</SelectLabel>
+                                        <SelectItem value="motorista1">
+                                          João
+                                        </SelectItem>
+                                        <SelectItem value="motorista2">
+                                          Maria
+                                        </SelectItem>
+                                      </SelectGroup>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                                <div className="flex flex-col">
+                                  <label htmlFor="observacoes">
+                                    Intinerário:
+                                  </label>
+                                  <Textarea
+                                    name="observacoes"
+                                    className="border-2 font-medium w-full h-20 resize-none"
+                                    placeholder="Adicione observações sobre a viagem..."
+                                  />
+                                </div>
+                              </div>
+
+                              <hr className="border-t border-2 border-black my-4" />
+                              <p className="font-bold text-center mt-4">
+                                Valores
+                              </p>
+
+                              <div className="grid grid-cols-2 gap-4 mt-4">
+                                <div className="flex flex-col">
+                                  <label htmlFor="tipopagamento">
+                                    Tipo Pagamento:
+                                  </label>
+                                  <Select>
+                                    <SelectTrigger className="w-full">
+                                      <SelectValue placeholder="Selecione o tipo" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectGroup>
+                                        <SelectLabel>Pagamentos</SelectLabel>
+                                        <SelectItem value="veiculo1">
+                                          PIX
+                                        </SelectItem>
+                                        <SelectItem value="veiculo2">
                                           Dinheiro
                                         </SelectItem>
-                                        <SelectItem value="2">
+                                        <SelectItem value="veiculo2">
                                           Cartão
                                         </SelectItem>
                                       </SelectGroup>
@@ -1280,8 +1039,7 @@ export default function ViagensServicos() {
                                   <label htmlFor="parcelas">Parcelas:</label>
                                   <Input
                                     name="parcelas"
-                                    className="border-2 font-medium text-white w-[250px]"
-                                    placeholder="Digite a quantidade..."
+                                    placeholder="Digite o número de parcelas..."
                                   />
                                 </div>
                                 <div className="flex flex-col">
@@ -1291,7 +1049,6 @@ export default function ViagensServicos() {
                                   <Input
                                     type="number"
                                     name="valorcontratado"
-                                    className="border-2 font-medium text-white w-[250px]"
                                     placeholder="Digite o valor..."
                                   />
                                 </div>
@@ -1300,22 +1057,13 @@ export default function ViagensServicos() {
                                   <Input
                                     type="number"
                                     name="valorpago"
-                                    className="border-2 font-medium text-white w-[250px]"
                                     placeholder="Digite o valor..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="intinerario">
-                                    Intinerário:
-                                  </label>
-                                  <Textarea
-                                    name="intinerario"
-                                    placeholder="Digite aqui..."
                                   />
                                 </div>
                               </div>
                             </div>
                           </div>
+
                           <DialogFooter className="flex items-center gap-2 mt-10">
                             <Button variant="outline">Fechar</Button>
                             <Button>Salvar</Button>

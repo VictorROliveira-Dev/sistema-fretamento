@@ -153,7 +153,7 @@ export default function Veiculos() {
                     </div>
                     <div className="flex flex-col w-[250px]">
                       <label htmlFor="tipoveiculo">Tipo do Veículo:</label>
-                      <Select name="tipoveiculo">
+                        <Select name="tipoveiculo">
                         <SelectTrigger className="w-[250px]">
                           <SelectValue placeholder="Selecione o tipo..." />
                         </SelectTrigger>

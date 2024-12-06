@@ -85,14 +85,24 @@ export default function Header() {
             <Image src={viagens} alt="Viagens" width={45} />
             <p className="font-bold text-xs">Viagens</p>
           </Link>
-          <span className="flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all">
+          <Link
+            href="/manutencoes"
+            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${getActiveClass(
+              "/manutencoes"
+            )}`}
+          >
             <Image src={manutencao} alt="Veículos" width={45} />
             <p className="font-bold text-xs">Manutenções</p>
-          </span>
-          <span className="flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all">
+          </Link>
+          <Link
+            href="/documentos"
+            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${getActiveClass(
+              "/documentos"
+            )}`}
+          >
             <Image src={documentos} alt="Veículos" width={45} />
             <p className="font-bold text-xs">Documentos</p>
-          </span>
+          </Link>
           <span className="flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all">
             <Image src={financeiro} alt="Veículos" width={45} />
             <p className="font-bold text-xs">Financeiro</p>
