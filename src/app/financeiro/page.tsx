@@ -2,6 +2,7 @@
 
 import editIcon from "@/app/assets/edit.svg";
 import removeIcon from "@/app/assets/remove.svg";
+import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -30,76 +31,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { formFields, formFieldsReceitas } from "@/lib/objects";
 import Image from "next/image";
-
-type FormField = {
-  label: string;
-  name: string;
-  type?: string;
-  placeholder: string;
-};
-
-const formFields: FormField[] = [
-  {
-    label: "Vencimento",
-    name: "vencimento",
-    placeholder: "",
-    type: "date",
-  },
-  {
-    label: "Valor",
-    name: "valortotal",
-    placeholder: "Digite o valor",
-    type: "number",
-  },
-  {
-    label: "Viagem",
-    name: "viagem",
-    placeholder: "Digite o identificador da viagem",
-  },
-];
-
-const formFieldsReceitas: FormField[] = [
-  {
-    label: "Viagem",
-    name: "viagem",
-    placeholder: "Digite o identificador da viagem",
-  },
-  {
-    label: "Origem Receita",
-    name: "origemreceita",
-    placeholder: "Digite a origem...",
-  },
-  {
-    label: "Valor Total",
-    name: "valortotal",
-    placeholder: "Digite o valor...",
-    type: "number",
-  },
-  {
-    label: "Vencimento",
-    name: "vencimento",
-    placeholder: "",
-    type: "date",
-  },
-];
-
-const FormInput: React.FC<FormField> = ({
-  label,
-  name,
-  type = "text",
-  placeholder,
-}) => (
-  <div className="flex flex-col">
-    <label htmlFor={name}>{label}</label>
-    <Input
-      name={name}
-      className="border-2 font-medium w-[250px]"
-      placeholder={placeholder}
-      type={type}
-    />
-  </div>
-);
 
 export default function Financeiro() {
   return (
@@ -114,8 +47,12 @@ export default function Financeiro() {
           <div className="mx-auto md:max-w-4xl md:w-[1000px] space-y-4">
             <Tabs defaultValue="despesas" className="flex flex-col">
               <TabsList className="gap-4">
-                <TabsTrigger value="despesas" className="font-bold">Despesas</TabsTrigger>
-                <TabsTrigger value="receitas" className="font-bold">Receitas</TabsTrigger>
+                <TabsTrigger value="despesas" className="font-bold">
+                  Despesas
+                </TabsTrigger>
+                <TabsTrigger value="receitas" className="font-bold">
+                  Receitas
+                </TabsTrigger>
               </TabsList>
               <TabsContent value="despesas">
                 <div className="flex items-center justify-between">

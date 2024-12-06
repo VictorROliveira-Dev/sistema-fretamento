@@ -1,5 +1,6 @@
 import editIcon from "@/app/assets/edit.svg";
 import removeIcon from "@/app/assets/remove.svg";
+import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,8 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
@@ -28,40 +27,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formFieldsDocumentos } from "@/lib/objects";
 import Image from "next/image";
-
-type FormField = {
-  label: string;
-  name: string;
-  type?: string;
-  placeholder: string;
-};
-
-const formFields: FormField[] = [
-  {
-    label: "Vencimento",
-    name: "vencimento",
-    placeholder: "",
-    type: "date",
-  },
-];
-
-const FormInput: React.FC<FormField> = ({
-  label,
-  name,
-  type = "text",
-  placeholder,
-}) => (
-  <div className="flex flex-col">
-    <label htmlFor={name}>{label}</label>
-    <Input
-      name={name}
-      className="border-2 font-medium w-[250px]"
-      placeholder={placeholder}
-      type={type}
-    />
-  </div>
-);
 
 export default function Documentos() {
   return (
@@ -191,7 +158,7 @@ export default function Documentos() {
                       </Select>
                     </div>
 
-                    {formFields.map((field) => (
+                    {formFieldsDocumentos.map((field) => (
                       <FormInput
                         key={field.name}
                         label={field.label}
@@ -336,7 +303,7 @@ export default function Documentos() {
                               </Select>
                             </div>
 
-                            {formFields.map((field) => (
+                            {formFieldsDocumentos.map((field) => (
                               <FormInput
                                 key={field.name}
                                 label={field.label}

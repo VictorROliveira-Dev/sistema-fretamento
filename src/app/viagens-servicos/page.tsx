@@ -32,6 +32,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  formFieldsDadosChegada,
+  formFieldsDadosChegadaValores,
+  formFieldsDadosSaida,
+  formFieldsDadosSaidaValores,
+} from "@/lib/objects";
+import FormInput from "@/components/form-input";
 
 export default function ViagensServicos() {
   return (
@@ -82,56 +89,15 @@ export default function ViagensServicos() {
                         Dados de Saída
                       </p>
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col">
-                          <label htmlFor="ufsaida">UF Saída:</label>
-                          <Input
-                            name="ufsaida"
-                            className="border-2 font-medium text-white w-full"
-                            placeholder="Digite o UF de saída..."
+                        {formFieldsDadosSaida.map((field) => (
+                          <FormInput
+                            key={field.name}
+                            label={field.label}
+                            name={field.name}
+                            type={field.type}
+                            placeholder={field.placeholder}
                           />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="cidadesaida">Cidade Saída:</label>
-                          <Input
-                            name="cidadesaida"
-                            className="border-2 font-medium w-full"
-                            placeholder="Digite a cidade de saída..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="localsaida">Local Saída:</label>
-                          <Input
-                            name="localsaida"
-                            className="border-2 font-medium text-white w-full"
-                            placeholder="Digite o local de saída..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="datasaida">Data de Saída:</label>
-                          <Input
-                            name="datasaida"
-                            className="border-2 font-medium w-full"
-                            type="date"
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="horariosaida">Horário Saída:</label>
-                          <Input
-                            name="horariosaida"
-                            className="border-2 font-medium text-white w-full"
-                            placeholder="Digite o horário..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="datasaidagaragem">
-                            Data Saída Garagem:
-                          </label>
-                          <Input
-                            name="datasaidagaragem"
-                            className="border-2 font-medium w-full"
-                            type="date"
-                          />
-                        </div>
+                        ))}
                         <div className="flex flex-col">
                           <label htmlFor="tipoviagem">Tipo de Viagem:</label>
                           <Select name="tipoviagem">
@@ -257,31 +223,15 @@ export default function ViagensServicos() {
                             </SelectContent>
                           </Select>
                         </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="parcelas">Parcelas:</label>
-                          <Input
-                            name="parcelas"
-                            placeholder="Digite o número de parcelas..."
+                        {formFieldsDadosSaidaValores.map((field) => (
+                          <FormInput
+                            key={field.name}
+                            label={field.label}
+                            name={field.name}
+                            type={field.type}
+                            placeholder={field.placeholder}
                           />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="valorcontratado">
-                            Valor Contratado:
-                          </label>
-                          <Input
-                            type="number"
-                            name="valorcontratado"
-                            placeholder="Digite o valor..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="valorpago">Valor Pago:</label>
-                          <Input
-                            type="number"
-                            name="valorpago"
-                            placeholder="Digite o valor..."
-                          />
-                        </div>
+                        ))}
                       </div>
                     </div>
 
@@ -290,56 +240,15 @@ export default function ViagensServicos() {
                         Dados de Chegada
                       </p>
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="flex flex-col">
-                          <label htmlFor="ufchegada">UF Chegada:</label>
-                          <Input
-                            name="ufchegada"
-                            className="border-2 font-medium text-white w-full"
-                            placeholder="Digite o UF de chegada..."
+                        {formFieldsDadosChegada.map((field) => (
+                          <FormInput
+                            key={field.name}
+                            label={field.label}
+                            name={field.name}
+                            type={field.type}
+                            placeholder={field.placeholder}
                           />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="cidadesaida">Cidade Saída:</label>
-                          <Input
-                            name="cidadesaida"
-                            className="border-2 font-medium w-full"
-                            placeholder="Digite a cidade de saída..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="localsaida">Local Saída:</label>
-                          <Input
-                            name="localsaida"
-                            className="border-2 font-medium text-white w-full"
-                            placeholder="Digite o local de saída..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="datasaida">Data de Saída:</label>
-                          <Input
-                            name="datasaida"
-                            className="border-2 font-medium w-full"
-                            type="date"
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="horariosaida">Horário Saída:</label>
-                          <Input
-                            name="horariosaida"
-                            className="border-2 font-medium text-white w-full"
-                            placeholder="Digite o horário..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="datasaidagaragem">
-                            Data Saída Garagem:
-                          </label>
-                          <Input
-                            name="datasaidagaragem"
-                            className="border-2 font-medium w-full"
-                            type="date"
-                          />
-                        </div>
+                        ))}
                         <div className="flex flex-col">
                           <label htmlFor="tipoviagem">Tipo de Viagem:</label>
                           <Select name="tipoviagem">
@@ -465,31 +374,15 @@ export default function ViagensServicos() {
                             </SelectContent>
                           </Select>
                         </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="parcelas">Parcelas:</label>
-                          <Input
-                            name="parcelas"
-                            placeholder="Digite o número de parcelas..."
+                        {formFieldsDadosChegadaValores.map((field) => (
+                          <FormInput
+                            key={field.name}
+                            label={field.label}
+                            name={field.name}
+                            type={field.type}
+                            placeholder={field.placeholder}
                           />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="valorcontratado">
-                            Valor Contratado:
-                          </label>
-                          <Input
-                            type="number"
-                            name="valorcontratado"
-                            placeholder="Digite o valor..."
-                          />
-                        </div>
-                        <div className="flex flex-col">
-                          <label htmlFor="valorpago">Valor Pago:</label>
-                          <Input
-                            type="number"
-                            name="valorpago"
-                            placeholder="Digite o valor..."
-                          />
-                        </div>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -580,64 +473,15 @@ export default function ViagensServicos() {
                                 Dados de Saída
                               </p>
                               <div className="grid grid-cols-2 gap-4">
-                                <div className="flex flex-col">
-                                  <label htmlFor="ufsaida">UF Saída:</label>
-                                  <Input
-                                    name="ufsaida"
-                                    className="border-2 font-medium text-white w-full"
-                                    placeholder="Digite o UF de saída..."
+                                {formFieldsDadosSaida.map((field) => (
+                                  <FormInput
+                                    key={field.name}
+                                    label={field.label}
+                                    name={field.name}
+                                    type={field.type}
+                                    placeholder={field.placeholder}
                                   />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="cidadesaida">
-                                    Cidade Saída:
-                                  </label>
-                                  <Input
-                                    name="cidadesaida"
-                                    className="border-2 font-medium w-full"
-                                    placeholder="Digite a cidade de saída..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="localsaida">
-                                    Local Saída:
-                                  </label>
-                                  <Input
-                                    name="localsaida"
-                                    className="border-2 font-medium text-white w-full"
-                                    placeholder="Digite o local de saída..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="datasaida">
-                                    Data de Saída:
-                                  </label>
-                                  <Input
-                                    name="datasaida"
-                                    className="border-2 font-medium w-full"
-                                    type="date"
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="horariosaida">
-                                    Horário Saída:
-                                  </label>
-                                  <Input
-                                    name="horariosaida"
-                                    className="border-2 font-medium text-white w-full"
-                                    placeholder="Digite o horário..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="datasaidagaragem">
-                                    Data Saída Garagem:
-                                  </label>
-                                  <Input
-                                    name="datasaidagaragem"
-                                    className="border-2 font-medium w-full"
-                                    type="date"
-                                  />
-                                </div>
+                                ))}
                                 <div className="flex flex-col">
                                   <label htmlFor="tipoviagem">
                                     Tipo de Viagem:
@@ -791,31 +635,15 @@ export default function ViagensServicos() {
                                     </SelectContent>
                                   </Select>
                                 </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="parcelas">Parcelas:</label>
-                                  <Input
-                                    name="parcelas"
-                                    placeholder="Digite o número de parcelas..."
+                                {formFieldsDadosChegadaValores.map((field) => (
+                                  <FormInput
+                                    key={field.name}
+                                    label={field.label}
+                                    name={field.name}
+                                    type={field.type}
+                                    placeholder={field.placeholder}
                                   />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="valorcontratado">
-                                    Valor Contratado:
-                                  </label>
-                                  <Input
-                                    type="number"
-                                    name="valorcontratado"
-                                    placeholder="Digite o valor..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="valorpago">Valor Pago:</label>
-                                  <Input
-                                    type="number"
-                                    name="valorpago"
-                                    placeholder="Digite o valor..."
-                                  />
-                                </div>
+                                ))}
                               </div>
                             </div>
 
@@ -824,64 +652,15 @@ export default function ViagensServicos() {
                                 Dados de Chegada
                               </p>
                               <div className="grid grid-cols-2 gap-4">
-                                <div className="flex flex-col">
-                                  <label htmlFor="ufchegada">UF Chegada:</label>
-                                  <Input
-                                    name="ufchegada"
-                                    className="border-2 font-medium text-white w-full"
-                                    placeholder="Digite o UF de chegada..."
+                                {formFieldsDadosChegada.map((field) => (
+                                  <FormInput
+                                    key={field.name}
+                                    label={field.label}
+                                    name={field.name}
+                                    type={field.type}
+                                    placeholder={field.placeholder}
                                   />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="cidadesaida">
-                                    Cidade Saída:
-                                  </label>
-                                  <Input
-                                    name="cidadesaida"
-                                    className="border-2 font-medium w-full"
-                                    placeholder="Digite a cidade de saída..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="localsaida">
-                                    Local Saída:
-                                  </label>
-                                  <Input
-                                    name="localsaida"
-                                    className="border-2 font-medium text-white w-full"
-                                    placeholder="Digite o local de saída..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="datasaida">
-                                    Data de Saída:
-                                  </label>
-                                  <Input
-                                    name="datasaida"
-                                    className="border-2 font-medium w-full"
-                                    type="date"
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="horariosaida">
-                                    Horário Saída:
-                                  </label>
-                                  <Input
-                                    name="horariosaida"
-                                    className="border-2 font-medium text-white w-full"
-                                    placeholder="Digite o horário..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="datasaidagaragem">
-                                    Data Saída Garagem:
-                                  </label>
-                                  <Input
-                                    name="datasaidagaragem"
-                                    className="border-2 font-medium w-full"
-                                    type="date"
-                                  />
-                                </div>
+                                ))}
                                 <div className="flex flex-col">
                                   <label htmlFor="tipoviagem">
                                     Tipo de Viagem:
@@ -1035,31 +814,15 @@ export default function ViagensServicos() {
                                     </SelectContent>
                                   </Select>
                                 </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="parcelas">Parcelas:</label>
-                                  <Input
-                                    name="parcelas"
-                                    placeholder="Digite o número de parcelas..."
+                                {formFieldsDadosChegadaValores.map((field) => (
+                                  <FormInput
+                                    key={field.name}
+                                    label={field.label}
+                                    name={field.name}
+                                    type={field.type}
+                                    placeholder={field.placeholder}
                                   />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="valorcontratado">
-                                    Valor Contratado:
-                                  </label>
-                                  <Input
-                                    type="number"
-                                    name="valorcontratado"
-                                    placeholder="Digite o valor..."
-                                  />
-                                </div>
-                                <div className="flex flex-col">
-                                  <label htmlFor="valorpago">Valor Pago:</label>
-                                  <Input
-                                    type="number"
-                                    name="valorpago"
-                                    placeholder="Digite o valor..."
-                                  />
-                                </div>
+                                ))}
                               </div>
                             </div>
                           </div>

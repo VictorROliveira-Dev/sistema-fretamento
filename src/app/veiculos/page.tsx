@@ -21,102 +21,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-
-type FormField = {
-  label: string;
-  name: string;
-  type?: string;
-  placeholder: string;
-};
-
-const formFields: FormField[] = [
-  {
-    label: "Prefixo:",
-    name: "prefixo",
-    placeholder: "Digite o prefixo...",
-  },
-  {
-    label: "Km Atual:",
-    name: "kmatual",
-    placeholder: "Digite o Km Atual...",
-    type: "number",
-  },
-  {
-    label: "Placa:",
-    name: "placa",
-    placeholder: "Digite a placa...",
-  },
-  {
-    label: "Marca:",
-    name: "marca",
-    placeholder: "Digite a marca...",
-  },
-  {
-    label: "Local Emplacamento:",
-    name: "localemplacamento",
-    placeholder: "Digite o local do emplacamento...",
-  },
-  {
-    label: "UF Emplacamento:",
-    name: "ufemplacamento",
-    placeholder: "Digite o Estado do emplacamento...",
-  },
-  {
-    label: "Carroceria:",
-    name: "carroceria",
-    placeholder: "Digite a carroceria...",
-  },
-  {
-    label: "Capacidade do tanque:",
-    name: "tanque",
-    placeholder: "Digite a capacidade...",
-    type: "number",
-  },
-  {
-    label: "Ano Veículo:",
-    name: "anoveiculo",
-    placeholder: "Digite o ano...",
-    type: "number",
-  },
-  {
-    label: "Qtd. Poltronas:",
-    name: "poltronas",
-    placeholder: "Digite a quantidade...",
-    type: "number",
-  },
-  {
-    label: "Modelo:",
-    name: "modelo",
-    placeholder: "Digite o modelo...",
-  },
-];
-
-const FormInput: React.FC<FormField> = ({
-  label,
-  name,
-  type = "text",
-  placeholder,
-}) => (
-  <div className="flex flex-col">
-    <label htmlFor={name}>{label}</label>
-    <Input
-      name={name}
-      className="border-2 font-medium w-[250px]"
-      placeholder={placeholder}
-      type={type}
-    />
-  </div>
-);
+import { formFieldsVeiculos } from "@/lib/objects";
+import FormInput from "@/components/form-input";
 
 export default function Veiculos() {
   return (
@@ -163,7 +71,7 @@ export default function Veiculos() {
                   </DialogHeader>
 
                   <div className="flex flex-wrap gap-4 w-full justify-center">
-                    {formFields.map((field) => (
+                    {formFieldsVeiculos.map((field) => (
                       <FormInput
                         key={field.name}
                         label={field.label}
@@ -266,7 +174,7 @@ export default function Veiculos() {
                           </DialogHeader>
 
                           <div className="flex flex-wrap gap-4 w-full justify-center">
-                            {formFields.map((field) => (
+                            {formFieldsVeiculos.map((field) => (
                               <FormInput
                                 key={field.name}
                                 label={field.label}
