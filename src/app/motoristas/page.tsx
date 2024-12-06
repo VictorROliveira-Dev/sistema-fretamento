@@ -220,7 +220,7 @@ export default function Motoristas() {
                         <DialogContent className="w-[1100px] h-[550px] flex flex-col items-center">
                           <DialogHeader className="mb-5">
                             <DialogTitle className="font-black">
-                              Cadastro de Motorista
+                              Edição de Motorista
                             </DialogTitle>
                           </DialogHeader>
 
