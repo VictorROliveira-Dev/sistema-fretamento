@@ -111,11 +111,11 @@ export default function Financeiro() {
           </p>
         </div>
         <div className="flex items-center md:h-screen h-[800px]">
-          <div className="mx-auto md:max-w-4xl md:w-[1000px] w-[350px] space-y-4">
+          <div className="mx-auto md:max-w-4xl md:w-[1000px] space-y-4">
             <Tabs defaultValue="despesas" className="flex flex-col">
               <TabsList className="gap-4">
-                <TabsTrigger value="despesas">Despesas</TabsTrigger>
-                <TabsTrigger value="receitas">Receitas</TabsTrigger>
+                <TabsTrigger value="despesas" className="font-bold">Despesas</TabsTrigger>
+                <TabsTrigger value="receitas" className="font-bold">Receitas</TabsTrigger>
               </TabsList>
               <TabsContent value="despesas">
                 <div className="flex items-center justify-between">
