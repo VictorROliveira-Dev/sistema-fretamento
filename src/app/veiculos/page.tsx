@@ -12,7 +12,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Table,
   TableBody,
@@ -31,6 +30,93 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+
+type FormField = {
+  label: string;
+  name: string;
+  type?: string;
+  placeholder: string;
+};
+
+const formFields: FormField[] = [
+  {
+    label: "Prefixo:",
+    name: "prefixo",
+    placeholder: "Digite o prefixo...",
+  },
+  {
+    label: "Km Atual:",
+    name: "kmatual",
+    placeholder: "Digite o Km Atual...",
+    type: "number",
+  },
+  {
+    label: "Placa:",
+    name: "placa",
+    placeholder: "Digite a placa...",
+  },
+  {
+    label: "Marca:",
+    name: "marca",
+    placeholder: "Digite a marca...",
+  },
+  {
+    label: "Local Emplacamento:",
+    name: "localemplacamento",
+    placeholder: "Digite o local do emplacamento...",
+  },
+  {
+    label: "UF Emplacamento:",
+    name: "ufemplacamento",
+    placeholder: "Digite o Estado do emplacamento...",
+  },
+  {
+    label: "Carroceria:",
+    name: "carroceria",
+    placeholder: "Digite a carroceria...",
+  },
+  {
+    label: "Capacidade do tanque:",
+    name: "tanque",
+    placeholder: "Digite a capacidade...",
+    type: "number",
+  },
+  {
+    label: "Ano Veículo:",
+    name: "anoveiculo",
+    placeholder: "Digite o ano...",
+    type: "number",
+  },
+  {
+    label: "Qtd. Poltronas:",
+    name: "poltronas",
+    placeholder: "Digite a quantidade...",
+    type: "number",
+  },
+  {
+    label: "Modelo:",
+    name: "modelo",
+    placeholder: "Digite o modelo...",
+  },
+];
+
+const FormInput: React.FC<FormField> = ({
+  label,
+  name,
+  type = "text",
+  placeholder,
+}) => (
+  <div className="flex flex-col">
+    <label htmlFor={name}>{label}</label>
+    <Input
+      name={name}
+      className="border-2 font-medium w-[250px]"
+      placeholder={placeholder}
+      type={type}
+    />
+  </div>
+);
 
 export default function Veiculos() {
   return (
@@ -69,7 +155,7 @@ export default function Veiculos() {
                     Adicionar Veículo
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="w-[900px] h-[520px] flex flex-col items-center">
+                <DialogContent className="w-[850px] h-[600px] flex flex-col items-center">
                   <DialogHeader className="mb-5">
                     <DialogTitle className="font-black">
                       Cadastro de Veículo
@@ -77,115 +163,37 @@ export default function Veiculos() {
                   </DialogHeader>
 
                   <div className="flex flex-wrap gap-4 w-full justify-center">
-                    <div className="flex flex-col">
-                      <label htmlFor="prefixo">Prefixo:</label>
-                      <Input
-                        name="prefixo"
-                        className="border-2 font-medium text-white w-[250px]"
-                        placeholder="Digite o prefixo..."
+                    {formFields.map((field) => (
+                      <FormInput
+                        key={field.name}
+                        label={field.label}
+                        name={field.name}
+                        type={field.type}
+                        placeholder={field.placeholder}
                       />
-                    </div>
-                    <div className="flex flex-col">
-                      <label htmlFor="kmatual">Km Atual:</label>
-                      <Input
-                        name="kmatual"
-                        className="border-2 font-medium w-[250px]"
-                        placeholder="Digite a Km atual..."
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <label htmlFor="placa">Placa:</label>
-                      <Input
-                        name="placa"
-                        className="border-2 font-medium text-white w-[250px]"
-                        placeholder="Digite o número da placa..."
-                      />
-                    </div>
-
-                    <div className="flex flex-col">
-                      <label htmlFor="marca">Marca:</label>
-                      <Input
-                        name="marca"
-                        className="border-2 font-medium text-white w-[250px]"
-                        placeholder="Digite a marca do veículo..."
-                      />
-                    </div>
-
-                    <div className="flex flex-col">
-                      <label htmlFor="emplacamento">Local Emplacamento:</label>
-                      <Input
-                        name="emplacamento"
-                        className="border-2 font-medium text-white w-[250px]"
-                        placeholder="Digite a cidade do emplacamento..."
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <label htmlFor="ufemplacamento">UF Emplacamento:</label>
-                      <Input
-                        name="ufemplacamento"
-                        className="border-2 font-medium text-white w-[250px]"
-                        placeholder="Digite o Estado do emplacamento..."
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <label htmlFor="carroceria">Carroceria:</label>
-                      <Input
-                        name="carroceria"
-                        className="border-2 font-medium text-white w-[250px]"
-                        placeholder="Digite a carroceria..."
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <label htmlFor="tanque">Capacidade do Tanque:</label>
-                      <Input
-                        name="tanque"
-                        className="border-2 font-medium text-white w-[250px]"
-                        placeholder="Digite a capacidade do tanque..."
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <label htmlFor="anoveiculo">Ano Veículo:</label>
-                      <Input
-                        name="anoveiculo"
-                        className="border-2 font-medium text-white w-[250px]"
-                        placeholder="Digite o ano do veículo..."
-                      />
-                    </div>
-                    <div className="flex flex-col w-[250px]">
-                      <label htmlFor="tipoveiculo">Tipo do Veículo:</label>
-                        <Select name="tipoveiculo">
-                        <SelectTrigger className="w-[250px]">
-                          <SelectValue placeholder="Selecione o tipo..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Veículos</SelectLabel>
-                            <SelectItem value="ddsemileito">
-                              DD SEMI-LEITO
-                            </SelectItem>
-                            <SelectItem value="ddleito">DD LEITO</SelectItem>
-                            <SelectItem value="minivan">Minivan</SelectItem>
-                            <SelectItem value="vangg">VAN GG</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="flex flex-col">
-                      <label htmlFor="qtdpoltronas">Qtd. Poltronas:</label>
-                      <Input
-                        type="number"
-                        name="qtdpoltronas"
-                        className="border-2 font-medium w-[250px]"
-                        placeholder="Digite o número de poltronas..."
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <label htmlFor="modelo">Modelo:</label>
-                      <Input
-                        name="modelo"
-                        className="border-2 font-medium text-white w-[250px]"
-                        placeholder="Digite o modelo do veículo..."
-                      />
+                    ))}
+                    <div>
+                      <hr className="border-t border-gray-300 my-2" />
+                      <p className="font-bold text-center mb-4">
+                        Selecione os Acessorios
+                      </p>
+                      <ToggleGroup type="multiple">
+                        <ToggleGroupItem value="bold" aria-label="Toggle bold">
+                          Ar Condicionado
+                        </ToggleGroupItem>
+                        <ToggleGroupItem
+                          value="italic"
+                          aria-label="Toggle italic"
+                        >
+                          Extintor
+                        </ToggleGroupItem>
+                        <ToggleGroupItem
+                          value="strikethrough"
+                          aria-label="Toggle strikethrough"
+                        >
+                          Parabrisas
+                        </ToggleGroupItem>
+                      </ToggleGroup>
                     </div>
                   </div>
                   <DialogFooter className="flex items-center gap-2 mt-10">
@@ -245,12 +253,12 @@ export default function Veiculos() {
                             <Image
                               src={editIcon}
                               alt="Editar"
-                              width={30}
+                              width={25}
                               className="hover:scale-110"
                             />
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="w-[900px] h-[520px] flex flex-col items-center">
+                        <DialogContent className="w-[850px] h-[600px] flex flex-col items-center">
                           <DialogHeader className="mb-5">
                             <DialogTitle className="font-black">
                               Edição de Veículo
@@ -258,131 +266,40 @@ export default function Veiculos() {
                           </DialogHeader>
 
                           <div className="flex flex-wrap gap-4 w-full justify-center">
-                            <div className="flex flex-col">
-                              <label htmlFor="prefixo">Prefixo:</label>
-                              <Input
-                                name="prefixo"
-                                className="border-2 font-medium text-white w-[250px]"
-                                placeholder="Digite o prefixo..."
+                            {formFields.map((field) => (
+                              <FormInput
+                                key={field.name}
+                                label={field.label}
+                                name={field.name}
+                                type={field.type}
+                                placeholder={field.placeholder}
                               />
-                            </div>
-                            <div className="flex flex-col">
-                              <label htmlFor="kmatual">Km Atual:</label>
-                              <Input
-                                name="kmatual"
-                                className="border-2 font-medium w-[250px]"
-                                placeholder="Digite a Km atual..."
-                              />
-                            </div>
-                            <div className="flex flex-col">
-                              <label htmlFor="placa">Placa:</label>
-                              <Input
-                                name="placa"
-                                className="border-2 font-medium text-white w-[250px]"
-                                placeholder="Digite o número da placa..."
-                              />
-                            </div>
-
-                            <div className="flex flex-col">
-                              <label htmlFor="marca">Marca:</label>
-                              <Input
-                                name="marca"
-                                className="border-2 font-medium text-white w-[250px]"
-                                placeholder="Digite a marca do veículo..."
-                              />
-                            </div>
-
-                            <div className="flex flex-col">
-                              <label htmlFor="emplacamento">
-                                Local Emplacamento:
-                              </label>
-                              <Input
-                                name="emplacamento"
-                                className="border-2 font-medium text-white w-[250px]"
-                                placeholder="Digite a cidade do emplacamento..."
-                              />
-                            </div>
-                            <div className="flex flex-col">
-                              <label htmlFor="ufemplacamento">
-                                UF Emplacamento:
-                              </label>
-                              <Input
-                                name="ufemplacamento"
-                                className="border-2 font-medium text-white w-[250px]"
-                                placeholder="Digite o Estado do emplacamento..."
-                              />
-                            </div>
-                            <div className="flex flex-col">
-                              <label htmlFor="carroceria">Carroceria:</label>
-                              <Input
-                                name="carroceria"
-                                className="border-2 font-medium text-white w-[250px]"
-                                placeholder="Digite a carroceria..."
-                              />
-                            </div>
-                            <div className="flex flex-col">
-                              <label htmlFor="tanque">
-                                Capacidade do Tanque:
-                              </label>
-                              <Input
-                                name="tanque"
-                                className="border-2 font-medium text-white w-[250px]"
-                                placeholder="Digite a capacidade do tanque..."
-                              />
-                            </div>
-                            <div className="flex flex-col">
-                              <label htmlFor="anoveiculo">Ano Veículo:</label>
-                              <Input
-                                name="anoveiculo"
-                                className="border-2 font-medium text-white w-[250px]"
-                                placeholder="Digite o ano do veículo..."
-                              />
-                            </div>
-                            <div className="flex flex-col w-[250px]">
-                              <label htmlFor="tipoveiculo">
-                                Tipo do Veículo:
-                              </label>
-                              <Select name="tipoveiculo">
-                                <SelectTrigger className="w-[250px]">
-                                  <SelectValue placeholder="Selecione o tipo..." />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectGroup>
-                                    <SelectLabel>Veículos</SelectLabel>
-                                    <SelectItem value="ddsemileito">
-                                      DD SEMI-LEITO
-                                    </SelectItem>
-                                    <SelectItem value="ddleito">
-                                      DD LEITO
-                                    </SelectItem>
-                                    <SelectItem value="minivan">
-                                      Minivan
-                                    </SelectItem>
-                                    <SelectItem value="vangg">
-                                      VAN GG
-                                    </SelectItem>
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                            <div className="flex flex-col">
-                              <label htmlFor="qtdpoltronas">
-                                Qtd. Poltronas:
-                              </label>
-                              <Input
-                                type="number"
-                                name="qtdpoltronas"
-                                className="border-2 font-medium w-[250px]"
-                                placeholder="Digite o número de poltronas..."
-                              />
-                            </div>
-                            <div className="flex flex-col">
-                              <label htmlFor="modelo">Modelo:</label>
-                              <Input
-                                name="modelo"
-                                className="border-2 font-medium text-white w-[250px]"
-                                placeholder="Digite o modelo do veículo..."
-                              />
+                            ))}
+                            <div>
+                              <hr className="border-t border-gray-300 my-2" />
+                              <p className="font-bold text-center mb-4">
+                                Selecione os Acessorios
+                              </p>
+                              <ToggleGroup type="multiple">
+                                <ToggleGroupItem
+                                  value="bold"
+                                  aria-label="Toggle bold"
+                                >
+                                  Ar Condicionado
+                                </ToggleGroupItem>
+                                <ToggleGroupItem
+                                  value="italic"
+                                  aria-label="Toggle italic"
+                                >
+                                  Extintor
+                                </ToggleGroupItem>
+                                <ToggleGroupItem
+                                  value="strikethrough"
+                                  aria-label="Toggle strikethrough"
+                                >
+                                  Parabrisas
+                                </ToggleGroupItem>
+                              </ToggleGroup>
                             </div>
                           </div>
                           <DialogFooter className="flex items-center gap-2 mt-10">
@@ -396,7 +313,7 @@ export default function Veiculos() {
                         <Image
                           src={removeIcon}
                           alt="Remover"
-                          width={30}
+                          width={25}
                           className="hover:scale-110"
                         />
                       </Button>
@@ -404,7 +321,7 @@ export default function Veiculos() {
                         <Image
                           src={documentoIcon}
                           alt="documento"
-                          width={30}
+                          width={25}
                           className="hover:scale-110"
                         />
                       </Button>
