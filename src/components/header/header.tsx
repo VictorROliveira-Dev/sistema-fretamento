@@ -103,10 +103,15 @@ export default function Header() {
             <Image src={documentos} alt="Veículos" width={45} />
             <p className="font-bold text-xs">Documentos</p>
           </Link>
-          <span className="flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all">
+          <Link
+            href="/financeiro"
+            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${getActiveClass(
+              "/financeiro"
+            )}`}
+          >
             <Image src={financeiro} alt="Veículos" width={45} />
-            <p className="font-bold text-xs">Financeiro</p>
-          </span>
+            <p className="font-bold text-xs">Finanças</p>
+          </Link>
           <span className="flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all">
             <Image src={passagens} alt="Passagens" width={45} />
             <p className="font-bold text-xs">Passagens</p>
