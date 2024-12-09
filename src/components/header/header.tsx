@@ -11,6 +11,7 @@ import documentos from "@/app/assets/documentos.png";
 import financeiro from "@/app/assets/financa.png";
 import sino from "@/app/assets/sino.svg";
 import passagens from "@/app/assets/passagens.png";
+import passageiros from "@/app/assets/passageiro.png";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -112,10 +113,24 @@ export default function Header() {
             <Image src={financeiro} alt="Veículos" width={45} />
             <p className="font-bold text-xs">Finanças</p>
           </Link>
-          <span className="flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all">
+          <Link
+            href="/passageiros"
+            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${getActiveClass(
+              "/passageiros"
+            )}`}
+          >
+            <Image src={passageiros} alt="Veículos" width={45} />
+            <p className="font-bold text-xs">Passageiros</p>
+          </Link>
+          <Link
+            href="/passagens"
+            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${getActiveClass(
+              "/passagens"
+            )}`}
+          >
             <Image src={passagens} alt="Passagens" width={45} />
             <p className="font-bold text-xs">Passagens</p>
-          </span>
+          </Link>
         </div>
 
         <Image src={sino} alt="Sino" width={45} className="cursor-pointer" />

@@ -1,5 +1,58 @@
 import { FormField } from "./types";
-// Fornecedores/Clientes
+// Motoristas
+export const formFieldsMotoristas: FormField[] = [
+  {
+    label: "Nome de Escala:",
+    name: "name",
+    placeholder: "Digite o nome de escala...",
+  },
+  {
+    label: "Nome Completo:",
+    name: "nomecompleto",
+    placeholder: "Digite o nome completo...",
+  },
+  {
+    label: "Data Nascimento:",
+    name: "datanascimento",
+    type: "date",
+    placeholder: "",
+  },
+  {
+    label: "Documento:",
+    name: "documento",
+    placeholder: "Digite o número do documento...",
+  },
+  { label: "CPF:", name: "cpf", placeholder: "Digite o número do CPF..." },
+  {
+    label: "Cidade:",
+    name: "cidade",
+    placeholder: "Digite a cidade e estado...",
+  },
+  { label: "UF:", name: "uf", placeholder: "Digite o Estado..." },
+  { label: "Rua:", name: "rua", placeholder: "Digite a rua..." },
+  { label: "Bairro:", name: "bairro", placeholder: "Digite o bairro..." },
+  { label: "Número:", name: "numero", placeholder: "Digite o número..." },
+  { label: "Telefone:", name: "telefone", placeholder: "Digite o telefone..." },
+  {
+    label: "Vencimento CNH:",
+    name: "vencimentocnh",
+    type: "date",
+    placeholder: "",
+  },
+  {
+    label: "Categoria(as):",
+    name: "categoria",
+    placeholder: "Digite a categoria...",
+  },
+  {
+    label: "Cidade CNH:",
+    name: "cidadecnh",
+    placeholder: "Digite a cidade...",
+  },
+  { label: "UF CNH:", name: "ufcnh", placeholder: "Digite o Estado..." },
+];
+
+// Fornecedores/Clientes/Passageiros
 export const formFieldsPessoas: FormField[] = [
   {
     label: "Nome Completo:",
@@ -250,6 +303,65 @@ export const formFieldsDadosChegadaValores: FormField[] = [
     label: "Valor Pago:",
     name: "valorpago",
     placeholder: "Digite o valor pago...",
+    type: "number",
+  },
+];
+
+// Passagens
+export const formFieldsPassagens: FormField[] = [
+  {
+    label: "Data Saída:",
+    name: "datasaida",
+    type: "date",
+    placeholder: "",
+  },
+  {
+    label: "Valor:",
+    name: "valor",
+    placeholder: "Digite o valor...",
+    type: "number",
+  },
+  {
+    label: "Emissão:",
+    name: "emissao",
+    placeholder: "",
+    type: "date",
+  },
+  {
+    label: "Emissor:",
+    name: "emissor",
+    placeholder: "Digite o emissor...",
+  },
+  {
+    label: "Valor Passagem:",
+    name: "valorpassagem",
+    placeholder: "Digite o valor...",
+  },
+  {
+    label: "Local Embarque:",
+    name: "embarque",
+    placeholder: "Digite o local embarque...",
+  },
+  {
+    label: "Local Retorno:",
+    name: "retorno",
+    placeholder: "Digite o local retorno...",
+  },
+  {
+    label: "Local desembarque:",
+    name: "desembarque",
+    placeholder: "Digite o desembarque...",
+  },
+  {
+    label: "Valor Pago:",
+    name: "pago",
+    placeholder: "Digite o valor pago...",
+    type: "number",
+  },
+  {
+    label: "Valor Pendente:",
+    name: "pendente",
+    placeholder: "Digite o valor pendente...",
     type: "number",
   },
 ];

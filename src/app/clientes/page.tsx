@@ -1,5 +1,6 @@
 import editIcon from "@/app/assets/edit.svg";
 import removeIcon from "@/app/assets/remove.svg";
+import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,56 +20,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { formFieldsPessoas } from "@/lib/objects";
 import Image from "next/image";
-
-type FormField = {
-  label: string;
-  name: string;
-  type?: string;
-  placeholder: string;
-};
-
-const formFields: FormField[] = [
-  {
-    label: "Nome Completo:",
-    name: "nomecompleto",
-    placeholder: "Digite o nome completo...",
-  },
-  {
-    label: "Data Nascimento:",
-    name: "datanascimento",
-    type: "date",
-    placeholder: "",
-  },
-  { label: "CPF:", name: "cpf", placeholder: "Digite o número do CPF..." },
-  {
-    label: "Cidade:",
-    name: "cidade",
-    placeholder: "Digite a cidade e estado...",
-  },
-  { label: "UF:", name: "uf", placeholder: "Digite o Estado..." },
-  { label: "Rua:", name: "rua", placeholder: "Digite a rua..." },
-  { label: "Bairro:", name: "bairro", placeholder: "Digite o bairro..." },
-  { label: "Número:", name: "numero", placeholder: "Digite o número..." },
-  { label: "Telefone:", name: "telefone", placeholder: "Digite o telefone..." },
-];
-
-const FormInput: React.FC<FormField> = ({
-  label,
-  name,
-  type = "text",
-  placeholder,
-}) => (
-  <div className="flex flex-col">
-    <label htmlFor={name}>{label}</label>
-    <Input
-      name={name}
-      className="border-2 font-medium w-[250px]"
-      placeholder={placeholder}
-      type={type}
-    />
-  </div>
-);
 
 export default function Clientes() {
   return (
@@ -105,7 +58,7 @@ export default function Clientes() {
                   </DialogHeader>
 
                   <div className="flex flex-wrap gap-4 w-full justify-center">
-                    {formFields.map((field) => (
+                    {formFieldsPessoas.map((field) => (
                       <FormInput
                         key={field.name}
                         label={field.label}
@@ -202,7 +155,7 @@ export default function Clientes() {
                           </DialogHeader>
 
                           <div className="flex flex-wrap gap-4 w-full justify-center">
-                            {formFields.map((field) => (
+                            {formFieldsPessoas.map((field) => (
                               <FormInput
                                 key={field.name}
                                 label={field.label}
