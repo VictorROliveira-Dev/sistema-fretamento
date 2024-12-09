@@ -53,11 +53,10 @@ export default function Passagens() {
                 </Select>
               </form>
               <div className="flex items-center justify-between">
-                <div className="w-[500px] h-[60px] border p-2 rounded-md">
-                  <p>
+                <div className="w-[500px] h-[40px] border p-2 rounded-md">
+                  <p className="text-center">
                     <strong>ORIGEM:</strong> Salvador/BA -{" "}
-                    <strong>DESTINO:</strong> Santa Cruz. -{" "}
-                    <strong>DT. PARTIDA:</strong> 20/05/2024
+                    <strong>DESTINO:</strong> Santa Cruz.
                   </p>
                 </div>
               </div>
