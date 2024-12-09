@@ -57,9 +57,6 @@ export default function Passageiros() {
                   <TableHead className="text-black font-bold text-center">
                     Telefone
                   </TableHead>
-                  <TableHead className="text-black font-bold text-center">
-                    Tipo de Pessoa
-                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="text-center">
@@ -72,7 +69,6 @@ export default function Passageiros() {
                   <TableCell>(74)98877-0044</TableCell>
                   <TableCell>00123493411</TableCell>
                   <TableCell>456-7</TableCell>
-                  <TableCell>45654-0</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <DialogEditar />
