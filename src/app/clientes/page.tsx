@@ -12,6 +12,7 @@ import {
 import Image from "next/image";
 import DialogAdicionar from "./components/dialog-adicionar";
 import DialogEditar from "./components/dialog-editar";
+import DialogInformacoes from "./components/dialog-informacoes";
 
 export default function Clientes() {
   return (
@@ -82,6 +83,7 @@ export default function Clientes() {
                           className="hover:scale-110"
                         />
                       </Button>
+                      <DialogInformacoes />
                     </div>
                   </TableCell>
                 </TableRow>

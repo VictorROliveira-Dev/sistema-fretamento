@@ -3,6 +3,7 @@ import { Raleway } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header/header";
 import Footer from "@/components/footer/footer";
+import { Tooltip, TooltipProvider } from "@/components/ui/tooltip";
 
 const raleway = Raleway({
   subsets: ["latin-ext"],
@@ -24,9 +25,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={` ${raleway.className} antialiased`}>
-        <Header />
-        {children}
-        <Footer />
+        
+          <Header />
+          {children}
+          <Footer />
+        
       </body>
     </html>
   );

@@ -3,6 +3,8 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, CircleDot } from "lucide-react";
+import volateImg from "@/app/assets/volante.png";
+import Image from "next/image";
 
 interface BusSeatSelectorProps {
   totalSeats?: number;
@@ -44,7 +46,12 @@ const BusSelector: React.FC<BusSeatSelectorProps> = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-8 gap-2">
+            <div className="w-full bg-blue-600 h-14 rounded-t-full mb-2">
+              <div className="flex justify-center items-center h-full">
+              <Image src={volateImg} alt="Volante" width={40} />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
               {generateSeats().map((seatNumber) => (
                 <Button
                   key={seatNumber}

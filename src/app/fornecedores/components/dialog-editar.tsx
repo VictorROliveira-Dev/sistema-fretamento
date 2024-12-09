@@ -22,7 +22,7 @@ export default function DialogEditar() {
           <Image
             src={editIcon}
             alt="Editar"
-            width={30}
+            width={25}
             className="hover:scale-110"
           />
         </Button>

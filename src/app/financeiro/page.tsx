@@ -15,6 +15,7 @@ import DialogEditar from "./components/despesas/dialog-editar";
 import DialogEditarReceita from "./components/receitas/dialog-editar";
 import Despesas from "./components/despesas/despesas";
 import Receitas from "./components/receitas/receitas";
+import documentoIcon from "@/app/assets/documentos.svg";
 
 export default function Financeiro() {
   return (
@@ -74,6 +75,14 @@ export default function Financeiro() {
                               className="hover:scale-110"
                             />
                           </Button>
+                          <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+                            <Image
+                              src={documentoIcon}
+                              alt="documento"
+                              width={25}
+                              className="hover:scale-110"
+                            />
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -114,6 +123,14 @@ export default function Financeiro() {
                             <Image
                               src={removeIcon}
                               alt="Remover"
+                              width={25}
+                              className="hover:scale-110"
+                            />
+                          </Button>
+                          <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+                            <Image
+                              src={documentoIcon}
+                              alt="documento"
                               width={25}
                               className="hover:scale-110"
                             />

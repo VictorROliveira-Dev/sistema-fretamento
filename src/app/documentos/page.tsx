@@ -20,6 +20,7 @@ import {
 import Image from "next/image";
 import DialogAdicionar from "./components/dialog-adicionar";
 import DialogEditar from "./components/dialog-editar";
+import documentoIcon from "@/app/assets/documentos.svg";
 
 export default function Documentos() {
   return (
@@ -105,6 +106,14 @@ export default function Documentos() {
                         <Image
                           src={removeIcon}
                           alt="Remover"
+                          width={25}
+                          className="hover:scale-110"
+                        />
+                      </Button>
+                      <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+                        <Image
+                          src={documentoIcon}
+                          alt="documento"
                           width={25}
                           className="hover:scale-110"
                         />

@@ -13,6 +13,7 @@ import Image from "next/image";
 import FormInput from "@/components/form-input";
 import DialogAdicionar from "./components/dialog-adicionar";
 import DialogEditar from "./components/dialog-editar";
+import DialogInformacoes from "./components/dialog-informacoes";
 
 export default function Fornecedores() {
   return (
@@ -89,7 +90,7 @@ export default function Fornecedores() {
                         <Image
                           src={removeIcon}
                           alt="Remover"
-                          width={30}
+                          width={25}
                           className="hover:scale-110"
                         />
                       </Button>
@@ -97,10 +98,11 @@ export default function Fornecedores() {
                         <Image
                           src={documentoIcon}
                           alt="documento"
-                          width={30}
+                          width={25}
                           className="hover:scale-110"
                         />
                       </Button>
+                      <DialogInformacoes />
                     </div>
                   </TableCell>
                 </TableRow>

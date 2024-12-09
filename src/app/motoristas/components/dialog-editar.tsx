@@ -18,14 +18,14 @@ export default function DialogEditar() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
           <Image src={editIcon} alt="Editar" width={25} />
         </Button>
       </DialogTrigger>
       <DialogContent className="w-[1100px] h-[550px] flex flex-col items-center">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
-            Edição de Motorista
+            Cadastro de Motorista
           </DialogTitle>
         </DialogHeader>
 

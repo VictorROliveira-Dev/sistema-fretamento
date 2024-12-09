@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/table";
 import Image from "next/image";
 import DialogAdicionar from "./components/dialog-adicionar";
-
 import FormInput from "@/components/form-input";
 import DialogEditar from "./components/dialog-editar";
+import DialogInformacoes from "./components/dialog-informacoes";
 
 export default function Motoristas() {
   return (
@@ -79,6 +79,7 @@ export default function Motoristas() {
                           className="hover:scale-110"
                         />
                       </Button>
+                      <DialogInformacoes />
                     </div>
                   </TableCell>
                 </TableRow>

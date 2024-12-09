@@ -17,11 +17,6 @@ export const formFieldsMotoristas: FormField[] = [
     type: "date",
     placeholder: "",
   },
-  {
-    label: "Documento:",
-    name: "documento",
-    placeholder: "Digite o número do documento...",
-  },
   { label: "CPF:", name: "cpf", placeholder: "Digite o número do CPF..." },
   {
     label: "Cidade:",

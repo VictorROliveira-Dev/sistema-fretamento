@@ -1,11 +1,6 @@
 import CustomTable from "@/components/custom-table";
 import {
-  Table,
-  TableBody,
   TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
 } from "@/components/ui/table";
 
 const invoices = [
@@ -60,7 +55,6 @@ export default function Home() {
               </>
             )}
           />
-
           <CustomTable
             title="Veículos utilizados nos próximos 30 dias"
             headers={["Dia", "Data", "Placa"]}
@@ -77,7 +71,6 @@ export default function Home() {
               </>
             )}
           />
-
           <CustomTable
             title="Vencimento de Doc/Certificados"
             headers={["Vencimento", "Referência", "Doc/Certificado"]}

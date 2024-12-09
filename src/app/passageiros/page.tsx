@@ -13,6 +13,7 @@ import {
 import Image from "next/image";
 import DialogAdicionar from "./components/dialog-adicionar";
 import DialogEditar from "./components/dialog-editar";
+import DialogInformacoes from "./components/dialog-informacoes";
 
 export default function Passageiros() {
   return (
@@ -91,6 +92,7 @@ export default function Passageiros() {
                           className="hover:scale-110"
                         />
                       </Button>
+                      <DialogInformacoes />
                     </div>
                   </TableCell>
                 </TableRow>
