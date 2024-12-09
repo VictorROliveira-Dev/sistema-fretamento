@@ -1,27 +1,6 @@
 "use client";
-
-import editIcon from "@/app/assets/edit.svg";
 import removeIcon from "@/app/assets/remove.svg";
-import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -31,8 +10,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { formFields, formFieldsReceitas } from "@/lib/objects";
 import Image from "next/image";
+import DialogEditar from "./components/despesas/dialog-editar";
+import DialogEditarReceita from "./components/receitas/dialog-editar";
+import Despesas from "./components/despesas/despesas";
+import Receitas from "./components/receitas/receitas";
 
 export default function Financeiro() {
   return (
@@ -55,126 +37,7 @@ export default function Financeiro() {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="despesas">
-                <div className="flex items-center justify-between">
-                  <form className="flex gap-2 font-bold">
-                    <div>
-                      <label htmlFor="inicio">Data inicio:</label>
-                      <Input type="date" name="inicio" />
-                    </div>
-                    <div>
-                      <label htmlFor="final">Data Final:</label>
-                      <Input type="date" name="final" />
-                    </div>
-                    <div>
-                      <label htmlFor="centrocusto">Centro de Custo:</label>
-                      <Select name="centrocusto">
-                        <SelectTrigger className="w-[250px]">
-                          <SelectValue placeholder="Selecione..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Centro de Custo</SelectLabel>
-                            <SelectItem value="extintor">Terceiros</SelectItem>
-                            <SelectItem value="ipva">Multas</SelectItem>
-                            <SelectItem value="CNH">Viagens</SelectItem>
-                            <SelectItem value="alvara">
-                              Estacionamento
-                            </SelectItem>
-                            <SelectItem value="Outros">Outros</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </form>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button className="bg-green-600 hover:bg-green-500">
-                        Adicionar Despesa
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="w-[600px] h-[420px] flex flex-col items-center">
-                      <DialogHeader className="mb-5">
-                        <DialogTitle className="font-black">
-                          Cadastro de Despesa
-                        </DialogTitle>
-                      </DialogHeader>
-
-                      <div className="flex flex-wrap gap-4 w-full justify-center">
-                        <div>
-                          <label htmlFor="centrocusto">Centro de Custo:</label>
-                          <Select name="centrocusto">
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Centro de Custo</SelectLabel>
-                                <SelectItem value="extintor">
-                                  Terceiros
-                                </SelectItem>
-                                <SelectItem value="ipva">Multas</SelectItem>
-                                <SelectItem value="CNH">Viagens</SelectItem>
-                                <SelectItem value="alvara">
-                                  Estacionamento
-                                </SelectItem>
-                                <SelectItem value="Outros">Outros</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <label htmlFor="situacao">Situação:</label>
-                          <Select name="situacao">
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione a situação..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Situações</SelectLabel>
-                                <SelectItem value="motorista">Pago</SelectItem>
-                                <SelectItem value="extintor">
-                                  Não pago
-                                </SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <label htmlFor="destino">Destino Pagamento:</label>
-                          <Select name="destino">
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione o destino..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Destino</SelectLabel>
-                                <SelectItem value="motorista">
-                                  Motorista
-                                </SelectItem>
-                                <SelectItem value="Veículo">Veículo</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        {formFields.map((field) => (
-                          <FormInput
-                            key={field.name}
-                            label={field.label}
-                            name={field.name}
-                            type={field.type}
-                            placeholder={field.placeholder}
-                          />
-                        ))}
-                      </div>
-
-                      <DialogFooter className="flex items-center gap-2 mt-10">
-                        <Button variant="outline">Fechar</Button>
-                        <Button>Salvar</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </div>
+                <Despesas />
                 <Table>
                   <TableHeader className="border-b-2">
                     <TableRow>
@@ -202,95 +65,7 @@ export default function Financeiro() {
                       <TableCell>(74)98877-0044</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                                <Image
-                                  src={editIcon}
-                                  alt="Editar"
-                                  width={25}
-                                  className="hover:scale-110"
-                                />
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="w-[600px] h-[420px] flex flex-col items-center">
-                              <DialogHeader className="mb-5">
-                                <DialogTitle className="font-black">
-                                  Cadastro de Despesa
-                                </DialogTitle>
-                              </DialogHeader>
-
-                              <div className="flex flex-wrap gap-4 w-full justify-center">
-                                <div>
-                                  <label htmlFor="centrocusto">
-                                    Centro de Custo:
-                                  </label>
-                                  <Select name="centrocusto">
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione..." />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectGroup>
-                                        <SelectLabel>
-                                          Centro de Custo
-                                        </SelectLabel>
-                                        <SelectItem value="extintor">
-                                          Terceiros
-                                        </SelectItem>
-                                        <SelectItem value="ipva">
-                                          Multas
-                                        </SelectItem>
-                                        <SelectItem value="CNH">
-                                          Viagens
-                                        </SelectItem>
-                                        <SelectItem value="alvara">
-                                          Estacionamento
-                                        </SelectItem>
-                                        <SelectItem value="Outros">
-                                          Outros
-                                        </SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                <div>
-                                  <label htmlFor="referencia">Situação:</label>
-                                  <Select name="referencia">
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione a situação..." />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectGroup>
-                                        <SelectLabel>Situações</SelectLabel>
-                                        <SelectItem value="motorista">
-                                          Pago
-                                        </SelectItem>
-                                        <SelectItem value="extintor">
-                                          Não pago
-                                        </SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-
-                                {formFields.map((field) => (
-                                  <FormInput
-                                    key={field.name}
-                                    label={field.label}
-                                    name={field.name}
-                                    type={field.type}
-                                    placeholder={field.placeholder}
-                                  />
-                                ))}
-                              </div>
-
-                              <DialogFooter className="flex items-center gap-2 mt-10">
-                                <Button variant="outline">Fechar</Button>
-                                <Button>Salvar</Button>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
-
+                          <DialogEditar />
                           <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
                             <Image
                               src={removeIcon}
@@ -306,109 +81,7 @@ export default function Financeiro() {
                 </Table>
               </TabsContent>
               <TabsContent value="receitas">
-                <div className="flex items-center justify-between">
-                  <form className="flex gap-2 font-bold">
-                    <div>
-                      <label htmlFor="inicio">Data inicio:</label>
-                      <Input type="date" name="inicio" />
-                    </div>
-                    <div>
-                      <label htmlFor="final">Data Final:</label>
-                      <Input type="date" name="final" />
-                    </div>
-                    <div>
-                      <label htmlFor="centrocusto">Centro de Custo:</label>
-                      <Select name="centrocusto">
-                        <SelectTrigger className="w-[250px]">
-                          <SelectValue placeholder="Selecione..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectGroup>
-                            <SelectLabel>Centro de Custo</SelectLabel>
-                            <SelectItem value="extintor">Terceiros</SelectItem>
-                            <SelectItem value="ipva">Multas</SelectItem>
-                            <SelectItem value="CNH">Viagens</SelectItem>
-                            <SelectItem value="alvara">
-                              Estacionamento
-                            </SelectItem>
-                            <SelectItem value="Outros">Outros</SelectItem>
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </form>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button className="bg-green-600 hover:bg-green-500">
-                        Adicionar Receita
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="w-[600px] h-[420px] flex flex-col items-center">
-                      <DialogHeader className="mb-5">
-                        <DialogTitle className="font-black">
-                          Cadastro de Receita
-                        </DialogTitle>
-                      </DialogHeader>
-
-                      <div className="flex flex-wrap gap-4 w-full justify-center">
-                        <div>
-                          <label htmlFor="centrocusto">Centro de Custo:</label>
-                          <Select name="centrocusto">
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Centro de Custo</SelectLabel>
-                                <SelectItem value="extintor">
-                                  Terceiros
-                                </SelectItem>
-                                <SelectItem value="ipva">Multas</SelectItem>
-                                <SelectItem value="CNH">Viagens</SelectItem>
-                                <SelectItem value="alvara">
-                                  Estacionamento
-                                </SelectItem>
-                                <SelectItem value="Outros">Outros</SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <label htmlFor="referencia">Situação:</label>
-                          <Select name="referencia">
-                            <SelectTrigger className="w-[250px]">
-                              <SelectValue placeholder="Selecione a situação..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectGroup>
-                                <SelectLabel>Situações</SelectLabel>
-                                <SelectItem value="motorista">Pago</SelectItem>
-                                <SelectItem value="extintor">
-                                  Não pago
-                                </SelectItem>
-                              </SelectGroup>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        {formFieldsReceitas.map((field) => (
-                          <FormInput
-                            key={field.name}
-                            label={field.label}
-                            name={field.name}
-                            type={field.type}
-                            placeholder={field.placeholder}
-                          />
-                        ))}
-                      </div>
-
-                      <DialogFooter className="flex items-center gap-2 mt-10">
-                        <Button variant="outline">Fechar</Button>
-                        <Button>Salvar</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
-                </div>
+                <Receitas />
                 <Table>
                   <TableHeader className="border-b-2">
                     <TableRow>
@@ -436,95 +109,7 @@ export default function Financeiro() {
                       <TableCell>(74)98877-0044</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                                <Image
-                                  src={editIcon}
-                                  alt="Editar"
-                                  width={25}
-                                  className="hover:scale-110"
-                                />
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="w-[600px] h-[420px] flex flex-col items-center">
-                              <DialogHeader className="mb-5">
-                                <DialogTitle className="font-black">
-                                  Edição de Receita
-                                </DialogTitle>
-                              </DialogHeader>
-
-                              <div className="flex flex-wrap gap-4 w-full justify-center">
-                                <div>
-                                  <label htmlFor="centrocusto">
-                                    Centro de Custo:
-                                  </label>
-                                  <Select name="centrocusto">
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione..." />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectGroup>
-                                        <SelectLabel>
-                                          Centro de Custo
-                                        </SelectLabel>
-                                        <SelectItem value="extintor">
-                                          Terceiros
-                                        </SelectItem>
-                                        <SelectItem value="ipva">
-                                          Multas
-                                        </SelectItem>
-                                        <SelectItem value="CNH">
-                                          Viagens
-                                        </SelectItem>
-                                        <SelectItem value="alvara">
-                                          Estacionamento
-                                        </SelectItem>
-                                        <SelectItem value="Outros">
-                                          Outros
-                                        </SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-                                <div>
-                                  <label htmlFor="referencia">Situação:</label>
-                                  <Select name="referencia">
-                                    <SelectTrigger className="w-[250px]">
-                                      <SelectValue placeholder="Selecione a situação..." />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectGroup>
-                                        <SelectLabel>Situações</SelectLabel>
-                                        <SelectItem value="motorista">
-                                          Pago
-                                        </SelectItem>
-                                        <SelectItem value="extintor">
-                                          Não pago
-                                        </SelectItem>
-                                      </SelectGroup>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
-
-                                {formFieldsReceitas.map((field) => (
-                                  <FormInput
-                                    key={field.name}
-                                    label={field.label}
-                                    name={field.name}
-                                    type={field.type}
-                                    placeholder={field.placeholder}
-                                  />
-                                ))}
-                              </div>
-
-                              <DialogFooter className="flex items-center gap-2 mt-10">
-                                <Button variant="outline">Fechar</Button>
-                                <Button>Salvar</Button>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
-
+                          <DialogEditarReceita />
                           <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
                             <Image
                               src={removeIcon}
