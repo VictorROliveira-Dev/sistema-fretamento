@@ -1,17 +1,6 @@
-import editIcon from "@/app/assets/edit.svg";
 import removeIcon from "@/app/assets/remove.svg";
 import documentoIcon from "@/app/assets/documentos.svg";
-
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -21,10 +10,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
-
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { formFieldsVeiculos } from "@/lib/objects";
 import FormInput from "@/components/form-input";
+import DialogAdicionar from "./components/dialog-adicionar";
+import DialogEditar from "./components/dialog-editar";
 
 export default function Veiculos() {
   return (
@@ -40,78 +28,23 @@ export default function Veiculos() {
             <div className="flex items-center justify-between">
               <form className="flex gap-2 font-bold">
                 <div>
-                  <label htmlFor="prefixo">Prefixo:</label>
-                  <Input
+                  <FormInput
+                    label="Prefixo:"
                     name="prefixo"
-                    className="border-2 font-medium text-white w-[250px]"
                     placeholder="Digite o prefixo..."
                   />
                 </div>
                 <div>
-                  <label htmlFor="placa">Placa:</label>
-                  <Input
+                  <FormInput
+                    label="Placa:"
                     name="placa"
-                    className="border-2 font-medium text-white w-[250px]"
                     placeholder="Digite a placa..."
                   />
                 </div>
               </form>
 
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button className="bg-green-600 hover:bg-green-500">
-                    Adicionar Veículo
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="w-[850px] h-[600px] flex flex-col items-center">
-                  <DialogHeader className="mb-5">
-                    <DialogTitle className="font-black">
-                      Cadastro de Veículo
-                    </DialogTitle>
-                  </DialogHeader>
-
-                  <div className="flex flex-wrap gap-4 w-full justify-center">
-                    {formFieldsVeiculos.map((field) => (
-                      <FormInput
-                        key={field.name}
-                        label={field.label}
-                        name={field.name}
-                        type={field.type}
-                        placeholder={field.placeholder}
-                      />
-                    ))}
-                    <div>
-                      <hr className="border-t border-gray-300 my-2" />
-                      <p className="font-bold text-center mb-4">
-                        Selecione os Acessorios
-                      </p>
-                      <ToggleGroup type="multiple">
-                        <ToggleGroupItem value="bold" aria-label="Toggle bold">
-                          Ar Condicionado
-                        </ToggleGroupItem>
-                        <ToggleGroupItem
-                          value="italic"
-                          aria-label="Toggle italic"
-                        >
-                          Extintor
-                        </ToggleGroupItem>
-                        <ToggleGroupItem
-                          value="strikethrough"
-                          aria-label="Toggle strikethrough"
-                        >
-                          Parabrisas
-                        </ToggleGroupItem>
-                      </ToggleGroup>
-                    </div>
-                  </div>
-                  <DialogFooter className="flex items-center gap-2 mt-10">
-                    <Button variant="outline">Fechar</Button>
-                    <Button>Salvar</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+              <DialogAdicionar />
             </div>
-
             <Table>
               <TableHeader className="border-b-2">
                 <TableRow>
@@ -155,67 +88,7 @@ export default function Veiculos() {
                   <TableCell>45654-0</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                            <Image
-                              src={editIcon}
-                              alt="Editar"
-                              width={25}
-                              className="hover:scale-110"
-                            />
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="w-[850px] h-[600px] flex flex-col items-center">
-                          <DialogHeader className="mb-5">
-                            <DialogTitle className="font-black">
-                              Edição de Veículo
-                            </DialogTitle>
-                          </DialogHeader>
-
-                          <div className="flex flex-wrap gap-4 w-full justify-center">
-                            {formFieldsVeiculos.map((field) => (
-                              <FormInput
-                                key={field.name}
-                                label={field.label}
-                                name={field.name}
-                                type={field.type}
-                                placeholder={field.placeholder}
-                              />
-                            ))}
-                            <div>
-                              <hr className="border-t border-gray-300 my-2" />
-                              <p className="font-bold text-center mb-4">
-                                Selecione os Acessorios
-                              </p>
-                              <ToggleGroup type="multiple">
-                                <ToggleGroupItem
-                                  value="bold"
-                                  aria-label="Toggle bold"
-                                >
-                                  Ar Condicionado
-                                </ToggleGroupItem>
-                                <ToggleGroupItem
-                                  value="italic"
-                                  aria-label="Toggle italic"
-                                >
-                                  Extintor
-                                </ToggleGroupItem>
-                                <ToggleGroupItem
-                                  value="strikethrough"
-                                  aria-label="Toggle strikethrough"
-                                >
-                                  Parabrisas
-                                </ToggleGroupItem>
-                              </ToggleGroup>
-                            </div>
-                          </div>
-                          <DialogFooter className="flex items-center gap-2 mt-10">
-                            <Button variant="outline">Fechar</Button>
-                            <Button>Salvar</Button>
-                          </DialogFooter>
-                        </DialogContent>
-                      </Dialog>
+                      <DialogEditar />
 
                       <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
                         <Image

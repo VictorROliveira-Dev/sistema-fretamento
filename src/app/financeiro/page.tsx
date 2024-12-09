@@ -123,8 +123,8 @@ export default function Financeiro() {
                           </Select>
                         </div>
                         <div>
-                          <label htmlFor="referencia">Situação:</label>
-                          <Select name="referencia">
+                          <label htmlFor="situacao">Situação:</label>
+                          <Select name="situacao">
                             <SelectTrigger className="w-[250px]">
                               <SelectValue placeholder="Selecione a situação..." />
                             </SelectTrigger>
@@ -135,6 +135,23 @@ export default function Financeiro() {
                                 <SelectItem value="extintor">
                                   Não pago
                                 </SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <label htmlFor="destino">Destino Pagamento:</label>
+                          <Select name="destino">
+                            <SelectTrigger className="w-[250px]">
+                              <SelectValue placeholder="Selecione o destino..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectGroup>
+                                <SelectLabel>Destino</SelectLabel>
+                                <SelectItem value="motorista">
+                                  Motorista
+                                </SelectItem>
+                                <SelectItem value="Veículo">Veículo</SelectItem>
                               </SelectGroup>
                             </SelectContent>
                           </Select>

@@ -1,11 +1,6 @@
 import React from "react";
 import { Input } from "./ui/input";
-interface FormField {
-  label: string;
-  name: string;
-  type?: string;
-  placeholder?: string;
-}
+import { FormField } from "@/lib/types";
 
 const FormInput: React.FC<FormField> = ({
   label,
