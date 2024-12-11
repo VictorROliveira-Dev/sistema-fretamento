@@ -38,11 +38,11 @@ export default function Motoristas() {
       return false;
     }
 
-    return motorista.nome.toLowerCase().includes(buscarMotorista.toLocaleLowerCase());
+    return motorista.nome.toLowerCase().includes(buscarMotorista.toLowerCase());
   })
 
   return (
-    <section className="bg-[#070180] pt-12 h-[450px]">
+    <section className="bg-[#070180] pt-12 h-[425px]">
       <div className="h-[400px] w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">

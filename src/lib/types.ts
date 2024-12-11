@@ -35,6 +35,15 @@ export type FormData = {
   cpf: string;
   habilitacao: Habilitacao;
 };
+export type FormDataFornecedor = {
+  nome: string;
+  dataNascimento: string;
+  telefone: string;
+  documento: Documento;
+  endereco: Endereco;
+  cpf: string;
+  tipo: string
+};
 
 export type Motorista = {
   id: string;
@@ -60,4 +69,24 @@ export type Motorista = {
     cidade: string;
     uf: string;
   };
+};
+
+export type Fornecedor = {
+  id: string;
+  nome: string;
+  dataNascimento: string;
+  telefone: string;
+  documento: {
+    documento: string;
+    tipo: string;
+  };
+  endereco: {
+    uf: string;
+    cidade: string;
+    rua: string;
+    bairro: string;
+    numero: string;
+  };
+  cpf: string;
+  tipo: string;
 };

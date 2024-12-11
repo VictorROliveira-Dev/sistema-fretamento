@@ -1,5 +1,4 @@
 "use client";
-import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { formFieldsMotoristas } from "@/lib/objects";
 import Image from "next/image";
 import editIcon from "../../assets/edit.svg";
 import { useEffect, useState } from "react";
