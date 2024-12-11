@@ -1,5 +1,11 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { FC } from "react";
+
+// Importação explícita das imagens e obtenção do caminho correto
 import painel from "@/app/assets/painel-de-controle.png";
 import motorista from "@/app/assets/motorista.png";
 import clientes from "@/app/assets/pessoas.png";
@@ -9,19 +15,69 @@ import viagens from "@/app/assets/montanha.png";
 import manutencao from "@/app/assets/manutencao.png";
 import documentos from "@/app/assets/documentos.png";
 import financeiro from "@/app/assets/financa.png";
-import sino from "@/app/assets/sino.svg";
-import passagens from "@/app/assets/passagens.png";
 import passageiros from "@/app/assets/passageiro.png";
+import passagens from "@/app/assets/passagens.png";
+import sino from "@/app/assets/sino.svg";
 
-import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+// Agora utilizamos o caminho correto para cada imagem
+const icons = {
+  painel: painel.src,
+  motorista: motorista.src,
+  clientes: clientes.src,
+  fornecedores: fornecedores.src,
+  veiculos: veiculos.src,
+  viagens: viagens.src,
+  manutencao: manutencao.src,
+  documentos: documentos.src,
+  financeiro: financeiro.src,
+  passageiros: passageiros.src,
+  passagens: passagens.src,
+  sino: sino.src,
+};
 
-export default function Header() {
-  const pathname = usePathname();
+// Tipagem para os itens de navegação
+interface NavItem {
+  href: string;
+  label: string;
+  icon: string;
+}
 
-  const getActiveClass = (route: string) =>
-    pathname === route ? "bg-blue-900 border-blue-900 text-white" : "";
+const navItems: NavItem[] = [
+  { href: "/", label: "Painel", icon: icons.painel },
+  { href: "/motoristas", label: "Motoristas", icon: icons.motorista },
+  { href: "/clientes", label: "Clientes", icon: icons.clientes },
+  { href: "/fornecedores", label: "Fornecedores", icon: icons.fornecedores },
+  { href: "/veiculos", label: "Veículos", icon: icons.veiculos },
+  { href: "/viagens-servicos", label: "Viagens", icon: icons.viagens },
+  { href: "/manutencoes", label: "Manutenções", icon: icons.manutencao },
+  { href: "/documentos", label: "Documentos", icon: icons.documentos },
+  { href: "/financeiro", label: "Finanças", icon: icons.financeiro },
+  { href: "/passageiros", label: "Passageiros", icon: icons.passageiros },
+  { href: "/passagens", label: "Passagens", icon: icons.passagens },
+];
+
+// Tipagem do componente NavLink
+interface NavLinkProps {
+  href: string;
+  icon: string; // Agora é apenas string, pois estamos utilizando o `src`
+  label: string;
+  isActive: boolean;
+}
+
+const NavLink: FC<NavLinkProps> = ({ href, icon, label, isActive }) => (
+  <Link
+    href={href}
+    className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${
+      isActive ? "bg-blue-900 border-blue-900 text-white" : ""
+    }`}
+  >
+    <Image src={icon} alt={label} width={45} height={45} />
+    <p className="font-bold text-xs">{label}</p>
+  </Link>
+);
+
+const Header: FC = () => {
+  const pathname = usePathname() || ""; // usePathname pode retornar null, então garantimos que será uma string
 
   return (
     <header>
@@ -32,109 +88,26 @@ export default function Header() {
       </div>
       <nav className="h-28 bg-white flex items-center justify-between mx-10">
         <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all  ${getActiveClass(
-              "/"
-            )}`}
-          >
-            <Image src={painel} alt="Painel" width={45} />
-            <p className="font-bold text-xs">Painel</p>
-          </Link>
-          <Link
-            href="/motoristas"
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all  ${getActiveClass(
-              "/motoristas"
-            )}`}
-          >
-            <Image src={motorista} alt="Motoristas" width={45} />
-            <p className="font-bold text-xs">Motoristas</p>
-          </Link>
-          <Link
-            href="/clientes"
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all  ${getActiveClass(
-              "/clientes"
-            )}`}
-          >
-            <Image src={clientes} alt="Clientes" width={45} />
-            <p className="font-bold text-xs">Clientes</p>
-          </Link>
-          <Link
-            href="/fornecedores"
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${getActiveClass(
-              "/fornecedores"
-            )}`}
-          >
-            <Image src={fornecedores} alt="Fornecedores" width={45} />
-            <p className="font-bold text-xs">Fornecedores</p>
-          </Link>
-          <Link
-            href="/veiculos"
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${getActiveClass(
-              "/veiculos"
-            )}`}
-          >
-            <Image src={veiculos} alt="Veículos" width={45} />
-            <p className="font-bold text-xs">Veículos</p>
-          </Link>
-          <Link
-            href="/viagens-servicos"
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${getActiveClass(
-              "/viagens-servicos"
-            )}`}
-          >
-            <Image src={viagens} alt="Viagens" width={45} />
-            <p className="font-bold text-xs">Viagens</p>
-          </Link>
-          <Link
-            href="/manutencoes"
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${getActiveClass(
-              "/manutencoes"
-            )}`}
-          >
-            <Image src={manutencao} alt="Veículos" width={45} />
-            <p className="font-bold text-xs">Manutenções</p>
-          </Link>
-          <Link
-            href="/documentos"
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${getActiveClass(
-              "/documentos"
-            )}`}
-          >
-            <Image src={documentos} alt="Veículos" width={45} />
-            <p className="font-bold text-xs">Documentos</p>
-          </Link>
-          <Link
-            href="/financeiro"
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${getActiveClass(
-              "/financeiro"
-            )}`}
-          >
-            <Image src={financeiro} alt="Veículos" width={45} />
-            <p className="font-bold text-xs">Finanças</p>
-          </Link>
-          <Link
-            href="/passageiros"
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${getActiveClass(
-              "/passageiros"
-            )}`}
-          >
-            <Image src={passageiros} alt="Veículos" width={45} />
-            <p className="font-bold text-xs">Passageiros</p>
-          </Link>
-          <Link
-            href="/passagens"
-            className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${getActiveClass(
-              "/passagens"
-            )}`}
-          >
-            <Image src={passagens} alt="Passagens" width={45} />
-            <p className="font-bold text-xs">Passagens</p>
-          </Link>
+          {navItems.map(({ href, label, icon }) => (
+            <NavLink
+              key={href}
+              href={href}
+              icon={icon}
+              label={label}
+              isActive={pathname === href}
+            />
+          ))}
         </div>
-
-        <Image src={sino} alt="Sino" width={45} className="cursor-pointer" />
+        <Image
+          src={icons.sino}
+          alt="Notificações"
+          width={45}
+          height={45}
+          className="cursor-pointer"
+        />
       </nav>
     </header>
   );
-}
+};
+
+export default Header;

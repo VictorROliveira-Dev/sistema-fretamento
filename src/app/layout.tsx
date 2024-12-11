@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Raleway } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/header/header";
 import Footer from "@/components/footer/footer";
-import { Tooltip, TooltipProvider } from "@/components/ui/tooltip";
+import Header from "@/components/header/header";
 
 const raleway = Raleway({
   subsets: ["latin-ext"],

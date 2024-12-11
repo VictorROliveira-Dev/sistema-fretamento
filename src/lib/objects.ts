@@ -2,49 +2,87 @@ import { FormField } from "./types";
 // Motoristas
 export const formFieldsMotoristas: FormField[] = [
   {
-    label: "Nome de Escala:",
-    name: "name",
-    placeholder: "Digite o nome de escala...",
-  },
-  {
     label: "Nome Completo:",
-    name: "nomecompleto",
+    name: "nome",
     placeholder: "Digite o nome completo...",
   },
   {
     label: "Data Nascimento:",
-    name: "datanascimento",
+    name: "dataNascimento",
     type: "date",
     placeholder: "",
   },
-  { label: "CPF:", name: "cpf", placeholder: "Digite o número do CPF..." },
+  {
+    label: "Telefone:",
+    name: "telefone",
+    placeholder: "Digite o número do telefone...",
+  },
+  {
+    label: "CPF:",
+    name: "cpf",
+    placeholder: "Digite o CPF...",
+  },
+  {
+    label: "Documento:",
+    name: "documento.documento",
+    placeholder: "Digite o número do documento...",
+  },
+  {
+    label: "Tipo de Documento:",
+    name: "documento.tipo",
+    placeholder: "Digite o tipo do documento...",
+  },
   {
     label: "Cidade:",
-    name: "cidade",
-    placeholder: "Digite a cidade e estado...",
+    name: "endereco.cidade",
+    placeholder: "Digite a cidade...",
   },
-  { label: "UF:", name: "uf", placeholder: "Digite o Estado..." },
-  { label: "Rua:", name: "rua", placeholder: "Digite a rua..." },
-  { label: "Bairro:", name: "bairro", placeholder: "Digite o bairro..." },
-  { label: "Número:", name: "numero", placeholder: "Digite o número..." },
-  { label: "Telefone:", name: "telefone", placeholder: "Digite o telefone..." },
+  {
+    label: "UF:",
+    name: "endereco.uf",
+    placeholder: "Digite o Estado...",
+  },
+  {
+    label: "Rua:",
+    name: "endereco.rua",
+    placeholder: "Digite a rua...",
+  },
+  {
+    label: "Bairro:",
+    name: "endereco.bairro",
+    placeholder: "Digite o bairro...",
+  },
+  {
+    label: "Número:",
+    name: "endereco.numero",
+    placeholder: "Digite o número...",
+  },
   {
     label: "Vencimento CNH:",
-    name: "vencimentocnh",
+    name: "habilitacao.vencimento",
     type: "date",
     placeholder: "",
   },
   {
-    label: "Categoria(as):",
-    name: "categoria",
+    label: "Protocolo CNH:",
+    name: "habilitacao.protocolo",
+    placeholder: "Digite o protocolo...",
+  },
+  {
+    label: "Categoria CNH:",
+    name: "habilitacao.categoria",
     placeholder: "Digite a categoria...",
   },
   {
     label: "Cidade CNH:",
-    name: "cidadecnh",
+    name: "habilitacao.cidade",
     placeholder: "Digite a cidade...",
   },
-  { label: "UF CNH:", name: "ufcnh", placeholder: "Digite o Estado..." },
+  {
+    label: "UF CNH:",
+    name: "habilitacao.uf",
+    placeholder: "Digite o Estado...",
+  },
 ];
 
 // Fornecedores/Clientes/Passageiros

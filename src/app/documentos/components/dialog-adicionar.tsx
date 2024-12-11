@@ -1,5 +1,7 @@
-import FormInput from "@/components/form-input";
-import { Button } from "@/components/ui/button";
+"use client";
+
+import { useState } from "react";
+import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -8,6 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -17,9 +20,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { formFieldsDocumentos } from "@/lib/objects";
+import { Input } from "@/components/ui/input";
+import { api } from "@/lib/axios";
 
 export default function DialogAdicionar() {
+  const [documentData, setDocumentData] = useState({
+    referencia: "",
+    tipoDocumento: "",
+    vencimento: "",
+  });
+
+  const handleChange = (name: string, value: string) => {
+    setDocumentData({
+      ...documentData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const response = await api.post("/documento", documentData);
+      console.log("Documento Adicionado com Sucesso:", response.data);
+    } catch (error) {
+      console.error("Erro ao adicionar documento:", error);
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -33,79 +60,73 @@ export default function DialogAdicionar() {
             Cadastro de Documento
           </DialogTitle>
         </DialogHeader>
-
-        <div className="flex flex-wrap gap-4 w-full justify-center">
-          <div>
-            <label htmlFor="tipo">Doc/Certificado:</label>
-            <Select name="tipo">
-              <SelectTrigger className="w-[250px]">
-                <SelectValue placeholder="Selecione o tipo..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Tipos</SelectLabel>
-                  <SelectItem value="extintor">Extintor</SelectItem>
-                  <SelectItem value="ipva">IPVA</SelectItem>
-                  <SelectItem value="CNH">CNH</SelectItem>
-                  <SelectItem value="alvara">Alvará</SelectItem>
-                  <SelectItem value="Outros">Outros</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+        <form
+          onSubmit={handleSubmit}
+          className="w-full flex flex-col items-center"
+        >
+          <div className="flex flex-wrap gap-4 w-full justify-center">
+            <div>
+              <label htmlFor="tipoDocumento">Doc/Certificado:</label>
+              <Select
+                name="tipoDocumento"
+                value={documentData.tipoDocumento}
+                onValueChange={(value) => handleChange("tipoDocumento", value)}
+              >
+                <SelectTrigger className="w-[250px]">
+                  <SelectValue placeholder="Selecione o tipo..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Tipos</SelectLabel>
+                    <SelectItem value="extintor">Extintor</SelectItem>
+                    <SelectItem value="ipva">IPVA</SelectItem>
+                    <SelectItem value="CNH">CNH</SelectItem>
+                    <SelectItem value="alvara">Alvará</SelectItem>
+                    <SelectItem value="Outros">Outros</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label htmlFor="referencia">Referência:</label>
+              <Select
+                name="referencia"
+                value={documentData.referencia}
+                onValueChange={(value) => handleChange("referencia", value)}
+              >
+                <SelectTrigger className="w-[250px]">
+                  <SelectValue placeholder="Selecione a Referência..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Referências</SelectLabel>
+                    <SelectItem value="motorista">João</SelectItem>
+                    <SelectItem value="extintor">ABC-1234 (1234)</SelectItem>
+                    <SelectItem value="ipva">Empresa X tur</SelectItem>
+                    <SelectItem value="CNH">AAA-5555 (5555)</SelectItem>
+                    <SelectItem value="alvara">João Guedes</SelectItem>
+                    <SelectItem value="Outros">Empresa Y TUR</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label htmlFor="vencimento">Vencimento:</label>
+              <Input
+                name="vencimento"
+                type="date"
+                value={documentData.vencimento}
+                onChange={(e) => handleChange("vencimento", e.target.value)}
+                className="w-[250px]"
+              />
+            </div>
           </div>
-          <div>
-            <label htmlFor="referencia">Referência:</label>
-            <Select name="referencia">
-              <SelectTrigger className="w-[250px]">
-                <SelectValue placeholder="Selecione a Referência..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Referências</SelectLabel>
-                  <SelectItem value="motorista">João</SelectItem>
-                  <SelectItem value="extintor">ABC-1234 (1234)</SelectItem>
-                  <SelectItem value="ipva">Empresa X tur</SelectItem>
-                  <SelectItem value="CNH">AAA-5555 (5555)</SelectItem>
-                  <SelectItem value="alvara">João Guedes</SelectItem>
-                  <SelectItem value="Outros">Empresa Y TUR</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label htmlFor="tipo">Tipo:</label>
-            <Select name="tipo">
-              <SelectTrigger className="w-[250px]">
-                <SelectValue placeholder="Selecione o tipo..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Tipos</SelectLabel>
-                  <SelectItem value="interestadual">Interestadual</SelectItem>
-                  <SelectItem value="intermunicipal">Intermunicipal</SelectItem>
-                  <SelectItem value="outros">
-                    Outros/CNH/IPVA/Extintor
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
 
-          {formFieldsDocumentos.map((field) => (
-            <FormInput
-              key={field.name}
-              label={field.label}
-              name={field.name}
-              type={field.type}
-              placeholder={field.placeholder}
-            />
-          ))}
-        </div>
-
-        <DialogFooter className="flex items-center gap-2 mt-10">
-          <Button variant="outline">Fechar</Button>
-          <Button>Salvar</Button>
-        </DialogFooter>
+          <DialogFooter className="flex items-center gap-2 mt-10">
+            <Button variant="outline">Fechar</Button>
+            <Button type="submit">Salvar</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
