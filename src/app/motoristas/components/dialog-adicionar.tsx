@@ -12,9 +12,17 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { FormData } from "@/lib/types";
+import { FormData, Motorista } from "@/lib/types";
 
-export default function DialogAdicionar() {
+interface MotoristasProps {
+  setMotoristas: React.Dispatch<React.SetStateAction<Motorista[]>>;
+  motoristas: Motorista[];
+}
+
+export default function DialogAdicionar({
+  setMotoristas,
+  motoristas,
+}: MotoristasProps) {
   const [formData, setFormData] = useState<FormData>({
     nome: "",
     dataNascimento: "",
@@ -56,6 +64,7 @@ export default function DialogAdicionar() {
     e.preventDefault();
     try {
       const response = await api.post("/motorista", formData);
+      setMotoristas([...motoristas, response.data.data]);
       console.log("Motorista adicionado:", response.data.data);
     } catch (error) {
       console.error("Erro ao adicionar motorista:", error);
@@ -75,7 +84,10 @@ export default function DialogAdicionar() {
             Cadastro de Motorista
           </DialogTitle>
         </DialogHeader>
-        <form className="w-full flex flex-col items-center" onSubmit={handleSubmit}>
+        <form
+          className="w-full flex flex-col items-center"
+          onSubmit={handleSubmit}
+        >
           <div className="flex flex-wrap gap-4 w-full justify-center">
             <div className="flex flex-col gap-2">
               <div>
