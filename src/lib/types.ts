@@ -106,3 +106,25 @@ export type Veiculo = {
   modelo: string;
   quantidadePoltronas: number;
 };
+
+export interface Uf {
+  id: number;
+  sigla: string;
+  nome: string;
+}
+
+export interface Cidade {
+  id: number;
+  nome: string;
+}
+
+export interface Cliente {
+  id: number;
+  nome: string;
+  dataNascimento: string;
+  telefone: string;
+  documento: Documento;
+  endereco: Endereco;
+  cpf: string;
+  tipo: string;
+}

@@ -1,6 +1,6 @@
-import removeIcon from "@/app/assets/remove.svg";
+"use client";
+
 import FormInput from "@/components/form-input";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -9,12 +9,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Image from "next/image";
 import DialogAdicionar from "./components/dialog-adicionar";
 import DialogEditar from "./components/dialog-editar";
 import DialogInformacoes from "./components/dialog-informacoes";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/axios";
+import DialogExcluir from "./components/dialogExcluir";
+import { Cliente } from "@/lib/types";
 
 export default function Clientes() {
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+
+  async function fetchClientes() {
+    const response = await api.get("/cliente");
+    if (!response.data.isSucces) {
+      console.log(response.data.message);
+      return;
+    }
+
+    setClientes(response.data.data);
+  }
+
+  useEffect(() => {
+    fetchClientes();
+  }, []);
   return (
     <section className="bg-[#070180] pt-12 h-[424px] max-h-[1000px]">
       <div className="h-[300px] w-[1000px] max-h-[430px] mx-auto rounded-md bg-white flex flex-col">
@@ -33,7 +51,7 @@ export default function Clientes() {
                   placeholder="Digite o nome..."
                 />
               </form>
-              <DialogAdicionar />
+              <DialogAdicionar clientes={clientes} setClientes={setClientes} />
             </div>
             <Table>
               <TableHeader className="border-b-2">
@@ -42,51 +60,46 @@ export default function Clientes() {
                     Nome Completo
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
-                    Data Nascimento
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center">
                     CPF
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
                     Cidade
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
-                    CEP
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center">
                     Telefone
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
-                    Tipo de Pessoa
+                    Tipo Cliente
+                  </TableHead>
+                  <TableHead className="text-black font-bold text-center">
+                    Documento
                   </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="text-center">
-                <TableRow className="hover:bg-gray-200">
-                  <TableCell>
-                    <p>João</p>
-                  </TableCell>
-                  <TableCell>099.876.345-21</TableCell>
-                  <TableCell>Irecê - BA</TableCell>
-                  <TableCell>(74)98877-0044</TableCell>
-                  <TableCell>00123493411</TableCell>
-                  <TableCell>456-7</TableCell>
-                  <TableCell>45654-0</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <DialogEditar />
-                      <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                        <Image
-                          src={removeIcon}
-                          alt="Remover"
-                          width={25}
-                          className="hover:scale-110"
+                {clientes.map((cliente) => (
+                  <TableRow className="hover:bg-gray-200" key={cliente.id}>
+                    <TableCell>{cliente.nome}</TableCell>
+                    <TableCell>{cliente.cpf}</TableCell>
+                    <TableCell>{cliente.endereco.cidade}</TableCell>
+                    <TableCell>{cliente.telefone}</TableCell>
+                    <TableCell>{cliente.documento.documento}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <DialogEditar
+                          cliente={cliente}
+                          setClientes={setClientes}
+                          clientes={clientes}
                         />
-                      </Button>
-                      <DialogInformacoes />
-                    </div>
-                  </TableCell>
-                </TableRow>
+                        <DialogExcluir
+                          clienteId={cliente.id}
+                          clienteName={cliente.nome}
+                        />
+                        <DialogInformacoes cliente={cliente} />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </div>
