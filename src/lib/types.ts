@@ -42,7 +42,7 @@ export type FormDataFornecedor = {
   documento: Documento;
   endereco: Endereco;
   cpf: string;
-  tipo: string
+  tipo: string;
 };
 
 export type Motorista = {
@@ -89,4 +89,20 @@ export type Fornecedor = {
   };
   cpf: string;
   tipo: string;
+};
+
+export type Veiculo = {
+  id: string;
+  prefixo: string;
+  kmAtual: string;
+  placa: string;
+  marca: string;
+  localEmplacado: string;
+  uf: string;
+  carroceria: string;
+  capacidadeTank: string;
+  ano: number;
+  tipo: string;
+  modelo: string;
+  quantidadePoltronas: number;
 };
