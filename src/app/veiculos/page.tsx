@@ -22,6 +22,7 @@ import DialogRemover from "./components/dialog-remover";
 
 export default function Veiculos() {
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
+  const [buscarVeiculos, setBuscarVeiculos] = useState("");
 
   useEffect(() => {
     const fetchVeiculos = async () => {
@@ -34,6 +35,12 @@ export default function Veiculos() {
     };
     fetchVeiculos();
   }, []);
+
+  const veiculosFiltrados = veiculos.filter((veiculo) => {
+    if (!veiculo) return false;
+
+    return veiculo.prefixo.includes(buscarVeiculos);
+  });
 
   return (
     <section className="bg-[#070180] pt-12 h-[425px]">
@@ -52,6 +59,8 @@ export default function Veiculos() {
                     label="Prefixo:"
                     name="prefixo"
                     placeholder="Digite o prefixo..."
+                    value={buscarVeiculos}
+                    onChange={(e) => setBuscarVeiculos(e.target.value)}
                   />
                 </div>
               </form>
@@ -88,7 +97,7 @@ export default function Veiculos() {
                   </TableRow>
                 </TableHeader>
                 <TableBody className="text-center">
-                  {veiculos.map((veiculo) => (
+                  {veiculosFiltrados.map((veiculo) => (
                     <TableRow key={veiculo.id} className="hover:bg-gray-200">
                       <TableCell>{veiculo.prefixo}</TableCell>
                       <TableCell>{veiculo.placa}</TableCell>
