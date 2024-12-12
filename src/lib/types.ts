@@ -147,3 +147,10 @@ export interface Manutencao {
   kmRealizada: number;
   custo: number;
 }
+
+export interface IDocumentos {
+  id: string
+  vencimento: string;
+  tipoDocumento: string;
+  referencia: string;
+}

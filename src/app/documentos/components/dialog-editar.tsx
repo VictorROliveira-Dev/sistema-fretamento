@@ -1,3 +1,5 @@
+"use client";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -6,22 +8,60 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import editIcon from "@/app/assets/edit.svg";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { formFieldsDocumentos } from "@/lib/objects";
-import FormInput from "@/components/form-input";
+import { Input } from "@/components/ui/input";
+import { api } from "@/lib/axios";
+import { IDocumentos } from "@/lib/types";
+import Image from "next/image";
+import editIcon from "@/app/assets/edit.svg";
 
-export default function DialogEditar() {
+interface DocumentosProps {
+  setDocumentos: React.Dispatch<React.SetStateAction<IDocumentos[]>>;
+  documentos: IDocumentos[];
+  documento: IDocumentos;
+}
+
+export default function DialogEditar({
+  setDocumentos,
+  documentos,
+  documento,
+}: DocumentosProps) {
+  const [tipoDocumento, setTipoDocumento] = useState("");
+  const [vencimento, setVencimento] = useState("");
+  const [referencia, setReferencia] = useState("");
+
+  useEffect(() => {
+    if (documento) {
+      setTipoDocumento(documento.tipoDocumento || "");
+      setVencimento(documento.vencimento || "");
+      setReferencia(documento.referencia || "");
+    }
+  }, [documento]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const documentData = {
+      tipoDocumento: tipoDocumento,
+      vencimento: vencimento,
+      referencia: referencia,
+    };
+
+    try {
+      const response = await api.put(
+        `/documento/${documento.id}`,
+        documentData
+      );
+      const documentoAtualizado = response.data.data;
+      const documentosAtualizados = documentos.map((doc) => {
+        return doc.id === documentoAtualizado.id ? documentoAtualizado : doc;
+      });
+      setDocumentos(documentosAtualizados);
+    } catch (error) {
+      console.error("Erro ao adicionar documento:", error);
+    }
+  };
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -40,78 +80,57 @@ export default function DialogEditar() {
             Cadastro de Documento
           </DialogTitle>
         </DialogHeader>
+        <form
+          onSubmit={handleSubmit}
+          className="w-full flex flex-col items-center"
+        >
+          <div className="flex flex-wrap gap-4 w-full justify-center">
+            <div className="flex flex-col">
+              <label htmlFor="tipoDocumento">Doc/Certificado:</label>
+              <select
+                name="tipoDocumento"
+                value={tipoDocumento}
+                onChange={(e) => setTipoDocumento(e.target.value)}
+                className="w-[250px] border rounded-md p-2"
+              >
+                <option value="" disabled>
+                  Selecione o documento...
+                </option>
+                <option value="cnh">CNH</option>
+                <option value="ipva">IPVA</option>
+                <option value="extintor">Extintor</option>
+                <option value="alvará">Alvará</option>
+                <option value="Outros">Outros</option>
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="referencia">Referência:</label>
+              <Input
+                name="referencia"
+                placeholder="Digite a referência..."
+                value={referencia}
+                onChange={(e) => setReferencia(e.target.value)}
+                className="w-[250px]"
+              />
+            </div>
+            <div>
+              <label htmlFor="vencimento">Vencimento:</label>
+              <Input
+                name="vencimento"
+                type="date"
+                value={vencimento}
+                onChange={(e) => setVencimento(e.target.value)}
+                className="w-[250px]"
+              />
+            </div>
+          </div>
 
-        <div className="flex flex-wrap gap-4 w-full justify-center">
-          <div>
-            <label htmlFor="documento">Doc/Certificado:</label>
-            <Select name="documento">
-              <SelectTrigger className="w-[250px]">
-                <SelectValue placeholder="Selecione o doc/certificado..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Documentos</SelectLabel>
-                  <SelectItem value="extintor">Extintor</SelectItem>
-                  <SelectItem value="ipva">IPVA</SelectItem>
-                  <SelectItem value="CNH">CNH</SelectItem>
-                  <SelectItem value="alvara">Alvará</SelectItem>
-                  <SelectItem value="Outros">Outros</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label htmlFor="referencia">Referência:</label>
-            <Select name="referencia">
-              <SelectTrigger className="w-[250px]">
-                <SelectValue placeholder="Selecione a Referência..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Referências</SelectLabel>
-                  <SelectItem value="motorista">João</SelectItem>
-                  <SelectItem value="extintor">ABC-1234 (1234)</SelectItem>
-                  <SelectItem value="ipva">Empresa X tur</SelectItem>
-                  <SelectItem value="CNH">AAA-5555 (5555)</SelectItem>
-                  <SelectItem value="alvara">João Guedes</SelectItem>
-                  <SelectItem value="Outros">Empresa Y TUR</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label htmlFor="tipo">Tipo:</label>
-            <Select name="tipo">
-              <SelectTrigger className="w-[250px]">
-                <SelectValue placeholder="Selecione o tipo..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Tipos</SelectLabel>
-                  <SelectItem value="interestadual">Interestadual</SelectItem>
-                  <SelectItem value="intermunicipal">Intermunicipal</SelectItem>
-                  <SelectItem value="outros">
-                    Outros/CNH/IPVA/Extintor
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          {formFieldsDocumentos.map((field) => (
-            <FormInput
-              key={field.name}
-              label={field.label}
-              name={field.name}
-              type={field.type}
-              placeholder={field.placeholder}
-            />
-          ))}
-        </div>
-
-        <DialogFooter className="flex items-center gap-2 mt-10">
-          <Button variant="outline">Fechar</Button>
-          <Button>Salvar</Button>
-        </DialogFooter>
+          <DialogFooter className="flex items-center gap-2 mt-10">
+            <Button type="submit" className="w-[250px]">
+              Salvar
+            </Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

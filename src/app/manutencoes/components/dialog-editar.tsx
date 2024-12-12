@@ -84,10 +84,6 @@ export default function DialogEditar({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!veiculoId || !servicoId) {
-      alert("Por favor, selecione um veículo e um serviço.");
-      return;
-    }
 
     const manutencaoData = {
       dataVencimento,

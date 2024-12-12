@@ -26,7 +26,7 @@ export default function DialogAdicionarServico() {
       console.log("Serviço adicionado:", response.data.data);
       setNomeServico("");
     } catch (error) {
-      console.error("Erro ao adicionar motorista:", error);
+      console.error("Erro ao adicionar serviço:", error);
     }
   };
 
