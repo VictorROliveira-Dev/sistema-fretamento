@@ -128,3 +128,22 @@ export interface Cliente {
   cpf: string;
   tipo: string;
 }
+
+export interface Servico {
+  id: string;
+  nomeServico: string;
+}
+
+export interface Manutencao {
+  id: string;
+  dataLancamento: string;
+  dataVencimento: string;
+  dataRealizada: string;
+  tipo: string;
+  servicoId: number;
+  veiculoId: number;
+  kmPrevista: number;
+  kmAtual: number;
+  kmRealizada: number;
+  custo: number;
+}

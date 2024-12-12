@@ -1,7 +1,4 @@
 "use client";
-import removeIcon from "@/app/assets/remove.svg";
-import documentoIcon from "@/app/assets/documentos.svg";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Image from "next/image";
 import FormInput from "@/components/form-input";
 import DialogAdicionar from "./components/dialog-adicionar";
 import DialogEditar from "./components/dialog-editar";

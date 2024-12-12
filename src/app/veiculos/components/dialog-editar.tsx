@@ -1,5 +1,4 @@
 "use client";
-import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,13 +8,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { formFieldsVeiculos } from "@/lib/objects";
 import editIcon from "@/app/assets/edit.svg";
 import Image from "next/image";
 import { Veiculo } from "@/lib/types";
 import { FormEvent, useEffect, useState } from "react";
-import { vendored } from "next/dist/server/route-modules/pages/module.compiled";
 import { api } from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 

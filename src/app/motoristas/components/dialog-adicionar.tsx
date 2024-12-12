@@ -258,7 +258,7 @@ export default function DialogAdicionar({
             </div>
             <div className="flex flex-col gap-2">
               <div>
-                <label htmlFor="vencimento">Vencimento:</label>
+                <label htmlFor="vencimento">Vencimento CNH:</label>
                 <Input
                   name="vencimento"
                   className="border-2 font-medium text-black w-[250px]"

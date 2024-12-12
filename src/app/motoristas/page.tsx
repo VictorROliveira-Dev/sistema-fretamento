@@ -54,7 +54,7 @@ export default function Motoristas() {
             <div className="flex items-center justify-between">
               <form className="flex flex-col gap-2 font-bold">
                 <FormInput
-                  label="Nome Completo:"
+                  label="Nome Motorista:"
                   name="nomecompleto"
                   placeholder="Digite o nome..."
                   value={buscarMotorista}
