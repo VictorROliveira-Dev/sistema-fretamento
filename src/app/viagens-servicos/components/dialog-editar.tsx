@@ -2,7 +2,9 @@ import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -27,306 +29,722 @@ import {
 
 import Image from "next/image";
 import editIcon from "@/app/assets/edit.svg";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import axios from "axios";
+import { Cidade, Cliente, Motorista, Uf, Veiculo, Viagem } from "@/lib/types";
+import { api } from "@/lib/axios";
+import { useEffect, useState } from "react";
 
-export default function DialogEditar() {
+interface EditarProps {
+  setViagens: React.Dispatch<React.SetStateAction<Viagem[]>>;
+  viagens: Viagem[];
+  viagemprop: Viagem;
+}
+
+export default function DialogEditar({
+  setViagens,
+  viagens,
+  viagemprop,
+}: EditarProps) {
+  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
+  const [motoristas, setMotoristas] = useState<Motorista[]>([]);
+  const [ufs, setUfs] = useState<Uf[]>([]);
+  const [cidadesSaida, setCidadesSaida] = useState<Cidade[]>([]);
+  const [cidadesVolta, setCidadesVolta] = useState<Cidade[]>([]);
+  const [viagem, setViagem] = useState<Viagem>(viagemprop);
+
+  async function fetchClientes() {
+    const response = await api.get("/cliente");
+
+    if (!response.data.isSucces) {
+      console.log(response.data.message);
+    }
+
+    setClientes(response.data.data);
+  }
+
+  async function fetchMotoristas() {
+    const response = await api.get("/motorista");
+
+    if (!response.data.isSucces) {
+      console.log(response.data.message);
+    }
+
+    setMotoristas(response.data.data);
+  }
+
+  async function fetchVeiculos() {
+    const response = await api.get("/veiculo");
+
+    if (!response.data.isSucces) {
+      console.log(response.data.message);
+    }
+
+    setVeiculos(response.data.data);
+  }
+
+  useEffect(() => {
+    fetchClientes();
+    fetchMotoristas();
+    fetchVeiculos();
+    axios
+      .get<Uf[]>("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+      .then((response) => {
+        const sortedUfs = response.data.sort((a, b) =>
+          a.nome.localeCompare(b.nome)
+        );
+        setUfs(sortedUfs);
+      })
+      .catch((error) => {
+        console.error("Error fetching UFs:", error);
+      });
+
+    handleUfSaidaChange(viagem.rota.saida.ufSaida);
+    handleUfDestinoChange(viagem.rota.retorno.ufSaida);
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const response = await api.put(`viagem/${viagem.id}`, viagem);
+
+    if (!response.data.isSucces) {
+      console.log(response.data.message);
+      return;
+    }
+
+    const viagensAtualizada = viagens.filter((v) => v.id !== viagem.id);
+    setViagens([...viagensAtualizada, viagem]);
+    alert("atualizado com sucesso");
+  }
+
+  const handleUfSaidaChange = (uf: string) => {
+    setViagem({
+      ...viagem,
+      rota: { ...viagem.rota, saida: { ...viagem.rota.saida, ufSaida: uf } },
+    });
+    axios
+      .get<Cidade[]>(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
+      )
+      .then((response) => {
+        const sortedCidades = response.data.sort((a, b) =>
+          a.nome.localeCompare(b.nome)
+        );
+        setCidadesSaida(sortedCidades);
+      })
+      .catch((error) => {
+        console.error("Error fetching cidades:", error);
+      });
+  };
+
+  const handleUfDestinoChange = (uf: string) => {
+    setViagem({
+      ...viagem,
+      rota: {
+        ...viagem.rota,
+        retorno: { ...viagem.rota.retorno, ufSaida: uf },
+      },
+    });
+    axios
+      .get<Cidade[]>(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
+      )
+      .then((response) => {
+        const sortedCidades = response.data.sort((a, b) =>
+          a.nome.localeCompare(b.nome)
+        );
+        setCidadesVolta(sortedCidades);
+      })
+      .catch((error) => {
+        console.error("Error fetching cidades:", error);
+      });
+  };
+
+  const servicos = [
+    { nome: "Turismo", valor: "TURISMO" },
+    { nome: "Escolar", valor: "ESCOLAR" },
+    { nome: "Especial", valor: "ESPECIAL" },
+    { nome: "Fretamento", valor: "FRETAMENTO" },
+    { nome: "Translado", valor: "TRANSLADO" },
+    { nome: "Turismo Religioso", valor: "TURISMO_RELIGIOSO" },
+    { nome: "Trans Funcionarios", valor: "TRANS_FUNCIONARIOS" },
+  ];
+
+  const tipo_viagem = [
+    "INTERMUNICIPAL",
+    "MUNICIPAL",
+    "INTERESTADUAL",
+    "INTERNACIONAL",
+  ];
+  const status_viagem = [
+    { nome: "Pendente", valor: "PENDENTE" },
+    { nome: "Orcamento", valor: "ORCAMENTO" },
+    { nome: "Agendado", valor: "AGENDADO" },
+    { nome: "Confirmado", valor: "CONFIRMADO" },
+    { nome: "Finalizado", valor: "FINALIZADO" },
+    { nome: "Cancelado", valor: "TURISMO_RELIGIOSO" },
+  ];
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-          <Image
-            src={editIcon}
-            alt="Remover"
-            width={25}
-            className="hover:scale-110"
-          />
+        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
+          <Image src={editIcon} alt="Editar" width={25} />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[1200px] max-h-[520px] flex flex-col items-center overflow-scroll">
+      <DialogContent className="w-[90%] max-h-[520px] flex flex-col items-center overflow-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Viagem/Serviço
           </DialogTitle>
         </DialogHeader>
-        <div className="grid grid-cols-2 gap-8">
-          <div>
-            <p className="font-bold text-center mb-4">Dados de Saída</p>
-            <div className="grid grid-cols-2 gap-4">
-              {formFieldsDadosSaida.map((field) => (
-                <FormInput
-                  key={field.name}
-                  label={field.label}
-                  name={field.name}
-                  type={field.type}
-                  placeholder={field.placeholder}
-                />
-              ))}
-              <div className="flex flex-col">
-                <label htmlFor="tipoviagem">Tipo de Viagem:</label>
-                <Select name="tipoviagem">
-                  <SelectTrigger className="w-[250px]">
-                    <SelectValue placeholder="Selecione o tipo..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Viagens</SelectLabel>
-                      <SelectItem value="v1">Viagem 1</SelectItem>
-                      <SelectItem value="v2">Viagem 2</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="tiposervico">Tipo de Serviço:</label>
-                <Select name="tiposervico">
-                  <SelectTrigger className="w-[250px]">
-                    <SelectValue placeholder="Selecione o tipo..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Serviços</SelectLabel>
-                      <SelectItem value="s1">Serviço 1</SelectItem>
-                      <SelectItem value="s2">Serviço 2</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
+        <form className="w-full" onSubmit={handleSubmit}>
+          <div className="flex flex-col">
+            <div className="w-full flex justify-evenly gap-4">
+              <fieldset className="border border-blue-900 rounded-md p-4 flex-1 flex gap-2">
+                <legend>Cliente</legend>
+                <div className="flex-1">
+                  <Label htmlFor="cliente">Cliente</Label>
+                  <Select
+                    value={viagem.clienteId.toString()}
+                    onValueChange={(value) =>
+                      setViagem({ ...viagem, clienteId: Number(value) })
+                    }
+                    name="cliente"
+                  >
+                    <SelectTrigger className="w-[250px]">
+                      <SelectValue placeholder="Selecione o cliente" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {clientes.map((cliente) => (
+                          <SelectItem value={cliente.id.toString()}>
+                            {cliente.nome}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex-1">
+                  <Label htmlFor="telefone">Telefone Cliente</Label>
+                  <Input
+                    name="telefone"
+                    value={
+                      clientes.find((cliente) => cliente.id == viagem.clienteId)
+                        ?.telefone
+                    }
+                    placeholder="(xx) x xxxx-xxxx"
+                    type="tel"
+                    id="telefone"
+                  />
+                </div>
+              </fieldset>
+              <fieldset className="border border-blue-900 flex-1 rounded-md p-4 flex gap-2">
+                <legend>Servico</legend>
+                <div className="flex-1">
+                  <Label htmlFor="tiposervico">Tipo do Servico</Label>
+                  <Select
+                    value={viagem.tipoServico}
+                    onValueChange={(e) =>
+                      setViagem({ ...viagem, tipoServico: e })
+                    }
+                    name="tiposervico"
+                  >
+                    <SelectTrigger className="w-auto">
+                      <SelectValue placeholder="Selecione o tipo..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {servicos.map((servico) => (
+                          <SelectItem value={servico.valor}>
+                            {servico.nome}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex-1">
+                  <Label htmlFor="tiposervico">Tipo da viagem</Label>
+                  <Select
+                    value={viagem.tipoViagem}
+                    onValueChange={(e) =>
+                      setViagem({ ...viagem, tipoViagem: e })
+                    }
+                    name="tiposervico"
+                  >
+                    <SelectTrigger className="w-auto">
+                      <SelectValue placeholder="Selecione o tipo..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {tipo_viagem.map((tipo) => (
+                          <SelectItem value={tipo}>{tipo}</SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1">
+                  <Label htmlFor="pagamento">Tipo do Pagamento</Label>
+                  <Select
+                    value={viagem.tipoPagamento}
+                    onValueChange={(e) =>
+                      setViagem({ ...viagem, tipoPagamento: e })
+                    }
+                    name="pagamento"
+                  >
+                    <SelectTrigger className="w-auto">
+                      <SelectValue placeholder="Selecione o tipo..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="PRAZO">A prazo</SelectItem>
+                        <SelectItem value="VISTA">A vista</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex-1 w-[100px]">
+                  <Label htmlFor="valor">Valor</Label>
+                  <Input
+                    value={viagem.valorContratado}
+                    name="valor"
+                    onChange={(e) =>
+                      setViagem({
+                        ...viagem,
+                        valorContratado: Number(e.target.value),
+                      })
+                    }
+                    placeholder="0,00R$"
+                    type="number"
+                  />
+                </div>
+              </fieldset>
             </div>
 
-            <hr className="border-t border-2 border-black my-4" />
-            <p className="font-bold text-center mt-4">
-              Veículos, Motoristas e Clientes
-            </p>
+            <div className="w-full flex gap-2 mt-2">
+              <div className="flex flex-col flex-1">
+                <div className="w-full">
+                  <fieldset className="border-2 border-green-600 rounded-md justify-between p-4 flex gap-2">
+                    <legend>Local Inicial / Origem / Destino</legend>
 
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <div className="flex flex-col">
-                <label htmlFor="veiculo">Veículo:</label>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecione o veículo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Veículos Disponíveis</SelectLabel>
-                      <SelectItem value="veiculo1">Ônibus 1</SelectItem>
-                      <SelectItem value="veiculo2">Ônibus 2</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                    <div className="flex gap-2">
+                      <div>
+                        <Label htmlFor="ufsaida">UF Saida</Label>
+                        <Select
+                          value={viagem.rota.saida.ufSaida}
+                          onValueChange={handleUfSaidaChange}
+                          name="ufsaida"
+                        >
+                          <SelectTrigger className="w-auto">
+                            <SelectValue placeholder="Uf" />
+                          </SelectTrigger>
+                          <SelectContent className="absolute max-h-[200px]">
+                            <SelectGroup>
+                              {ufs.map((uf) => (
+                                <SelectItem value={uf.sigla}>
+                                  {uf.sigla}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="origem">Origem</Label>
+                        <Select
+                          value={viagem.rota.saida.cidadeSaida}
+                          name="origem"
+                          onValueChange={(e) =>
+                            setViagem({
+                              ...viagem,
+                              rota: {
+                                ...viagem.rota,
+                                saida: {
+                                  ...viagem.rota.saida,
+                                  cidadeSaida: e,
+                                },
+                              },
+                            })
+                          }
+                        >
+                          <SelectTrigger className="w-auto">
+                            <SelectValue placeholder="Origem" />
+                          </SelectTrigger>
+                          <SelectContent className="absolute max-h-[200px]">
+                            <SelectGroup>
+                              {cidadesSaida.map((cidade) => (
+                                <SelectItem value={cidade.nome}>
+                                  {cidade.nome}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="localsaida">Local saida</Label>
+                        <Input
+                          value={viagem.rota.saida.localDeSaida}
+                          onChange={(e) =>
+                            setViagem({
+                              ...viagem,
+                              rota: {
+                                ...viagem.rota,
+                                saida: {
+                                  ...viagem.rota.saida,
+                                  localDeSaida: e.target.value,
+                                },
+                              },
+                            })
+                          }
+                          name="localsaida"
+                          type="text"
+                          placeholder="digite o local de saída"
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="date">Data saida</Label>
+                        <Input
+                          value={viagem.dataHorarioSaida.data}
+                          name="date"
+                          type="date"
+                          onChange={(e) =>
+                            setViagem({
+                              ...viagem,
+                              dataHorarioSaida: {
+                                ...viagem.dataHorarioSaida,
+                                data: e.target.value,
+                              },
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="horariosaida">Horario </Label>
+                        <Input
+                          value={viagem.dataHorarioSaida.hora}
+                          name="horariosaida"
+                          onChange={(e) =>
+                            setViagem({
+                              ...viagem,
+                              dataHorarioSaida: {
+                                ...viagem.dataHorarioSaida,
+                                hora: e.target.value,
+                              },
+                            })
+                          }
+                          type="time"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <div>
+                        <Label htmlFor="saidagaragem">Saida Garagem</Label>
+                        <Input
+                          value={viagem.dataHorarioSaidaGaragem.data}
+                          name="saidagaragem"
+                          type="date"
+                          onChange={(e) =>
+                            setViagem({
+                              ...viagem,
+                              dataHorarioSaidaGaragem: {
+                                ...viagem.dataHorarioSaidaGaragem,
+                                data: e.target.value,
+                              },
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="horasaida">Hora Saida</Label>
+                        <Input
+                          value={viagem.dataHorarioSaidaGaragem.hora}
+                          name="horasaida"
+                          type="time"
+                          onChange={(e) =>
+                            setViagem({
+                              ...viagem,
+                              dataHorarioSaidaGaragem: {
+                                ...viagem.dataHorarioSaidaGaragem,
+                                hora: e.target.value,
+                              },
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+
+                <div className="w-full">
+                  <fieldset className="border-2 border-red-600 rounded-md justify-between p-4 flex gap-2">
+                    <legend>Local Final / Destino / Retorno</legend>
+
+                    <div className="flex gap-2">
+                      <div>
+                        <Label htmlFor="ufdestino">UF Destino</Label>
+                        <Select
+                          value={viagem.rota.retorno.ufSaida}
+                          onValueChange={handleUfDestinoChange}
+                          name="ufdestino"
+                        >
+                          <SelectTrigger className="w-auto">
+                            <SelectValue placeholder="Uf" />
+                          </SelectTrigger>
+                          <SelectContent className="absolute max-h-[200px]">
+                            <SelectGroup>
+                              {ufs.map((uf) => (
+                                <SelectItem value={uf.sigla}>
+                                  {uf.sigla}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="destino">Destino</Label>
+                        <Select
+                          name="destino"
+                          value={viagem.rota.retorno.cidadeSaida}
+                          onValueChange={(e) =>
+                            setViagem({
+                              ...viagem,
+                              rota: {
+                                ...viagem.rota,
+                                retorno: {
+                                  ...viagem.rota.retorno,
+                                  cidadeSaida: e,
+                                },
+                              },
+                            })
+                          }
+                        >
+                          <SelectTrigger className="w-auto">
+                            <SelectValue placeholder="Origem" />
+                          </SelectTrigger>
+                          <SelectContent className="absolute max-h-[200px]">
+                            <SelectGroup>
+                              {cidadesVolta.map((cidade) => (
+                                <SelectItem value={cidade.nome}>
+                                  {cidade.nome}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="localsaida">Local saida</Label>
+                        <Input
+                          value={viagem.rota.retorno.localDeSaida}
+                          onChange={(e) =>
+                            setViagem({
+                              ...viagem,
+                              rota: {
+                                ...viagem.rota,
+                                retorno: {
+                                  ...viagem.rota.retorno,
+                                  localDeSaida: e.target.value,
+                                },
+                              },
+                            })
+                          }
+                          name="localsaida"
+                          type="text"
+                          placeholder="digite o local de saída"
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="date">Data retorno</Label>
+                        <Input
+                          value={viagem.dataHorarioRetorno.data}
+                          name="date"
+                          type="date"
+                          onChange={(e) =>
+                            setViagem({
+                              ...viagem,
+                              dataHorarioRetorno: {
+                                ...viagem.dataHorarioRetorno,
+                                data: e.target.value,
+                              },
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="horariosaida">hora retorno </Label>
+                        <Input
+                          value={viagem.dataHorarioRetorno.hora}
+                          name="horariosaida"
+                          onChange={(e) =>
+                            setViagem({
+                              ...viagem,
+                              dataHorarioRetorno: {
+                                ...viagem.dataHorarioRetorno,
+                                hora: e.target.value,
+                              },
+                            })
+                          }
+                          type="time"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <div>
+                        <Label htmlFor="saidagaragem">Data Chegada</Label>
+                        <Input
+                          value={viagem.dataHorarioChegada.data}
+                          name="saidagaragem"
+                          type="date"
+                          onChange={(e) =>
+                            setViagem({
+                              ...viagem,
+                              dataHorarioChegada: {
+                                ...viagem.dataHorarioChegada,
+                                data: e.target.value,
+                              },
+                            })
+                          }
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="horasaida">Hora Chegada</Label>
+                        <Input
+                          value={viagem.dataHorarioChegada.hora}
+                          name="horasaida"
+                          type="time"
+                          onChange={(e) =>
+                            setViagem({
+                              ...viagem,
+                              dataHorarioChegada: {
+                                ...viagem.dataHorarioChegada,
+                                hora: e.target.value,
+                              },
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
               </div>
-              <div className="flex flex-col">
-                <label htmlFor="motorista">Motorista:</label>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecione o motorista" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Motoristas Disponíveis</SelectLabel>
-                      <SelectItem value="motorista1">João</SelectItem>
-                      <SelectItem value="motorista2">Maria</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="clientes">Clientes:</label>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecione o cliente" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Clientes</SelectLabel>
-                      <SelectItem value="motorista1">João</SelectItem>
-                      <SelectItem value="motorista2">Maria</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="observacoes">Intinerário:</label>
+              <div className="flex flex-col md:min-w-[20%]">
+                <Label htmlFor="intinerario" className="text-md">
+                  Itinerario
+                </Label>
                 <Textarea
-                  name="observacoes"
-                  className="border-2 font-medium w-full h-20 resize-none"
-                  placeholder="Adicione observações sobre a viagem..."
-                />
+                  value={viagem.itinerario}
+                  name="itinerario"
+                  id=""
+                  className="border border-black rounded-md h-full"
+                  onChange={(e) =>
+                    setViagem({ ...viagem, itinerario: e.target.value })
+                  }
+                ></Textarea>
               </div>
             </div>
 
-            <hr className="border-t border-2 border-black my-4" />
-            <p className="font-bold text-center mt-4">Valores</p>
-
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <div className="flex flex-col">
-                <label htmlFor="tipopagamento">Tipo Pagamento:</label>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecione o tipo" />
+            <div className="flex gap-2">
+              <fieldset className="rounded border border-yellow-500 p-4">
+                <legend>Veiculo</legend>
+                <div>
+                  <Label htmlFor="veiculo">Veiculo</Label>
+                  <Select
+                    value={viagem.veiculoId.toString()}
+                    onValueChange={(e) =>
+                      setViagem({ ...viagem, veiculoId: Number(e) })
+                    }
+                    name="veiculo"
+                  >
+                    <SelectTrigger className="w-auto">
+                      <SelectValue placeholder="Selecionar Veiculo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {veiculos.map((veiculo) => (
+                          <SelectItem value={veiculo.id.toString()}>
+                            {veiculo.placa}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </fieldset>
+              <fieldset className="rounded border border-blue-500 p-4">
+                <legend>Motorista</legend>
+                <div>
+                  <Label>Motorista</Label>
+                  <Select
+                    value={viagem.motoristaId.toString()}
+                    onValueChange={(e) =>
+                      setViagem({ ...viagem, motoristaId: Number(e) })
+                    }
+                    name="ufsaida"
+                  >
+                    <SelectTrigger className="w-auto">
+                      <SelectValue placeholder="Selecionar Motorista" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {motoristas.map((motorista) => (
+                          <SelectItem value={motorista.id.toString()}>
+                            {motorista.nome}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </fieldset>
+              <div>
+                <Label htmlFor="status">Situacao da viagem</Label>
+                <Select
+                  value={viagem.status.toString()}
+                  onValueChange={(e) => setViagem({ ...viagem, status: e })}
+                  name="status"
+                >
+                  <SelectTrigger className="w-auto">
+                    <SelectValue placeholder="Status" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="absolute max-h-[200px]">
                     <SelectGroup>
-                      <SelectLabel>Pagamentos</SelectLabel>
-                      <SelectItem value="veiculo1">PIX</SelectItem>
-                      <SelectItem value="veiculo2">Dinheiro</SelectItem>
-                      <SelectItem value="veiculo2">Cartão</SelectItem>
+                      {status_viagem.map((status_viagem) => (
+                        <SelectItem value={status_viagem.valor}>
+                          {status_viagem.nome}
+                        </SelectItem>
+                      ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
               </div>
-              {formFieldsDadosSaidaValores.map((field) => (
-                <FormInput
-                  key={field.name}
-                  label={field.label}
-                  name={field.name}
-                  type={field.type}
-                  placeholder={field.placeholder}
-                />
-              ))}
             </div>
           </div>
+          <DialogFooter className="flex items-center gap-2 mt-10">
+            <DialogClose>
+              <Button type="button" variant="outline">
+                Fechar
+              </Button>
+            </DialogClose>
 
-          <div>
-            <p className="font-bold text-center mb-4">Dados de Chegada</p>
-            <div className="grid grid-cols-2 gap-4">
-              {formFieldsDadosChegada.map((field) => (
-                <FormInput
-                  key={field.name}
-                  label={field.label}
-                  name={field.name}
-                  type={field.type}
-                  placeholder={field.placeholder}
-                />
-              ))}
-              <div className="flex flex-col">
-                <label htmlFor="tipoviagem">Tipo de Viagem:</label>
-                <Select name="tipoviagem">
-                  <SelectTrigger className="w-[250px]">
-                    <SelectValue placeholder="Selecione o tipo..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Viagens</SelectLabel>
-                      <SelectItem value="v1">Viagem 1</SelectItem>
-                      <SelectItem value="v2">Viagem 2</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="tiposervico">Tipo de Serviço:</label>
-                <Select name="tiposervico">
-                  <SelectTrigger className="w-[250px]">
-                    <SelectValue placeholder="Selecione o tipo..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Serviços</SelectLabel>
-                      <SelectItem value="s1">Serviço 1</SelectItem>
-                      <SelectItem value="s2">Serviço 2</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <hr className="border-t border-2 border-black my-4" />
-            <p className="font-bold text-center mt-4">
-              Veículos, Motoristas e Clientes
-            </p>
-
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <div className="flex flex-col">
-                <label htmlFor="veiculo">Veículo:</label>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecione o veículo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Veículos Disponíveis</SelectLabel>
-                      <SelectItem value="veiculo1">Ônibus 1</SelectItem>
-                      <SelectItem value="veiculo2">Ônibus 2</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="motorista">Motorista:</label>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecione o motorista" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Motoristas Disponíveis</SelectLabel>
-                      <SelectItem value="motorista1">João</SelectItem>
-                      <SelectItem value="motorista2">Maria</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="clientes">Clientes:</label>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecione o cliente" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Clientes</SelectLabel>
-                      <SelectItem value="motorista1">João</SelectItem>
-                      <SelectItem value="motorista2">Maria</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="observacoes">Intinerário:</label>
-                <Textarea
-                  name="observacoes"
-                  className="border-2 font-medium w-full h-20 resize-none"
-                  placeholder="Adicione observações sobre a viagem..."
-                />
-              </div>
-            </div>
-
-            <hr className="border-t border-2 border-black my-4" />
-            <p className="font-bold text-center mt-4">Valores</p>
-
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <div className="flex flex-col">
-                <label htmlFor="tipopagamento">Tipo Pagamento:</label>
-                <Select>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecione o tipo" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Pagamentos</SelectLabel>
-                      <SelectItem value="veiculo1">PIX</SelectItem>
-                      <SelectItem value="veiculo2">Dinheiro</SelectItem>
-                      <SelectItem value="veiculo2">Cartão</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              {formFieldsDadosChegadaValores.map((field) => (
-                <FormInput
-                  key={field.name}
-                  label={field.label}
-                  name={field.name}
-                  type={field.type}
-                  placeholder={field.placeholder}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <DialogFooter className="flex items-center gap-2 mt-10">
-          <Button variant="outline">Fechar</Button>
-          <Button>Salvar</Button>
-        </DialogFooter>
+            <Button type="submit">Adicionar Viagem</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );
