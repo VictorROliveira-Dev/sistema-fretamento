@@ -62,7 +62,11 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">Data Nascimento:</h2>
-                  <p>{motorista.dataNascimento}</p>
+                  <p>
+                    {new Date(motorista.dataNascimento).toLocaleDateString(
+                      "pt-BR"
+                    )}
+                  </p>
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">CPF:</h2>
@@ -110,7 +114,11 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                   </div>
                   <div className="flex gap-2">
                     <h2 className="font-bold">Vencimento CNH:</h2>
-                    <p>{motorista.habilitacao.vencimento}</p>
+                    <p>
+                      {new Date(
+                        motorista.habilitacao.vencimento
+                      ).toLocaleDateString("pt-BR")}
+                    </p>
                   </div>
                 </div>
               </div>

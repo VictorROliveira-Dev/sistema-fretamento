@@ -95,7 +95,11 @@ export default function Fornecedores() {
                 {filtroFornecedoresNome.map((fornecedor) => (
                   <TableRow key={fornecedor.id} className="hover:bg-gray-200">
                     <TableCell>{fornecedor.nome}</TableCell>
-                    <TableCell>{fornecedor.dataNascimento}</TableCell>
+                    <TableCell>
+                      {new Date(fornecedor.dataNascimento).toLocaleDateString(
+                        "pt-BR"
+                      )}
+                    </TableCell>
                     <TableCell>{fornecedor.cpf}</TableCell>
                     <TableCell>{fornecedor.endereco.cidade}</TableCell>
                     <TableCell>{fornecedor.endereco.uf}</TableCell>

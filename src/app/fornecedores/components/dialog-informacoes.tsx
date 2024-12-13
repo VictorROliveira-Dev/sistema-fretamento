@@ -59,7 +59,11 @@ export default function DialogInformacoes({ fornecedorId }: FornecedorProps) {
               </div>
               <div className="flex gap-2">
                 <h2 className="font-bold">Data Nascimento:</h2>
-                <p>{fornecedor.dataNascimento}</p>
+                <p>
+                  {new Date(fornecedor.dataNascimento).toLocaleDateString(
+                    "pt-BR"
+                  )}
+                </p>
               </div>
               <div className="flex gap-2">
                 <h2 className="font-bold">Telefone:</h2>
