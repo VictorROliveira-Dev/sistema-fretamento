@@ -11,7 +11,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/axios";
 import { Veiculo } from "@/lib/types";
+import Image from "next/image";
 import { FormEvent, useState } from "react";
+import { toast } from "sonner";
+import loading from "../../assets/loading.svg";
 
 interface VeiculosProps {
   setVeiculos: React.Dispatch<React.SetStateAction<Veiculo[]>>;
@@ -29,14 +32,16 @@ export default function DialogAdicionar({
   const [localEmplacado, setLocalEmplacado] = useState("");
   const [uf, setUf] = useState("");
   const [carroceria, setCarroceria] = useState("");
-  const [capacidadeTank, setCapacidadeTank] = useState<number>(0);
-  const [ano, setAno] = useState<number>(0);
+  const [capacidadeTank, setCapacidadeTank] = useState<number>();
+  const [ano, setAno] = useState<number>();
   const [tipo, setTipo] = useState("");
   const [modelo, setModelo] = useState("");
-  const [quantidadePoltronas, setQuantidadePoltronas] = useState<number>(0);
+  const [quantidadePoltronas, setQuantidadePoltronas] = useState<number>();
+  const [adicionando, setAdicionando] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setAdicionando(true);
 
     const veiculoData = {
       prefixo,
@@ -56,6 +61,24 @@ export default function DialogAdicionar({
     try {
       const response = await api.post("/veiculo", veiculoData);
       setVeiculos([...veiculos, response.data.data]);
+      toast.success("Veículo adicionado.", {
+        className:
+          "bg-green-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+    } catch (error) {
+      toast.error("Erro ao tentar adicionar veículo.", {
+        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+      console.log("erro ao tentar adicionar veículo", error);
+    } finally {
       setPrefixo("");
       setPlaca("");
       setKmAtual("");
@@ -68,8 +91,7 @@ export default function DialogAdicionar({
       setTipo("");
       setModelo("");
       setQuantidadePoltronas(0);
-    } catch (error) {
-      console.log("erro ao cadastrar veículo", error);
+      setAdicionando(false);
     }
   };
 
@@ -238,7 +260,17 @@ export default function DialogAdicionar({
             </div>
           </div>
           <DialogFooter className="flex items-center gap-2 mt-10">
-            <Button type="submit" className="w-[250px]">Salvar</Button>
+            <Button type="submit" className="w-[250px]">
+            {adicionando ? (
+                <Image
+                  src={loading}
+                  alt="loading"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Salvar"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

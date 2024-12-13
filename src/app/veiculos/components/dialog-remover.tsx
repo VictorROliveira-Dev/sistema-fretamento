@@ -11,6 +11,9 @@ import Image from "next/image";
 import removeIcon from "@/app/assets/remove.svg";
 import { api } from "@/lib/axios";
 import { Veiculo } from "@/lib/types";
+import loading from "../../assets/loading.svg";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface VeiculoProps {
   veiculo: Veiculo;
@@ -18,12 +21,31 @@ interface VeiculoProps {
 }
 
 export default function DialogRemover({ veiculo, setVeiculos }: VeiculoProps) {
+  const [removendo, setRemovendo] = useState(false);
   const handleRemoverVeiculo = async (id: string) => {
+    setRemovendo(true);
     try {
       await api.delete(`/veiculo/${id}`);
       setVeiculos((prevVeiculos) => prevVeiculos.filter((v) => v.id !== id));
+      toast.success("Veículo removido.", {
+        className:
+          "bg-green-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
     } catch (error) {
+      toast.error("Erro ao tentar remover veículo.", {
+        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.error("Erro ao remover motorista:", error);
+    } finally {
+      setRemovendo(false);
     }
   };
 
@@ -53,7 +75,15 @@ export default function DialogRemover({ veiculo, setVeiculos }: VeiculoProps) {
             className="bg-red-500"
             onClick={() => handleRemoverVeiculo(veiculo.id)}
           >
-            Confirmar
+            {removendo ? (
+              <Image
+                src={loading}
+                alt="loading"
+                className="text-center animate-spin"
+              />
+            ) : (
+              "Confirmar"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
