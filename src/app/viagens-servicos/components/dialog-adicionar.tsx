@@ -242,7 +242,7 @@ export default function DialogAdicionar({
                     <SelectContent>
                       <SelectGroup>
                         {clientes.map((cliente) => (
-                          <SelectItem value={cliente.id.toString()}>
+                          <SelectItem key={cliente.id} value={cliente.id.toString()}>
                             {cliente.nome}
                           </SelectItem>
                         ))}
@@ -281,7 +281,7 @@ export default function DialogAdicionar({
                     <SelectContent>
                       <SelectGroup>
                         {servicos.map((servico) => (
-                          <SelectItem value={servico.valor}>
+                          <SelectItem key={servico.nome} value={servico.valor}>
                             {servico.nome}
                           </SelectItem>
                         ))}
@@ -304,7 +304,7 @@ export default function DialogAdicionar({
                     <SelectContent>
                       <SelectGroup>
                         {tipo_viagem.map((tipo) => (
-                          <SelectItem value={tipo}>{tipo}</SelectItem>
+                          <SelectItem key={tipo} value={tipo}>{tipo}</SelectItem>
                         ))}
                       </SelectGroup>
                     </SelectContent>
@@ -365,7 +365,7 @@ export default function DialogAdicionar({
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
                               {ufs.map((uf) => (
-                                <SelectItem value={uf.sigla}>
+                                <SelectItem key={uf.sigla} value={uf.sigla}>
                                   {uf.sigla}
                                 </SelectItem>
                               ))}
@@ -515,7 +515,7 @@ export default function DialogAdicionar({
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
                               {ufs.map((uf) => (
-                                <SelectItem value={uf.sigla}>
+                                <SelectItem key={uf.sigla} value={uf.sigla}>
                                   {uf.sigla}
                                 </SelectItem>
                               ))}
@@ -726,7 +726,7 @@ export default function DialogAdicionar({
                   <SelectContent className="absolute max-h-[200px]">
                     <SelectGroup>
                       {status_viagem.map((status_viagem) => (
-                        <SelectItem value={status_viagem.valor}>
+                        <SelectItem key={status_viagem.nome} value={status_viagem.valor}>
                           {status_viagem.nome}
                         </SelectItem>
                       ))}
@@ -742,7 +742,6 @@ export default function DialogAdicionar({
                 Fechar
               </Button>
             </DialogClose>
-
             <Button type="submit">Adicionar Viagem</Button>
           </DialogFooter>
         </form>

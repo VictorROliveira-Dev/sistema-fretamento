@@ -10,7 +10,10 @@ import {
 import Image from "next/image";
 import removeIcon from "@/app/assets/remove.svg";
 import { api } from "@/lib/axios";
-import { Fornecedor, Manutencao } from "@/lib/types";
+import { Manutencao } from "@/lib/types";
+import loading from "../../assets/loading.svg";
+import { useState } from "react";
+import { toast } from "sonner";
 
 interface ManutencoesProps {
   manutencao: Manutencao;
@@ -21,14 +24,33 @@ export default function DialogRemover({
   manutencao,
   setManutencoes,
 }: ManutencoesProps) {
+  const [removendo, setRemovendo] = useState(false);
   const handleRemoverManutencao = async (id: string) => {
+    setRemovendo(true);
     try {
       await api.delete(`/manutencao/${id}`);
       setManutencoes((prevManutencao) =>
         prevManutencao.filter((m) => m.id !== id)
       );
+      toast.success("Manutenção removida.", {
+        className:
+          "bg-green-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
     } catch (error) {
+      toast.error("Erro ao tentar remover manutenção.", {
+        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.error("Erro ao remover manutenção:", error);
+    } finally {
+      setRemovendo(false);
     }
   };
 
@@ -58,7 +80,15 @@ export default function DialogRemover({
             className="bg-red-500"
             onClick={() => handleRemoverManutencao(manutencao.id)}
           >
-            Confirmar
+            {removendo ? (
+              <Image
+                src={loading}
+                alt="loading"
+                className="text-center animate-spin"
+              />
+            ) : (
+              "Confirmar"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

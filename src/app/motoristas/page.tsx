@@ -78,6 +78,8 @@ export default function Motoristas() {
                   src={loading}
                   alt="loading"
                   className="text-center animate-spin"
+                  width={50}
+                  height={50}
                 />
               </div>
             ) : (

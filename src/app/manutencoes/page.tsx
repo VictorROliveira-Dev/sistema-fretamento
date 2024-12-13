@@ -1,5 +1,4 @@
 "use client";
-import removeIcon from "@/app/assets/remove.svg";
 import documentoIcon from "@/app/assets/documentos.svg";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,12 +17,14 @@ import { Manutencao, Servico, Veiculo } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import DialogRemover from "./components/dialog-remover";
+import loading from "../assets/loading-dark.svg";
 
 export default function Manutencoes() {
   const [manutencoes, setManutencoes] = useState<Manutencao[]>([]);
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const [servicos, setServicos] = useState<Servico[]>([]);
   const [buscarManutencao, setBuscarManutencao] = useState("");
+  const [carregando, setCarregando] = useState(false);
 
   const manutencoesFiltradas = manutencoes.filter((manutencao) => {
     if (!manutencao) return false;
@@ -34,6 +35,7 @@ export default function Manutencoes() {
 
   useEffect(() => {
     const fetchData = async () => {
+      setCarregando(true);
       try {
         // Busca todas as informações de uma vez
         const [manutencoesResponse, veiculosResponse, servicosResponse] =
@@ -49,6 +51,8 @@ export default function Manutencoes() {
         console.log(veiculosResponse.data.data);
       } catch (error) {
         console.error("Erro ao buscar os dados:", error);
+      } finally {
+        setCarregando(false);
       }
     };
 
@@ -95,77 +99,92 @@ export default function Manutencoes() {
                 setManutencoes={setManutencoes}
               />
             </div>
-            <div className="h-[200px] overflow-y-scroll scrollbar-hide">
-              <Table>
-                <TableHeader className="border-b-2">
-                  <TableRow>
-                    <TableHead className="text-black font-bold text-center">
-                      Tipo
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      Veículo
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      Serviço
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      Km Prevista
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      KM Atual
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      KM Realizada
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      Vencimento
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody className="text-center">
-                  {manutencoesFiltradas.map((manutencao) => (
-                    <TableRow key={manutencao.id} className="hover:bg-gray-200">
-                      <TableCell>{manutencao.tipo.toUpperCase()}</TableCell>
-                      <TableCell>
-                        {getVeiculoNome(manutencao.veiculoId)}
-                      </TableCell>
-                      <TableCell>
-                        {getServicoNome(manutencao.servicoId)}
-                      </TableCell>
-                      <TableCell>{manutencao.kmPrevista}</TableCell>
-                      <TableCell>{manutencao.kmAtual}</TableCell>
-                      <TableCell>{manutencao.kmRealizada}</TableCell>
-                      <TableCell>
-                        {new Date(manutencao.dataVencimento).toLocaleDateString(
-                          "pt-BR"
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <DialogEditar
-                            manutencoes={manutencoes}
-                            setManutencoes={setManutencoes}
-                            manutencao={manutencao}
-                          />
-                          <DialogRemover
-                            manutencao={manutencao}
-                            setManutencoes={setManutencoes}
-                          />
-                          <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                            <Image
-                              src={documentoIcon}
-                              alt="documento"
-                              width={25}
-                              className="hover:scale-110"
-                            />
-                          </Button>
-                        </div>
-                      </TableCell>
+            {carregando ? (
+              <div className="flex items-center justify-center">
+                <Image
+                  src={loading}
+                  alt="loading"
+                  className="text-center animate-spin"
+                  width={50}
+                  height={50}
+                />
+              </div>
+            ) : (
+              <div className="h-[200px] overflow-y-scroll scrollbar-hide">
+                <Table>
+                  <TableHeader className="border-b-2">
+                    <TableRow>
+                      <TableHead className="text-black font-bold text-center">
+                        Tipo
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        Veículo
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        Serviço
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        Km Prevista
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        KM Atual
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        KM Realizada
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        Vencimento
+                      </TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody className="text-center">
+                    {manutencoesFiltradas.map((manutencao) => (
+                      <TableRow
+                        key={manutencao.id}
+                        className="hover:bg-gray-200"
+                      >
+                        <TableCell>{manutencao.tipo.toUpperCase()}</TableCell>
+                        <TableCell>
+                          {getVeiculoNome(manutencao.veiculoId)}
+                        </TableCell>
+                        <TableCell>
+                          {getServicoNome(manutencao.servicoId)}
+                        </TableCell>
+                        <TableCell>{manutencao.kmPrevista}</TableCell>
+                        <TableCell>{manutencao.kmAtual}</TableCell>
+                        <TableCell>{manutencao.kmRealizada}</TableCell>
+                        <TableCell>
+                          {new Date(
+                            manutencao.dataVencimento
+                          ).toLocaleDateString("pt-BR")}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <DialogEditar
+                              manutencoes={manutencoes}
+                              setManutencoes={setManutencoes}
+                              manutencao={manutencao}
+                            />
+                            <DialogRemover
+                              manutencao={manutencao}
+                              setManutencoes={setManutencoes}
+                            />
+                            <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+                              <Image
+                                src={documentoIcon}
+                                alt="documento"
+                                width={25}
+                                className="hover:scale-110"
+                              />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </div>
         </div>
       </div>
