@@ -35,6 +35,7 @@ export type FormData = {
   cpf: string;
   habilitacao: Habilitacao;
 };
+
 export type FormDataFornecedor = {
   nome: string;
   dataNascimento: string;
@@ -127,6 +128,42 @@ export interface Cliente {
   endereco: Endereco;
   cpf: string;
   tipo: string;
+}
+
+export interface Rota {
+  saida: {
+    ufSaida: string;
+    cidadeSaida: string;
+    localDeSaida: string;
+  };
+  retorno: {
+    ufSaida: string;
+    cidadeSaida: string;
+    localDeSaida: string;
+  };
+}
+
+export interface DataHorario {
+  data: string;
+  hora: string;
+}
+
+export interface Viagem {
+  id: number;
+  rota: Rota;
+  dataHorarioSaida: DataHorario;
+  dataHorarioRetorno: DataHorario;
+  dataHorarioSaidaGaragem: DataHorario;
+  dataHorarioChegada: DataHorario;
+  clienteId: number;
+  tipoServico: string;
+  status: string;
+  tipoViagem: string;
+  tipoPagamento: string;
+  valorContratado: number;
+  itinerario: string;
+  veiculoId: number;
+  motoristaId: number;
 }
 
 export interface Servico {

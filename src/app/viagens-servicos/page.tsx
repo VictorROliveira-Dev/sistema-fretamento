@@ -1,4 +1,4 @@
-import removeIcon from "@/app/assets/remove.svg";
+"use client";
 import documentoIcon from "@/app/assets/documentos.svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,8 +14,28 @@ import Image from "next/image";
 import DialogInformacoes from "./components/dialog-informacoes";
 import DialogAdicionar from "./components/dialog-adicionar";
 import DialogEditar from "./components/dialog-editar";
+import { DialogExcluir } from "./components/dialog_excluir";
+import { useEffect, useState } from "react";
+import { Viagem } from "@/lib/types";
+import { api } from "@/lib/axios";
 
 export default function ViagensServicos() {
+  const [viagens, setViagens] = useState<Viagem[]>([]);
+
+  async function fetchViagens() {
+    const response = await api.get("/viagem");
+
+    if (!response.data.isSucces) {
+      console.log(response.data.message);
+      return;
+    }
+    console.log(response.data.data);
+    setViagens(response.data.data);
+  }
+  useEffect(() => {
+    fetchViagens();
+  }, []);
+
   return (
     <section className="bg-[#070180] pt-12 h-[424px] max-h-[1000px]">
       <div className="h-[300px] w-[1100px] max-h-screen mx-auto rounded-md bg-white flex flex-col">
@@ -46,23 +66,26 @@ export default function ViagensServicos() {
                 </div>
               </form>
 
-              <DialogAdicionar />
+              <DialogAdicionar setViagens={setViagens} viagens={viagens} />
             </div>
 
             <Table>
               <TableHeader className="border-b-2">
                 <TableRow>
                   <TableHead className="text-black font-bold text-center">
-                    UF Saída
+                    Motorista
+                  </TableHead>
+                  <TableHead className="text-black font-bold text-center">
+                    Veiculo
+                  </TableHead>
+                  <TableHead className="text-black font-bold text-center">
+                    Cliente
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
                     Cidade Saída
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
                     Data Saída
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center">
-                    UF Destino
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
                     Cidade Destino
@@ -79,41 +102,43 @@ export default function ViagensServicos() {
                 </TableRow>
               </TableHeader>
               <TableBody className="text-center">
-                <TableRow className="hover:bg-gray-200">
-                  <TableCell>
-                    <p>João</p>
-                  </TableCell>
-                  <TableCell>099.876.345-21</TableCell>
-                  <TableCell>Irecê - BA</TableCell>
-                  <TableCell>(74)98877-0044</TableCell>
-                  <TableCell>00123493411</TableCell>
-                  <TableCell>456-7</TableCell>
-                  <TableCell>45654-0</TableCell>
-                  <TableCell>45654-0</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <DialogEditar />
+                {viagens.map((viagem) => (
+                  <TableRow className="hover:bg-gray-200" key={viagem.id}>
+                    <TableCell>{viagem.motoristaId}</TableCell>
+                    <TableCell>{viagem.veiculoId}</TableCell>
+                    <TableCell>{viagem.clienteId}</TableCell>
+                    <TableCell>{viagem.rota.saida.cidadeSaida}</TableCell>
+                    <TableCell>{viagem.dataHorarioSaida.data}</TableCell>
+                    <TableCell>{viagem.rota.retorno.cidadeSaida}</TableCell>
+                    <TableCell>{viagem.dataHorarioRetorno.data}</TableCell>
+                    <TableCell>{viagem.valorContratado}</TableCell>
+                    <TableCell>{viagem.status}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <DialogEditar
+                          setViagens={setViagens}
+                          viagens={viagens}
+                          viagemprop={viagem}
+                        />
 
-                      <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                        <Image
-                          src={removeIcon}
-                          alt="Remover"
-                          width={25}
-                          className="hover:scale-110"
+                        <DialogExcluir
+                          id={viagem.id}
+                          setViagens={setViagens}
+                          viagens={viagens}
                         />
-                      </Button>
-                      <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                        <Image
-                          src={documentoIcon}
-                          alt="documento"
-                          width={25}
-                          className="hover:scale-110"
-                        />
-                      </Button>
-                      <DialogInformacoes />
-                    </div>
-                  </TableCell>
-                </TableRow>
+                        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+                          <Image
+                            src={documentoIcon}
+                            alt="documento"
+                            width={25}
+                            className="hover:scale-110"
+                          />
+                        </Button>
+                        <DialogInformacoes />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </div>
