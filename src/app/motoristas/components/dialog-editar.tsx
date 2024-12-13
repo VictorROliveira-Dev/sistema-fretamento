@@ -15,6 +15,8 @@ import editIcon from "../../assets/edit.svg";
 import { useEffect, useState } from "react";
 import { FormData, Motorista } from "@/lib/types";
 import { api } from "@/lib/axios";
+import loading from "../../assets/loading.svg";
+import { toast } from "sonner";
 
 interface MotoristasProps {
   motorista: Motorista;
@@ -42,6 +44,7 @@ export default function DialogEditar({
       uf: "",
     },
   });
+  const [editando, setEditando] = useState(false);
   useEffect(() => {
     if (motorista) {
       setFormData({
@@ -92,19 +95,35 @@ export default function DialogEditar({
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setEditando(true);
     try {
       const response = await api.put(`/motorista/${motorista.id}`, formData);
       const motoristaAtualizado = response.data.data;
-
       // Atualiza a lista de motoristas com o motorista editado
       const motoristasAtualizados = motoristas.map((m) =>
         m.id === motoristaAtualizado.id ? motoristaAtualizado : m
       );
-
       setMotoristas(motoristasAtualizados);
+      toast.success("Motorista atualizado.", {
+        className:
+          "bg-green-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.log("Motorista atualizado:", motoristaAtualizado);
     } catch (error) {
+      toast.error("Erro ao tentar atualizar motorista.", {
+        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.error("Erro ao atualizar motorista:", error);
+    } finally {
+      setEditando(false);
     }
   };
 
@@ -293,7 +312,7 @@ export default function DialogEditar({
             </div>
             <div className="flex flex-col gap-2">
               <div>
-                <label htmlFor="vencimento">Vencimento:</label>
+                <label htmlFor="vencimento">Vencimento CNH:</label>
                 <Input
                   name="vencimento"
                   className="border-2 font-medium text-black w-[250px]"
@@ -349,10 +368,17 @@ export default function DialogEditar({
             </div>
           </div>
           <DialogFooter className="flex items-center gap-2 mt-10">
-            <Button variant="outline" type="button">
-              Fechar
+            <Button type="submit" className="w-[250px]">
+              {editando ? (
+                <Image
+                  src={loading}
+                  alt="editando"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Atualizar"
+              )}
             </Button>
-            <Button type="submit">Salvar</Button>
           </DialogFooter>
         </form>
       </DialogContent>

@@ -13,6 +13,9 @@ import { api } from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { FormData, Motorista } from "@/lib/types";
+import { toast } from "sonner";
+import Image from "next/image";
+import loading from "../../assets/loading.svg";
 
 interface MotoristasProps {
   setMotoristas: React.Dispatch<React.SetStateAction<Motorista[]>>;
@@ -39,6 +42,8 @@ export default function DialogAdicionar({
     },
   });
 
+  const [adicionando, setAdicionando] = useState(false);
+
   const handleInputChange = (name: string, value: string) => {
     // Para campos aninhados
     if (name.includes(".")) {
@@ -62,12 +67,45 @@ export default function DialogAdicionar({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAdicionando(true);
+
     try {
       const response = await api.post("/motorista", formData);
       setMotoristas([...motoristas, response.data.data]);
+      toast.success("Motorista adicionado.", {
+        className:
+          "bg-green-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.log("Motorista adicionado:", response.data.data);
     } catch (error) {
-      console.error("Erro ao adicionar motorista:", error);
+      toast.error("Erro ao tentar adicionar motorista.", {
+        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+    } finally {
+      setFormData({
+        nome: "",
+        dataNascimento: "",
+        telefone: "",
+        documento: { documento: "", tipo: "" },
+        endereco: { uf: "", cidade: "", rua: "", bairro: "", numero: "" },
+        cpf: "",
+        habilitacao: {
+          protocolo: "",
+          vencimento: "",
+          categoria: "",
+          cidade: "",
+          uf: "",
+        },
+      });
+      setAdicionando(false);
     }
   };
 
@@ -258,7 +296,7 @@ export default function DialogAdicionar({
             </div>
             <div className="flex flex-col gap-2">
               <div>
-                <label htmlFor="vencimento">Vencimento:</label>
+                <label htmlFor="vencimento">Vencimento CNH:</label>
                 <Input
                   name="vencimento"
                   className="border-2 font-medium text-black w-[250px]"
@@ -314,10 +352,17 @@ export default function DialogAdicionar({
             </div>
           </div>
           <DialogFooter className="flex items-center gap-2 mt-10">
-            <Button variant="outline" type="button">
-              Fechar
+            <Button type="submit" className="w-[250px]">
+              {adicionando ? (
+                <Image
+                  src={loading}
+                  alt="adicionando"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Salvar"
+              )}
             </Button>
-            <Button type="submit">Salvar</Button>
           </DialogFooter>
         </form>
       </DialogContent>

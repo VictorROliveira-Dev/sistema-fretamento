@@ -106,7 +106,7 @@ export default function DialogAdicionar({
       <DialogTrigger asChild>
         <Button className="mt-10 bg-green-600">Adicionar Cliente</Button>
       </DialogTrigger>
-      <DialogContent className="w-auto h-[80%] overflow-y-scroll mx-auto">
+      <DialogContent className="w-auto h-[90%] overflow-y-scroll mx-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Formulário</DialogTitle>
         </DialogHeader>

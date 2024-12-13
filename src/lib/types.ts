@@ -35,6 +35,7 @@ export type FormData = {
   cpf: string;
   habilitacao: Habilitacao;
 };
+
 export type FormDataFornecedor = {
   nome: string;
   dataNascimento: string;
@@ -129,7 +130,6 @@ export interface Cliente {
   tipo: string;
 }
 
-
 export interface Rota {
   saida: {
     ufSaida: string;
@@ -144,7 +144,7 @@ export interface Rota {
 }
 
 export interface DataHorario {
-  data: string
+  data: string;
   hora: string;
 }
 
@@ -164,4 +164,62 @@ export interface Viagem {
   itinerario: string;
   veiculoId: number;
   motoristaId: number;
+}
+
+export interface Servico {
+  id: string;
+  nomeServico: string;
+}
+
+export interface Manutencao {
+  id: string;
+  dataLancamento: string;
+  dataVencimento: string;
+  dataRealizada: string;
+  tipo: string;
+  servicoId: number;
+  veiculoId: number;
+  kmPrevista: number;
+  kmAtual: number;
+  kmRealizada: number;
+  custo: number;
+}
+
+export interface IDocumentos {
+  id: string;
+  vencimento: string;
+  tipoDocumento: string;
+  referencia: string;
+}
+
+export interface IDespesas {
+  id: string;
+  dataEmissao: string;
+  dataCompra: string;
+  origemPagamento: string;
+  numeroDocumento: string;
+  responsavelId: number;
+  viagemId: number;
+  vencimento: string;
+  pago: boolean;
+  valorTotal: number;
+  valorParcial: number;
+  formaPagamento: string;
+  centroCusto: string;
+}
+
+export interface IReceitas {
+  id: string;
+  dataEmissao: string;
+  dataCompra: string;
+  origemPagamento: string;
+  numeroDocumento: string;
+  responsavelId: number;
+  viagemId: number;
+  vencimento: string;
+  pago: boolean;
+  valorTotal: number;
+  valorParcial: number;
+  formaPagamento: string;
+  centroCusto: string;
 }

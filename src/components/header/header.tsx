@@ -13,13 +13,13 @@ import fornecedores from "@/app/assets/grupo.png";
 import veiculos from "@/app/assets/onibus.png";
 import viagens from "@/app/assets/montanha.png";
 import manutencao from "@/app/assets/manutencao.png";
+import servicos from "@/app/assets/servico.png";
 import documentos from "@/app/assets/documentos.png";
 import financeiro from "@/app/assets/financa.png";
 import passageiros from "@/app/assets/passageiro.png";
 import passagens from "@/app/assets/passagens.png";
 import sino from "@/app/assets/sino.svg";
 
-// Agora utilizamos o caminho correto para cada imagem
 const icons = {
   painel: painel.src,
   motorista: motorista.src,
@@ -28,6 +28,7 @@ const icons = {
   veiculos: veiculos.src,
   viagens: viagens.src,
   manutencao: manutencao.src,
+  servicos: servicos.src,
   documentos: documentos.src,
   financeiro: financeiro.src,
   passageiros: passageiros.src,
@@ -35,7 +36,6 @@ const icons = {
   sino: sino.src,
 };
 
-// Tipagem para os itens de navegação
 interface NavItem {
   href: string;
   label: string;
@@ -50,6 +50,7 @@ const navItems: NavItem[] = [
   { href: "/veiculos", label: "Veículos", icon: icons.veiculos },
   { href: "/viagens-servicos", label: "Viagens", icon: icons.viagens },
   { href: "/manutencoes", label: "Manutenções", icon: icons.manutencao },
+  { href: "/servicos", label: "Serviços", icon: icons.servicos },
   { href: "/documentos", label: "Documentos", icon: icons.documentos },
   { href: "/financeiro", label: "Finanças", icon: icons.financeiro },
   { href: "/passageiros", label: "Passageiros", icon: icons.passageiros },
@@ -59,7 +60,7 @@ const navItems: NavItem[] = [
 // Tipagem do componente NavLink
 interface NavLinkProps {
   href: string;
-  icon: string; // Agora é apenas string, pois estamos utilizando o `src`
+  icon: string;
   label: string;
   isActive: boolean;
 }
@@ -77,7 +78,7 @@ const NavLink: FC<NavLinkProps> = ({ href, icon, label, isActive }) => (
 );
 
 const Header: FC = () => {
-  const pathname = usePathname() || ""; // usePathname pode retornar null, então garantimos que será uma string
+  const pathname = usePathname() || ""; 
 
   return (
     <header>

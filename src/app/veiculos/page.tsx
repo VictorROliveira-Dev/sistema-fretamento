@@ -1,7 +1,4 @@
 "use client";
-import removeIcon from "@/app/assets/remove.svg";
-import documentoIcon from "@/app/assets/documentos.svg";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -10,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Image from "next/image";
 import FormInput from "@/components/form-input";
 import DialogAdicionar from "./components/dialog-adicionar";
 import DialogEditar from "./components/dialog-editar";
@@ -19,18 +15,24 @@ import { useEffect, useState } from "react";
 import { Veiculo } from "@/lib/types";
 import { api } from "@/lib/axios";
 import DialogRemover from "./components/dialog-remover";
+import Image from "next/image";
+import loading from "../assets/loading-dark.svg";
 
 export default function Veiculos() {
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const [buscarVeiculos, setBuscarVeiculos] = useState("");
+  const [carregando, setCarregando] = useState(false);
 
   useEffect(() => {
     const fetchVeiculos = async () => {
+      setCarregando(true);
       try {
         const response = await api.get("/veiculo");
         setVeiculos(response.data.data ? response.data.data : []);
       } catch (error) {
         console.log("Erro ao capturar veículos", error);
+      } finally {
+        setCarregando(false);
       }
     };
     fetchVeiculos();
@@ -66,66 +68,76 @@ export default function Veiculos() {
               </form>
               <DialogAdicionar veiculos={veiculos} setVeiculos={setVeiculos} />
             </div>
-            <div className="h-[200px] overflow-y-scroll">
-              <Table>
-                <TableHeader className="border-b-2">
-                  <TableRow>
-                    <TableHead className="text-black font-bold text-center">
-                      Prefixo
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      Placa
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      KM Atual
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      Marca
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      Tanque
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      Tipo
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      Qtd. Poltronas
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      Ano
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody className="text-center">
-                  {veiculosFiltrados.map((veiculo) => (
-                    <TableRow key={veiculo.id} className="hover:bg-gray-200">
-                      <TableCell>{veiculo.prefixo}</TableCell>
-                      <TableCell>{veiculo.placa}</TableCell>
-                      <TableCell>{veiculo.kmAtual}</TableCell>
-                      <TableCell>{veiculo.marca}</TableCell>
-                      <TableCell>{veiculo.capacidadeTank}</TableCell>
-                      <TableCell>{veiculo.tipo}</TableCell>
-                      <TableCell>{veiculo.quantidadePoltronas}</TableCell>
-                      <TableCell>{veiculo.ano}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <DialogEditar
-                            veiculo={veiculo}
-                            setVeiculos={setVeiculos}
-                            veiculos={veiculos}
-                          />
-                          <DialogRemover
-                            veiculo={veiculo}
-                            setVeiculos={setVeiculos}
-                          />
-                          <DialogInformacoes veiculoId={veiculo.id} />
-                        </div>
-                      </TableCell>
+            {carregando ? (
+              <div className="flex items-center justify-center p-10">
+                <Image
+                  src={loading}
+                  alt="loading"
+                  className="text-center animate-spin"
+                />
+              </div>
+            ) : (
+              <div className="h-[200px] overflow-y-scroll scrollbar-hide">
+                <Table>
+                  <TableHeader className="border-b-2">
+                    <TableRow>
+                      <TableHead className="text-black font-bold text-center">
+                        Prefixo
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        Placa
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        KM Atual
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        Marca
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        Tanque
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        Tipo
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        Qtd. Poltronas
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        Ano
+                      </TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody className="text-center">
+                    {veiculosFiltrados.map((veiculo) => (
+                      <TableRow key={veiculo.id} className="hover:bg-gray-200">
+                        <TableCell>{veiculo.prefixo}</TableCell>
+                        <TableCell>{veiculo.placa}</TableCell>
+                        <TableCell>{veiculo.kmAtual}</TableCell>
+                        <TableCell>{veiculo.marca}</TableCell>
+                        <TableCell>{veiculo.capacidadeTank}</TableCell>
+                        <TableCell>{veiculo.tipo}</TableCell>
+                        <TableCell>{veiculo.quantidadePoltronas}</TableCell>
+                        <TableCell>{veiculo.ano}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <DialogEditar
+                              veiculo={veiculo}
+                              setVeiculos={setVeiculos}
+                              veiculos={veiculos}
+                            />
+                            <DialogRemover
+                              veiculo={veiculo}
+                              setVeiculos={setVeiculos}
+                            />
+                            <DialogInformacoes veiculoId={veiculo.id} />
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </div>
         </div>
       </div>
