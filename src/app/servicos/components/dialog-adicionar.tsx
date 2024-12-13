@@ -11,22 +11,54 @@ import {
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/axios";
 import { Input } from "@/components/ui/input";
+import Image from "next/image";
+import loading from "../../assets/loading.svg";
+import { toast } from "sonner";
+import { Servico } from "@/lib/types";
 
-export default function DialogAdicionarServico() {
+interface ServicoProps {
+  setServicos: React.Dispatch<React.SetStateAction<Servico[]>>;
+  servicos: Servico[];
+}
+
+export default function DialogAdicionarServico({
+  setServicos,
+  servicos,
+}: ServicoProps) {
   const [nomeServico, setNomeServico] = useState("");
+  const [adicionando, setAdicionando] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAdicionando(true);
 
     const servicoData = {
       nomeServico,
     };
     try {
       const response = await api.post("/servico", servicoData);
+      setServicos([...servicos, response.data.data]);
+      toast.success("Serviço adicionado.", {
+        className:
+          "bg-green-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.log("Serviço adicionado:", response.data.data);
-      setNomeServico("");
     } catch (error) {
+      toast.error("Erro ao tentar adicionar serviço.", {
+        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.error("Erro ao adicionar serviço:", error);
+    } finally {
+      setNomeServico("");
+      setAdicionando(false);
     }
   };
 
@@ -61,7 +93,15 @@ export default function DialogAdicionarServico() {
           </div>
           <DialogFooter className="flex items-center gap-2 mt-10">
             <Button type="submit" className="w-[200px]">
-              Salvar
+              {adicionando ? (
+                <Image
+                  src={loading}
+                  alt="loading"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Salvar"
+              )}
             </Button>
           </DialogFooter>
         </form>

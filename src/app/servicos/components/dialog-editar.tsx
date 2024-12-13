@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Servico } from "@/lib/types";
 import Image from "next/image";
 import editIcon from "@/app/assets/edit.svg";
+import loading from "../../assets/loading.svg";
+import { toast } from "sonner";
 
 interface ServicoProps {
   servico: Servico;
@@ -27,6 +29,7 @@ export default function DialogEditar({
   setServicos,
 }: ServicoProps) {
   const [nomeServico, setNomeServico] = useState("");
+  const [editando, setEditando] = useState(false);
 
   useEffect(() => {
     setNomeServico(servico.nomeServico);
@@ -34,6 +37,7 @@ export default function DialogEditar({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setEditando(true);
 
     const servicoData = {
       nomeServico,
@@ -46,10 +50,26 @@ export default function DialogEditar({
         return s.id === servicoAtualizado.id ? servicoAtualizado : s;
       });
       setServicos(servicosAtualizados);
+      toast.success("Serviço atualizado.", {
+        className:
+          "bg-green-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.log("Serviço atualizado:", response.data.data);
-      setNomeServico("");
     } catch (error) {
+      toast.error("Erro ao tentar atualizar serviço.", {
+        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.error("Erro ao adicionar motorista:", error);
+    } finally {
+      setEditando(false);
     }
   };
 
@@ -89,7 +109,15 @@ export default function DialogEditar({
           </div>
           <DialogFooter className="flex items-center gap-2 mt-10">
             <Button type="submit" className="w-[200px]">
-              Salvar
+              {editando ? (
+                <Image
+                  src={loading}
+                  alt="loading"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Atualizar"
+              )}
             </Button>
           </DialogFooter>
         </form>
