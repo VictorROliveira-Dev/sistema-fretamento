@@ -149,8 +149,40 @@ export interface Manutencao {
 }
 
 export interface IDocumentos {
-  id: string
+  id: string;
   vencimento: string;
   tipoDocumento: string;
   referencia: string;
+}
+
+export interface IDespesas {
+  id: string;
+  dataEmissao: string;
+  dataCompra: string;
+  origemPagamento: string;
+  numeroDocumento: string;
+  responsavelId: number;
+  viagemId: number;
+  vencimento: string;
+  pago: boolean;
+  valorTotal: number;
+  valorParcial: number;
+  formaPagamento: string;
+  centroCusto: string;
+}
+
+export interface IReceitas {
+  id: string;
+  dataEmissao: string;
+  dataCompra: string;
+  origemPagamento: string;
+  numeroDocumento: string;
+  responsavelId: number;
+  viagemId: number;
+  vencimento: string;
+  pago: boolean;
+  valorTotal: number;
+  valorParcial: number;
+  formaPagamento: string;
+  centroCusto: string;
 }

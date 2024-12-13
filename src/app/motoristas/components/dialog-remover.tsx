@@ -51,6 +51,7 @@ export default function DialogRemover({
           <DialogTitle className="font-black">
             Deseja remover o motorista?
           </DialogTitle>
+          <p className="text-sm text-gray-500 font-medium text-center">Essa ação não poderá ser desfeita</p>
         </DialogHeader>
         <DialogFooter className="flex items-center">
           <Button className="bg-red-500" onClick={() => handleRemoverMotorista(motorista.id)}>Confirmar</Button>

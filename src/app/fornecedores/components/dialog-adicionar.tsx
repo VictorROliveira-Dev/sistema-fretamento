@@ -70,7 +70,7 @@ export default function DialogAdicionar({
           Adicionar Fornecedor
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[1200px] h-[500px] flex flex-col items-center">
+      <DialogContent className="w-[1200px] h-[450px] flex flex-col items-center">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Fornecedor
@@ -250,10 +250,7 @@ export default function DialogAdicionar({
             </div>
           </div>
           <DialogFooter className="flex items-center gap-2 mt-10">
-            <Button variant="outline" type="button">
-              Fechar
-            </Button>
-            <Button type="submit">Salvar</Button>
+            <Button type="submit" className="w-[250px]">Salvar</Button>
           </DialogFooter>
         </form>
       </DialogContent>

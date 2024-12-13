@@ -49,6 +49,9 @@ export default function DialogRemover({
           <DialogTitle className="font-black">
             Deseja remover o documento?
           </DialogTitle>
+          <p className="text-sm text-gray-500 font-medium text-center">
+            Essa ação não poderá ser desfeita
+          </p>
         </DialogHeader>
         <DialogFooter className="flex items-center">
           <Button

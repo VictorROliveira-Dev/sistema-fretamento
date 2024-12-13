@@ -261,7 +261,7 @@ export default function DialogAdicionar({
           </div>
 
           <DialogFooter className="flex items-center gap-2 mt-10">
-            <Button type="submit" className="w-[200px]">
+            <Button type="submit" className="w-[250px]">
               Salvar
             </Button>
           </DialogFooter>

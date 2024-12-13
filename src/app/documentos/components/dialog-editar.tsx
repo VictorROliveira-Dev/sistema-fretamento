@@ -74,7 +74,7 @@ export default function DialogEditar({
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[600px] h-[380px] flex flex-col items-center">
+      <DialogContent className="w-[600px] h-[350px] flex flex-col items-center">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Documento
@@ -127,7 +127,7 @@ export default function DialogEditar({
 
           <DialogFooter className="flex items-center gap-2 mt-10">
             <Button type="submit" className="w-[250px]">
-              Salvar
+              Atualizar
             </Button>
           </DialogFooter>
         </form>

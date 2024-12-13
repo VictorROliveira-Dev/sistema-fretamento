@@ -78,7 +78,7 @@ const NavLink: FC<NavLinkProps> = ({ href, icon, label, isActive }) => (
 );
 
 const Header: FC = () => {
-  const pathname = usePathname() || ""; // usePathname pode retornar null, então garantimos que será uma string
+  const pathname = usePathname() || ""; 
 
   return (
     <header>

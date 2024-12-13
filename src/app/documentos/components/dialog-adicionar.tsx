@@ -65,7 +65,7 @@ export default function DialogAdicionar({
           Adicionar Documento
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[600px] h-[380px] flex flex-col items-center">
+      <DialogContent className="w-[600px] h-[350px] flex flex-col items-center">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Documento

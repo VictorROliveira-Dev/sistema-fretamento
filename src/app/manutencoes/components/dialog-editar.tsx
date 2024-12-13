@@ -128,9 +128,7 @@ export default function DialogEditar({
       </DialogTrigger>
       <DialogContent className="w-[1200px] h-[400px] flex flex-col items-center">
         <DialogHeader className="mb-5">
-          <DialogTitle className="font-black">
-            Edição de Manutenção
-          </DialogTitle>
+          <DialogTitle className="font-black">Edição de Manutenção</DialogTitle>
         </DialogHeader>
         <form
           className="w-full flex flex-col items-center"
@@ -273,8 +271,8 @@ export default function DialogEditar({
           </div>
 
           <DialogFooter className="flex items-center gap-2 mt-10">
-            <Button type="submit" className="w-[200px]">
-              Salvar
+            <Button type="submit" className="w-[250px]">
+              Atualizar
             </Button>
           </DialogFooter>
         </form>
