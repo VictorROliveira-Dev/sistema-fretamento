@@ -10,7 +10,10 @@ import {
 import Image from "next/image";
 import removeIcon from "@/app/assets/remove.svg";
 import { api } from "@/lib/axios";
-import { Fornecedor, Motorista } from "@/lib/types";
+import loading from "../../assets/loading.svg";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Fornecedor } from "@/lib/types";
 
 interface FornecedoresProps {
   fornecedor: Fornecedor;
@@ -21,14 +24,33 @@ export default function DialogRemover({
   fornecedor,
   setFornecedores,
 }: FornecedoresProps) {
+  const [removendo, setRemovendo] = useState(false);
   const handleRemoverFornecedor = async (id: string) => {
+    setRemovendo(true);
     try {
       await api.delete(`/api/fornecedor/${id}`);
       setFornecedores((prevFornecedor) =>
         prevFornecedor.filter((m) => m.id !== id)
       );
+      toast.success("Fornecedor removido.", {
+        className:
+          "bg-green-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
     } catch (error) {
+      toast.error("Erro ao tentar remover fornecedor.", {
+        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.error("Erro ao remover motorista:", error);
+    } finally {
+      setRemovendo(false);
     }
   };
 
@@ -58,7 +80,15 @@ export default function DialogRemover({
             className="bg-red-500"
             onClick={() => handleRemoverFornecedor(fornecedor.id)}
           >
-            Confirmar
+            {removendo ? (
+              <Image
+                src={loading}
+                alt="loading"
+                className="text-center animate-spin"
+              />
+            ) : (
+              "Confirmar"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

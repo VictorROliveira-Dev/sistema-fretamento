@@ -81,7 +81,7 @@ export default function Motoristas() {
                 />
               </div>
             ) : (
-              <div className="h-[200px] overflow-y-scroll">
+              <div className="h-[200px] overflow-y-scroll scrollbar-hide">
                 <Table>
                   <TableHeader className="border-b-2">
                     <TableRow>

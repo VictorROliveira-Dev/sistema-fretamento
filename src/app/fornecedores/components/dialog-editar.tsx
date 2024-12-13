@@ -10,12 +10,12 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { formFieldsPessoas } from "@/lib/objects";
 import { Button } from "@/components/ui/button";
-import FormInput from "@/components/form-input";
 import { FormDataFornecedor, Fornecedor } from "@/lib/types";
 import React, { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
+import loading from "../../assets/loading.svg";
+import { toast } from "sonner";
 
 interface FornecedoresProps {
   fornecedor: Fornecedor;
@@ -37,6 +37,7 @@ export default function DialogEditar({
     cpf: "",
     tipo: "",
   });
+  const [editando, setEditando] = useState(false);
   useEffect(() => {
     if (fornecedor) {
       setFormData({
@@ -78,6 +79,7 @@ export default function DialogEditar({
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setEditando(true);
     try {
       const response = await api.put(
         `/api/fornecedor/${fornecedor.id}`,
@@ -89,8 +91,25 @@ export default function DialogEditar({
         f.id === fornecedorAtualizado.id ? fornecedorAtualizado : f
       );
       setFornecedores(fornecedoresAtualizados);
+      toast.success("Fornecedor atualizado.", {
+        className:
+          "bg-green-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
     } catch (error) {
+      toast.error("Erro ao tentar atualizar fornecedor.", {
+        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.log("erro ao atualizar fornecedor", error);
+    } finally {
+      setEditando(false);
     }
   };
 
@@ -282,7 +301,17 @@ export default function DialogEditar({
             </div>
           </div>
           <DialogFooter className="flex items-center gap-2 mt-10">
-            <Button type="submit" className="w-[250px]">Atualizar</Button>
+            <Button type="submit" className="w-[250px]">
+              {editando ? (
+                <Image
+                  src={loading}
+                  alt="loading"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Atualizar"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

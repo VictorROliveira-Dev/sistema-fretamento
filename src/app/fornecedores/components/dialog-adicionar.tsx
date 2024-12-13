@@ -13,6 +13,18 @@ import { FormDataFornecedor, Fornecedor } from "@/lib/types";
 import { useState } from "react";
 import { FormData } from "@/lib/types";
 import { api } from "@/lib/axios";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Image from "next/image";
+import loading from "../../assets/loading.svg";
+import { toast } from "sonner";
 
 interface FornecedorProps {
   setFornecedor: React.Dispatch<React.SetStateAction<Fornecedor[]>>;
@@ -32,6 +44,7 @@ export default function DialogAdicionar({
     cpf: "",
     tipo: "",
   });
+  const [adicionando, setAdicionando] = useState(false);
   const handleInputChange = (name: string, value: string) => {
     // Para campos aninhados
     if (name.includes(".")) {
@@ -54,12 +67,39 @@ export default function DialogAdicionar({
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAdicionando(true);
     try {
       const response = await api.post("/api/fornecedor", formData);
       setFornecedor([...fornecedores, response.data.data]);
+      toast.success("Fornecedor adicionado.", {
+        className:
+          "bg-green-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.log("Fornecedor adicionado:", response.data.data);
     } catch (error) {
+      toast.error("Erro ao tentar adicionar fornecedor.", {
+        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.error("Erro ao adicionar fornecedor:", error);
+    } finally {
+      setFormData({
+        nome: "",
+        dataNascimento: "",
+        telefone: "",
+        documento: { documento: "", tipo: "" },
+        endereco: { uf: "", cidade: "", rua: "", bairro: "", numero: "" },
+        cpf: "",
+        tipo: "",
+      });
+      setAdicionando(false);
     }
   };
 
@@ -234,23 +274,38 @@ export default function DialogAdicionar({
                 />
               </div>
             </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="tipo">Tipo Pessoa:</label>
-                <Input
-                  name="tipo"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o tipo de pessoa..."
-                  value={formData.tipo}
-                  onChange={(e) =>
-                    handleInputChange("tipo", e.target.value)
-                  }
-                />
-              </div>
+            <div>
+              <label htmlFor="tipo">Tipo Pessoa:</label>
+              <Select
+                name="tipo"
+                value={formData.tipo}
+                onValueChange={(value) => handleInputChange("tipo", value)}
+              >
+                <SelectTrigger className="w-[250px]">
+                  <SelectValue placeholder="Selecione o tipo..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Tipos</SelectLabel>
+                    <SelectItem value="física">Física</SelectItem>
+                    <SelectItem value="jurídica">Juridica</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <DialogFooter className="flex items-center gap-2 mt-10">
-            <Button type="submit" className="w-[250px]">Salvar</Button>
+            <Button type="submit" className="w-[250px]">
+              {adicionando ? (
+                <Image
+                  src={loading}
+                  alt="loading"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Salvar"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
