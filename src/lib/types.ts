@@ -206,6 +206,7 @@ export interface IDespesas {
   valorParcial: number;
   formaPagamento: string;
   centroCusto: string;
+  responsavelNome: string
 }
 
 export interface IReceitas {

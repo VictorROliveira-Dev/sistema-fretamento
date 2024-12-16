@@ -1,15 +1,5 @@
 "use client";
-import removeIcon from "@/app/assets/remove.svg";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -25,13 +15,14 @@ import documentoIcon from "@/app/assets/documentos.svg";
 import { IDocumentos } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
-import { Input } from "@/components/ui/input";
 import FormInput from "@/components/form-input";
 import DialogRemover from "./components/dialog-remover";
+import loading from "../assets/loading-dark.svg";
 
 export default function Documentos() {
   const [documentos, setDocumentos] = useState<IDocumentos[]>([]);
   const [buscarDocumento, setBuscarDocumento] = useState("");
+  const [carregando, setCarregando] = useState(false);
 
   const documentosFiltrados = documentos.filter((documento) => {
     return documento.tipoDocumento
@@ -41,11 +32,14 @@ export default function Documentos() {
 
   useEffect(() => {
     const fetchDocumentos = async () => {
+      setCarregando(true);
       try {
         const response = await api.get("/documento");
         setDocumentos(response.data.data ? response.data.data : []);
       } catch (error) {
         console.log("Erro ao capturar documentos", error);
+      } finally {
+        setCarregando(false);
       }
     };
 
@@ -80,57 +74,66 @@ export default function Documentos() {
               />
             </div>
             <div className="h-[200px] overflow-y-scroll scrollbar-hide">
-              <Table>
-                <TableHeader className="border-b-2">
-                  <TableRow>
-                    <TableHead className="text-black font-bold text-center">
-                      Doc/Certificado
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      Referência
-                    </TableHead>
-                    <TableHead className="text-black font-bold text-center">
-                      Vencimento
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody className="text-center">
-                  {documentosFiltrados.map((documento) => (
-                    <TableRow key={documento.id} className="hover:bg-gray-200">
-                      <TableCell>
-                        {documento.tipoDocumento.toUpperCase()}
-                      </TableCell>
-                      <TableCell>{documento.referencia}</TableCell>
-                      <TableCell>
-                        {new Date(documento.vencimento).toLocaleDateString(
-                          "pt-BR"
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <DialogEditar
-                            setDocumentos={setDocumentos}
-                            documentos={documentos}
-                            documento={documento}
-                          />
-                          <DialogRemover
-                            documento={documento}
-                            setDocumentos={setDocumentos}
-                          />
-                          <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                            <Image
-                              src={documentoIcon}
-                              alt="documento"
-                              width={25}
-                              className="hover:scale-110"
-                            />
-                          </Button>
-                        </div>
-                      </TableCell>
+              {carregando ? (
+                <div className="flex items-center justify-center">
+                  <Image src={loading} alt="carregando" width={50} className="animate-spin" />
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader className="border-b-2">
+                    <TableRow>
+                      <TableHead className="text-black font-bold text-center">
+                        Doc/Certificado
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        Referência
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center">
+                        Vencimento
+                      </TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody className="text-center">
+                    {documentosFiltrados.map((documento) => (
+                      <TableRow
+                        key={documento.id}
+                        className="hover:bg-gray-200"
+                      >
+                        <TableCell>
+                          {documento.tipoDocumento.toUpperCase()}
+                        </TableCell>
+                        <TableCell>{documento.referencia}</TableCell>
+                        <TableCell>
+                          {new Date(documento.vencimento).toLocaleDateString(
+                            "pt-BR"
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <DialogEditar
+                              setDocumentos={setDocumentos}
+                              documentos={documentos}
+                              documento={documento}
+                            />
+                            <DialogRemover
+                              documento={documento}
+                              setDocumentos={setDocumentos}
+                            />
+                            <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+                              <Image
+                                src={documentoIcon}
+                                alt="documento"
+                                width={25}
+                                className="hover:scale-110"
+                              />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
             </div>
           </div>
         </div>

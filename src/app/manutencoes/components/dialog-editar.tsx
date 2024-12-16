@@ -54,9 +54,6 @@ export default function DialogEditar({
   const [editando, setEditando] = useState(false);
 
   useEffect(() => {
-    setDataVencimento(manutencao.dataVencimento);
-    setDataLancamento(manutencao.dataLancamento);
-    setDataRealizada(manutencao.dataRealizada);
     setTipo(manutencao.tipo);
     setServico(manutencao.servicoId);
     setVeiculo(manutencao.veiculoId);

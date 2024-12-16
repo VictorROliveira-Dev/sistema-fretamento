@@ -14,6 +14,8 @@ import { api } from "@/lib/axios";
 import { IDocumentos } from "@/lib/types";
 import Image from "next/image";
 import editIcon from "@/app/assets/edit.svg";
+import loading from "../../assets/loading.svg";
+import { toast } from "sonner";
 
 interface DocumentosProps {
   setDocumentos: React.Dispatch<React.SetStateAction<IDocumentos[]>>;
@@ -29,6 +31,7 @@ export default function DialogEditar({
   const [tipoDocumento, setTipoDocumento] = useState("");
   const [vencimento, setVencimento] = useState("");
   const [referencia, setReferencia] = useState("");
+  const [editando, setEditando] = useState(false);
 
   useEffect(() => {
     if (documento) {
@@ -40,6 +43,7 @@ export default function DialogEditar({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setEditando(true);
 
     const documentData = {
       tipoDocumento: tipoDocumento,
@@ -57,8 +61,24 @@ export default function DialogEditar({
         return doc.id === documentoAtualizado.id ? documentoAtualizado : doc;
       });
       setDocumentos(documentosAtualizados);
+      toast.success("Documento atualizado.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
     } catch (error) {
+      toast.error("Erro ao tentar atualizar documento.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.error("Erro ao adicionar documento:", error);
+    } finally {
+      setEditando(false);
     }
   };
 
@@ -127,7 +147,15 @@ export default function DialogEditar({
 
           <DialogFooter className="flex items-center gap-2 mt-10">
             <Button type="submit" className="w-[250px]">
-              Atualizar
+              {editando ? (
+                <Image
+                  src={loading}
+                  alt="carregando"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Atualizar"
+              )}
             </Button>
           </DialogFooter>
         </form>

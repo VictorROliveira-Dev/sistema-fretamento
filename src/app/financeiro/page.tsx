@@ -11,44 +11,85 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
-import DialogEditar from "./components/despesas/dialog-editar";
-import DialogEditarReceita from "./components/receitas/dialog-editar";
-import Despesas from "./components/despesas/despesas";
-import Receitas from "./components/receitas/receitas";
 import documentoIcon from "@/app/assets/documentos.svg";
 import { useEffect, useState } from "react";
 import { IDespesas, IReceitas } from "@/lib/types";
 import { api } from "@/lib/axios";
+import loading from "../assets/loading-dark.svg";
+import DialogEditarDespesa from "./components/despesas/dialog-editar";
+import DialogEditarReceita from "./components/receitas/dialog-editar";
+import DialogRemoverDespesa from "./components/despesas/dialog-remover";
+import { Input } from "@/components/ui/input";
+import DialogAdicionarDespesa from "./components/despesas/dialog-adicionar";
+import DialogAdicionarReceita from "./components/receitas/dialog-adicionar";
 
 export default function Financeiro() {
   const [despesas, setDespesas] = useState<IDespesas[]>([]);
   const [receitas, setReceitas] = useState<IReceitas[]>([]);
+  const [carregando, setCarregando] = useState(false);
+  const [responsaveis, setResponsaveis] = useState([]);
 
   useEffect(() => {
-    const fetchDespesas = async () => {
+    const fetchData = async () => {
+      setCarregando(true);
       try {
-        const response = await api.get("/despesa");
-        setDespesas(response.data.data ? response.data.data : []);
+        const [despesasResponse, receitasResponse] = await Promise.all([
+          api.get("/despesa/getall"),
+          api.get("/api/receita"),
+        ]);
+
+        const despesasData = despesasResponse.data.data || [];
+        // Função auxiliar para buscar o nome do responsável
+        const getResponsavelNome = async (responsavelId: string) => {
+          if (!responsavelId) return "";
+
+          try {
+            // Tenta obter o responsável de cada tipo (motorista, cliente, fornecedor)
+            const endpoints = [
+              api.get(`/motorista/${responsavelId}`),
+              api.get(`/cliente/${responsavelId}`),
+              api.get(`/api/fornecedor/${responsavelId}`),
+            ];
+
+            const [motoristaResponse, clienteResponse, fornecedorResponse] =
+              await Promise.all(endpoints.map((req) => req.catch(() => null)));
+
+            if (motoristaResponse) return motoristaResponse.data.data.nome;
+            if (clienteResponse) return clienteResponse.data.data.nome;
+            if (fornecedorResponse) return fornecedorResponse.data.data.nome;
+
+            return ""; // Retorna vazio caso não encontre
+          } catch (error) {
+            console.log("Erro ao buscar responsável", error);
+            return ""; // Retorna vazio em caso de erro
+          }
+        };
+
+        // Busca os nomes dos responsáveis e retorna as despesas com as informações completas
+        const despesasComResponsavel = await Promise.all(
+          despesasData.map(async (despesa: IDespesas) => {
+            const responsavelNome = await getResponsavelNome(
+              despesa.responsavelId.toString()
+            );
+            return { ...despesa, responsavelNome };
+          })
+        );
+        // Atualiza o estado com as despesas e receitas
+        setDespesas(despesasComResponsavel);
+        setReceitas(receitasResponse.data.data || []);
       } catch (error) {
-        console.log("Erro ao tentar recuperar despesas", error);
-      }
-    };
-    const fetchReceitas = async () => {
-      try {
-        const response = await api.get("/api/receita");
-        setReceitas(response.data.data ? response.data.data : []);
-      } catch (error) {
-        console.log("Erro ao tentar recuperar receitas", error);
+        console.log("Erro ao tentar recuperar os dados", error);
+      } finally {
+        setCarregando(false);
       }
     };
 
-    fetchDespesas();
-    fetchReceitas();
+    fetchData();
   }, []);
 
   return (
     <section className="bg-[#070180] pt-12 h-[424px] max-h-[1000px]">
-      <div className="h-[300px] w-[1000px] max-h-[430px] mx-auto rounded-md bg-white flex flex-col">
+      <div className="h-[400px] w-[1000px] max-h-[430px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Finanças
@@ -66,132 +107,200 @@ export default function Financeiro() {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="despesas">
-                <Despesas />
-                <Table>
-                  <TableHeader className="border-b-2">
-                    <TableRow>
-                      <TableHead className="text-black font-bold text-center">
-                        Vencimento
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center">
-                        Origem
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center">
-                        Responsável
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center">
-                        Pago
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center">
-                        Centro de Custo
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center">
-                        Valor Parcial
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center">
-                        Valor Total
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody className="text-center">
-                    {despesas.map((despesa) => (
-                      <TableRow key={despesa.id} className="hover:bg-gray-200">
-                        <TableCell>{despesa.vencimento}</TableCell>
-                        <TableCell>{despesa.origemPagamento}</TableCell>
-                        <TableCell>{despesa.responsavelId}</TableCell>
-                        <TableCell>{despesa.pago}</TableCell>
-                        <TableCell>{despesa.centroCusto}</TableCell>
-                        <TableCell>{despesa.valorParcial}</TableCell>
-                        <TableCell>{despesa.valorTotal}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <DialogEditar />
-                            <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                              <Image
-                                src={removeIcon}
-                                alt="Remover"
-                                width={25}
-                                className="hover:scale-110"
-                              />
-                            </Button>
-                            <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                              <Image
-                                src={documentoIcon}
-                                alt="documento"
-                                width={25}
-                                className="hover:scale-110"
-                              />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <div className="flex items-center justify-between">
+                  <form className="flex gap-2 font-bold">
+                    <div>
+                      <label htmlFor="inicio">Data inicio:</label>
+                      <Input type="date" name="inicio" />
+                    </div>
+                    <div>
+                      <label htmlFor="final">Data Final:</label>
+                      <Input type="date" name="final" />
+                    </div>
+                  </form>
+                  <DialogAdicionarDespesa
+                    despesas={despesas}
+                    setDespesas={setDespesas}
+                  />
+                </div>
+                {carregando ? (
+                  <div className="flex items-center justify-center">
+                    <Image
+                      src={loading}
+                      alt="loading"
+                      className="animate-spin"
+                      width={50}
+                    />
+                  </div>
+                ) : (
+                  <div className="h-[200px] overflow-y-scroll scrollbar-hide">
+                    <Table>
+                      <TableHeader className="border-b-2">
+                        <TableRow>
+                          <TableHead className="text-black font-bold text-center">
+                            Vencimento
+                          </TableHead>
+                          <TableHead className="text-black font-bold text-center">
+                            Origem
+                          </TableHead>
+                          <TableHead className="text-black font-bold text-center">
+                            Responsável
+                          </TableHead>
+                          <TableHead className="text-black font-bold text-center">
+                            Pago
+                          </TableHead>
+                          <TableHead className="text-black font-bold text-center">
+                            Centro de Custo
+                          </TableHead>
+                          <TableHead className="text-black font-bold text-center">
+                            Valor Parcial
+                          </TableHead>
+                          <TableHead className="text-black font-bold text-center">
+                            Valor Total
+                          </TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody className="text-center">
+                        {despesas.map((despesa) => (
+                          <TableRow
+                            key={despesa.id}
+                            className="hover:bg-gray-200"
+                          >
+                            <TableCell>
+                              {new Date(despesa.vencimento).toLocaleDateString(
+                                "pt-BR"
+                              )}
+                            </TableCell>
+                            <TableCell>{despesa.origemPagamento}</TableCell>
+                            <TableCell>{despesa.responsavelNome}</TableCell>
+                            <TableCell>{despesa.pago ? "sim" : "nao"}</TableCell>
+                            <TableCell>{despesa.centroCusto}</TableCell>
+                            <TableCell>{despesa.valorParcial}</TableCell>
+                            <TableCell>{despesa.valorTotal}</TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <DialogEditarDespesa
+                                  despesa={despesa}
+                                  setDespesas={setDespesas}
+                                  despesas={despesas}
+                                />
+                                <DialogRemoverDespesa
+                                  despesa={despesa}
+                                  setDespesas={setDespesas}
+                                />
+                                <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+                                  <Image
+                                    src={documentoIcon}
+                                    alt="documento"
+                                    width={25}
+                                    className="hover:scale-110"
+                                  />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
               </TabsContent>
               <TabsContent value="receitas">
-                <Receitas />
-                <Table>
-                  <TableHeader className="border-b-2">
-                    <TableRow>
-                      <TableHead className="text-black font-bold text-center">
-                        Vencimento
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center">
-                        Origem
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center">
-                        Responsável
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center">
-                        Pago
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center">
-                        Centro de Custo
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center">
-                        Valor Parcial
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center">
-                        Valor Total
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody className="text-center">
-                    {receitas.map((receita) => (
-                      <TableRow key={receita.id} className="hover:bg-gray-200">
-                        <TableCell>{receita.vencimento}</TableCell>
-                        <TableCell>{receita.origemPagamento}</TableCell>
-                        <TableCell>{receita.responsavelId}</TableCell>
-                        <TableCell>{receita.pago}</TableCell>
-                        <TableCell>{receita.centroCusto}</TableCell>
-                        <TableCell>{receita.valorParcial}</TableCell>
-                        <TableCell>{receita.valorTotal}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <DialogEditar />
-                            <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                              <Image
-                                src={removeIcon}
-                                alt="Remover"
-                                width={25}
-                                className="hover:scale-110"
-                              />
-                            </Button>
-                            <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                              <Image
-                                src={documentoIcon}
-                                alt="documento"
-                                width={25}
-                                className="hover:scale-110"
-                              />
-                            </Button>
-                          </div>
-                        </TableCell>
+                <div className="flex items-center justify-between">
+                  <form className="flex gap-2 font-bold">
+                    <div>
+                      <label htmlFor="inicio">Data inicio:</label>
+                      <Input type="date" name="inicio" />
+                    </div>
+                    <div>
+                      <label htmlFor="final">Data Final:</label>
+                      <Input type="date" name="final" />
+                    </div>
+                  </form>
+                  <DialogAdicionarReceita
+                    receitas={receitas}
+                    setReceitas={setReceitas}
+                  />
+                </div>
+                {carregando ? (
+                  <div className="flex items-center justify-center">
+                    <Image
+                      src={loading}
+                      alt="loading"
+                      className="animate-spin"
+                      width={50}
+                    />
+                  </div>
+                ) : (
+                  <Table>
+                    <TableHeader className="border-b-2">
+                      <TableRow>
+                        <TableHead className="text-black font-bold text-center">
+                          Vencimento
+                        </TableHead>
+                        <TableHead className="text-black font-bold text-center">
+                          Origem
+                        </TableHead>
+                        <TableHead className="text-black font-bold text-center">
+                          Responsável
+                        </TableHead>
+                        <TableHead className="text-black font-bold text-center">
+                          Pago
+                        </TableHead>
+                        <TableHead className="text-black font-bold text-center">
+                          Centro de Custo
+                        </TableHead>
+                        <TableHead className="text-black font-bold text-center">
+                          Valor Parcial
+                        </TableHead>
+                        <TableHead className="text-black font-bold text-center">
+                          Valor Total
+                        </TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody className="text-center">
+                      {receitas.map((receita) => (
+                        <TableRow
+                          key={receita.id}
+                          className="hover:bg-gray-200"
+                        >
+                          <TableCell>
+                            {new Date(receita.vencimento).toLocaleDateString(
+                              "pt-BR"
+                            )}
+                          </TableCell>
+                          <TableCell>{receita.origemPagamento}</TableCell>
+                          <TableCell>{receita.responsavelId}</TableCell>
+                          <TableCell>{receita.pago ? "sim" : "nao"}</TableCell>
+                          <TableCell>{receita.centroCusto}</TableCell>
+                          <TableCell>{receita.valorParcial}</TableCell>
+                          <TableCell>{receita.valorTotal}</TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <DialogEditarReceita />
+                              <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+                                <Image
+                                  src={removeIcon}
+                                  alt="Remover"
+                                  width={25}
+                                  className="hover:scale-110"
+                                />
+                              </Button>
+                              <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+                                <Image
+                                  src={documentoIcon}
+                                  alt="documento"
+                                  width={25}
+                                  className="hover:scale-110"
+                                />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                )}
               </TabsContent>
             </Tabs>
           </div>
