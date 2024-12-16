@@ -22,12 +22,14 @@ import DialogRemoverDespesa from "./components/despesas/dialog-remover";
 import { Input } from "@/components/ui/input";
 import DialogAdicionarDespesa from "./components/despesas/dialog-adicionar";
 import DialogAdicionarReceita from "./components/receitas/dialog-adicionar";
+import DialogRemoverReceita from "./components/receitas/dialog-remover";
 
 export default function Financeiro() {
   const [despesas, setDespesas] = useState<IDespesas[]>([]);
   const [receitas, setReceitas] = useState<IReceitas[]>([]);
+  const [dataInicio, setDataInicio] = useState<string>("");
+  const [dataFinal, setDataFinal] = useState<string>("");
   const [carregando, setCarregando] = useState(false);
-  const [responsaveis, setResponsaveis] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,10 +37,11 @@ export default function Financeiro() {
       try {
         const [despesasResponse, receitasResponse] = await Promise.all([
           api.get("/despesa/getall"),
-          api.get("/api/receita"),
+          api.get("/api/receita/getall"),
         ]);
 
         const despesasData = despesasResponse.data.data || [];
+        const receitasData = receitasResponse.data.data || [];
         // Função auxiliar para buscar o nome do responsável
         const getResponsavelNome = async (responsavelId: string) => {
           if (!responsavelId) return "";
@@ -74,9 +77,42 @@ export default function Financeiro() {
             return { ...despesa, responsavelNome };
           })
         );
+        // Filtrar despesas com base no intervalo de datas
+        const despesasFiltradas = despesasComResponsavel.filter((despesa) => {
+          if (!dataInicio && !dataFinal) return true;
+          const dataVencimento = new Date(despesa.vencimento);
+          const inicio = dataInicio ? new Date(dataInicio) : null;
+          const final = dataFinal ? new Date(dataFinal) : null;
+
+          if (inicio && final) {
+            return dataVencimento >= inicio && dataVencimento <= final;
+          } else if (inicio) {
+            return dataVencimento >= inicio;
+          } else if (final) {
+            return dataVencimento <= final;
+          }
+          return true;
+        });
+        // Filtrar receitas com base no intervalo de datas
+        const receitasFiltradas = receitasData.filter((receita: IReceitas) => {
+          if (!dataInicio && !dataFinal) return true;
+          const dataVencimento = new Date(receita.vencimento);
+          const inicio = dataInicio ? new Date(dataInicio) : null;
+          const final = dataFinal ? new Date(dataFinal) : null;
+
+          if (inicio && final) {
+            return dataVencimento >= inicio && dataVencimento <= final;
+          } else if (inicio) {
+            return dataVencimento >= inicio;
+          } else if (final) {
+            return dataVencimento <= final;
+          }
+          return true;
+        });
+
         // Atualiza o estado com as despesas e receitas
-        setDespesas(despesasComResponsavel);
-        setReceitas(receitasResponse.data.data || []);
+        setDespesas(despesasFiltradas);
+        setReceitas(receitasFiltradas);
       } catch (error) {
         console.log("Erro ao tentar recuperar os dados", error);
       } finally {
@@ -85,7 +121,7 @@ export default function Financeiro() {
     };
 
     fetchData();
-  }, []);
+  }, [dataInicio, dataFinal]);
 
   return (
     <section className="bg-[#070180] pt-12 h-[424px] max-h-[1000px]">
@@ -111,11 +147,21 @@ export default function Financeiro() {
                   <form className="flex gap-2 font-bold">
                     <div>
                       <label htmlFor="inicio">Data inicio:</label>
-                      <Input type="date" name="inicio" />
+                      <Input
+                        type="date"
+                        name="inicio"
+                        value={dataInicio}
+                        onChange={(e) => setDataInicio(e.target.value)}
+                      />
                     </div>
                     <div>
                       <label htmlFor="final">Data Final:</label>
-                      <Input type="date" name="final" />
+                      <Input
+                        type="date"
+                        name="final"
+                        value={dataFinal}
+                        onChange={(e) => setDataFinal(e.target.value)}
+                      />
                     </div>
                   </form>
                   <DialogAdicionarDespesa
@@ -173,7 +219,9 @@ export default function Financeiro() {
                             </TableCell>
                             <TableCell>{despesa.origemPagamento}</TableCell>
                             <TableCell>{despesa.responsavelNome}</TableCell>
-                            <TableCell>{despesa.pago ? "sim" : "nao"}</TableCell>
+                            <TableCell>
+                              {despesa.pago ? "sim" : "nao"}
+                            </TableCell>
                             <TableCell>{despesa.centroCusto}</TableCell>
                             <TableCell>{despesa.valorParcial}</TableCell>
                             <TableCell>{despesa.valorTotal}</TableCell>
@@ -210,11 +258,21 @@ export default function Financeiro() {
                   <form className="flex gap-2 font-bold">
                     <div>
                       <label htmlFor="inicio">Data inicio:</label>
-                      <Input type="date" name="inicio" />
+                      <Input
+                        type="date"
+                        name="inicio"
+                        value={dataInicio}
+                        onChange={(e) => setDataInicio(e.target.value)}
+                      />
                     </div>
                     <div>
                       <label htmlFor="final">Data Final:</label>
-                      <Input type="date" name="final" />
+                      <Input
+                        type="date"
+                        name="final"
+                        value={dataFinal}
+                        onChange={(e) => setDataFinal(e.target.value)}
+                      />
                     </div>
                   </form>
                   <DialogAdicionarReceita
@@ -271,21 +329,25 @@ export default function Financeiro() {
                           </TableCell>
                           <TableCell>{receita.origemPagamento}</TableCell>
                           <TableCell>{receita.responsavelId}</TableCell>
-                          <TableCell>{receita.pago ? "sim" : "nao"}</TableCell>
+                          <TableCell>
+                            {receita.pago
+                              ? "sim".toUpperCase()
+                              : "não".toUpperCase()}
+                          </TableCell>
                           <TableCell>{receita.centroCusto}</TableCell>
                           <TableCell>{receita.valorParcial}</TableCell>
                           <TableCell>{receita.valorTotal}</TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
-                              <DialogEditarReceita />
-                              <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                                <Image
-                                  src={removeIcon}
-                                  alt="Remover"
-                                  width={25}
-                                  className="hover:scale-110"
-                                />
-                              </Button>
+                              <DialogEditarReceita
+                                receita={receita}
+                                setReceitas={setReceitas}
+                                receitas={receitas}
+                              />
+                              <DialogRemoverReceita
+                                receita={receita}
+                                setReceitas={setReceitas}
+                              />
                               <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
                                 <Image
                                   src={documentoIcon}

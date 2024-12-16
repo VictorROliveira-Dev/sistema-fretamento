@@ -41,8 +41,8 @@ export default function DialogAdicionarReceita({
   const [responsavelId, setResponsavelId] = useState<number | "">();
   const [vencimento, setVencimento] = useState("");
   const [pago, setPago] = useState(false);
-  const [valorTotal, setValorTotal] = useState<number>();
-  const [valorParcial, setValorParcial] = useState<number>();
+  const [valorTotal, setValorTotal] = useState<number | "">();
+  const [valorParcial, setValorParcial] = useState<number | "">();
   const [formaPagamento, setFormaPagamento] = useState("");
   const [centroCusto, setCentroCusto] = useState("");
 

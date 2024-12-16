@@ -133,7 +133,7 @@ export default function DialogEditarDespesa({
       const despesaAtualizada = response.data.data;
 
       const despesasAtualizadas = despesas.map((d) => {
-        return d.id === despesaAtualizada ? despesaAtualizada : d;
+        return d.id === despesaAtualizada.id ? despesaAtualizada : d;
       });
       setDespesas(despesasAtualizadas);
       console.log("despesa atualizar com sucesso", response.data.data);

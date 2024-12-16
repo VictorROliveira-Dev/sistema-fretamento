@@ -113,7 +113,7 @@ export default function DialogEditar({
       setManutencoes(manutencoesAtualizados);
       toast.success("Manutenção atualizada.", {
         className:
-          "bg-green-500 text-white font-semibold border-none shadow-lg",
+          "text-white font-semibold border-none shadow-lg",
         style: {
           borderRadius: "10px",
           padding: "16px",
@@ -121,7 +121,7 @@ export default function DialogEditar({
       });
     } catch (error) {
       toast.error("Erro ao tentar atualizar manutenção.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        className: "text-white font-semibold border-none shadow-lg",
         style: {
           borderRadius: "10px",
           padding: "16px",
