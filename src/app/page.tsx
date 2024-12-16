@@ -50,9 +50,7 @@ const invoices = [
 export default function Home() {
   const [documentos, setDocumentos] = useState<IDocumentos[]>([]);
   const [viagens, setViagens] = useState<Viagem[]>([]);
-  const diasDaSemana = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
-
-
+  const diasDaSemana = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SÁB"];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,8 +59,19 @@ export default function Home() {
           api.get("/documento"),
           api.get("/viagem"),
         ]);
+        // Obtendo a data atual
+        const dataAtual = new Date();
+        const mesAtual = dataAtual.getMonth(); // Mês atual (0 = Janeiro, 11 = Dezembro)
+        const anoAtual = dataAtual.getFullYear(); // Ano atual
+        // Filtrando apenas as viagens do mês atual
+        const viagensDoMesAtual = viagensResponse.data.data.filter((viagem: Viagem) => {
+          const dataViagem = new Date(viagem.dataHorarioSaida.data);
+          const mesViagem = dataViagem.getMonth();
+          const anoViagem = dataViagem.getFullYear();
+          return mesViagem === mesAtual && anoViagem === anoAtual;
+        });
         setDocumentos(documentosReponse.data.data);
-        setViagens(viagensResponse.data.data);
+        setViagens(viagensDoMesAtual);
       } catch (error) {
         console.log("erro ao tentar recuperar dados", error);
       }
@@ -73,8 +82,8 @@ export default function Home() {
 
   return (
     <>
-      <main className="h-[424px] max-h-[500px] bg-[#070180] pt-10">
-        <div className="h-[350px] w-[1200px] mx-auto rounded-md bg-white flex items-center justify-around">
+      <main className="h-[425px] max-h-[500px] bg-[#070180] pt-10">
+        <div className="h-[350px] w-[800px] mx-auto rounded-md bg-white flex items-center justify-around">
           <div className="w-[380px] h-[300px] rounded-md shadow-lg shadow-black/40 flex flex-col items-center gap-4">
             <p className="font-bold">Viagens/Serviços</p>
             <div className="h-[200px] overflow-y-scroll scrollbar-hide">
@@ -99,14 +108,24 @@ export default function Home() {
                   {viagens.map((viagem) => (
                     <TableRow key={viagem.id}>
                       <TableCell>
-                      {diasDaSemana[new Date(viagem.dataHorarioSaida.data).getDay()]} 
+                        {
+                          diasDaSemana[
+                            new Date(viagem.dataHorarioSaida.data).getDay()
+                          ]
+                        }
                       </TableCell>
                       <TableCell>
                         {new Date(
                           viagem.dataHorarioSaida.data
                         ).toLocaleDateString("pt-BR")}
                       </TableCell>
-                      <TableCell>{viagem.valorContratado}</TableCell>
+                      <TableCell>
+                        {" "}
+                        {viagem.valorContratado.toLocaleString("pt-BR", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                      </TableCell>
                       <TableCell>{viagem.tipoViagem}</TableCell>
                     </TableRow>
                   ))}
@@ -116,28 +135,13 @@ export default function Home() {
             <div className="flex justify-center">
               <Link
                 href="/viagens-servicos"
-                className="bg-black text-white text-sm w-20 text-center p-2 rounded-md hover:bg-black/85 transition-all"
+                className="bg-black text-white text-sm w-20 text-center p-2 rounded-md hover:bg-black/85 transition-all font-medium"
               >
                 Ver mais
               </Link>
             </div>
           </div>
-          <CustomTable
-            title="Veículos utilizados nos próximos 30 dias"
-            headers={["Dia", "Data", "Placa"]}
-            rows={invoices}
-            renderRow={(invoice) => (
-              <>
-                <TableCell className="text-center">{invoice.invoice}</TableCell>
-                <TableCell className="text-center">
-                  {invoice.paymentStatus}
-                </TableCell>
-                <TableCell className="text-center">
-                  {invoice.paymentMethod}
-                </TableCell>
-              </>
-            )}
-          />
+
           <div className="w-[380px] h-[300px] rounded-md shadow-lg shadow-black/40 flex flex-col items-center gap-4">
             <p className="font-bold">Vencimento Doc/Certificados</p>
             <div className="h-[200px] overflow-y-scroll scrollbar-hide">
@@ -173,7 +177,7 @@ export default function Home() {
             <div className="flex justify-center">
               <Link
                 href="/documentos"
-                className="bg-black text-white text-sm w-20 text-center p-2 rounded-md hover:bg-black/85 transition-all"
+                className="bg-black text-white text-sm w-20 text-center p-2 rounded-md hover:bg-black/85 transition-all font-medium"
               >
                 Ver mais
               </Link>
