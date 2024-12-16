@@ -116,7 +116,7 @@ export default function Motoristas() {
                         <TableCell>{motorista.nome}</TableCell>
                         <TableCell>{motorista.cpf}</TableCell>
                         <TableCell>{motorista.endereco.cidade}</TableCell>
-                        <TableCell>{motorista.endereco.uf}</TableCell>
+                        <TableCell>{motorista.endereco.uf.toUpperCase()}</TableCell>
                         <TableCell>{motorista.telefone}</TableCell>
                         <TableCell>{motorista.documento.documento}</TableCell>
                         <TableCell>

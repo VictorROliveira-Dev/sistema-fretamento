@@ -82,7 +82,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">UF:</h2>
-                  <p>{motorista.endereco.uf}</p>
+                  <p>{motorista.endereco.uf.toUpperCase()}</p>
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">Cidade:</h2>

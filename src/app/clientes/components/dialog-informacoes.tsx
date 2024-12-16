@@ -79,7 +79,7 @@ export default function DialogInformacoes({ cliente }: InfoProps) {
             </div>
             <div className="flex gap-2">
               <h2 className="font-bold">Tipo Documento:</h2>
-              <p>{cliente.documento.tipo}</p>
+              <p>{cliente.documento.tipo.toUpperCase()}</p>
             </div>
           </div>
         </div>
