@@ -17,6 +17,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { api } from "@/lib/axios";
 import { Cidade, Cliente, Documento, Endereco, Uf } from "@/lib/types";
+import { toast } from "sonner";
+import Image from "next/image";
+import loading from "../../assets/loading.svg";
 
 interface ClienteProps {
   clientes: Cliente[];
@@ -34,6 +37,7 @@ export default function DialogAdicionar({
   const [telefone, setTelefone] = useState<string>("");
   const [cpf, setCpf] = useState<string>("");
   const [tipo, setTipo] = useState<string>("");
+  const [adicionando, setAdicionando] = useState(false);
 
   const [documento, setDocumento] = useState<Documento>({
     documento: "",
@@ -83,6 +87,8 @@ export default function DialogAdicionar({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAdicionando(true);
+
     const cliente = {
       nome: nome,
       dataNascimento: dataNascimento,
@@ -93,18 +99,41 @@ export default function DialogAdicionar({
       tipo: tipo,
     };
     console.log(cliente);
-    const response = await api.post("/cliente", cliente);
-    if (!response.data.isSuccess) {
-      console.log(response.data.message + "error");
+    try {
+      const response = await api.post("/cliente", cliente);
+      setClientes([...clientes, response.data.data]);
+      toast.success("Cliente adicionado.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+    } catch (error) {
+      toast.error("Erro ao tentar adicionar cliente.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+      console.log(error);
+    } finally {
+      setNome("");
+      setDataNascimento("");
+      setTelefone("");
+      setDocumento({ documento: "", tipo: "" });
+      setEndereco({ uf: "", cidade: "", rua: "", bairro: "", numero: "" });
+      setCpf("");
+      setTipo("");
+      setAdicionando(false);
     }
-
-    setClientes([...clientes, response.data.data]);
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="mt-10 bg-green-600">Adicionar Cliente</Button>
+        <Button className="mt-10 bg-green-600 hover:bg-green-600">Adicionar Cliente</Button>
       </DialogTrigger>
       <DialogContent className="w-auto h-[90%] overflow-y-scroll mx-auto">
         <DialogHeader>
@@ -251,7 +280,15 @@ export default function DialogAdicionar({
           </div>
           <DialogFooter>
             <Button type="submit" className="w-full mt-8">
-              Enviar
+              {adicionando ? (
+                <Image
+                  src={loading}
+                  alt="carregando"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Salvar"
+              )}
             </Button>
           </DialogFooter>
         </form>

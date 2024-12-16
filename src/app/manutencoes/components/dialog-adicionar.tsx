@@ -98,8 +98,7 @@ export default function DialogAdicionar({
       const response = await api.post("/manutencao", manutencaoData);
       setManutencoes([...manutencoes, response.data.data]);
       toast.success("Manutenção adicionada.", {
-        className:
-          "bg-green-500 text-white font-semibold border-none shadow-lg",
+        className: "text-white font-semibold border-none shadow-lg",
         style: {
           borderRadius: "10px",
           padding: "16px",
@@ -108,7 +107,7 @@ export default function DialogAdicionar({
       console.log("Manutenção adicionada:", response.data.data);
     } catch (error) {
       toast.error("Erro ao tentar adicionar manutenção.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        className: "text-white font-semibold border-none shadow-lg",
         style: {
           borderRadius: "10px",
           padding: "16px",

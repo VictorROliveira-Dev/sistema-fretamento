@@ -16,6 +16,8 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import axios from "axios";
 import { Cidade, Cliente, Uf } from "@/lib/types";
+import loading from "../../assets/loading.svg";
+import { toast } from "sonner";
 
 interface ClienteEditProps {
   clientes: Cliente[];
@@ -31,6 +33,7 @@ export default function DialogEditar({
   const [ufs, setUfs] = useState<Uf[]>([]);
   const [cidades, setCidades] = useState<Cidade[]>([]);
   const [client, setCliente] = useState<Cliente>(cliente);
+  const [editando, setEditando] = useState(false);
 
   useEffect(() => {
     axios
@@ -69,18 +72,34 @@ export default function DialogEditar({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setEditando(true);
 
-    console.log(cliente);
-    const response = await api.put(`/cliente/${client.id}`, client);
-    if (!response.data.isSuccess) {
-      console.log(response.data.message + "error");
+    try {
+      const response = await api.put(`/cliente/${client.id}`, client);
+      const clienteAtualizado = response.data.data;
+      const clientesAtualizados = clientes.filter(
+        (cliente) => cliente.id !== clienteAtualizado.id
+      );
+      setClientes([...clientesAtualizados, clienteAtualizado]);
+      toast.success("Cliente atualizado.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+    } catch (error) {
+      toast.error("Erro ao tentar atualizar cliente.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+      console.log("Erro ao tentar editar cliente.", error);
+    } finally {
+      setEditando(false);
     }
-
-    const clienteAtualizado = response.data.data;
-    const clientesAtualizados = clientes.filter(
-      (cliente) => cliente.id !== clienteAtualizado.id
-    );
-    setClientes([...clientesAtualizados, clienteAtualizado]);
   };
   return (
     <Dialog>
@@ -281,7 +300,15 @@ export default function DialogEditar({
           </div>
           <DialogFooter>
             <Button type="submit" className="w-full mt-8">
-              Atualizar
+              {editando ? (
+                <Image
+                  src={loading}
+                  alt="loading"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Atualizar"
+              )}
             </Button>
           </DialogFooter>
         </form>

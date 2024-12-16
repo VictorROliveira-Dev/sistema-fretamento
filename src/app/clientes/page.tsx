@@ -22,6 +22,7 @@ import Image from "next/image";
 export default function Clientes() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [carregando, setCarregando] = useState(false);
+  const [buscarCliente, setBuscarCliente] = useState<string | "">("");
 
   async function fetchClientes() {
     setCarregando(true);
@@ -38,6 +39,12 @@ export default function Clientes() {
   useEffect(() => {
     fetchClientes();
   }, []);
+
+  const clientesFiltrados = clientes.filter((cliente) => {
+    if (!cliente) return false;
+    return cliente.nome.toLowerCase().includes(buscarCliente.toLowerCase());
+  });
+
   return (
     <section className="bg-[#070180] pt-12 h-[424px] max-h-[1000px]">
       <div className="h-[400px] w-[1000px] max-h-[430px] mx-auto rounded-md bg-white flex flex-col">
@@ -54,6 +61,8 @@ export default function Clientes() {
                   label="Nome Cliente..."
                   name="nomecliente"
                   placeholder="Digite o nome..."
+                  value={buscarCliente}
+                  onChange={(e) => setBuscarCliente(e.target.value)}
                 />
               </form>
               <DialogAdicionar clientes={clientes} setClientes={setClientes} />
@@ -93,7 +102,7 @@ export default function Clientes() {
                     </TableRow>
                   </TableHeader>
                   <TableBody className="text-center">
-                    {clientes.map((cliente) => (
+                    {clientesFiltrados.map((cliente) => (
                       <TableRow className="hover:bg-gray-200" key={cliente.id}>
                         <TableCell>{cliente.nome}</TableCell>
                         <TableCell>{cliente.cpf}</TableCell>
@@ -108,8 +117,9 @@ export default function Clientes() {
                               clientes={clientes}
                             />
                             <DialogExcluir
-                              clienteId={cliente.id}
+                              cliente={cliente}
                               clienteName={cliente.nome}
+                              setClientes={setClientes}
                             />
                             <DialogInformacoes cliente={cliente} />
                           </div>
