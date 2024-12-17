@@ -82,3 +82,24 @@ body {
   -ms-overflow-style: none; /* IE e Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.fc-button {
+  background-color: white !important;
+  color: black !important;
+  border-radius: 5px !important;
+  border: none !important;
+  
+}
+
+.fc-button:hover {
+  background-color: gray !important;
+}
+
+.fc-button.fc-today-button {
+  background-color: black !important;
+  color: #fff !important;
+}
+
+.fc-button.fc-today-button:hover {
+  opacity: 0.9;
+}

@@ -17,6 +17,7 @@ import { api } from "@/lib/axios";
 import DialogRemover from "./components/dialog-remover";
 import Image from "next/image";
 import loading from "../assets/loading-dark.svg";
+import Link from "next/link";
 
 export default function Veiculos() {
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
@@ -66,7 +67,18 @@ export default function Veiculos() {
                   />
                 </div>
               </form>
-              <DialogAdicionar veiculos={veiculos} setVeiculos={setVeiculos} />
+              <div className="flex gap-2 items-center">
+                <Link
+                  href="/calendario"
+                  className="py-2 px-4 bg-black text-white rounded-md text-sm hover:bg-black/85"
+                >
+                  Ver Calendário
+                </Link>
+                <DialogAdicionar
+                  veiculos={veiculos}
+                  setVeiculos={setVeiculos}
+                />
+              </div>
             </div>
             {carregando ? (
               <div className="flex items-center justify-center p-10">
