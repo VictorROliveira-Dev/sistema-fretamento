@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import DialogRemover from "./components/dialog-remover";
 import loading from "../assets/loading-dark.svg";
+import DialogInformacoes from "./components/dialog-informacoes";
 
 export default function Manutencoes() {
   const [manutencoes, setManutencoes] = useState<Manutencao[]>([]);
@@ -177,6 +178,9 @@ export default function Manutencoes() {
                                 className="hover:scale-110"
                               />
                             </Button>
+                            <DialogInformacoes
+                              manutencaoId={Number(manutencao.id)}
+                            />
                           </div>
                         </TableCell>
                       </TableRow>

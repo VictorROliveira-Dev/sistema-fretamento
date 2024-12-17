@@ -1,10 +1,8 @@
-import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -15,18 +13,10 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  formFieldsDadosChegada,
-  formFieldsDadosChegadaValores,
-  formFieldsDadosSaida,
-  formFieldsDadosSaidaValores,
-} from "@/lib/objects";
-
 import Image from "next/image";
 import editIcon from "@/app/assets/edit.svg";
 import { Label } from "@/components/ui/label";
@@ -35,6 +25,8 @@ import axios from "axios";
 import { Cidade, Cliente, Motorista, Uf, Veiculo, Viagem } from "@/lib/types";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import loading from "../../assets/loading.svg";
 
 interface EditarProps {
   setViagens: React.Dispatch<React.SetStateAction<Viagem[]>>;
@@ -54,34 +46,29 @@ export default function DialogEditar({
   const [cidadesSaida, setCidadesSaida] = useState<Cidade[]>([]);
   const [cidadesVolta, setCidadesVolta] = useState<Cidade[]>([]);
   const [viagem, setViagem] = useState<Viagem>(viagemprop);
+  const [editando, setEditando] = useState(false);
 
   async function fetchClientes() {
     const response = await api.get("/cliente");
-
     if (!response.data.isSucces) {
       console.log(response.data.message);
     }
-
     setClientes(response.data.data);
   }
 
   async function fetchMotoristas() {
     const response = await api.get("/motorista");
-
     if (!response.data.isSucces) {
       console.log(response.data.message);
     }
-
     setMotoristas(response.data.data);
   }
 
   async function fetchVeiculos() {
     const response = await api.get("/veiculo");
-
     if (!response.data.isSucces) {
       console.log(response.data.message);
     }
-
     setVeiculos(response.data.data);
   }
 
@@ -107,16 +94,31 @@ export default function DialogEditar({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const response = await api.put(`viagem/${viagem.id}`, viagem);
+    setEditando(true);
 
-    if (!response.data.isSucces) {
-      console.log(response.data.message);
-      return;
+    try {
+      const response = await api.put(`viagem/${viagem.id}`, viagem);
+      const viagensAtualizada = viagens.filter((v) => v.id !== viagem.id);
+      setViagens([...viagensAtualizada, viagem]);
+      toast.success("Viagem atualizada.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+    } catch (error) {
+      toast.error("Erro ao tentar atualizar viagem.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+      console.log(error);
+    } finally {
+      setEditando(false);
     }
-
-    const viagensAtualizada = viagens.filter((v) => v.id !== viagem.id);
-    setViagens([...viagensAtualizada, viagem]);
-    alert("atualizado com sucesso");
   }
 
   const handleUfSaidaChange = (uf: string) => {
@@ -742,7 +744,17 @@ export default function DialogEditar({
               </Button>
             </DialogClose>
 
-            <Button type="submit">Adicionar Viagem</Button>
+            <Button type="submit">
+              {editando ? (
+                <Image
+                  src={loading}
+                  alt="carregando"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Atualizar"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

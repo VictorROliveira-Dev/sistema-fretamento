@@ -23,6 +23,8 @@ import { Input } from "@/components/ui/input";
 import DialogAdicionarDespesa from "./components/despesas/dialog-adicionar";
 import DialogAdicionarReceita from "./components/receitas/dialog-adicionar";
 import DialogRemoverReceita from "./components/receitas/dialog-remover";
+import DialogInformacoesDespesas from "./components/despesas/dialog-informacoes";
+import DialogInformacoesReceitas from "./components/receitas/dialog-informacoes";
 
 export default function Financeiro() {
   const [despesas, setDespesas] = useState<IDespesas[]>([]);
@@ -244,6 +246,9 @@ export default function Financeiro() {
                                     className="hover:scale-110"
                                   />
                                 </Button>
+                                <DialogInformacoesDespesas
+                                  despesaId={despesa.id}
+                                />
                               </div>
                             </TableCell>
                           </TableRow>
@@ -356,6 +361,9 @@ export default function Financeiro() {
                                   className="hover:scale-110"
                                 />
                               </Button>
+                              <DialogInformacoesReceitas
+                                receitaId={receita.id}
+                              />
                             </div>
                           </TableCell>
                         </TableRow>
