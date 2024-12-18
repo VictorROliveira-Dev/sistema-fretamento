@@ -58,16 +58,15 @@ export default function DialogRemover({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
           <Image
             src={removeIcon}
             alt="Remover"
-            width={25}
-            className="hover:scale-110"
+            className="w-10 md:w-6"
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[350px] h-[150px] flex flex-col items-center">
+      <DialogContent className="w-[350px] h-[150px] rounded-md flex flex-col items-center">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Deseja remover o motorista?

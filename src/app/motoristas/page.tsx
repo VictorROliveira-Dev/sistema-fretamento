@@ -43,21 +43,20 @@ export default function Motoristas() {
     if (!motorista.nome) {
       return false;
     }
-
     return motorista.nome.toLowerCase().includes(buscarMotorista.toLowerCase());
   });
 
   return (
-    <section className="bg-[#070180] pt-12 h-[425px]">
-      <div className="h-[400px] w-[1000px] mx-auto rounded-md bg-white flex flex-col">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px]">
+      <div className="h-[400px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Motoristas
           </p>
         </div>
         <div className="flex items-center p-10">
-          <div className="mx-auto w-full space-y-4">
-            <div className="flex items-center justify-between">
+          <div className="mx-auto md:w-full space-y-4">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between">
               <form className="flex flex-col gap-2 font-bold">
                 <FormInput
                   label="Nome Motorista:"
@@ -93,16 +92,16 @@ export default function Motoristas() {
                       <TableHead className="text-black font-bold text-center">
                         CPF
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Cidade
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         UF
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Telefone
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         CNH
                       </TableHead>
                     </TableRow>
@@ -115,10 +114,18 @@ export default function Motoristas() {
                       >
                         <TableCell>{motorista.nome}</TableCell>
                         <TableCell>{motorista.cpf}</TableCell>
-                        <TableCell>{motorista.endereco.cidade}</TableCell>
-                        <TableCell>{motorista.endereco.uf.toUpperCase()}</TableCell>
-                        <TableCell>{motorista.telefone}</TableCell>
-                        <TableCell>{motorista.documento.documento}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {motorista.endereco.cidade}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {motorista.endereco.uf.toUpperCase()}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {motorista.telefone}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {motorista.documento.documento}
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <DialogEditar

@@ -55,23 +55,26 @@ export default function Home() {
 
   return (
     <>
-      <main className="h-[425px] max-h-[500px] bg-[#070180] pt-10">
-        <div className="h-[350px] w-[800px] mx-auto rounded-md bg-white flex items-center justify-around">
-          <div className="w-[380px] h-[300px] rounded-md shadow-lg shadow-black/40 flex flex-col items-center gap-4">
+      <main className="md:h-[425px] bg-[#070180] pt-10">
+        <div 
+          className="w-[90%] mx-auto rounded-md bg-white 
+          flex flex-col sm:flex-row sm:justify-around gap-6 p-4"
+        >
+          <div className="w-full sm:w-[50%] rounded-md shadow-lg shadow-black/40 flex flex-col items-center gap-4">
             <p className="font-bold">Viagens/Serviços</p>
             <div className="h-[200px] overflow-y-scroll scrollbar-hide">
               {carregando ? (
                 <div className="flex items-center justify-center">
                   <Image
                     src={loading}
-                    alt="carregando"
+                    alt="Carregando"
                     className="text-center animate-spin"
                   />
                 </div>
               ) : (
-                <Table>
+                <Table className="md:w-[500px]">
                   <TableHeader>
-                    <TableRow className="bg-white">
+                    <TableRow className="bg-white text-xs md:text-sm">
                       <TableHead className="text-black font-black text-center">
                         Dia
                       </TableHead>
@@ -86,7 +89,7 @@ export default function Home() {
                       </TableHead>
                     </TableRow>
                   </TableHeader>
-                  <TableBody className="bg-white text-center">
+                  <TableBody className="bg-white text-center text-[11px] md:text-sm font-medium">
                     {viagens.map((viagem) => (
                       <TableRow key={viagem.id}>
                         <TableCell>
@@ -102,7 +105,6 @@ export default function Home() {
                           ).toLocaleDateString("pt-BR")}
                         </TableCell>
                         <TableCell>
-                          {" "}
                           {viagem.valorContratado.toLocaleString("pt-BR", {
                             style: "currency",
                             currency: "BRL",
@@ -118,28 +120,28 @@ export default function Home() {
             <div className="flex justify-center">
               <Link
                 href="/viagens-servicos"
-                className="bg-black text-white text-sm w-20 text-center p-2 rounded-md hover:bg-black/85 transition-all font-medium"
+                className="bg-black text-white text-sm w-20 m-4 text-center p-2 rounded-md hover:bg-black/85 transition-all font-medium"
               >
                 Ver mais
               </Link>
             </div>
           </div>
 
-          <div className="w-[380px] h-[300px] rounded-md shadow-lg shadow-black/40 flex flex-col items-center gap-4">
+          <div className="w-full sm:w-[48%] rounded-md shadow-lg shadow-black/40 flex flex-col items-center gap-4">
             <p className="font-bold">Vencimento Doc/Certificados</p>
             <div className="h-[200px] overflow-y-scroll scrollbar-hide">
               {carregando ? (
                 <div className="flex items-center justify-center">
                   <Image
                     src={loading}
-                    alt="carregando"
+                    alt="Carregando"
                     className="text-center animate-spin"
                   />
                 </div>
               ) : (
-                <Table>
+                <Table className="md:w-[500px] w-[200px]">
                   <TableHeader>
-                    <TableRow className="bg-white">
+                    <TableRow className="bg-white text-xs md:text-sm">
                       <TableHead className="text-black font-black text-center">
                         Vencimento
                       </TableHead>
@@ -151,9 +153,9 @@ export default function Home() {
                       </TableHead>
                     </TableRow>
                   </TableHeader>
-                  <TableBody className="bg-white text-center">
+                  <TableBody className="bg-white text-center text-xs md:text-sm font-medium">
                     {documentos.map((documento) => (
-                      <TableRow key={documento.id}>
+                      <TableRow key={documento.id} className="">
                         <TableCell>
                           {new Date(documento.vencimento).toLocaleDateString(
                             "pt-BR"
@@ -170,7 +172,7 @@ export default function Home() {
             <div className="flex justify-center">
               <Link
                 href="/documentos"
-                className="bg-black text-white text-sm w-20 text-center p-2 rounded-md hover:bg-black/85 transition-all font-medium"
+                className="bg-black text-white text-sm w-20 m-4 text-center p-2 rounded-md hover:bg-black/85 transition-all font-medium"
               >
                 Ver mais
               </Link>

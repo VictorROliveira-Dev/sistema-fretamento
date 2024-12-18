@@ -131,10 +131,10 @@ export default function DialogEditar({
     <Dialog>
       <DialogTrigger asChild>
         <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
-          <Image src={editIcon} alt="Editar" width={25} />
+          <Image src={editIcon} alt="Editar" className="w-10 md:w-6" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[1200px] h-[500px] flex flex-col items-center">
+      <DialogContent className="md:w-[1200px] md:h-[500px] h-screen overflow-y-scroll flex flex-col items-center">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Edição de Motorista</DialogTitle>
         </DialogHeader>
