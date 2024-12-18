@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image"; 
-import dadosViagemIcon from "../assets/dadosViagemIcon.png";
+import dadosViagemIcon from "../../assets/dadosviagem.svg";
 import {
   Dialog,
   DialogContent,
@@ -69,16 +69,15 @@ export default function DialogInformacoes({ manutencaoId }: ManutencoesProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
           <Image
             src={dadosViagemIcon}
             alt="documento"
-            width={25}
-            className="hover:scale-110"
+            className="w-10 md:w-6"
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[800px]">
+      <DialogContent className="md:w-[800px] max-h-screen overflow-y-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-bold text-center">
             Mais Informações

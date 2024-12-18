@@ -54,6 +54,21 @@ export default function DialogEditar({
   const [editando, setEditando] = useState(false);
 
   useEffect(() => {
+    setDataLancamento(
+      manutencao.dataLancamento
+        ? new Date(manutencao.dataLancamento).toISOString().split("T")[0]
+        : ""
+    );
+    setDataVencimento(
+      manutencao.dataVencimento
+        ? new Date(manutencao.dataVencimento).toISOString().split("T")[0]
+        : ""
+    );
+    setDataRealizada(
+      manutencao.dataRealizada
+        ? new Date(manutencao.dataRealizada).toISOString().split("T")[0]
+        : ""
+    );
     setTipo(manutencao.tipo);
     setServico(manutencao.servicoId);
     setVeiculo(manutencao.veiculoId);
@@ -112,8 +127,7 @@ export default function DialogEditar({
       });
       setManutencoes(manutencoesAtualizados);
       toast.success("Manutenção atualizada.", {
-        className:
-          "text-white font-semibold border-none shadow-lg",
+        className: "text-white font-semibold border-none shadow-lg",
         style: {
           borderRadius: "10px",
           padding: "16px",
@@ -136,16 +150,16 @@ export default function DialogEditar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
           <Image
             src={editIcon}
             alt="Editar"
             width={25}
-            className="hover:scale-110"
+            className="w-10 md:w-6"
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[1200px] h-[400px] flex flex-col items-center">
+      <DialogContent className="md:w-[1200px] h-screen md:h-[400px] flex flex-col items-center overflow-y-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Edição de Manutenção</DialogTitle>
         </DialogHeader>

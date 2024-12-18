@@ -76,16 +76,16 @@ export default function Manutencoes() {
   };
 
   return (
-    <section className="bg-[#070180] pt-12 h-[425px]">
-      <div className="h-[400px] w-[1000px] mx-auto rounded-md bg-white flex flex-col">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px]">
+      <div className="h-[400px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Manutenções
           </p>
         </div>
         <div className="flex items-center p-10">
-          <div className="mx-auto space-y-4 w-full">
-            <div className="flex items-center justify-between w-full">
+          <div className="mx-auto space-y-4 md:w-full">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between w-full">
               <form className="flex flex-col gap-2 font-bold">
                 <FormInput
                   label="Tipo:"
@@ -121,19 +121,19 @@ export default function Manutencoes() {
                       <TableHead className="text-black font-bold text-center">
                         Veículo
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Serviço
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Km Prevista
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         KM Atual
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         KM Realizada
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Vencimento
                       </TableHead>
                     </TableRow>
@@ -148,13 +148,13 @@ export default function Manutencoes() {
                         <TableCell>
                           {getVeiculoNome(manutencao.veiculoId)}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="hidden sm:table-cell">
                           {getServicoNome(manutencao.servicoId)}
                         </TableCell>
-                        <TableCell>{manutencao.kmPrevista}</TableCell>
-                        <TableCell>{manutencao.kmAtual}</TableCell>
-                        <TableCell>{manutencao.kmRealizada}</TableCell>
-                        <TableCell>
+                        <TableCell className="hidden sm:table-cell">{manutencao.kmPrevista}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{manutencao.kmAtual}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{manutencao.kmRealizada}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
                           {new Date(
                             manutencao.dataVencimento
                           ).toLocaleDateString("pt-BR")}
