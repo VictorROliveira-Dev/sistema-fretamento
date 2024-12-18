@@ -77,7 +77,7 @@ export default function DialogEditarDespesa({
     setViagemSelecionada(despesa.viagemId.toString());
     setValorTotal(despesa.valorTotal);
     setValorParcial(despesa.valorParcial);
-    setFormaPagamento(despesa.formaPagamento);
+    setFormaPagamento(despesa.formaPagamento.toString());
     setCentroCusto(despesa.centroCusto);
     const fetchData = async () => {
       try {
@@ -167,7 +167,7 @@ export default function DialogEditarDespesa({
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[850px] h-[500px] flex flex-col items-center">
+      <DialogContent className="md:w-[850px] h-screen md:h-[500px] flex flex-col items-center overflow-y-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Edição de Despesa</DialogTitle>
         </DialogHeader>

@@ -126,15 +126,15 @@ export default function Financeiro() {
   }, [dataInicio, dataFinal]);
 
   return (
-    <section className="bg-[#070180] pt-12 h-[424px] max-h-[1000px]">
-      <div className="h-[400px] w-[1000px] max-h-[430px] mx-auto rounded-md bg-white flex flex-col">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px] md:max-h-[1000px]">
+      <div className="md:h-[400px] h-[450px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Finanças
           </p>
         </div>
-        <div className="flex items-center md:h-screen h-[800px]">
-          <div className="mx-auto md:max-w-4xl md:w-[1000px] space-y-4">
+        <div className="flex items-center md:h-screen p-10">
+          <div className="mx-auto md:w-full space-y-4">
             <Tabs defaultValue="despesas" className="flex flex-col">
               <TabsList className="gap-4">
                 <TabsTrigger value="despesas" className="font-bold">
@@ -145,7 +145,7 @@ export default function Financeiro() {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="despesas">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between">
                   <form className="flex gap-2 font-bold">
                     <div>
                       <label htmlFor="inicio">Data inicio:</label>
@@ -154,6 +154,7 @@ export default function Financeiro() {
                         name="inicio"
                         value={dataInicio}
                         onChange={(e) => setDataInicio(e.target.value)}
+                        className="w-[130px] md:w-[160px]"
                       />
                     </div>
                     <div>
@@ -163,6 +164,7 @@ export default function Financeiro() {
                         name="final"
                         value={dataFinal}
                         onChange={(e) => setDataFinal(e.target.value)}
+                        className="w-[130px] md:w-[160px]"
                       />
                     </div>
                   </form>
@@ -188,22 +190,22 @@ export default function Financeiro() {
                           <TableHead className="text-black font-bold text-center">
                             Vencimento
                           </TableHead>
-                          <TableHead className="text-black font-bold text-center">
+                          <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                             Origem
                           </TableHead>
-                          <TableHead className="text-black font-bold text-center">
+                          <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                             Responsável
                           </TableHead>
-                          <TableHead className="text-black font-bold text-center">
+                          <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                             Pago
                           </TableHead>
-                          <TableHead className="text-black font-bold text-center">
+                          <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                             Centro de Custo
                           </TableHead>
-                          <TableHead className="text-black font-bold text-center">
+                          <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                             Valor Parcial
                           </TableHead>
-                          <TableHead className="text-black font-bold text-center">
+                          <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                             Valor Total
                           </TableHead>
                         </TableRow>
@@ -219,14 +221,14 @@ export default function Financeiro() {
                                 "pt-BR"
                               )}
                             </TableCell>
-                            <TableCell>{despesa.origemPagamento}</TableCell>
-                            <TableCell>{despesa.responsavelNome}</TableCell>
-                            <TableCell>
+                            <TableCell className="hidden sm:table-cell">{despesa.origemPagamento}</TableCell>
+                            <TableCell className="hidden sm:table-cell">{despesa.responsavelNome}</TableCell>
+                            <TableCell className="hidden sm:table-cell">
                               {despesa.pago ? "sim" : "nao"}
                             </TableCell>
-                            <TableCell>{despesa.centroCusto}</TableCell>
-                            <TableCell>{despesa.valorParcial}</TableCell>
-                            <TableCell>{despesa.valorTotal}</TableCell>
+                            <TableCell className="hidden sm:table-cell">{despesa.centroCusto}</TableCell>
+                            <TableCell className="hidden sm:table-cell">{despesa.valorParcial}</TableCell>
+                            <TableCell className="hidden sm:table-cell">{despesa.valorTotal}</TableCell>
                             <TableCell>
                               <div className="flex items-center gap-2">
                                 <DialogEditarDespesa

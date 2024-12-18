@@ -48,7 +48,7 @@ export default function DialogInformacoesDespesas({
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[800px]">
+      <DialogContent className="md:w-[800px]">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-bold text-center">
             Mais Informações
