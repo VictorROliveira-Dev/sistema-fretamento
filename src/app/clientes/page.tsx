@@ -46,7 +46,7 @@ export default function Clientes() {
   });
 
   return (
-    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px] ">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px]">
       <div className="h-[400px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className=" bg-black w-full">
           <p className="font-bold text-white text-center">

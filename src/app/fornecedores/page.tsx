@@ -46,17 +46,17 @@ export default function Fornecedores() {
   });
 
   return (
-    <section className="bg-[#070180] pt-12 h-[425px]">
-      <div className="h-[400px] w-[1100px] max-h-screen mx-auto rounded-md bg-white flex flex-col">
-        <div className=" bg-black w-full">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px]">
+      <div className="h-[400px] md:w-[1100px] mx-auto rounded-md bg-white flex flex-col">
+        <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Fornecedores
           </p>
         </div>
         <div className="flex items-center p-10">
-          <div className="mx-auto space-y-4">
-            <div className="flex items-center justify-between">
-              <form className="flex gap-2 font-bold">
+          <div className="mx-auto md:w-full space-y-4">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between">
+              <form className="flex flex-col gap-2 font-bold">
                 <FormInput
                   label="Nome:"
                   name="nome"
@@ -88,22 +88,22 @@ export default function Fornecedores() {
                       <TableHead className="text-black font-bold text-center">
                         Nome Completo
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Data Nascimento
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Documento
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Cidade
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         UF
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Telefone
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Tipo Pessoa
                       </TableHead>
                     </TableRow>
@@ -115,16 +115,16 @@ export default function Fornecedores() {
                         className="hover:bg-gray-200"
                       >
                         <TableCell>{fornecedor.nome}</TableCell>
-                        <TableCell>
+                        <TableCell className="hidden sm:table-cell">
                           {new Date(
                             fornecedor.dataNascimento
                           ).toLocaleDateString("pt-BR")}
                         </TableCell>
-                        <TableCell>{fornecedor.cpf}</TableCell>
-                        <TableCell>{fornecedor.endereco.cidade}</TableCell>
-                        <TableCell>{fornecedor.endereco.uf}</TableCell>
-                        <TableCell>{fornecedor.telefone}</TableCell>
-                        <TableCell>{fornecedor.tipo.toUpperCase()}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{fornecedor.cpf}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{fornecedor.endereco.cidade}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{fornecedor.endereco.uf}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{fornecedor.telefone}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{fornecedor.tipo.toUpperCase()}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <DialogEditar
