@@ -104,20 +104,22 @@ export default function DialogEditar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Image
-          className="cursor-pointer"
-          src={editIcon}
-          alt="Editar"
-          width={25}
-        />
+        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
+          <Image
+            className="w-10 md:w-6"
+            src={editIcon}
+            alt="Editar"
+            width={25}
+          />
+        </Button>
       </DialogTrigger>
-      <DialogContent className="w-auto h-[80%] overflow-y-scroll mx-auto">
+      <DialogContent className="md:w-auto md:h-[90%] h-screen overflow-y-scroll mx-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Formulário</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} noValidate>
-          <div className="flex gap-10 items-start">
-            <fieldset className="border p-4 rounded">
+          <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll gap-10 items-start">
+            <fieldset className="border p-4 rounded w-full">
               <legend className="font-semibold">Cliente</legend>
               <div>
                 <Label htmlFor="nome">Nome</Label>
@@ -230,7 +232,7 @@ export default function DialogEditar({
             </fieldset>
 
             {/* Endereço */}
-            <fieldset className="border p-4 rounded">
+            <fieldset className="border p-4 rounded w-full">
               <legend className="font-semibold">Endereço</legend>
               <div className="">
                 <Label htmlFor="uf">UF</Label>

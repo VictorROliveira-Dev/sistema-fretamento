@@ -18,23 +18,23 @@ export default function DialogInformacoes({ cliente }: InfoProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
           <Image
             src={dadosViagemIcon}
             alt="documento"
             width={25}
-            className="hover:scale-110"
+            className="w-10 md:w-6"
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[1000px]">
+      <DialogContent className="md:w-[1000px] flex flex-col max-h-screen overflow-y-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-bold text-center">
             Mais Informações
-          </DialogTitle>
+          </DialogTitle> 
         </DialogHeader>
         <div className="flex flex-wrap items-center justify-around">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col md:flex-wrap gap-4">
             <div className="flex gap-2">
               <h2 className="font-bold">Nome Completo:</h2>
               <p>{cliente.nome}</p>
@@ -55,12 +55,6 @@ export default function DialogInformacoes({ cliente }: InfoProps) {
               <h2 className="font-bold">Número:</h2>
               <p>{cliente.endereco.numero}</p>
             </div>
-          </div>
-          <div className="flex gap-2">
-            <h2 className="font-bold">Rua:</h2>
-            <p>{cliente.endereco.rua}</p>
-          </div>
-          <div className="flex flex-col gap-4">
             <div className="flex gap-2">
               <h2 className="font-bold">Data Nascimento:</h2>
               <p>{cliente.dataNascimento}</p>
@@ -80,6 +74,10 @@ export default function DialogInformacoes({ cliente }: InfoProps) {
             <div className="flex gap-2">
               <h2 className="font-bold">Tipo Documento:</h2>
               <p>{cliente.documento.tipo.toUpperCase()}</p>
+            </div>
+            <div className="flex gap-2">
+              <h2 className="font-bold">Rua:</h2>
+              <p>{cliente.endereco.rua}</p>
             </div>
           </div>
         </div>

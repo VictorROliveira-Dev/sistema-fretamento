@@ -103,3 +103,8 @@ body {
 .fc-button.fc-today-button:hover {
   opacity: 0.9;
 }
+
+.fc-day-today {
+  background-color: #fff !important; 
+  color: #000 !important; 
+}

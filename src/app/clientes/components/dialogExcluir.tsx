@@ -59,14 +59,16 @@ export default function DialogExcluir({
     <>
       <Dialog>
         <DialogTrigger>
-          <Image
-            src={removeIcon}
-            alt="Remover"
-            width={25}
-            className="hover:scale-110"
-          />
+          <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
+            <Image
+              src={removeIcon}
+              alt="Remover"
+              width={25}
+              className="w-10 md:w-6"
+            />
+          </Button>
         </DialogTrigger>
-        <DialogContent className="w-[90%] md:w-[50%] flex flex-col items-center">
+        <DialogContent className="w-[90%] md:w-[50%] flex flex-col items-center rounded-md">
           <DialogHeader>
             <DialogTitle className="text-center">
               <p>
@@ -79,26 +81,28 @@ export default function DialogExcluir({
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
+            <div className="flex gap-4">
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Fechar
+                </Button>
+              </DialogClose>
+              <Button
+                type="submit"
+                className="bg-transparent border border-red-600 text-red-600 hover:bg-red-600 hover:text-white"
+                onClick={() => handleRemoverCliente(cliente.id)}
+              >
+                {removendo ? (
+                  <Image
+                    src={loading}
+                    alt="carregando"
+                    className="text-center animate-spin"
+                  />
+                ) : (
+                  "Confirmar"
+                )}
               </Button>
-            </DialogClose>
-            <Button
-              type="submit"
-              className="bg-transparent border border-red-600 text-red-600 hover:bg-red-600 hover:text-white"
-              onClick={() => handleRemoverCliente(cliente.id)}
-            >
-              {removendo ? (
-                <Image
-                  src={loading}
-                  alt="carregando"
-                  className="text-center animate-spin"
-                />
-              ) : (
-                "Confirmar"
-              )}
-            </Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

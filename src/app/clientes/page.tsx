@@ -46,16 +46,16 @@ export default function Clientes() {
   });
 
   return (
-    <section className="bg-[#070180] pt-12 h-[424px] max-h-[1000px]">
-      <div className="h-[400px] w-[1000px] max-h-[430px] mx-auto rounded-md bg-white flex flex-col">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px] ">
+      <div className="h-[400px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className=" bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Clientes
           </p>
         </div>
-        <div className="flex items-center md:h-screen h-[800px]">
-          <div className="mx-auto md:max-w-4xl md:w-[1000px] w-[350px] space-y-4">
-            <div className="flex items-center justify-between">
+        <div className="flex items-center p-10">
+          <div className="mx-auto md:w-full space-y-4">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between">
               <form className="flex flex-col gap-2 font-bold">
                 <FormInput
                   label="Nome Cliente..."
@@ -84,19 +84,19 @@ export default function Clientes() {
                       <TableHead className="text-black font-bold text-center">
                         Nome Completo
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         CPF
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Cidade
                       </TableHead>
                       <TableHead className="text-black font-bold text-center">
                         Telefone
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Tipo Cliente
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Documento
                       </TableHead>
                     </TableRow>
@@ -105,10 +105,16 @@ export default function Clientes() {
                     {clientesFiltrados.map((cliente) => (
                       <TableRow className="hover:bg-gray-200" key={cliente.id}>
                         <TableCell>{cliente.nome}</TableCell>
-                        <TableCell>{cliente.cpf}</TableCell>
-                        <TableCell>{cliente.endereco.cidade}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {cliente.cpf}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {cliente.endereco.cidade}
+                        </TableCell>
                         <TableCell>{cliente.telefone}</TableCell>
-                        <TableCell>{cliente.documento.documento}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {cliente.documento.documento}
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <DialogEditar

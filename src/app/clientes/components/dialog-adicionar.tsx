@@ -133,15 +133,17 @@ export default function DialogAdicionar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="mt-10 bg-green-600 hover:bg-green-600">Adicionar Cliente</Button>
+        <Button className=" bg-green-600 hover:bg-green-600 w-full md:w-[200px]">
+          Adicionar Cliente
+        </Button>
       </DialogTrigger>
-      <DialogContent className="w-auto h-[90%] overflow-y-scroll mx-auto">
+      <DialogContent className="md:w-auto h-screen md:h-[90%] overflow-y-scroll mx-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Formulário</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} noValidate>
-          <div className="flex gap-10 items-start">
-            <fieldset className="border p-4 rounded">
+          <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll gap-10 items-start">
+            <fieldset className="border p-4 rounded w-full">
               <legend className="font-semibold">Cliente</legend>
               <div>
                 <Label htmlFor="nome">Nome</Label>
@@ -221,7 +223,7 @@ export default function DialogAdicionar({
             </fieldset>
 
             {/* Endereço */}
-            <fieldset className="border p-4 rounded">
+            <fieldset className="border p-4 rounded w-full">
               <legend className="font-semibold">Endereço</legend>
               <div className="">
                 <Label htmlFor="uf">UF</Label>
