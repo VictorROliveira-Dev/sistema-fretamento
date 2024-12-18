@@ -35,8 +35,8 @@ const CalendarApp = () => {
 
   return (
     <div className="App text-white bg-[#070180] pt-10">
-      <h1 className="text-center text-2xl font-bold mb-4">Calendário de Veículos</h1>
-      <div style={{ width: '600px', height: '600px', margin: '0 auto' }}>
+      <h1 className="text-center font-bold mb-4 md:text-2xl text-xl">Calendário de Veículos</h1>
+      <div className="calendar-container">
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
@@ -44,7 +44,8 @@ const CalendarApp = () => {
           dateClick={handleDateClick}
           eventClick={handleEventClick}
           locale="pt-br"
-          height="100%"
+          height="auto"
+          contentHeight="auto"
           buttonText={{
             today: 'Mês Atual',
           }}

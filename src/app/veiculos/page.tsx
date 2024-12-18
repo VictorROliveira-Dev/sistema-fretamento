@@ -18,6 +18,7 @@ import DialogRemover from "./components/dialog-remover";
 import Image from "next/image";
 import loading from "../assets/loading-dark.svg";
 import Link from "next/link";
+import calendar from "../assets/calendar.svg";
 
 export default function Veiculos() {
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
@@ -46,17 +47,17 @@ export default function Veiculos() {
   });
 
   return (
-    <section className="bg-[#070180] pt-12 h-[425px]">
-      <div className="h-[400px] w-[1000px] mx-auto rounded-md bg-white flex flex-col">
-        <div className=" bg-black w-full">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px]">
+      <div className="h-[400px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
+        <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Veículos
           </p>
         </div>
         <div className="flex items-center p-10">
-          <div className="mx-auto md:max-w-4xl md:w-[1000px] w-[350px] space-y-4">
-            <div className="flex items-center justify-between">
-              <form className="flex gap-2 font-bold">
+          <div className="mx-auto md:w-full space-y-4">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between">
+              <form className="flex flex-col gap-2 font-bold">
                 <div>
                   <FormInput
                     label="Prefixo:"
@@ -70,9 +71,10 @@ export default function Veiculos() {
               <div className="flex gap-2 items-center">
                 <Link
                   href="/calendario"
-                  className="py-2 px-4 bg-black text-white rounded-md text-sm hover:bg-black/85"
+                  className="flex items-center gap-2 py-2 px-4 bg-black text-white rounded-md text-sm hover:bg-black/85"
                 >
-                  Ver Calendário
+                  <p>Calendário</p>
+                  <Image src={calendar} alt="calendar" width={22} />
                 </Link>
                 <DialogAdicionar
                   veiculos={veiculos}
@@ -101,22 +103,22 @@ export default function Veiculos() {
                       <TableHead className="text-black font-bold text-center">
                         Placa
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         KM Atual
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Marca
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Tanque
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Tipo
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Qtd. Poltronas
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Ano
                       </TableHead>
                     </TableRow>
@@ -126,12 +128,12 @@ export default function Veiculos() {
                       <TableRow key={veiculo.id} className="hover:bg-gray-200">
                         <TableCell>{veiculo.prefixo}</TableCell>
                         <TableCell>{veiculo.placa}</TableCell>
-                        <TableCell>{veiculo.kmAtual}</TableCell>
-                        <TableCell>{veiculo.marca}</TableCell>
-                        <TableCell>{veiculo.capacidadeTank}</TableCell>
-                        <TableCell>{veiculo.tipo}</TableCell>
-                        <TableCell>{veiculo.quantidadePoltronas}</TableCell>
-                        <TableCell>{veiculo.ano}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{veiculo.kmAtual}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{veiculo.marca}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{veiculo.capacidadeTank}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{veiculo.tipo}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{veiculo.quantidadePoltronas}</TableCell>
+                        <TableCell className="hidden sm:table-cell">{veiculo.ano}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <DialogEditar
