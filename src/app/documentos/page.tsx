@@ -18,6 +18,7 @@ import { api } from "@/lib/axios";
 import FormInput from "@/components/form-input";
 import DialogRemover from "./components/dialog-remover";
 import loading from "../assets/loading-dark.svg";
+import DialogInformacoes from "./components/dialog-informacoes";
 
 export default function Documentos() {
   const [documentos, setDocumentos] = useState<IDocumentos[]>([]);
@@ -47,16 +48,16 @@ export default function Documentos() {
   }, []);
 
   return (
-    <section className="bg-[#070180] pt-12 h-[425px]">
-      <div className="h-[400px] w-[1000px] mx-auto rounded-md bg-white flex flex-col">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px]">
+      <div className="h-[400px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Documentos
           </p>
         </div>
         <div className="flex items-center p-10">
-          <div className="mx-auto w-full space-y-4">
-            <div className="flex items-center justify-between">
+          <div className="mx-auto md:w-full space-y-4">
+            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-0 justify-between">
               <form className="flex gap-2 font-bold">
                 <div>
                   <FormInput
@@ -76,7 +77,12 @@ export default function Documentos() {
             <div className="h-[200px] overflow-y-scroll scrollbar-hide">
               {carregando ? (
                 <div className="flex items-center justify-center">
-                  <Image src={loading} alt="carregando" width={50} className="animate-spin" />
+                  <Image
+                    src={loading}
+                    alt="carregando"
+                    width={50}
+                    className="animate-spin"
+                  />
                 </div>
               ) : (
                 <Table>
@@ -85,10 +91,10 @@ export default function Documentos() {
                       <TableHead className="text-black font-bold text-center">
                         Doc/Certificado
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Referência
                       </TableHead>
-                      <TableHead className="text-black font-bold text-center">
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Vencimento
                       </TableHead>
                     </TableRow>
@@ -102,8 +108,10 @@ export default function Documentos() {
                         <TableCell>
                           {documento.tipoDocumento.toUpperCase()}
                         </TableCell>
-                        <TableCell>{documento.referencia}</TableCell>
-                        <TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {documento.referencia}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
                           {new Date(documento.vencimento).toLocaleDateString(
                             "pt-BR"
                           )}
@@ -119,14 +127,7 @@ export default function Documentos() {
                               documento={documento}
                               setDocumentos={setDocumentos}
                             />
-                            <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                              <Image
-                                src={documentoIcon}
-                                alt="documento"
-                                width={25}
-                                className="hover:scale-110"
-                              />
-                            </Button>
+                            <DialogInformacoes documentoId={documento.id} />
                           </div>
                         </TableCell>
                       </TableRow>

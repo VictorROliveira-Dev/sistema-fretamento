@@ -72,11 +72,11 @@ export default function DialogAdicionar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-500">
+        <Button className="bg-green-600 hover:bg-green-500 w-full md:w-[200px]">
           Adicionar Documento
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[600px] h-[350px] flex flex-col items-center">
+      <DialogContent className="md:w-[600px] md:h-[350px] flex flex-col items-center">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Documento

@@ -67,7 +67,7 @@ export default function DialogRemover({
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[350px] h-[150px] flex flex-col items-center">
+      <DialogContent className="md:w-[350px] md:h-[150px] flex flex-col items-center rounded-md">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Deseja remover o documento?
