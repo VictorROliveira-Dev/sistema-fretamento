@@ -40,15 +40,15 @@ export default function Servicos() {
   }, []);
 
   return (
-    <section className="bg-[#070180] pt-8 h-[425px]">
-      <div className="h-[400px] w-[400px] mx-auto  bg-white flex flex-col items-center">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 m:h-[425px]">
+      <div className="h-[400px] md:w-[400px] mx-auto bg-white flex flex-col items-center">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Serviços
           </p>
         </div>
         <div className="flex items-center p-10">
-          <div className="mx-auto space-y-4 w-full">
+          <div className="mx-auto space-y-4 md:w-full">
             <div className="flex items-center justify-between">
               <form className="flex flex-col gap-2 font-bold">
                 <FormInput
