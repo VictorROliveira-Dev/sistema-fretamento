@@ -95,7 +95,7 @@ const CalendarApp = () => {
   }, []);
 
   // Função para adicionar um evento manualmente no calendário
-  const handleDateClick = (info: { dateStr: string }) => {
+  /*const handleDateClick = (info: { dateStr: string }) => {
     const title = prompt("Digite o título do evento:");
     if (title) {
       const newEvent: Event = {
@@ -105,16 +105,16 @@ const CalendarApp = () => {
       };
       setEvents((prevEvents) => [...prevEvents, newEvent]);
     }
-  };
+  };*/
 
   // Função para remover um evento clicado
-  const handleEventClick = (info: { event: { id: string; title: string } }) => {
+  /*const handleEventClick = (info: { event: { id: string; title: string } }) => {
     if (window.confirm(`Deseja remover o evento: '${info.event.title}'?`)) {
       setEvents((prevEvents) =>
         prevEvents.filter((event) => event.id !== info.event.id)
       );
     }
-  };
+  };*/
 
   return (
     <div className="App text-white bg-[#070180] pt-10">
@@ -126,8 +126,6 @@ const CalendarApp = () => {
           plugins={[dayGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
           events={events}
-          dateClick={handleDateClick}
-          eventClick={handleEventClick}
           locale="pt-br"
           height="auto"
           contentHeight="auto"

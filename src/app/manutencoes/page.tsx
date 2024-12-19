@@ -1,6 +1,4 @@
 "use client";
-import documentoIcon from "@/app/assets/documentos.svg";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -19,6 +17,7 @@ import { api } from "@/lib/axios";
 import DialogRemover from "./components/dialog-remover";
 import loading from "../assets/loading-dark.svg";
 import DialogInformacoes from "./components/dialog-informacoes";
+import ManutencaoPDF from "./components/dialog-document";
 
 export default function Manutencoes() {
   const [manutencoes, setManutencoes] = useState<Manutencao[]>([]);
@@ -77,7 +76,7 @@ export default function Manutencoes() {
 
   return (
     <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px]">
-      <div className="h-[400px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
+      <div className="md:h-[400px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Manutenções
@@ -151,9 +150,15 @@ export default function Manutencoes() {
                         <TableCell className="hidden sm:table-cell">
                           {getServicoNome(manutencao.servicoId)}
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell">{manutencao.kmPrevista}</TableCell>
-                        <TableCell className="hidden sm:table-cell">{manutencao.kmAtual}</TableCell>
-                        <TableCell className="hidden sm:table-cell">{manutencao.kmRealizada}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {manutencao.kmPrevista}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {manutencao.kmAtual}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {manutencao.kmRealizada}
+                        </TableCell>
                         <TableCell className="hidden sm:table-cell">
                           {new Date(
                             manutencao.dataVencimento
@@ -170,14 +175,7 @@ export default function Manutencoes() {
                               manutencao={manutencao}
                               setManutencoes={setManutencoes}
                             />
-                            <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                              <Image
-                                src={documentoIcon}
-                                alt="documento"
-                                width={25}
-                                className="hover:scale-110"
-                              />
-                            </Button>
+                            <ManutencaoPDF dadosManutencao={[manutencao]} />
                             <DialogInformacoes
                               manutencaoId={Number(manutencao.id)}
                             />
