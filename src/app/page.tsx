@@ -55,7 +55,7 @@ export default function Home() {
 
   return (
     <>
-      <main className="md:h-[425px] bg-[#070180] pt-10 pb-10">
+      <main className="md:h-[425px] bg-[#070180] pt-10 pb-10 ">
         <div 
           className="w-[90%] mx-auto rounded-md bg-white 
           flex flex-col sm:flex-row sm:justify-around gap-6 p-4"
