@@ -21,7 +21,6 @@ import React, { FormEvent, useEffect, useState } from "react";
 import {
   Cliente,
   Fornecedor,
-  IDespesas,
   IReceitas,
   Motorista,
   Viagem,
@@ -190,7 +189,7 @@ export default function DialogEditarReceita({
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[850px] h-[500px] flex flex-col items-center">
+      <DialogContent className="md:w-[850px] h-screen md:h-[500px] flex flex-col items-center overflow-y-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Edição de Receita</DialogTitle>
         </DialogHeader>

@@ -154,7 +154,7 @@ export default function Financeiro() {
                         name="inicio"
                         value={dataInicio}
                         onChange={(e) => setDataInicio(e.target.value)}
-                        className="w-[130px] md:w-[160px]"
+                        className="w-[140px] md:w-[160px]"
                       />
                     </div>
                     <div>
@@ -164,7 +164,7 @@ export default function Financeiro() {
                         name="final"
                         value={dataFinal}
                         onChange={(e) => setDataFinal(e.target.value)}
-                        className="w-[130px] md:w-[160px]"
+                        className="w-[140px] md:w-[160px]"
                       />
                     </div>
                   </form>
@@ -261,7 +261,7 @@ export default function Financeiro() {
                 )}
               </TabsContent>
               <TabsContent value="receitas">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between">
                   <form className="flex gap-2 font-bold">
                     <div>
                       <label htmlFor="inicio">Data inicio:</label>
@@ -270,6 +270,7 @@ export default function Financeiro() {
                         name="inicio"
                         value={dataInicio}
                         onChange={(e) => setDataInicio(e.target.value)}
+                        className="w-[140px] md:w-[160px]"
                       />
                     </div>
                     <div>
@@ -279,6 +280,7 @@ export default function Financeiro() {
                         name="final"
                         value={dataFinal}
                         onChange={(e) => setDataFinal(e.target.value)}
+                        className="w-[140px] md:w-[160px]"
                       />
                     </div>
                   </form>
@@ -303,22 +305,22 @@ export default function Financeiro() {
                         <TableHead className="text-black font-bold text-center">
                           Vencimento
                         </TableHead>
-                        <TableHead className="text-black font-bold text-center">
+                        <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                           Origem
                         </TableHead>
-                        <TableHead className="text-black font-bold text-center">
+                        <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                           Responsável
                         </TableHead>
-                        <TableHead className="text-black font-bold text-center">
+                        <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                           Pago
                         </TableHead>
-                        <TableHead className="text-black font-bold text-center">
+                        <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                           Centro de Custo
                         </TableHead>
-                        <TableHead className="text-black font-bold text-center">
+                        <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                           Valor Parcial
                         </TableHead>
-                        <TableHead className="text-black font-bold text-center">
+                        <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                           Valor Total
                         </TableHead>
                       </TableRow>
@@ -334,16 +336,16 @@ export default function Financeiro() {
                               "pt-BR"
                             )}
                           </TableCell>
-                          <TableCell>{receita.origemPagamento}</TableCell>
-                          <TableCell>{receita.responsavelId}</TableCell>
-                          <TableCell>
+                          <TableCell className="hidden sm:table-cell">{receita.origemPagamento}</TableCell>
+                          <TableCell className="hidden sm:table-cell">{receita.responsavelId}</TableCell>
+                          <TableCell className="hidden sm:table-cell">
                             {receita.pago
                               ? "sim".toUpperCase()
                               : "não".toUpperCase()}
                           </TableCell>
-                          <TableCell>{receita.centroCusto}</TableCell>
-                          <TableCell>{receita.valorParcial}</TableCell>
-                          <TableCell>{receita.valorTotal}</TableCell>
+                          <TableCell className="hidden sm:table-cell">{receita.centroCusto}</TableCell>
+                          <TableCell className="hidden sm:table-cell">{receita.valorParcial}</TableCell>
+                          <TableCell className="hidden sm:table-cell">{receita.valorTotal}</TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <DialogEditarReceita

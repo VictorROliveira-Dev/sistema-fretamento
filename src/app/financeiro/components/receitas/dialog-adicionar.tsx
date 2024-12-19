@@ -163,7 +163,7 @@ export default function DialogAdicionarReceita({
           Adicionar Receita
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[850px] h-[500px] flex flex-col items-center">
+      <DialogContent className="md:w-[850px] h-screen md:h-[500px] flex flex-col items-center overflow-y-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Cadastro de Receita</DialogTitle>
         </DialogHeader>
