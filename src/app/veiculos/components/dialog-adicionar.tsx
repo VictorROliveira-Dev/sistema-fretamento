@@ -102,7 +102,7 @@ export default function DialogAdicionar({
           Adicionar Veículo
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[1200px] h-[420px] flex flex-col items-center">
+      <DialogContent className="md:w-[1200px] h-screen md:h-[420px] flex flex-col items-center overflow-y-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Cadastro de Veículo</DialogTitle>
         </DialogHeader>

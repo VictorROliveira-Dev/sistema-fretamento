@@ -19,7 +19,7 @@ const FormInput: React.FC<FormInputProps> = ({
     <label htmlFor={name}>{label}</label>
     <Input
       name={name}
-      className="border-2 font-medium w-[250px]"
+      className="border-2 font-medium w-[280px]"
       placeholder={placeholder}
       type={type}
       value={value}

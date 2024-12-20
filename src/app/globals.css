@@ -82,3 +82,110 @@ body {
   -ms-overflow-style: none; /* IE e Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+.fc-col-header-cell {
+  font-size: 0.9rem !important; 
+  color: black;
+}
+
+.fc-button {
+  background-color: white !important;
+  color: black !important;
+  border-radius: 5px !important;
+  border: none !important;
+  
+}
+
+.fc-button:hover {
+  background-color: gray !important;
+}
+
+.fc-button.fc-today-button {
+  background-color: black !important;
+  color: #fff !important;
+}
+
+.fc-button.fc-today-button:hover {
+  opacity: 0.9;
+}
+
+.fc-day-today {
+  background-color: #fff !important; 
+  color: #000 !important; 
+}
+
+/* Estilo para o container principal do calendário */
+.calendar-container {
+  width: 90%;
+  max-width: 600px;
+  height: auto;
+  margin: 0 auto;
+}
+
+@media (max-width: 640px) {
+  .calendar-container {
+    width: 100%; 
+    height: auto; 
+  }
+
+  h1 {
+    font-size: 1.25rem; 
+    margin-bottom: 1rem;
+  }
+}
+
+/* Estilo para o dia atual no calendário */
+.fc-day-today {
+  background-color: #fff !important; 
+  color: #000 !important;  
+}
+
+/* Estilo para os botões do calendário */
+.fc-button {
+  background-color: #007bff !important;
+  color: #fff !important;
+  border-radius: 5px !important;
+  border: none !important;
+}
+
+.fc-button:hover {
+  background-color: #0056b3 !important;
+}
+
+.fc-button.fc-today-button {
+  background-color: #28a745 !important;
+  color: #fff !important;
+}
+
+.fc-button.fc-today-button:hover {
+  background-color: #218838 !important;
+}
+
+@media (max-width: 640px) {
+  /* Responsividade dos botões de navegação */
+  .fc-button {
+    font-size: 0.8rem !important; 
+    padding: 0.5rem 0.75rem !important; 
+  }
+
+  .fc-toolbar-title {
+    font-size: 1.25rem !important; 
+  }
+
+  .fc-col-header-cell {
+    font-size: 0.9rem !important; 
+  }
+
+  .fc-daygrid-day-number {
+    font-size: 0.85rem !important; 
+  }
+
+  .fc-day-today {
+    background-color: #fff !important; 
+    color: #000 !important; 
+  }
+
+  .fc-daygrid-day {
+    min-height: 50px !important; 
+  }
+}

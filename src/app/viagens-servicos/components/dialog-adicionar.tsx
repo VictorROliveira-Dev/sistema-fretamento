@@ -23,10 +23,12 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/axios";
 import { Cidade, Cliente, Motorista, Uf, Veiculo, Viagem } from "@/lib/types";
-
 import { DialogClose } from "@radix-ui/react-dialog";
 import axios from "axios";
+import Image from "next/image";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
+import loading from "../../assets/loading.svg";
 
 interface AdicionarProps {
   setViagens: React.Dispatch<React.SetStateAction<Viagem[]>>;
@@ -82,6 +84,7 @@ export default function DialogAdicionar({
     veiculoId: 0,
     motoristaId: 0,
   });
+  const [adicionando, setAdicionando] = useState(false);
 
   async function fetchClientes() {
     const response = await api.get("/cliente");
@@ -132,15 +135,70 @@ export default function DialogAdicionar({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const response = await api.post("/viagem", viagem);
+    setAdicionando(true);
 
-    if (!response.data.isSucces) {
-      console.log(response.data.message);
-      return;
+    try {
+      const response = await api.post("/viagem", viagem);
+      setViagens([...viagens, response.data.data]);
+      toast.success("Viagem adicionada.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+    } catch (error) {
+      toast.error("Erro ao tentar adicionar viagem.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+      console.log(error);
+    } finally {
+      setViagem({
+        id: 0,
+        rota: {
+          saida: {
+            ufSaida: "",
+            cidadeSaida: "",
+            localDeSaida: "",
+          },
+          retorno: {
+            ufSaida: "",
+            cidadeSaida: "",
+            localDeSaida: "",
+          },
+        },
+        dataHorarioSaida: {
+          data: "",
+          hora: "",
+        },
+        dataHorarioRetorno: {
+          data: "",
+          hora: "",
+        },
+        dataHorarioSaidaGaragem: {
+          data: "",
+          hora: "",
+        },
+        dataHorarioChegada: {
+          data: "",
+          hora: "",
+        },
+        clienteId: 0,
+        tipoServico: "",
+        status: "",
+        tipoViagem: "",
+        tipoPagamento: "",
+        valorContratado: 0,
+        itinerario: "",
+        veiculoId: 0,
+        motoristaId: 0,
+      });
+      setAdicionando(false);
     }
-
-    setViagens([...viagens, response.data.data]);
-    alert("adicionado com sucesso");
   }
 
   const handleUfSaidaChange = (uf: string) => {
@@ -242,7 +300,10 @@ export default function DialogAdicionar({
                     <SelectContent>
                       <SelectGroup>
                         {clientes.map((cliente) => (
-                          <SelectItem value={cliente.id.toString()}>
+                          <SelectItem
+                            key={cliente.id}
+                            value={cliente.id.toString()}
+                          >
                             {cliente.nome}
                           </SelectItem>
                         ))}
@@ -281,7 +342,7 @@ export default function DialogAdicionar({
                     <SelectContent>
                       <SelectGroup>
                         {servicos.map((servico) => (
-                          <SelectItem value={servico.valor}>
+                          <SelectItem key={servico.nome} value={servico.valor}>
                             {servico.nome}
                           </SelectItem>
                         ))}
@@ -304,7 +365,9 @@ export default function DialogAdicionar({
                     <SelectContent>
                       <SelectGroup>
                         {tipo_viagem.map((tipo) => (
-                          <SelectItem value={tipo}>{tipo}</SelectItem>
+                          <SelectItem key={tipo} value={tipo}>
+                            {tipo}
+                          </SelectItem>
                         ))}
                       </SelectGroup>
                     </SelectContent>
@@ -365,7 +428,7 @@ export default function DialogAdicionar({
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
                               {ufs.map((uf) => (
-                                <SelectItem value={uf.sigla}>
+                                <SelectItem key={uf.sigla} value={uf.sigla}>
                                   {uf.sigla}
                                 </SelectItem>
                               ))}
@@ -515,7 +578,7 @@ export default function DialogAdicionar({
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
                               {ufs.map((uf) => (
-                                <SelectItem value={uf.sigla}>
+                                <SelectItem key={uf.sigla} value={uf.sigla}>
                                   {uf.sigla}
                                 </SelectItem>
                               ))}
@@ -721,12 +784,15 @@ export default function DialogAdicionar({
                   name="status"
                 >
                   <SelectTrigger className="w-auto">
-                    <SelectValue placeholder="Uf" />
+                    <SelectValue placeholder="Situação" />
                   </SelectTrigger>
                   <SelectContent className="absolute max-h-[200px]">
                     <SelectGroup>
                       {status_viagem.map((status_viagem) => (
-                        <SelectItem value={status_viagem.valor}>
+                        <SelectItem
+                          key={status_viagem.nome}
+                          value={status_viagem.valor}
+                        >
                           {status_viagem.nome}
                         </SelectItem>
                       ))}
@@ -742,8 +808,17 @@ export default function DialogAdicionar({
                 Fechar
               </Button>
             </DialogClose>
-
-            <Button type="submit">Adicionar Viagem</Button>
+            <Button type="submit">
+              {adicionando ? (
+                <Image
+                  src={loading}
+                  alt="carregando"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Salvar"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

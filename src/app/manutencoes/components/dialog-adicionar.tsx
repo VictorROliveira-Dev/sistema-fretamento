@@ -21,6 +21,9 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import { Manutencao, Servico, Veiculo } from "@/lib/types";
+import Image from "next/image";
+import loading from "../../assets/loading.svg";
+import { toast } from "sonner";
 
 interface ManutencaoProps {
   manutencoes: Manutencao[];
@@ -44,6 +47,8 @@ export default function DialogAdicionar({
 
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const [servicos, setServicos] = useState<Servico[]>([]);
+
+  const [adicionando, setAdicionando] = useState(false);
 
   useEffect(() => {
     const fetchVeiculos = async () => {
@@ -70,6 +75,7 @@ export default function DialogAdicionar({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAdicionando(true);
     if (!veiculoId || !servicoId) {
       alert("Por favor, selecione um veículo e um serviço.");
       return;
@@ -91,7 +97,24 @@ export default function DialogAdicionar({
     try {
       const response = await api.post("/manutencao", manutencaoData);
       setManutencoes([...manutencoes, response.data.data]);
+      toast.success("Manutenção adicionada.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.log("Manutenção adicionada:", response.data.data);
+    } catch (error) {
+      toast.error("Erro ao tentar adicionar manutenção.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+      console.error("Erro ao adicionar manutenção:", error);
+    } finally {
       setDataVencimento("");
       setDataLancamento("");
       setDataRealizada("");
@@ -102,19 +125,18 @@ export default function DialogAdicionar({
       setKmAtual(0);
       setKmRealizada(0);
       setCusto(0);
-    } catch (error) {
-      console.error("Erro ao adicionar manutenção:", error);
+      setAdicionando(false);
     }
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-500">
+        <Button className="bg-green-600 hover:bg-green-500 w-full md:w-[200px]">
           Adicionar Manutenção
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[1200px] h-[400px] flex flex-col items-center">
+      <DialogContent className="md:w-[1200px] h-screen md:h-[400px] flex flex-col items-center overflow-y-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Manutenção
@@ -262,7 +284,15 @@ export default function DialogAdicionar({
 
           <DialogFooter className="flex items-center gap-2 mt-10">
             <Button type="submit" className="w-[250px]">
-              Salvar
+              {adicionando ? (
+                <Image
+                  src={loading}
+                  alt="loading"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Salvar"
+              )}
             </Button>
           </DialogFooter>
         </form>

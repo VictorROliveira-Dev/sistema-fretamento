@@ -23,6 +23,8 @@ import { api } from "@/lib/axios";
 import { Manutencao, Servico, Veiculo } from "@/lib/types";
 import Image from "next/image";
 import editIcon from "@/app/assets/edit.svg";
+import loading from "../../assets/loading.svg";
+import { toast } from "sonner";
 
 interface ManutencaoProps {
   manutencoes: Manutencao[];
@@ -49,10 +51,24 @@ export default function DialogEditar({
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const [servicos, setServicos] = useState<Servico[]>([]);
 
+  const [editando, setEditando] = useState(false);
+
   useEffect(() => {
-    setDataVencimento(manutencao.dataVencimento);
-    setDataLancamento(manutencao.dataLancamento);
-    setDataRealizada(manutencao.dataRealizada);
+    setDataLancamento(
+      manutencao.dataLancamento
+        ? new Date(manutencao.dataLancamento).toISOString().split("T")[0]
+        : ""
+    );
+    setDataVencimento(
+      manutencao.dataVencimento
+        ? new Date(manutencao.dataVencimento).toISOString().split("T")[0]
+        : ""
+    );
+    setDataRealizada(
+      manutencao.dataRealizada
+        ? new Date(manutencao.dataRealizada).toISOString().split("T")[0]
+        : ""
+    );
     setTipo(manutencao.tipo);
     setServico(manutencao.servicoId);
     setVeiculo(manutencao.veiculoId);
@@ -84,6 +100,7 @@ export default function DialogEditar({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setEditando(true);
 
     const manutencaoData = {
       dataVencimento,
@@ -109,24 +126,40 @@ export default function DialogEditar({
         return m.id === manutencaoAtualizada.id ? manutencaoAtualizada : m;
       });
       setManutencoes(manutencoesAtualizados);
+      toast.success("Manutenção atualizada.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
     } catch (error) {
+      toast.error("Erro ao tentar atualizar manutenção.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.error("Erro ao atualizar manutenção:", error);
+    } finally {
+      setEditando(false);
     }
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
           <Image
             src={editIcon}
             alt="Editar"
             width={25}
-            className="hover:scale-110"
+            className="w-10 md:w-6"
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[1200px] h-[400px] flex flex-col items-center">
+      <DialogContent className="md:w-[1200px] h-screen md:h-[400px] flex flex-col items-center overflow-y-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Edição de Manutenção</DialogTitle>
         </DialogHeader>
@@ -272,7 +305,15 @@ export default function DialogEditar({
 
           <DialogFooter className="flex items-center gap-2 mt-10">
             <Button type="submit" className="w-[250px]">
-              Atualizar
+              {editando ? (
+                <Image
+                  src={loading}
+                  alt="loading"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Atualizar"
+              )}
             </Button>
           </DialogFooter>
         </form>

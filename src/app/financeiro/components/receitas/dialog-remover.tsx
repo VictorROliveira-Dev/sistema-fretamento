@@ -9,32 +9,30 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
-import removeIcon from "@/app/assets/remove.svg";
-import { api } from "@/lib/axios";
-import { IDocumentos } from "@/lib/types";
-import loading from "../../assets/loading.svg";
-import { toast } from "sonner";
+import { IReceitas } from "@/lib/types";
 import { useState } from "react";
+import { api } from "@/lib/axios";
+import { toast } from "sonner";
+import removeIcon from "../../../assets/remove.svg";
+import loading from "../../../assets/loading.svg";
 
-interface DocumentosProps {
-  documento: IDocumentos;
-  setDocumentos: React.Dispatch<React.SetStateAction<IDocumentos[]>>;
+interface ReceitaProps {
+  receita: IReceitas;
+  setReceitas: React.Dispatch<React.SetStateAction<IReceitas[]>>;
 }
 
-export default function DialogRemover({
-  documento,
-  setDocumentos,
-}: DocumentosProps) {
+export default function DialogRemoverReceita({
+  receita,
+  setReceitas,
+}: ReceitaProps) {
   const [removendo, setRemovendo] = useState(false);
 
   const handleRemoverDocumento = async (id: string) => {
     setRemovendo(true);
     try {
-      await api.delete(`/documento/${id}`);
-      setDocumentos((prevDocumento) =>
-        prevDocumento.filter((d) => d.id !== id)
-      );
-      toast.success("Documento removido.", {
+      await api.delete(`/api/receita/${id}`);
+      setReceitas((prevReceita) => prevReceita.filter((r) => r.id !== id));
+      toast.success("Receita removida.", {
         className: "text-white font-semibold border-none shadow-lg",
         style: {
           borderRadius: "10px",
@@ -42,14 +40,14 @@ export default function DialogRemover({
         },
       });
     } catch (error) {
-      toast.error("Erro ao tentar remover documento.", {
+      toast.error("Erro ao tentar remover receita.", {
         className: "text-white font-semibold border-none shadow-lg",
         style: {
           borderRadius: "10px",
           padding: "16px",
         },
       });
-      console.error("Erro ao remover documento:", error);
+      console.error("Erro ao remover receita:", error);
     } finally {
       setRemovendo(false);
     }
@@ -70,7 +68,7 @@ export default function DialogRemover({
       <DialogContent className="md:w-[350px] md:h-[150px] flex flex-col items-center rounded-md">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
-            Deseja remover o documento?
+            Deseja remover a receita?
           </DialogTitle>
           <p className="text-sm text-gray-500 font-medium text-center">
             Essa ação não poderá ser desfeita
@@ -79,7 +77,7 @@ export default function DialogRemover({
         <DialogFooter className="flex items-center">
           <Button
             className="bg-red-500"
-            onClick={() => handleRemoverDocumento(documento.id)}
+            onClick={() => handleRemoverDocumento(receita.id)}
           >
             {removendo ? (
               <Image

@@ -44,7 +44,7 @@ export default function DialogInformacoes({ fornecedorId }: FornecedorProps) {
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[800px]">
+      <DialogContent className="md:w-[800px] max-h-screen overflow-y-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-bold text-center">
             Mais Informações

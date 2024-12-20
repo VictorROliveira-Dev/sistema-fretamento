@@ -1,11 +1,9 @@
 "use client";
-
 import Image from "next/image";
+import menu from "../../app/assets/menu.svg";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FC } from "react";
-
-// Importação explícita das imagens e obtenção do caminho correto
+import { FC, useState } from "react";
 import painel from "@/app/assets/painel-de-controle.png";
 import motorista from "@/app/assets/motorista.png";
 import clientes from "@/app/assets/pessoas.png";
@@ -19,6 +17,14 @@ import financeiro from "@/app/assets/financa.png";
 import passageiros from "@/app/assets/passageiro.png";
 import passagens from "@/app/assets/passagens.png";
 import sino from "@/app/assets/sino.svg";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
+import { Button } from "../ui/button";
 
 const icons = {
   painel: painel.src,
@@ -68,14 +74,22 @@ interface NavLinkProps {
   icon: string;
   label: string;
   isActive: boolean;
+  onClick?: () => void;
 }
 
-const NavLink: FC<NavLinkProps> = ({ href, icon, label, isActive }) => (
+const NavLink: FC<NavLinkProps> = ({
+  href,
+  icon,
+  label,
+  isActive,
+  onClick,
+}) => (
   <Link
     href={href}
     className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${
       isActive ? "bg-blue-900 border-blue-900 text-white" : ""
     }`}
+    onClick={onClick}
   >
     <Image src={icon} alt={label} width={45} height={45} />
     <p className="font-bold text-xs">{label}</p>
@@ -85,6 +99,7 @@ const NavLink: FC<NavLinkProps> = ({ href, icon, label, isActive }) => (
 const Header: FC = () => {
   const pathname = usePathname() || "";
 
+
   return (
     <header>
       <div className="h-6 bg-black">
@@ -92,7 +107,7 @@ const Header: FC = () => {
           Infoservice Fretamento
         </p>
       </div>
-      <nav className="h-28 bg-white flex items-center justify-between mx-10">
+      <nav className="sm:h-28 bg-white sm:flex items-center justify-between mx-10 hidden">
         <div className="flex items-center gap-4">
           {navItems.map(({ href, label, icon }) => (
             <NavLink
@@ -112,6 +127,45 @@ const Header: FC = () => {
           className="cursor-pointer"
         />
       </nav>
+
+      <div className="sm:hidden flex items-center justify-around p-4">
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
+          <SheetTrigger asChild>
+            <Button
+              onClick={() => setIsOpen(true)}
+              variant="outline"
+              className="p-2 border-none shadow-none"
+            >
+              <Image src={menu} alt="menu" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="overflow-y-scroll">
+            <SheetHeader>
+              <SheetTitle>Menu</SheetTitle>
+            </SheetHeader>
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              {navItems.map(({ href, label, icon }) => (
+                <NavLink
+                  key={href}
+                  href={href}
+                  icon={icon}
+                  label={label}
+                  isActive={pathname === href}
+                  onClick={closeSheet}
+                />
+              ))}
+            </div>
+          </SheetContent>
+        </Sheet>
+
+        <Image
+          src={icons.sino}
+          alt="Notificações"
+          width={45}
+          height={45}
+          className="cursor-pointer"
+        />
+      </div>
     </header>
   );
 };

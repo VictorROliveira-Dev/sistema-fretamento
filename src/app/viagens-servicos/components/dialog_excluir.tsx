@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,6 +12,9 @@ import Image from "next/image";
 import removeIcon from "../../assets/remove.svg";
 import { Viagem } from "@/lib/types";
 import { api } from "@/lib/axios";
+import { useState } from "react";
+import { toast } from "sonner";
+import loading from "../../assets/loading.svg";
 
 interface ExcluirProps {
   setViagens: React.Dispatch<React.SetStateAction<Viagem[]>>;
@@ -19,16 +23,31 @@ interface ExcluirProps {
 }
 
 export function DialogExcluir({ setViagens, viagens, id }: ExcluirProps) {
+  const [removendo, setRemovendo] = useState(false);
   async function excluirViagem() {
-    const response = await api.delete(`/viagem/${id}`);
-
-    if (!response.data.isSucces) {
-      console.log(response.data.message);
-      return;
+    setRemovendo(true);
+    try {
+      const response = await api.delete(`/viagem/${id}`);
+      setViagens(viagens.filter((v) => v.id !== id));
+      toast.success("Viagem removida.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+    } catch (error) {
+      toast.error("Erro ao tentar remover viagem.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+      console.log(error);
+    } finally {
+      setRemovendo(false);
     }
-
-    setViagens(viagens.filter((v) => v.id !== id));
-    alert("excluida com sucesso");
   }
   return (
     <>
@@ -51,7 +70,15 @@ export function DialogExcluir({ setViagens, viagens, id }: ExcluirProps) {
           </DialogHeader>
           <DialogFooter className="flex items-center">
             <Button className="bg-red-500" onClick={() => excluirViagem()}>
-              Confirmar
+              {removendo ? (
+                <Image
+                  src={loading}
+                  alt="carregando"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Confirmar"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>

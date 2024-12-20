@@ -51,25 +51,11 @@ export type Motorista = {
   nome: string;
   dataNascimento: string;
   telefone: string;
-  documento: {
-    documento: string;
-    tipo: string;
-  };
-  endereco: {
-    uf: string;
-    cidade: string;
-    rua: string;
-    bairro: string;
-    numero: string;
-  };
+  documento: Documento;
+  endereco: Endereco;
   cpf: string;
-  habilitacao: {
-    protocolo: string;
-    vencimento: string;
-    categoria: string;
-    cidade: string;
-    uf: string;
-  };
+  tipo: string;
+  habilitacao: Habilitacao;
 };
 
 export type Fornecedor = {
@@ -77,17 +63,8 @@ export type Fornecedor = {
   nome: string;
   dataNascimento: string;
   telefone: string;
-  documento: {
-    documento: string;
-    tipo: string;
-  };
-  endereco: {
-    uf: string;
-    cidade: string;
-    rua: string;
-    bairro: string;
-    numero: string;
-  };
+  documento: Documento;
+  endereco: Endereco;
   cpf: string;
   tipo: string;
 };
@@ -199,10 +176,17 @@ export interface Passageiro {
   id: number,
   nome: string;
   dataNascimento: string; // ou `Date` se preferir trabalhar com objetos Date
+
+interface Responsavel {
+  id: number;
+  nome: string;
+  dataNascimento: string;
+
   telefone: string;
   documento: Documento;
   endereco: Endereco;
   cpf: string;
+
   cartao: string;
   matricula: string;
 }
@@ -212,6 +196,43 @@ export interface Passagem {
   viagemId: number;
   passageiroId: number;
   dataEmissao: string; // ou Date, dependendo do uso no projeto
+
+}
+
+export interface IDespesas {
+  id: string;
+  dataEmissao: string;
+  dataCompra: string;
+  origemPagamento: string;
+  numeroDocumento: string;
+  responsavelId: number;
+  responsavel: Responsavel;
+  viagemId: number;
+  viagem: Viagem;
+  vencimento: string;
+  pago: boolean;
+  valorTotal: number;
+  valorParcial: number;
+  formaPagamento: string;
+  centroCusto: string;
+  responsavelNome: string;
+}
+
+export interface IReceitas {
+  id: string;
+  dataEmissao: string;
+  dataCompra: string;
+  origemPagamento: string;
+  numeroDocumento: string;
+  responsavelId: number;
+  responsavel: Responsavel;
+  viagemId: number;
+  viagem: Viagem;
+  vencimento: string;
+  pago: boolean;
+  valorTotal: number;
+  valorParcial: number;
+
   formaPagamento: string;
   poltrona: number;
   situacao: string;

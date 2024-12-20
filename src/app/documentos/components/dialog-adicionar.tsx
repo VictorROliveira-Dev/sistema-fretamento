@@ -1,7 +1,5 @@
 "use client";
-
 import { useState } from "react";
-import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -11,18 +9,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { api } from "@/lib/axios";
 import { IDocumentos } from "@/lib/types";
+import loading from "../../assets/loading.svg";
+import Image from "next/image";
+import { toast } from "sonner";
 
 interface DocumentosProps {
   setDocumentos: React.Dispatch<React.SetStateAction<IDocumentos[]>>;
@@ -36,9 +28,11 @@ export default function DialogAdicionar({
   const [tipoDocumento, setTipoDocumento] = useState("");
   const [vencimento, setVencimento] = useState("");
   const [referencia, setReferencia] = useState("");
+  const [adicionando, setAdicionando] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAdicionando(true);
 
     const documentData = {
       tipoDocumento: tipoDocumento,
@@ -53,19 +47,36 @@ export default function DialogAdicionar({
       setTipoDocumento("");
       setVencimento("");
       setReferencia("");
+      toast.success("Documento adicionado.", {
+        className:
+          "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
     } catch (error) {
+      toast.error("Erro ao tentar adicionar documento.", {
+        className: "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.error("Erro ao adicionar documento:", error);
+    } finally {
+      setAdicionando(false);
     }
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-500">
+        <Button className="bg-green-600 hover:bg-green-500 w-full md:w-[200px]">
           Adicionar Documento
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[600px] h-[350px] flex flex-col items-center">
+      <DialogContent className="md:w-[600px] md:h-[350px] flex flex-col items-center">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Documento
@@ -118,7 +129,15 @@ export default function DialogAdicionar({
 
           <DialogFooter className="flex items-center gap-2 mt-10">
             <Button type="submit" className="w-[250px]">
-              Salvar
+              {adicionando ? (
+                <Image
+                  src={loading}
+                  alt="carregando"
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Salvar"
+              )}
             </Button>
           </DialogFooter>
         </form>

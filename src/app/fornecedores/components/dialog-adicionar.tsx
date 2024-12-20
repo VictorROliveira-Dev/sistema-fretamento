@@ -9,8 +9,15 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { FormDataFornecedor, Fornecedor } from "@/lib/types";
-import { useState } from "react";
+import {
+  Cidade,
+  Documento,
+  Endereco,
+  FormDataFornecedor,
+  Fornecedor,
+  Uf,
+} from "@/lib/types";
+import { useEffect, useState } from "react";
 import { FormData } from "@/lib/types";
 import { api } from "@/lib/axios";
 import {
@@ -25,6 +32,7 @@ import {
 import Image from "next/image";
 import loading from "../../assets/loading.svg";
 import { toast } from "sonner";
+import axios from "axios";
 
 interface FornecedorProps {
   setFornecedor: React.Dispatch<React.SetStateAction<Fornecedor[]>>;
@@ -35,41 +43,71 @@ export default function DialogAdicionar({
   setFornecedor,
   fornecedores,
 }: FornecedorProps) {
-  const [formData, setFormData] = useState<FormDataFornecedor>({
-    nome: "",
-    dataNascimento: "",
-    telefone: "",
-    documento: { documento: "", tipo: "" },
-    endereco: { uf: "", cidade: "", rua: "", bairro: "", numero: "" },
-    cpf: "",
+  const [nome, setNome] = useState<string>("");
+  const [dataNascimento, setDataNascimento] = useState<string>("");
+  const [telefone, setTelefone] = useState<string>("");
+  const [cpf, setCpf] = useState<string>("");
+  const [tipo, setTipo] = useState<string>("");
+  const [ufs, setUfs] = useState<Uf[]>([]);
+  const [cidades, setCidades] = useState<Cidade[]>([]);
+  const [documento, setDocumento] = useState<Documento>({
+    documento: "",
     tipo: "",
   });
+  const [endereco, setEndereco] = useState<Endereco>({
+    uf: "",
+    cidade: "",
+    rua: "",
+    bairro: "",
+    numero: "",
+  });
   const [adicionando, setAdicionando] = useState(false);
-  const handleInputChange = (name: string, value: string) => {
-    // Para campos aninhados
-    if (name.includes(".")) {
-      const [parentKey, childKey] = name.split(".");
-      // Adicione uma asserção de tipo para garantir que parentKey é uma chave válida de FormData
-      setFormData((prev) => ({
-        ...prev,
-        [parentKey as keyof FormData]: {
-          ...(prev[parentKey as keyof FormDataFornecedor] as object),
-          [childKey]: value,
-        },
-      }));
-    } else {
-      // Para campos de nível superior
-      setFormData((prev) => ({
-        ...prev,
-        [name as keyof FormData]: value,
-      }));
-    }
+
+  useEffect(() => {
+    axios
+      .get<Uf[]>("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+      .then((response) => {
+        const sortedUfs = response.data.sort((a, b) =>
+          a.nome.localeCompare(b.nome)
+        );
+        setUfs(sortedUfs);
+      })
+      .catch((error) => {
+        console.error("Error fetching UFs:", error);
+      });
+  }, []);
+  const handleUfChange = (uf: string) => {
+    setEndereco({ ...endereco, uf: uf });
+    axios
+      .get<Cidade[]>(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
+      )
+      .then((response) => {
+        const sortedCidades = response.data.sort((a, b) =>
+          a.nome.localeCompare(b.nome)
+        );
+        setCidades(sortedCidades);
+      })
+      .catch((error) => {
+        console.error("Error fetching cidades:", error);
+      });
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAdicionando(true);
+
+    const fornecedor = {
+      nome: nome,
+      dataNascimento: dataNascimento,
+      telefone: telefone,
+      documento: documento,
+      endereco: endereco,
+      cpf: cpf,
+      tipo: tipo,
+    };
+
     try {
-      const response = await api.post("/api/fornecedor", formData);
+      const response = await api.post("/api/fornecedor", fornecedor);
       setFornecedor([...fornecedores, response.data.data]);
       toast.success("Fornecedor adicionado.", {
         className:
@@ -88,16 +126,19 @@ export default function DialogAdicionar({
           padding: "16px",
         },
       });
-      console.error("Erro ao adicionar fornecedor:", error);
     } finally {
-      setFormData({
-        nome: "",
-        dataNascimento: "",
-        telefone: "",
-        documento: { documento: "", tipo: "" },
-        endereco: { uf: "", cidade: "", rua: "", bairro: "", numero: "" },
-        cpf: "",
-        tipo: "",
+      setNome("");
+      setDataNascimento("");
+      setTelefone("");
+      setCpf("");
+      setTipo("");
+      setDocumento({ documento: "", tipo: "" });
+      setEndereco({
+        uf: "",
+        cidade: "",
+        rua: "",
+        bairro: "",
+        numero: "",
       });
       setAdicionando(false);
     }
@@ -106,200 +147,161 @@ export default function DialogAdicionar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-500">
+        <Button className="bg-green-600 hover:bg-green-600 w-full md:w-[200px]">
           Adicionar Fornecedor
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[1200px] h-[450px] flex flex-col items-center">
+      <DialogContent className="md:w-[800px] h-screen md:h-[650px] flex flex-col items-center overflow-y-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Fornecedor
           </DialogTitle>
         </DialogHeader>
-        <form
-          className="w-full flex flex-col items-center"
-          onSubmit={handleSubmit}
-        >
-          <div className="flex flex-wrap gap-4 w-full justify-center">
-            <div className="flex flex-col gap-2">
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll gap-10 items-start">
+            <fieldset className="border p-4 rounded w-full">
+              <legend className="font-semibold">Motorista</legend>
               <div>
-                <label htmlFor="nome">Nome Completo:</label>
-                <Input
-                  name="nome"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o nome completo..."
-                  value={formData.nome}
-                  onChange={(e) => handleInputChange("nome", e.target.value)}
-                />
+                <label htmlFor="nome">Nome</label>
+                <Input id="nome" onChange={(e) => setNome(e.target.value)} />
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
+
+              {/* Data de Nascimento */}
               <div>
-                <label htmlFor="dataNascimento">Data Nascimento:</label>
+                <label htmlFor="dataNascimento">Data de Nascimento</label>
                 <Input
-                  name="dataNascimento"
-                  className="border-2 font-medium text-black w-[250px]"
                   type="date"
-                  value={formData.dataNascimento}
-                  onChange={(e) =>
-                    handleInputChange("dataNascimento", e.target.value)
-                  }
+                  id="dataNascimento"
+                  onChange={(e) => setDataNascimento(e.target.value)}
                 />
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
+
+              {/* Telefone */}
               <div>
-                <label htmlFor="telefone">Telefone:</label>
+                <label htmlFor="telefone">Telefone</label>
                 <Input
-                  name="telefone"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o número..."
-                  value={formData.telefone}
-                  onChange={(e) =>
-                    handleInputChange("telefone", e.target.value)
-                  }
+                  id="telefone"
+                  onChange={(e) => setTelefone(e.target.value)}
                 />
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
+              {/* CPF */}
               <div>
-                <label htmlFor="documento">Documento:</label>
+                <label htmlFor="cpf">CPF</label>
+                <Input id="cpf" onChange={(e) => setCpf(e.target.value)} />
+              </div>
+
+              {/* Tipo */}
+              <div>
+                <label htmlFor="tipocliente">Tipo do cliente</label>
+                <RadioGroup
+                  value={tipo}
+                  onValueChange={(e) => setTipo(e)}
+                  className="flex"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="FISICA" id="fisica" />
+                    <label htmlFor="fisica">Física</label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="JURIDICA" id="juridica" />
+                    <label htmlFor="juridica">Jurídica</label>
+                  </div>
+                </RadioGroup>
+              </div>
+              {/* Documento */}
+              <div>
+                <label htmlFor="documento">Documento</label>
                 <Input
-                  name="documento"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o número do documento..."
-                  value={formData.documento.documento}
+                  id="documento"
                   onChange={(e) =>
-                    handleInputChange("documento.documento", e.target.value)
+                    setDocumento({ ...documento, documento: e.target.value })
                   }
                 />
               </div>
-              <RadioGroup
-                onValueChange={(value) =>
-                  handleInputChange("documento.tipo", value)
-                }
-                value={formData.documento.tipo}
-                className="flex"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="rg" id="rg" />
-                  <label htmlFor="rg">RG</label>
+
+              <div>
+                <label htmlFor="tipoDocumento">Tipo de Documento</label>
+                <RadioGroup
+                  value={documento.tipo}
+                  onValueChange={(e) => setDocumento({ ...documento, tipo: e })}
+                  className="flex"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="rg" id="rg" />
+                    <label htmlFor="rg">RG</label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="cnh" id="cnh" />
+                    <label htmlFor="cnh">CNH</label>
+                  </div>
+                </RadioGroup>
+              </div>
+            </fieldset>
+
+            {/* Endereço */}
+            <fieldset className="border p-4 rounded w-full">
+              <legend className="font-semibold">Endereço</legend>
+              <div className="">
+                <label htmlFor="uf">UF</label>
+                <select
+                  id="uf"
+                  onChange={(e) => handleUfChange(e.target.value)}
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                >
+                  <option value="">Selecione a UF</option>
+                  {ufs.map((uf) => (
+                    <option key={uf.id} value={uf.sigla}>
+                      {uf.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mt-4">
+                <label htmlFor="cidade">Cidade</label>
+                <select
+                  id="cidade"
+                  onChange={(e) =>
+                    setEndereco({ ...endereco, cidade: e.target.value })
+                  }
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                >
+                  <option value="">Selecione a Cidade</option>
+                  {cidades.map((cidade) => (
+                    <option key={cidade.id} value={cidade.nome}>
+                      {cidade.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {[
+                { label: "Rua", name: "rua" },
+                { label: "Bairro", name: "bairro" },
+                { label: "Número", name: "numero" },
+              ].map(({ label, name }) => (
+                <div key={name} className="mt-4">
+                  <label htmlFor={name}>{label}</label>
+                  <Input
+                    id={name}
+                    value={endereco[name as keyof typeof endereco] || ""}
+                    onChange={(e) =>
+                      setEndereco((prev) => ({
+                        ...prev,
+                        [name]: e.target.value,
+                      }))
+                    }
+                  />
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="cnpj" id="cnpj" />
-                  <label htmlFor="cnh">CNPJ</label>
-                </div>
-              </RadioGroup>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="uf">UF:</label>
-                <Input
-                  name="uf"
-                  type="text"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o Estado..."
-                  value={formData.endereco.uf}
-                  onChange={(e) =>
-                    handleInputChange("endereco.uf", e.target.value)
-                  }
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="cidade">Cidade:</label>
-                <Input
-                  name="cidade"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite a cidade..."
-                  value={formData.endereco.cidade}
-                  onChange={(e) =>
-                    handleInputChange("endereco.cidade", e.target.value)
-                  }
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="rua">Rua:</label>
-                <Input
-                  name="rua"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite a rua..."
-                  value={formData.endereco.rua}
-                  onChange={(e) =>
-                    handleInputChange("endereco.rua", e.target.value)
-                  }
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="bairro">Bairro:</label>
-                <Input
-                  name="bairro"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o bairro..."
-                  value={formData.endereco.bairro}
-                  onChange={(e) =>
-                    handleInputChange("endereco.bairro", e.target.value)
-                  }
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="numero">Número:</label>
-                <Input
-                  name="numero"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o nome completo..."
-                  value={formData.endereco.numero}
-                  onChange={(e) =>
-                    handleInputChange("endereco.numero", e.target.value)
-                  }
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="cpf">CPF:</label>
-                <Input
-                  name="cpf"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite cpf..."
-                  value={formData.cpf}
-                  onChange={(e) => handleInputChange("cpf", e.target.value)}
-                />
-              </div>
-            </div>
-            <div>
-              <label htmlFor="tipo">Tipo Pessoa:</label>
-              <Select
-                name="tipo"
-                value={formData.tipo}
-                onValueChange={(value) => handleInputChange("tipo", value)}
-              >
-                <SelectTrigger className="w-[250px]">
-                  <SelectValue placeholder="Selecione o tipo..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Tipos</SelectLabel>
-                    <SelectItem value="física">Física</SelectItem>
-                    <SelectItem value="jurídica">Juridica</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
+              ))}
+            </fieldset>
           </div>
-          <DialogFooter className="flex items-center gap-2 mt-10">
-            <Button type="submit" className="w-[250px]">
+          <DialogFooter>
+            <Button type="submit" className="w-full mt-8">
               {adicionando ? (
                 <Image
                   src={loading}
-                  alt="loading"
+                  alt="carregando"
                   className="text-center animate-spin"
                 />
               ) : (

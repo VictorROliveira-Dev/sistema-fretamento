@@ -37,16 +37,16 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
           <Image
             src={dadosViagemIcon}
             alt="documento"
             width={25}
-            className="hover:scale-110"
+            className="w-10 md:w-6"
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[800px]">
+      <DialogContent className="md:w-[800px] overflow-y-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-bold text-center">
             Mais Informações
@@ -82,7 +82,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">UF:</h2>
-                  <p>{motorista.endereco.uf}</p>
+                  <p>{motorista.endereco.uf.toUpperCase()}</p>
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">Cidade:</h2>

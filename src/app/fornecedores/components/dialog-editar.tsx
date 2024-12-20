@@ -1,5 +1,3 @@
-import Image from "next/image";
-import editIcon from "@/app/assets/edit.svg";
 import {
   Dialog,
   DialogContent,
@@ -10,90 +8,88 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { FormDataFornecedor, Fornecedor } from "@/lib/types";
-import React, { useEffect, useState } from "react";
+import editIcon from "@/app/assets/edit.svg";
+import { Label } from "@/components/ui/label";
+import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
+import axios from "axios";
+import { Cidade, Fornecedor, Motorista, Uf } from "@/lib/types";
 import loading from "../../assets/loading.svg";
 import { toast } from "sonner";
 
-interface FornecedoresProps {
-  fornecedor: Fornecedor;
-  setFornecedores: React.Dispatch<React.SetStateAction<Fornecedor[]>>;
+interface FornecedorProps {
   fornecedores: Fornecedor[];
+  setFornecedores: React.Dispatch<React.SetStateAction<Fornecedor[]>>;
+  fornecedor: Fornecedor;
 }
 
 export default function DialogEditar({
-  fornecedor,
-  setFornecedores,
   fornecedores,
-}: FornecedoresProps) {
-  const [formData, setFormData] = useState<FormDataFornecedor>({
-    nome: "",
-    dataNascimento: "",
-    telefone: "",
-    documento: { documento: "", tipo: "" },
-    endereco: { uf: "", cidade: "", rua: "", bairro: "", numero: "" },
-    cpf: "",
-    tipo: "",
-  });
+  setFornecedores,
+  fornecedor,
+}: FornecedorProps) {
+  const [ufs, setUfs] = useState<Uf[]>([]);
+  const [cidades, setCidades] = useState<Cidade[]>([]);
+  const [fornecedorAtualizar, setFornecedorAtualizar] =
+    useState<Fornecedor>(fornecedor);
   const [editando, setEditando] = useState(false);
+
   useEffect(() => {
-    if (fornecedor) {
-      setFormData({
-        nome: fornecedor.nome || "",
-        dataNascimento: fornecedor.dataNascimento || "",
-        telefone: fornecedor.telefone || "",
-        documento: {
-          documento: fornecedor.documento?.documento || "",
-          tipo: fornecedor.documento?.tipo || "",
-        },
-        endereco: {
-          uf: fornecedor.endereco?.uf || "",
-          cidade: fornecedor.endereco?.cidade || "",
-          rua: fornecedor.endereco?.rua || "",
-          bairro: fornecedor.endereco?.bairro || "",
-          numero: fornecedor.endereco?.numero || "",
-        },
-        cpf: fornecedor.cpf || "",
-        tipo: fornecedor.tipo || "",
+    axios
+      .get<Uf[]>("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+      .then((response) => {
+        const sortedUfs = response.data.sort((a, b) =>
+          a.nome.localeCompare(b.nome)
+        );
+        setUfs(sortedUfs);
+      })
+      .catch((error) => {
+        console.error("Error fetching UFs:", error);
       });
-    }
-  }, [fornecedor]);
-  const handleInputChange = (name: string, value: string) => {
-    if (name.includes(".")) {
-      const [parentKey, childKey] = name.split(".");
-      setFormData((prev) => ({
-        ...prev,
-        [parentKey as keyof FormDataFornecedor]: {
-          ...(prev[parentKey as keyof FormDataFornecedor] as object),
-          [childKey]: value,
-        },
-      }));
-    } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name as keyof FormDataFornecedor]: value,
-      }));
-    }
+
+    handleUfChange(fornecedor.endereco.uf);
+  }, []);
+
+  // Carrega as cidades com base na UF selecionada
+  const handleUfChange = (uf: string) => {
+    setFornecedorAtualizar({
+      ...fornecedor,
+      endereco: { ...fornecedor.endereco, uf: uf },
+    });
+
+    axios
+      .get<Cidade[]>(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
+      )
+      .then((response) => {
+        const sortedCidades = response.data.sort((a, b) =>
+          a.nome.localeCompare(b.nome)
+        );
+        setCidades(sortedCidades);
+      })
+      .catch((error) => {
+        console.error("Error fetching cidades:", error);
+      });
   };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setEditando(true);
+
     try {
       const response = await api.put(
         `/api/fornecedor/${fornecedor.id}`,
-        formData
+        fornecedorAtualizar
       );
       const fornecedorAtualizado = response.data.data;
-
-      const fornecedoresAtualizados = fornecedores.map((f) =>
-        f.id === fornecedorAtualizado.id ? fornecedorAtualizado : f
+      const fornecedoresAtualizados = fornecedores.filter(
+        (fornecedor) => fornecedor.id !== fornecedorAtualizado.id
       );
-      setFornecedores(fornecedoresAtualizados);
+      setFornecedores([...fornecedoresAtualizados, fornecedorAtualizado]);
       toast.success("Fornecedor atualizado.", {
-        className:
-          "bg-green-500 text-white font-semibold border-none shadow-lg",
+        className: "text-white font-semibold border-none shadow-lg",
         style: {
           borderRadius: "10px",
           padding: "16px",
@@ -101,207 +97,233 @@ export default function DialogEditar({
       });
     } catch (error) {
       toast.error("Erro ao tentar atualizar fornecedor.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        className: "text-white font-semibold border-none shadow-lg",
         style: {
           borderRadius: "10px",
           padding: "16px",
         },
       });
-      console.log("erro ao atualizar fornecedor", error);
+      console.log("Erro ao tentar editar fornecedor.", error);
     } finally {
       setEditando(false);
     }
   };
-
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
           <Image
+            className="w-10 md:w-6"
             src={editIcon}
             alt="Editar"
             width={25}
-            className="hover:scale-110"
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[1200px] h-[450px] flex flex-col items-center">
-        <DialogHeader className="mb-5">
-          <DialogTitle className="font-black">Edição de Fornecedor</DialogTitle>
+      <DialogContent className="md:w-auto md:h-[90%] h-screen overflow-y-scroll mx-auto">
+        <DialogHeader>
+          <DialogTitle className="text-xl font-bold">Formulário</DialogTitle>
         </DialogHeader>
-        <form
-          className="w-full flex flex-col items-center"
-          onSubmit={handleSubmit}
-        >
-          <div className="flex flex-wrap gap-4 w-full justify-center">
-            <div className="flex flex-col gap-2">
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll gap-10 items-start">
+            <fieldset className="border p-4 rounded w-full">
+              <legend className="font-semibold">Fornecedor</legend>
               <div>
-                <label htmlFor="nome">Nome Completo:</label>
+                <Label htmlFor="nome">Nome</Label>
                 <Input
-                  name="nome"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o nome completo..."
-                  value={formData.nome}
-                  onChange={(e) => handleInputChange("nome", e.target.value)}
+                  value={fornecedorAtualizar.nome}
+                  id="nome"
+                  onChange={(e) =>
+                    setFornecedorAtualizar({
+                      ...fornecedor,
+                      nome: e.target.value,
+                    })
+                  }
                 />
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
+
+              {/* Data de Nascimento */}
               <div>
-                <label htmlFor="dataNascimento">Data Nascimento:</label>
+                <Label htmlFor="dataNascimento">Data de Nascimento</Label>
                 <Input
-                  name="dataNascimento"
-                  className="border-2 font-medium text-black w-[250px]"
                   type="date"
-                  value={formData.dataNascimento}
+                  value={fornecedorAtualizar.dataNascimento}
+                  id="dataNascimento"
                   onChange={(e) =>
-                    handleInputChange("dataNascimento", e.target.value)
+                    setFornecedorAtualizar({
+                      ...fornecedorAtualizar,
+                      dataNascimento: e.target.value,
+                    })
                   }
                 />
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
+
+              {/* Telefone */}
               <div>
-                <label htmlFor="telefone">Telefone:</label>
+                <Label htmlFor="telefone">Telefone</Label>
                 <Input
-                  name="telefone"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o número..."
-                  value={formData.telefone}
+                  id="telefone"
+                  value={fornecedorAtualizar.telefone}
                   onChange={(e) =>
-                    handleInputChange("telefone", e.target.value)
+                    setFornecedorAtualizar({
+                      ...fornecedorAtualizar,
+                      telefone: e.target.value,
+                    })
                   }
                 />
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
+              {/* CPF */}
               <div>
-                <label htmlFor="documento">Documento:</label>
+                <Label htmlFor="cpf">CPF</Label>
                 <Input
-                  name="documento"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o número do documento..."
-                  value={formData.documento.documento}
+                  id="cpf"
+                  value={fornecedorAtualizar.cpf}
                   onChange={(e) =>
-                    handleInputChange("documento.documento", e.target.value)
+                    setFornecedorAtualizar({
+                      ...fornecedorAtualizar,
+                      cpf: e.target.value,
+                    })
                   }
                 />
               </div>
-              <RadioGroup
-                onValueChange={(value) =>
-                  handleInputChange("documento.tipo", value)
-                }
-                value={formData.documento.tipo}
-                className="flex"
-              >
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="rg" id="rg" />
-                  <label htmlFor="rg">RG</label>
+
+              {/* Tipo */}
+              <div>
+                <Label htmlFor="tipocliente">Tipo do Fornecedor</Label>
+                <RadioGroup
+                  value={fornecedorAtualizar.tipo}
+                  onValueChange={(e) =>
+                    setFornecedorAtualizar({ ...fornecedorAtualizar, tipo: e })
+                  }
+                  className="flex"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="FISICA" id="fisica" />
+                    <label htmlFor="fisica">Física</label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="JURIDICA" id="juridica" />
+                    <label htmlFor="juridica">Jurídica</label>
+                  </div>
+                </RadioGroup>
+              </div>
+              {/* Documento */}
+              <div>
+                <Label htmlFor="documento">Documento</Label>
+                <Input
+                  id="documento"
+                  value={fornecedorAtualizar.documento.documento}
+                  onChange={(e) =>
+                    setFornecedorAtualizar({
+                      ...fornecedorAtualizar,
+                      documento: {
+                        ...fornecedorAtualizar.documento,
+                        documento: e.target.value,
+                      },
+                    })
+                  }
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="tipoDocumento">Tipo de Documento</Label>
+                <RadioGroup
+                  value={fornecedorAtualizar.documento.tipo}
+                  onValueChange={(e) =>
+                    setFornecedorAtualizar({
+                      ...fornecedorAtualizar,
+                      documento: { ...fornecedorAtualizar.documento, tipo: e },
+                    })
+                  }
+                  className="flex"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="rg" id="rg" />
+                    <label htmlFor="rg">RG</label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="cnh" id="cnh" />
+                    <label htmlFor="cnh">CNH</label>
+                  </div>
+                </RadioGroup>
+              </div>
+            </fieldset>
+
+            {/* Endereço */}
+            <fieldset className="border p-4 rounded w-full">
+              <legend className="font-semibold">Endereço</legend>
+              <div className="">
+                <Label htmlFor="uf">UF</Label>
+                <select
+                  id="uf"
+                  value={fornecedorAtualizar.endereco.uf}
+                  onChange={(e) => handleUfChange(e.target.value)}
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                >
+                  <option value="">Selecione a UF</option>
+                  {ufs.map((uf) => (
+                    <option key={uf.id} value={uf.sigla}>
+                      {uf.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mt-4">
+                <Label htmlFor="cidade">Cidade</Label>
+                <select
+                  id="cidade"
+                  value={fornecedorAtualizar.endereco.cidade}
+                  onChange={(e) =>
+                    setFornecedorAtualizar({
+                      ...fornecedorAtualizar,
+                      endereco: {
+                        ...fornecedorAtualizar.endereco,
+                        cidade: e.target.value,
+                      },
+                    })
+                  }
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                >
+                  <option value="">Selecione uma cidade</option>
+                  {cidades.map((cidade) => (
+                    <option key={cidade.id} value={cidade.nome}>
+                      {cidade.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {[
+                { label: "Rua", name: "rua" },
+                { label: "Bairro", name: "bairro" },
+                { label: "Número", name: "numero" },
+              ].map(({ label, name }) => (
+                <div key={name} className="mt-4">
+                  <Label htmlFor={name}>{label}</Label>
+                  <Input
+                    id={name}
+                    value={
+                      fornecedorAtualizar.endereco[
+                        name as keyof typeof fornecedorAtualizar.endereco
+                      ] || ""
+                    }
+                    onChange={(e) =>
+                      setFornecedorAtualizar((prev) => ({
+                        ...prev,
+                        endereco: {
+                          ...prev.endereco,
+                          [name]: e.target.value,
+                        },
+                      }))
+                    }
+                  />
                 </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="cnpj" id="cnpj" />
-                  <label htmlFor="cnh">CNPJ</label>
-                </div>
-              </RadioGroup>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="uf">UF:</label>
-                <Input
-                  name="uf"
-                  type="text"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o Estado..."
-                  value={formData.endereco.uf}
-                  onChange={(e) =>
-                    handleInputChange("endereco.uf", e.target.value)
-                  }
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="cidade">Cidade:</label>
-                <Input
-                  name="cidade"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite a cidade..."
-                  value={formData.endereco.cidade}
-                  onChange={(e) =>
-                    handleInputChange("endereco.cidade", e.target.value)
-                  }
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="rua">Rua:</label>
-                <Input
-                  name="rua"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite a rua..."
-                  value={formData.endereco.rua}
-                  onChange={(e) =>
-                    handleInputChange("endereco.rua", e.target.value)
-                  }
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="bairro">Bairro:</label>
-                <Input
-                  name="bairro"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o bairro..."
-                  value={formData.endereco.bairro}
-                  onChange={(e) =>
-                    handleInputChange("endereco.bairro", e.target.value)
-                  }
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="numero">Número:</label>
-                <Input
-                  name="numero"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o nome completo..."
-                  value={formData.endereco.numero}
-                  onChange={(e) =>
-                    handleInputChange("endereco.numero", e.target.value)
-                  }
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="cpf">CPF:</label>
-                <Input
-                  name="cpf"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite cpf..."
-                  value={formData.cpf}
-                  onChange={(e) => handleInputChange("cpf", e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="tipo">Tipo Pessoa:</label>
-                <Input
-                  name="tipo"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o tipo de pessoa..."
-                  value={formData.tipo}
-                  onChange={(e) => handleInputChange("tipo", e.target.value)}
-                />
-              </div>
-            </div>
+              ))}
+            </fieldset>
           </div>
-          <DialogFooter className="flex items-center gap-2 mt-10">
-            <Button type="submit" className="w-[250px]">
+          <DialogFooter>
+            <Button type="submit" className="w-full mt-8">
               {editando ? (
                 <Image
                   src={loading}
