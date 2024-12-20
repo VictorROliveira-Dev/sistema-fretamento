@@ -51,25 +51,11 @@ export type Motorista = {
   nome: string;
   dataNascimento: string;
   telefone: string;
-  documento: {
-    documento: string;
-    tipo: string;
-  };
-  endereco: {
-    uf: string;
-    cidade: string;
-    rua: string;
-    bairro: string;
-    numero: string;
-  };
+  documento: Documento;
+  endereco: Endereco;
   cpf: string;
-  habilitacao: {
-    protocolo: string;
-    vencimento: string;
-    categoria: string;
-    cidade: string;
-    uf: string;
-  };
+  tipo: string;
+  habilitacao: Habilitacao;
 };
 
 export type Fornecedor = {
@@ -206,7 +192,7 @@ export interface IDespesas {
   valorParcial: number;
   formaPagamento: string;
   centroCusto: string;
-  responsavelNome: string
+  responsavelNome: string;
 }
 
 export interface IReceitas {

@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import axios from "axios";
 import { api } from "@/lib/axios";
 import { Veiculo, Viagem } from "@/lib/types";
 
@@ -21,7 +20,7 @@ const CalendarApp = () => {
     const fetchData = async () => {
       try {
         // 1. Recuperar as viagens da API
-        const responseViagens = await api.get("/viagem"); // Ajuste a URL conforme a sua API
+        const responseViagens = await api.get("/viagem");
         console.log("Resposta da API de Viagens:", responseViagens.data.data);
         const viagens: Viagem[] = Array.isArray(responseViagens.data.data)
           ? responseViagens.data.data
