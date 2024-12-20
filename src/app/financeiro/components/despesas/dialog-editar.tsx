@@ -23,6 +23,7 @@ import { api } from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import editIcon from "@/app/assets/edit.svg";
+import { toast } from "sonner";
 
 interface DespesasProps {
   despesa: IDespesas;
@@ -35,23 +36,23 @@ export default function DialogEditarDespesa({
   setDespesas,
   despesas,
 }: DespesasProps) {
-  const [dataEmissao, setDataEmissao] = useState("");
-  const [dataCompra, setDataCompra] = useState("");
-  const [origemPagamento, setOrigemPagamento] = useState("");
-  const [numeroDocumento, setNumeroDocumento] = useState("");
+  const [dataEmissao, setDataEmissao] = useState<string | "">("");
+  const [dataCompra, setDataCompra] = useState<string | "">("");
+  const [origemPagamento, setOrigemPagamento] = useState<string | "">("");
+  const [numeroDocumento, setNumeroDocumento] = useState<string | "">("");
   const [responsavelId, setResponsavelId] = useState<number | "">();
-  const [vencimento, setVencimento] = useState("");
+  const [vencimento, setVencimento] = useState<string | undefined>("");
   const [pago, setPago] = useState(false);
   const [valorTotal, setValorTotal] = useState<number>();
   const [valorParcial, setValorParcial] = useState<number>();
-  const [formaPagamento, setFormaPagamento] = useState("");
-  const [centroCusto, setCentroCusto] = useState("");
+  const [formaPagamento, setFormaPagamento] = useState<string | "">("");
+  const [centroCusto, setCentroCusto] = useState<string | "">("");
 
   const [motorista, setMotorista] = useState<Motorista[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [fornecedor, setFornecedor] = useState<Fornecedor[]>([]);
   const [viagem, setViagem] = useState<Viagem[]>([]);
-  const [tipoResponsavel, setTipoResponsavel] = useState("");
+  const [tipoResponsavel, setTipoResponsavel] = useState<string | "">("");
   const [viagemSelecionada, setViagemSelecionada] = useState<
     string | undefined
   >("");
@@ -79,6 +80,8 @@ export default function DialogEditarDespesa({
     setValorParcial(despesa.valorParcial);
     setFormaPagamento(despesa.formaPagamento.toString());
     setCentroCusto(despesa.centroCusto);
+    setResponsavelId(despesa.responsavelId);
+
     const fetchData = async () => {
       try {
         const [
@@ -105,10 +108,10 @@ export default function DialogEditarDespesa({
     fetchData();
   }, []);
   const getClienteNome = (clientId: any) => {
+    if (!clientes) return "Carregando clientes...";
     const cliente = clientes.find((cliente) => cliente.id === clientId);
     return cliente ? cliente.nome : "Cliente não encontrado";
   };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -131,27 +134,23 @@ export default function DialogEditarDespesa({
       const response = await api.put(`/despesa/${despesa.id}`, despesasData);
 
       const despesaAtualizada = response.data.data;
+      despesaAtualizada.responsavel = despesa.responsavel;
 
-      const despesasAtualizadas = despesas.map((d) => {
-        return d.id === despesaAtualizada.id ? despesaAtualizada : d;
+      const despesasAtualizadas = despesas.map((r) => {
+        return r.id === despesaAtualizada.id ? despesaAtualizada : r;
       });
       setDespesas(despesasAtualizadas);
-      console.log("despesa atualizar com sucesso", response.data.data);
+      toast.success("Despesa atualizada.", {
+        className:
+          "text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
+      console.log("despesa atualizada com sucesso", response.data.data);
     } catch (error) {
-      console.log("erro ao tentar atualizar despesa", error);
-    }
-  };
-
-  const getResponsaveis = () => {
-    switch (tipoResponsavel) {
-      case "motorista":
-        return motorista;
-      case "cliente":
-        return clientes;
-      case "fornecedor":
-        return fornecedor;
-      default:
-        return [];
+      console.error("Erro ao tentar atualizar despesa", error);
     }
   };
 
@@ -200,43 +199,9 @@ export default function DialogEditarDespesa({
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex flex-col">
-              <label htmlFor="tipoResponsavel">Tipo Responsável:</label>
-              <select
-                name="tipoResponsavel"
-                value={tipoResponsavel}
-                onChange={(e) => {
-                  setTipoResponsavel(e.target.value);
-                  setResponsavelId("");
-                }}
-                className="w-[250px] border rounded-md p-2"
-              >
-                <option value="" disabled>
-                  Selecione o tipo...
-                </option>
-                <option value="motorista">Motorista</option>
-                <option value="cliente">Cliente</option>
-                <option value="fornecedor">Fornecedor</option>
-              </select>
-            </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col ">
               <label htmlFor="responsavel">Responsável:</label>
-              <select
-                name="responsavel"
-                value={responsavelId}
-                onChange={(e) => setResponsavelId(Number(e.target.value) || "")}
-                className="w-[250px] border rounded-md p-2"
-                disabled={!tipoResponsavel}
-              >
-                <option value="" disabled>
-                  Selecione o responsável...
-                </option>
-                {getResponsaveis().map((responsavel) => (
-                  <option key={responsavel.id} value={responsavel.id}>
-                    {responsavel.nome}
-                  </option>
-                ))}
-              </select>
+                <Input value={responsavelId} disabled className="w-[250px]"/>
             </div>
             <div className="flex flex-col">
               <label htmlFor="viagem">Viagem:</label>
@@ -279,16 +244,7 @@ export default function DialogEditarDespesa({
                 onChange={(e) => setDataCompra(e.target.value)}
               />
             </div>
-            <div className="flex flex-col">
-              <label htmlFor="origemPagamento">Origem Pagamento:</label>
-              <Input
-                name="origemPagamento"
-                placeholder="Digite a origem..."
-                className="border-2 font-medium w-[250px]"
-                value={origemPagamento}
-                onChange={(e) => setOrigemPagamento(e.target.value)}
-              />
-            </div>
+
             <div className="flex flex-col">
               <label htmlFor="numeroDocumento">Número Documento:</label>
               <Input

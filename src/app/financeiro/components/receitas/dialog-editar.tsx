@@ -18,13 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import React, { FormEvent, useEffect, useState } from "react";
-import {
-  Cliente,
-  Fornecedor,
-  IReceitas,
-  Motorista,
-  Viagem,
-} from "@/lib/types";
+import { Cliente, Fornecedor, IDespesas, IReceitas, Motorista, Viagem } from "@/lib/types";
 import { api } from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
@@ -37,28 +31,28 @@ interface ReceitaProps {
   receitas: IReceitas[];
 }
 
-export default function DialogEditarReceita({
+export default function DialogEditarDespesa({
   receita,
   setReceitas,
   receitas,
 }: ReceitaProps) {
-  const [dataEmissao, setDataEmissao] = useState("");
-  const [dataCompra, setDataCompra] = useState("");
-  const [origemPagamento, setOrigemPagamento] = useState("");
-  const [numeroDocumento, setNumeroDocumento] = useState("");
+  const [dataEmissao, setDataEmissao] = useState<string | "">("");
+  const [dataCompra, setDataCompra] = useState<string | "">("");
+  const [origemPagamento, setOrigemPagamento] = useState<string | "">("");
+  const [numeroDocumento, setNumeroDocumento] = useState<string | "">("");
   const [responsavelId, setResponsavelId] = useState<number | "">();
-  const [vencimento, setVencimento] = useState("");
+  const [vencimento, setVencimento] = useState<string | undefined>("");
   const [pago, setPago] = useState(false);
   const [valorTotal, setValorTotal] = useState<number>();
   const [valorParcial, setValorParcial] = useState<number>();
-  const [formaPagamento, setFormaPagamento] = useState("");
-  const [centroCusto, setCentroCusto] = useState("");
+  const [formaPagamento, setFormaPagamento] = useState<string | "">("");
+  const [centroCusto, setCentroCusto] = useState<string | "">("");
 
   const [motorista, setMotorista] = useState<Motorista[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [fornecedor, setFornecedor] = useState<Fornecedor[]>([]);
   const [viagem, setViagem] = useState<Viagem[]>([]);
-  const [tipoResponsavel, setTipoResponsavel] = useState("");
+  const [tipoResponsavel, setTipoResponsavel] = useState<string | "">("");
   const [viagemSelecionada, setViagemSelecionada] = useState<
     string | undefined
   >("");
@@ -86,6 +80,8 @@ export default function DialogEditarReceita({
     setValorParcial(receita.valorParcial);
     setFormaPagamento(receita.formaPagamento.toString());
     setCentroCusto(receita.centroCusto);
+    setResponsavelId(receita.responsavelId);
+
     const fetchData = async () => {
       try {
         const [
@@ -112,10 +108,10 @@ export default function DialogEditarReceita({
     fetchData();
   }, []);
   const getClienteNome = (clientId: any) => {
+    if (!clientes) return "Carregando clientes...";
     const cliente = clientes.find((cliente) => cliente.id === clientId);
     return cliente ? cliente.nome : "Cliente não encontrado";
   };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -135,9 +131,10 @@ export default function DialogEditarReceita({
     };
 
     try {
-      const response = await api.put(`/api/receita/${receita.id}`, receitaData);
+      const response = await api.put(`/despesa/${receita.id}`, receitaData);
 
       const receitaAtualizada = response.data.data;
+      receitaAtualizada.responsavel = receita.responsavel;
 
       const receitasAtualizadas = receitas.map((r) => {
         return r.id === receitaAtualizada.id ? receitaAtualizada : r;
@@ -151,29 +148,9 @@ export default function DialogEditarReceita({
           padding: "16px",
         },
       });
-      console.log("receita atualizada com sucesso", response.data.data);
+      console.log("Receita atualizada com sucesso", response.data.data);
     } catch (error) {
-      toast.error("Erro ao tentar atualizar receita.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
-      console.log("erro ao tentar atualizar receita", error);
-    }
-  };
-
-  const getResponsaveis = () => {
-    switch (tipoResponsavel) {
-      case "motorista":
-        return motorista;
-      case "cliente":
-        return clientes;
-      case "fornecedor":
-        return fornecedor;
-      default:
-        return [];
+      console.error("Erro ao tentar atualizar despesa", error);
     }
   };
 
@@ -222,43 +199,9 @@ export default function DialogEditarReceita({
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex flex-col">
-              <label htmlFor="tipoResponsavel">Tipo Responsável:</label>
-              <select
-                name="tipoResponsavel"
-                value={tipoResponsavel}
-                onChange={(e) => {
-                  setTipoResponsavel(e.target.value);
-                  setResponsavelId("");
-                }}
-                className="w-[250px] border rounded-md p-2"
-              >
-                <option value="" disabled>
-                  Selecione o tipo...
-                </option>
-                <option value="motorista">Motorista</option>
-                <option value="cliente">Cliente</option>
-                <option value="fornecedor">Fornecedor</option>
-              </select>
-            </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col ">
               <label htmlFor="responsavel">Responsável:</label>
-              <select
-                name="responsavel"
-                value={responsavelId}
-                onChange={(e) => setResponsavelId(Number(e.target.value) || "")}
-                className="w-[250px] border rounded-md p-2"
-                disabled={!tipoResponsavel}
-              >
-                <option value="" disabled>
-                  Selecione o responsável...
-                </option>
-                {getResponsaveis().map((responsavel) => (
-                  <option key={responsavel.id} value={responsavel.id}>
-                    {responsavel.nome}
-                  </option>
-                ))}
-              </select>
+                <Input value={responsavelId} disabled className="w-[250px]"/>
             </div>
             <div className="flex flex-col">
               <label htmlFor="viagem">Viagem:</label>
@@ -301,16 +244,7 @@ export default function DialogEditarReceita({
                 onChange={(e) => setDataCompra(e.target.value)}
               />
             </div>
-            <div className="flex flex-col">
-              <label htmlFor="origemPagamento">Origem Pagamento:</label>
-              <Input
-                name="origemPagamento"
-                placeholder="Digite a origem..."
-                className="border-2 font-medium w-[250px]"
-                value={origemPagamento}
-                onChange={(e) => setOrigemPagamento(e.target.value)}
-              />
-            </div>
+
             <div className="flex flex-col">
               <label htmlFor="numeroDocumento">Número Documento:</label>
               <Input

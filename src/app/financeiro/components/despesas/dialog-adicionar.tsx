@@ -275,16 +275,6 @@ export default function DialogAdicionarDespesa({
               />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="origemPagamento">Origem Pagamento:</label>
-              <Input
-                name="origemPagamento"
-                placeholder="Digite a origem..."
-                className="border-2 font-medium w-[250px]"
-                value={origemPagamento}
-                onChange={(e) => setOrigemPagamento(e.target.value)}
-              />
-            </div>
-            <div className="flex flex-col">
               <label htmlFor="numeroDocumento">Número Documento:</label>
               <Input
                 name="numeroDocumento"

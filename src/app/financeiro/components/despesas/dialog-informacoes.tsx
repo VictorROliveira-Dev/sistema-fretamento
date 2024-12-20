@@ -8,33 +8,20 @@ import {
 } from "@/components/ui/dialog";
 import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 import Image from "next/image";
-import { IDespesas, Motorista } from "@/lib/types";
+import { IDespesas } from "@/lib/types";
 import { useEffect, useState } from "react";
-import { api } from "@/lib/axios";
 
 interface DespesasProps {
   despesaId: string;
+  despesas: IDespesas[]; // Recebe a lista de despesas como prop
 }
 
 export default function DialogInformacoesDespesas({
   despesaId,
+  despesas = [], // Define um valor padrão para despesas
 }: DespesasProps) {
-  const [despesas, setDespesas] = useState<IDespesas[]>([]);
-
-  useEffect(() => {
-    if (!despesaId) return;
-
-    const fetchDespesa = async () => {
-      try {
-        const response = await api.get(`/despesa/${despesaId}`);
-        setDespesas(response.data.data ? [response.data.data] : []);
-      } catch (error) {
-        console.log("Erro ao buscar despesas:", error);
-      }
-    };
-
-    fetchDespesa();
-  }, [despesaId]);
+  // Filtra a despesa específica pelo ID
+  const despesa = despesas.find((d) => d.id === despesaId);
 
   return (
     <Dialog>
@@ -55,7 +42,7 @@ export default function DialogInformacoesDespesas({
           </DialogTitle>
         </DialogHeader>
         <div className="flex items-center justify-around">
-          {despesas.map((despesa) => (
+          {despesa ? (
             <div key={despesa.id}>
               <div className="flex flex-col gap-4">
                 <div className="flex gap-2">
@@ -75,12 +62,16 @@ export default function DialogInformacoesDespesas({
                   <p>{despesa.origemPagamento}</p>
                 </div>
                 <div className="flex gap-2">
+                  <h2 className="font-bold">Centro de Custo:</h2>
+                  <p>{despesa.centroCusto}</p>
+                </div>
+                <div className="flex gap-2">
                   <h2 className="font-bold">Número do Documento:</h2>
                   <p>{despesa.numeroDocumento}</p>
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">Responsável:</h2>
-                  <p>{despesa.responsavelNome}</p>
+                  <p>{despesa.responsavel?.nome}</p>
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">Data de Vencimento:</h2>
@@ -88,31 +79,37 @@ export default function DialogInformacoesDespesas({
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">Pago:</h2>
-                  <p>{despesa.pago}</p>
+                  <p>{despesa.pago ? "Sim" : "Não"}</p>
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">Valor Total:</h2>
-                  <p>{despesa.valorTotal}</p>
+                  <p>R$ {despesa.valorTotal.toFixed(2)}</p>
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">Valor Parcial:</h2>
-                  <p>{despesa.valorParcial}</p>
+                  <p>R$ {despesa.valorParcial.toFixed(2)}</p>
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">Forma Pagamento:</h2>
+                  <p>{despesa.formaPagamento}</p>
+                </div>
+                <div className="flex flex-col gap-4">
                   <div className="flex gap-2">
-                    <p>{despesa.centroCusto}</p>
+                    <h2 className="font-bold">Viagem Saída:</h2>
+                    <p>{despesa.viagem.rota.saida.cidadeSaida}</p>
                   </div>
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="flex gap-2">
-                    <h2 className="font-bold">Viagem:</h2>
-                    <p>{despesa.viagemId}</p>
+                    <h2 className="font-bold">Viagem Retorno:</h2>
+                    <p>{despesa.viagem.rota.retorno.cidadeSaida}</p>
                   </div>
                 </div>
               </div>
             </div>
-          ))}
+          ) : (
+            <p>Despesa não encontrada.</p>
+          )}
         </div>
       </DialogContent>
     </Dialog>

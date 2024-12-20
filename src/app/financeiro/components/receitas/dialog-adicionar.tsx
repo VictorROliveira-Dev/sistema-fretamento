@@ -41,8 +41,8 @@ export default function DialogAdicionarReceita({
   const [responsavelId, setResponsavelId] = useState<number | "">();
   const [vencimento, setVencimento] = useState("");
   const [pago, setPago] = useState(false);
-  const [valorTotal, setValorTotal] = useState<number | "">();
-  const [valorParcial, setValorParcial] = useState<number | "">();
+  const [valorTotal, setValorTotal] = useState<number>();
+  const [valorParcial, setValorParcial] = useState<number>();
   const [formaPagamento, setFormaPagamento] = useState("");
   const [centroCusto, setCentroCusto] = useState("");
 
@@ -133,7 +133,6 @@ export default function DialogAdicionarReceita({
       setOrigemPagamento("");
       setNumeroDocumento("");
       setResponsavelId("");
-      setViagemSelecionada("");
       setVencimento("");
       setValorTotal(0);
       setValorParcial(0);
@@ -273,16 +272,6 @@ export default function DialogAdicionarReceita({
                 className="border-2 font-medium w-[250px]"
                 value={dataCompra}
                 onChange={(e) => setDataCompra(e.target.value.toString())}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="origemPagamento">Origem Pagamento:</label>
-              <Input
-                name="origemPagamento"
-                placeholder="Digite a origem..."
-                className="border-2 font-medium w-[250px]"
-                value={origemPagamento}
-                onChange={(e) => setOrigemPagamento(e.target.value)}
               />
             </div>
             <div className="flex flex-col">

@@ -38,83 +38,15 @@ export default function Financeiro() {
       setCarregando(true);
       try {
         const [despesasResponse, receitasResponse] = await Promise.all([
-          api.get("/despesa/getall"),
-          api.get("/api/receita/getall"),
+          api.get("/despesa"),
+          api.get("/api/receita"),
         ]);
-
         const despesasData = despesasResponse.data.data || [];
         const receitasData = receitasResponse.data.data || [];
-        // Função auxiliar para buscar o nome do responsável
-        const getResponsavelNome = async (responsavelId: string) => {
-          if (!responsavelId) return "";
-
-          try {
-            // Tenta obter o responsável de cada tipo (motorista, cliente, fornecedor)
-            const endpoints = [
-              api.get(`/motorista/${responsavelId}`),
-              api.get(`/cliente/${responsavelId}`),
-              api.get(`/api/fornecedor/${responsavelId}`),
-            ];
-
-            const [motoristaResponse, clienteResponse, fornecedorResponse] =
-              await Promise.all(endpoints.map((req) => req.catch(() => null)));
-
-            if (motoristaResponse) return motoristaResponse.data.data.nome;
-            if (clienteResponse) return clienteResponse.data.data.nome;
-            if (fornecedorResponse) return fornecedorResponse.data.data.nome;
-
-            return ""; // Retorna vazio caso não encontre
-          } catch (error) {
-            console.log("Erro ao buscar responsável", error);
-            return ""; // Retorna vazio em caso de erro
-          }
-        };
-
-        // Busca os nomes dos responsáveis e retorna as despesas com as informações completas
-        const despesasComResponsavel = await Promise.all(
-          despesasData.map(async (despesa: IDespesas) => {
-            const responsavelNome = await getResponsavelNome(
-              despesa.responsavelId.toString()
-            );
-            return { ...despesa, responsavelNome };
-          })
-        );
-        // Filtrar despesas com base no intervalo de datas
-        const despesasFiltradas = despesasComResponsavel.filter((despesa) => {
-          if (!dataInicio && !dataFinal) return true;
-          const dataVencimento = new Date(despesa.vencimento);
-          const inicio = dataInicio ? new Date(dataInicio) : null;
-          const final = dataFinal ? new Date(dataFinal) : null;
-
-          if (inicio && final) {
-            return dataVencimento >= inicio && dataVencimento <= final;
-          } else if (inicio) {
-            return dataVencimento >= inicio;
-          } else if (final) {
-            return dataVencimento <= final;
-          }
-          return true;
-        });
-        // Filtrar receitas com base no intervalo de datas
-        const receitasFiltradas = receitasData.filter((receita: IReceitas) => {
-          if (!dataInicio && !dataFinal) return true;
-          const dataVencimento = new Date(receita.vencimento);
-          const inicio = dataInicio ? new Date(dataInicio) : null;
-          const final = dataFinal ? new Date(dataFinal) : null;
-
-          if (inicio && final) {
-            return dataVencimento >= inicio && dataVencimento <= final;
-          } else if (inicio) {
-            return dataVencimento >= inicio;
-          } else if (final) {
-            return dataVencimento <= final;
-          }
-          return true;
-        });
-
         // Atualiza o estado com as despesas e receitas
-        setDespesas(despesasFiltradas);
-        setReceitas(receitasFiltradas);
+        setDespesas(despesasData);
+        setReceitas(receitasData);
+        console.log("Despesas:", despesasData);
       } catch (error) {
         console.log("Erro ao tentar recuperar os dados", error);
       } finally {
@@ -222,7 +154,7 @@ export default function Financeiro() {
                               )}
                             </TableCell>
                             <TableCell className="hidden sm:table-cell">{despesa.origemPagamento}</TableCell>
-                            <TableCell className="hidden sm:table-cell">{despesa.responsavelNome}</TableCell>
+                            <TableCell className="hidden sm:table-cell">{despesa.responsavel ? despesa.responsavel.nome : 'N/A'}</TableCell>
                             <TableCell className="hidden sm:table-cell">
                               {despesa.pago ? "sim" : "nao"}
                             </TableCell>
@@ -250,6 +182,7 @@ export default function Financeiro() {
                                 </Button>
                                 <DialogInformacoesDespesas
                                   despesaId={despesa.id}
+                                  despesas={despesas}
                                 />
                               </div>
                             </TableCell>
@@ -337,7 +270,7 @@ export default function Financeiro() {
                             )}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">{receita.origemPagamento}</TableCell>
-                          <TableCell className="hidden sm:table-cell">{receita.responsavelId}</TableCell>
+                          <TableCell className="hidden sm:table-cell">{receita.responsavel.nome}</TableCell>
                           <TableCell className="hidden sm:table-cell">
                             {receita.pago
                               ? "sim".toUpperCase()

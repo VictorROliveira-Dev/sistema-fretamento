@@ -63,17 +63,8 @@ export type Fornecedor = {
   nome: string;
   dataNascimento: string;
   telefone: string;
-  documento: {
-    documento: string;
-    tipo: string;
-  };
-  endereco: {
-    uf: string;
-    cidade: string;
-    rua: string;
-    bairro: string;
-    numero: string;
-  };
+  documento: Documento;
+  endereco: Endereco;
   cpf: string;
   tipo: string;
 };
@@ -178,6 +169,16 @@ export interface IDocumentos {
   referencia: string;
 }
 
+interface Responsavel {
+  id: number;
+  nome: string;
+  dataNascimento: string;
+  telefone: string;
+  documento: Documento;
+  endereco: Endereco;
+  cpf: string;
+}
+
 export interface IDespesas {
   id: string;
   dataEmissao: string;
@@ -185,7 +186,9 @@ export interface IDespesas {
   origemPagamento: string;
   numeroDocumento: string;
   responsavelId: number;
+  responsavel: Responsavel;
   viagemId: number;
+  viagem: Viagem;
   vencimento: string;
   pago: boolean;
   valorTotal: number;
@@ -202,7 +205,9 @@ export interface IReceitas {
   origemPagamento: string;
   numeroDocumento: string;
   responsavelId: number;
+  responsavel: Responsavel;
   viagemId: number;
+  viagem: Viagem;
   vencimento: string;
   pago: boolean;
   valorTotal: number;
