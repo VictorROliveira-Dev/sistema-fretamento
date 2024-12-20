@@ -1,3 +1,5 @@
+"use client";
+
 import removeIcon from "@/app/assets/remove.svg";
 import passagemIcon from "@/app/assets/passagem.svg";
 import FormInput from "@/components/form-input";
@@ -14,8 +16,28 @@ import Image from "next/image";
 import DialogAdicionar from "./components/dialog-adicionar";
 import DialogEditar from "./components/dialog-editar";
 import DialogInformacoes from "./components/dialog-informacoes";
+import { useEffect, useState } from "react";
+import { Passageiro } from "@/lib/types";
+import { api } from "@/lib/axios";
+import DialogExcluir from "./components/dialog_excluir";
 
 export default function Passageiros() {
+  const [passageiros, setPassageiros] = useState<Passageiro[]>([]);
+
+  async function fetchPassageiros() {
+    const response = await api.get("/passageiro");
+    if (!response.data.isSucces) {
+      console.log(response.data.message);
+      return;
+    }
+
+    setPassageiros(response.data.data);
+  }
+
+  useEffect(() => {
+    fetchPassageiros();
+  }, []);
+
   return (
     <section className="bg-[#070180] pt-12 h-[424px] max-h-[1000px]">
       <div className="h-[300px] w-[1000px] max-h-[430px] mx-auto rounded-md bg-white flex flex-col">
@@ -34,7 +56,10 @@ export default function Passageiros() {
                   placeholder="Digite o nome..."
                 />
               </form>
-              <DialogAdicionar />
+              <DialogAdicionar
+                passageiros={passageiros}
+                setPassageiros={setPassageiros}
+              />
             </div>
             <Table>
               <TableHeader className="border-b-2">
@@ -52,7 +77,7 @@ export default function Passageiros() {
                     Cidade
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
-                    CEP
+                    Matricula
                   </TableHead>
                   <TableHead className="text-black font-bold text-center">
                     Telefone
@@ -60,38 +85,41 @@ export default function Passageiros() {
                 </TableRow>
               </TableHeader>
               <TableBody className="text-center">
-                <TableRow className="hover:bg-gray-200">
-                  <TableCell>
-                    <p>João</p>
-                  </TableCell>
-                  <TableCell>099.876.345-21</TableCell>
-                  <TableCell>Irecê - BA</TableCell>
-                  <TableCell>(74)98877-0044</TableCell>
-                  <TableCell>00123493411</TableCell>
-                  <TableCell>456-7</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <DialogEditar />
-                      <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                        <Image
-                          src={removeIcon}
-                          alt="Remover"
-                          width={25}
-                          className="hover:scale-110"
+                {passageiros.map((passageiro) => (
+                  <TableRow className="hover:bg-gray-200" key={passageiro.id}>
+                    <TableCell>
+                      <p>{passageiro.nome}</p>
+                    </TableCell>
+                    <TableCell>{passageiro.dataNascimento}</TableCell>
+                    <TableCell>{passageiro.cpf}</TableCell>
+                    <TableCell>{passageiro.endereco.cidade}</TableCell>
+                    <TableCell>{passageiro.matricula}</TableCell>
+                    <TableCell>{passageiro.telefone}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <DialogEditar
+                          setPassageiros={setPassageiros}
+                          passageiros={passageiros}
+                          passageiroEditavel={passageiro}
                         />
-                      </Button>
-                      <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                        <Image
-                          src={passagemIcon}
-                          alt="Passagem"
-                          width={25}
-                          className="hover:scale-110"
+                        <DialogExcluir
+                          setPassageiros={setPassageiros}
+                          passageiros={passageiros}
+                          passageiro={passageiro}
                         />
-                      </Button>
-                      <DialogInformacoes />
-                    </div>
-                  </TableCell>
-                </TableRow>
+                        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+                          <Image
+                            src={passagemIcon}
+                            alt="Passagem"
+                            width={25}
+                            className="hover:scale-110"
+                          />
+                        </Button>
+                        <DialogInformacoes passageiro={passageiro} />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
               </TableBody>
             </Table>
           </div>

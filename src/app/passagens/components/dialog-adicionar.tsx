@@ -9,6 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -18,9 +19,68 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { api } from "@/lib/axios";
 import { formFieldsPassagens } from "@/lib/objects";
+import { Passageiro, Passagem, ViagemProgramda } from "@/lib/types";
+import { Label } from "@radix-ui/react-label";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 
-export default function DialogAdicionar() {
+interface AdicionarProps {
+  viagem: ViagemProgramda;
+  setViagem: React.Dispatch<React.SetStateAction<ViagemProgramda>>;
+}
+
+export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
+  const [passageiros, setPassageiros] = useState<Passageiro[]>([]);
+  const [passagem, setPassagem] = useState<Passagem>({
+    viagemId: viagem.id,
+    passageiroId: 0,
+    dataEmissao: "",
+    formaPagamento: "",
+    poltrona: 0,
+    situacao: "",
+  });
+
+  async function fetchPassageiros() {
+    const response = await api.get("/passageiro");
+
+    if (!response.data.isSucces) {
+      toast("erro ao tentar buscar passageiros, recarregue a página");
+      return;
+    }
+
+    setPassageiros(response.data.data);
+  }
+
+  useEffect(() => {
+    setPassagem((prevPassagem) => ({
+      ...prevPassagem,
+      viagemId: viagem.id, // Certifique-se de que viagem.id é correto
+    }));
+    fetchPassageiros();
+  }, [viagem]);
+
+  async function registrarPassagem() {
+    console.log(passagem);
+    const response = await api.post("/passagem", passagem);
+
+    if (!response.data.isSucces) {
+      toast("erro ao tentar registrar passagem");
+      return;
+    }
+
+    const passagensAtualizadas = [
+      ...(viagem?.passagens || []),
+      response.data.data,
+    ];
+    console.log(response.data.data);
+    setViagem({
+      ...viagem,
+      passagens: passagensAtualizadas,
+    });
+    toast("registrada com sucesso");
+  }
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -32,85 +92,102 @@ export default function DialogAdicionar() {
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Cadastro de Passagem</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-wrap gap-4 w-full justify-center">
-          <div>
-            <label htmlFor="passageiro">Passageiro:</label>
-            <Select name="passageiro">
-              <SelectTrigger className="w-[250px]">
-                <SelectValue placeholder="Selecione o passageiro..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Passageiros</SelectLabel>
-                  <SelectItem value="v1">João</SelectItem>
-                  <SelectItem value="v2">Miguel</SelectItem>
-                  <SelectItem value="v3">Angélica</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
+        <div className="flex gap-4">
+          <div className="flex flex-col">
+            <div>
+              <label htmlFor="passageiro">Passageiro:</label>
+              <Select
+                onValueChange={(e) =>
+                  setPassagem({ ...passagem, passageiroId: Number(e) })
+                }
+                name="passageiro"
+              >
+                <SelectTrigger className="w-[250px]">
+                  <SelectValue placeholder="Selecione o passageiro..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {passageiros.map((passageiro) => (
+                      <SelectItem value={passageiro.id.toString()}>
+                        {passageiro.nome}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label htmlFor="viagem">Viagem:</label>
+              <Input
+                onChange={() =>
+                  setPassagem({ ...passagem, viagemId: viagem.id })
+                }
+                value={viagem?.titulo || ""}
+                disabled={true}
+              />
+            </div>
+            <div>
+              <label htmlFor="pagamento">Tipo Pagamento:</label>
+              <Select
+                onValueChange={(e) =>
+                  setPassagem({ ...passagem, formaPagamento: e })
+                }
+                name="pagamento"
+              >
+                <SelectTrigger className="w-[250px]">
+                  <SelectValue placeholder="Selecione o tipo..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Pagamentos</SelectLabel>
+                    <SelectItem value="PIX">PIX</SelectItem>
+                    <SelectItem value="CREDITO">Cartão Crédito</SelectItem>
+                    <SelectItem value="DEBITO">Cartão Débito</SelectItem>
+                    <SelectItem value="DINHEIRO">Dinheiro</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label htmlFor="situacao">Situação:</label>
+              <Select
+                onValueChange={(e) => setPassagem({ ...passagem, situacao: e })}
+                name="situacao"
+              >
+                <SelectTrigger className="w-[250px]">
+                  <SelectValue placeholder="Selecione a situação..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Situações</SelectLabel>
+                    <SelectItem value="PAGO">Pago</SelectItem>
+                    <SelectItem value="RESERVADO">Reservado</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <div>
+                <Label htmlFor="date">Data de Emissão</Label>
+                <Input
+                  name="date"
+                  type="date"
+                  onChange={(e) =>
+                    setPassagem({ ...passagem, dataEmissao: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+            <Button onClick={() => registrarPassagem()}>Registrar</Button>
           </div>
-          <div>
-            <label htmlFor="viagem">Viagem:</label>
-            <Select name="viagem">
-              <SelectTrigger className="w-[250px]">
-                <SelectValue placeholder="Selecione a viagem..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Viagens</SelectLabel>
-                  <SelectItem value="v1">Salvador </SelectItem>
-                  <SelectItem value="v2">Santa Cruz</SelectItem>
-                  <SelectItem value="v3">Ilhéus</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label htmlFor="pagamento">Tipo Pagamento:</label>
-            <Select name="pagamento">
-              <SelectTrigger className="w-[250px]">
-                <SelectValue placeholder="Selecione o tipo..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Pagamentos</SelectLabel>
-                  <SelectItem value="v1">PIX</SelectItem>
-                  <SelectItem value="v2">Cartão Crédito</SelectItem>
-                  <SelectItem value="v3">Cartão Débito</SelectItem>
-                  <SelectItem value="v3">Dinheiro</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          <div>
-            <label htmlFor="situacao">Situação:</label>
-            <Select name="situacao">
-              <SelectTrigger className="w-[250px]">
-                <SelectValue placeholder="Selecione a situação..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Situações</SelectLabel>
-                  <SelectItem value="v1">Pago</SelectItem>
-                  <SelectItem value="v2">Pendente</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-          {formFieldsPassagens.map((field) => (
-            <FormInput
-              key={field.name}
-              label={field.label}
-              name={field.name}
-              type={field.type}
-              placeholder={field.placeholder}
-            />
-          ))}
+          <BusSelector
+            totalSeats={viagem?.veiculo?.quantidadePoltronas || 0}
+            ocupados={viagem?.passagens?.map((passagem) => passagem) || []}
+            setPassagem={setPassagem}
+            passagem={passagem}
+          />
         </div>
-        <BusSelector />
+
         <DialogFooter className="flex items-center gap-2 mt-10">
           <Button variant="outline">Fechar</Button>
-          <Button>Salvar</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

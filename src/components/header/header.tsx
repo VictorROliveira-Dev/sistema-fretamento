@@ -61,6 +61,11 @@ const navItems: NavItem[] = [
   { href: "/financeiro", label: "Finanças", icon: icons.financeiro },
   { href: "/passageiros", label: "Passageiros", icon: icons.passageiros },
   { href: "/passagens", label: "Passagens", icon: icons.passagens },
+  {
+    href: "/viagensprogramadas",
+    label: "Viagem Programada",
+    icon: icons.viagens,
+  },
 ];
 
 // Tipagem do componente NavLink
@@ -93,9 +98,7 @@ const NavLink: FC<NavLinkProps> = ({
 
 const Header: FC = () => {
   const pathname = usePathname() || "";
-  const [isOpen, setIsOpen] = useState(false);
 
-  const closeSheet = () => setIsOpen(false);
 
   return (
     <header>

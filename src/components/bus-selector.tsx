@@ -5,35 +5,37 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, CircleDot } from "lucide-react";
 import volateImg from "@/app/assets/volante.png";
 import Image from "next/image";
+import { Passagem } from "@/lib/types";
 
 interface BusSeatSelectorProps {
   totalSeats?: number;
   onSeatsSelected?: (seats: number[]) => void;
+  ocupados: Passagem[];
+  setPassagem: React.Dispatch<React.SetStateAction<Passagem>>;
+  passagem: Passagem;
 }
 
 const BusSelector: React.FC<BusSeatSelectorProps> = ({
-  totalSeats = 40,
+  totalSeats,
   onSeatsSelected,
+  ocupados,
+  setPassagem,
+  passagem,
 }) => {
-  const [selectedSeats, setSelectedSeats] = useState<number[]>([]);
-  const [occupiedSeats, setOccupiedSeats] = useState<number[]>([5, 12, 25, 38]);
+  const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
 
-  /**
-   * Gera as poltronas organizadas em fileiras de 4, 
-   * onde o menor número de cada fileira fica próximo à janela.
-   */
   const generateSeats = (): number[][] => {
-    const seatsPerRow = 4; // Total de assentos por fileira (2 + corredor + 2)
-    const rows = Math.ceil(totalSeats / seatsPerRow);
+    const seatsPerRow = 4;
+    const rows = Math.ceil(totalSeats! / seatsPerRow);
     const seats: number[][] = [];
 
     let seatNumber = 1;
     for (let i = 0; i < rows; i++) {
       const row = [
-        seatNumber,         // Janela (esquerda)
-        seatNumber + 1,     // Corredor (esquerda)
-        seatNumber + 3,     // Corredor (direita)
-        seatNumber + 2      // Janela (direita)
+        seatNumber, // Janela (esquerda)
+        seatNumber + 1, // Corredor (esquerda)
+        seatNumber + 3, // Corredor (direita)
+        seatNumber + 2, // Janela (direita)
       ];
       seats.push(row);
       seatNumber += seatsPerRow;
@@ -42,20 +44,33 @@ const BusSelector: React.FC<BusSeatSelectorProps> = ({
     return seats;
   };
 
-  /**
-   * Alterna a seleção de uma poltrona
-   */
+  const isSeatReserved = (seatNumber: number) => {
+    const seat = ocupados.find((passagem) => passagem.poltrona === seatNumber);
+    return seat?.situacao === "RESERVADO";
+  };
+
+  const isSeatPaid = (seatNumber: number) => {
+    const seat = ocupados.find((passagem) => passagem.poltrona === seatNumber);
+    return seat?.situacao === "PAGO";
+  };
+
   const toggleSeat = (seatNumber: number) => {
-    if (occupiedSeats.includes(seatNumber)) return; // Bloqueia poltronas ocupadas
+    if (isSeatReserved(seatNumber) || isSeatPaid(seatNumber)) return;
 
-    setSelectedSeats((prevSeats) => {
-      const newSelectedSeats = prevSeats.includes(seatNumber)
-        ? prevSeats.filter((seat) => seat !== seatNumber)
-        : [...prevSeats, seatNumber];
+    const newSelectedSeat = selectedSeat === seatNumber ? null : seatNumber;
+    setSelectedSeat(newSelectedSeat);
+    onSeatsSelected?.(newSelectedSeat ? [newSelectedSeat] : []);
+    setPassagem({ ...passagem, poltrona: Number(newSelectedSeat) });
+  };
 
-      onSeatsSelected?.(newSelectedSeats);
-      return newSelectedSeats;
-    });
+  const getSeatStyle = (seatNumber: number) => {
+    if (isSeatPaid(seatNumber))
+      return "bg-red-500 border-red-700 cursor-not-allowed text-black opacity-50";
+    if (isSeatReserved(seatNumber))
+      return "bg-yellow-500 border-yellow-700 cursor-not-allowed text-black opacity-50";
+    if (selectedSeat === seatNumber)
+      return "bg-green-500 hover:bg-green-600 border-green-700 text-black";
+    return "bg-white hover:bg-gray-100 border-gray-300 text-black";
   };
 
   return (
@@ -63,12 +78,9 @@ const BusSelector: React.FC<BusSeatSelectorProps> = ({
       <div className="flex flex-col md:flex-row gap-4 items-start">
         <Card className="w-full">
           <CardHeader>
-            <CardTitle className="text-center">
-              Selecione a(as) Poltrona(as)
-            </CardTitle>
+            <CardTitle className="text-center">Selecione a Poltrona</CardTitle>
           </CardHeader>
           <CardContent>
-            {/* Representação do volante */}
             <div className="w-full bg-blue-600 h-14 rounded-t-full mb-2">
               <div className="flex justify-center items-center h-full">
                 <Image src={volateImg} alt="Volante" width={40} />
@@ -77,88 +89,40 @@ const BusSelector: React.FC<BusSeatSelectorProps> = ({
 
             <div className="flex flex-col gap-2">
               {generateSeats().map((row, rowIndex) => (
-                <div key={rowIndex} className="flex items-center justify-center gap-2">
-                  {/* Poltronas da esquerda (janela e corredor) */}
+                <div
+                  key={rowIndex}
+                  className="flex items-center justify-center gap-2"
+                >
                   <div className="grid grid-cols-2 gap-2">
                     {row.slice(0, 2).map((seatNumber) => (
                       <Button
                         key={seatNumber}
-                        disabled={occupiedSeats.includes(seatNumber)}
-                        variant={
-                          selectedSeats.includes(seatNumber) ? "default" : "outline"
+                        disabled={
+                          isSeatPaid(seatNumber) || isSeatReserved(seatNumber)
                         }
-                        className={`
-                          w-[60px] h-12 relative
-                          ${
-                            occupiedSeats.includes(seatNumber)
-                              ? "bg-red-500 text-white cursor-not-allowed opacity-50"
-                              : selectedSeats.includes(seatNumber)
-                              ? "bg-green-500 hover:bg-green-600"
-                              : "bg-white hover:bg-gray-100"
-                          }
-                          border-2 
-                          ${
-                            occupiedSeats.includes(seatNumber)
-                              ? "border-red-700"
-                              : selectedSeats.includes(seatNumber)
-                              ? "border-green-700"
-                              : "border-gray-300"
-                          }
-                        `}
+                        className={`w-[60px] h-12 relative ${getSeatStyle(
+                          seatNumber
+                        )}`}
                         onClick={() => toggleSeat(seatNumber)}
                       >
                         {seatNumber}
-                        {occupiedSeats.includes(seatNumber) ? (
-                          <CircleDot className="absolute top-1 right-1 text-white" size={16} />
-                        ) : (
-                          selectedSeats.includes(seatNumber) && (
-                            <CheckCircle2 className="absolute top-1 right-1 text-white" size={16} />
-                          )
-                        )}
                       </Button>
                     ))}
                   </div>
-
-                  {/* Corredor */}
                   <div className="w-4"></div>
-
-                  {/* Poltronas da direita (corredor e janela) */}
                   <div className="grid grid-cols-2 gap-2">
                     {row.slice(2, 4).map((seatNumber) => (
                       <Button
                         key={seatNumber}
-                        disabled={occupiedSeats.includes(seatNumber)}
-                        variant={
-                          selectedSeats.includes(seatNumber) ? "default" : "outline"
+                        disabled={
+                          isSeatPaid(seatNumber) || isSeatReserved(seatNumber)
                         }
-                        className={`
-                          w-[60px] h-12 relative
-                          ${
-                            occupiedSeats.includes(seatNumber)
-                              ? "bg-red-500 text-white cursor-not-allowed opacity-50"
-                              : selectedSeats.includes(seatNumber)
-                              ? "bg-green-500 hover:bg-green-600"
-                              : "bg-white hover:bg-gray-100"
-                          }
-                          border-2 
-                          ${
-                            occupiedSeats.includes(seatNumber)
-                              ? "border-red-700"
-                              : selectedSeats.includes(seatNumber)
-                              ? "border-green-700"
-                              : "border-gray-300"
-                          }
-                        `}
+                        className={`w-[60px] h-12 relative ${getSeatStyle(
+                          seatNumber
+                        )}`}
                         onClick={() => toggleSeat(seatNumber)}
                       >
                         {seatNumber}
-                        {occupiedSeats.includes(seatNumber) ? (
-                          <CircleDot className="absolute top-1 right-1 text-white" size={16} />
-                        ) : (
-                          selectedSeats.includes(seatNumber) && (
-                            <CheckCircle2 className="absolute top-1 right-1 text-white" size={16} />
-                          )
-                        )}
                       </Button>
                     ))}
                   </div>
@@ -168,7 +132,8 @@ const BusSelector: React.FC<BusSeatSelectorProps> = ({
 
             <div className="mt-4 flex justify-between items-center">
               <div>
-                <strong>Poltrona(as) Selecionada(as):</strong> {selectedSeats.join(", ") || "Nenhuma"}
+                <strong>Poltrona Selecionada:</strong>{" "}
+                {selectedSeat || "Nenhuma"}
               </div>
             </div>
           </CardContent>
@@ -181,8 +146,12 @@ const BusSelector: React.FC<BusSeatSelectorProps> = ({
           <span>Disponível</span>
         </div>
         <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-yellow-500 rounded-full"></div>
+          <span>Reservado</span>
+        </div>
+        <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-red-500 rounded-full"></div>
-          <span>Ocupado</span>
+          <span>Pago</span>
         </div>
       </div>
     </div>

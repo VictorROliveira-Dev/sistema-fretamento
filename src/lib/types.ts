@@ -143,40 +143,60 @@ export interface Viagem {
   motoristaId: number;
 }
 
-export interface Servico {
-  id: string;
-  nomeServico: string;
+
+
+
+interface HorarioLocal {
+  data: string;
+  hora: string;
+  local: string;
 }
 
-export interface Manutencao {
-  id: string;
-  dataLancamento: string;
-  dataVencimento: string;
-  dataRealizada: string;
-  tipo: string;
-  servicoId: number;
+export interface ViagemProgramda {
+  id: number,
+  titulo: string;
+  descricao: string;
+  saida: HorarioLocal;
+  retorno: HorarioLocal;
+  chegada: HorarioLocal;
+  valorPassagem: number;
+  formaPagto: string;
+  responsavel: string;
+  guia: string;
+  itinerario: string;
+  observacoes: string;
   veiculoId: number;
-  kmPrevista: number;
-  kmAtual: number;
-  kmRealizada: number;
-  custo: number;
+  veiculo?: Veiculo;
+  passagens?: Passagem[];
+
 }
 
-export interface IDocumentos {
-  id: string;
-  vencimento: string;
-  tipoDocumento: string;
-  referencia: string;
-}
+
+export interface Passageiro {
+  id: number,
+  nome: string;
+  dataNascimento: string; // ou `Date` se preferir trabalhar com objetos Date
 
 interface Responsavel {
   id: number;
   nome: string;
   dataNascimento: string;
+
   telefone: string;
   documento: Documento;
   endereco: Endereco;
   cpf: string;
+
+  cartao: string;
+  matricula: string;
+}
+
+export interface Passagem {
+  id?: Number;
+  viagemId: number;
+  passageiroId: number;
+  dataEmissao: string; // ou Date, dependendo do uso no projeto
+
 }
 
 export interface IDespesas {
@@ -212,6 +232,10 @@ export interface IReceitas {
   pago: boolean;
   valorTotal: number;
   valorParcial: number;
+
   formaPagamento: string;
-  centroCusto: string;
+  poltrona: number;
+  situacao: string;
+  passageiro?: Passageiro
 }
+
