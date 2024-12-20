@@ -36,6 +36,20 @@ export type FormData = {
   habilitacao: Habilitacao;
 };
 
+export interface Manutencao {
+  id: string;
+  dataLancamento: string;
+  dataVencimento: string;
+  dataRealizada: string;
+  tipo: string;
+  servicoId: number;
+  veiculoId: number;
+  kmPrevista: number;
+  kmAtual: number;
+  kmRealizada: number;
+  custo: number;
+}
+
 export type FormDataFornecedor = {
   nome: string;
   dataNascimento: string;
@@ -143,9 +157,6 @@ export interface Viagem {
   motoristaId: number;
 }
 
-
-
-
 interface HorarioLocal {
   data: string;
   hora: string;
@@ -153,7 +164,7 @@ interface HorarioLocal {
 }
 
 export interface ViagemProgramda {
-  id: number,
+  id: number;
   titulo: string;
   descricao: string;
   saida: HorarioLocal;
@@ -168,25 +179,21 @@ export interface ViagemProgramda {
   veiculoId: number;
   veiculo?: Veiculo;
   passagens?: Passagem[];
-
 }
 
-
 export interface Passageiro {
-  id: number,
+  id: number;
   nome: string;
   dataNascimento: string; // ou `Date` se preferir trabalhar com objetos Date
-
+}
 interface Responsavel {
   id: number;
   nome: string;
   dataNascimento: string;
-
   telefone: string;
   documento: Documento;
   endereco: Endereco;
   cpf: string;
-
   cartao: string;
   matricula: string;
 }
@@ -196,7 +203,6 @@ export interface Passagem {
   viagemId: number;
   passageiroId: number;
   dataEmissao: string; // ou Date, dependendo do uso no projeto
-
 }
 
 export interface IDespesas {
@@ -232,10 +238,8 @@ export interface IReceitas {
   pago: boolean;
   valorTotal: number;
   valorParcial: number;
-
   formaPagamento: string;
   poltrona: number;
   situacao: string;
-  passageiro?: Passageiro
+  passageiro?: Passageiro;
 }
-

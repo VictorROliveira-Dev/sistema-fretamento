@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import jsPDF from "jspdf";
-import "jspdf-autotable"; // Certifique-se de que o plugin foi importado corretamente
+import "jspdf-autotable"; // Plugin para criar tabelas no PDF
 import { Manutencao } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
@@ -73,57 +73,48 @@ const ManutencaoPDF: React.FC<ManutencaoPDFProps> = ({ dadosManutencao }) => {
         align: "center",
       });
 
-      // Preparar os dados para a tabela
-      const tableData = dadosManutencao.map((manutencao) => {
+      let currentY = imgHeight + 30;
+
+      dadosManutencao.forEach((manutencao, index) => {
+        doc.setFontSize(14);
+        doc.text(`Manutenção #${index + 1}`, 10, currentY);
+        currentY += 10;
+
         const placaVeiculo = placasVeiculos[manutencao.veiculoId] || "Desconhecida";
         const nomeServico = nomesServicos[manutencao.servicoId] || "Desconhecido";
-        return [
-          placaVeiculo,
-          nomeServico,
-          new Date(manutencao.dataLancamento).toLocaleDateString(),
-          new Date(manutencao.dataVencimento).toLocaleDateString(),
-          new Date(manutencao.dataRealizada).toLocaleDateString(),
-          manutencao.tipo,
-          manutencao.kmPrevista,
-          manutencao.kmAtual,
-          manutencao.kmRealizada,
-          `R$ ${manutencao.custo.toFixed(2)}`,
+
+        const detalhes = [
+          { label: "Placa do Veículo:", valor: placaVeiculo },
+          { label: "Nome do Serviço:", valor: nomeServico },
+          {
+            label: "Data Lançamento:",
+            valor: new Date(manutencao.dataLancamento).toLocaleDateString(),
+          },
+          {
+            label: "Data Vencimento:",
+            valor: new Date(manutencao.dataVencimento).toLocaleDateString(),
+          },
+          {
+            label: "Data Realizada:",
+            valor: new Date(manutencao.dataRealizada).toLocaleDateString(),
+          },
+          { label: "Tipo Manutenção:", valor: manutencao.tipo },
+          { label: "KM Prevista:", valor: manutencao.kmPrevista },
+          { label: "KM Atual:", valor: manutencao.kmAtual },
+          { label: "KM Realizada:", valor: manutencao.kmRealizada },
+          { label: "Custo:", valor: `R$ ${manutencao.custo.toFixed(2)}` },
         ];
+
+        detalhes.forEach((detalhe) => {
+          doc.setFontSize(12);
+          doc.text(`${detalhe.label} ${detalhe.valor}`, 20, currentY);
+          currentY += 7;
+        });
+
+        currentY += 10;
       });
 
-      // Definir as colunas da tabela
-      const columns = [
-        "Placa do Veículo",
-        "Nome do Serviço",
-        "Data Lançamento",
-        "Data Vencimento",
-        "Data Realizada",
-        "Tipo Manutenção",
-        "KM Prevista",
-        "KM Atual",
-        "KM Realizada",
-        "Custo",
-      ];
-
-      // Adicionar a tabela ao PDF
-      doc.autoTable(columns, tableData, {
-        startY: imgHeight + 30, // Onde começa a tabela
-        margin: { top: 10 },
-        didDrawPage: function (data: any) {
-          // Aqui podemos obter o final da tabela corretamente
-          const finalY = data.cursor.y;
-          
-          // Calcular o custo total
-          const totalCusto = dadosManutencao.reduce((acc, manutencao) => acc + manutencao.custo, 0);
-
-          // Adicionar o custo total ao final
-          doc.setFontSize(14);
-          doc.text(`Custo Total: R$ ${totalCusto.toFixed(2)}`, 14, finalY + 10);
-
-          // Salvar o PDF
-          doc.save("relatorio_manutencao.pdf");
-        }
-      });
+      doc.save("relatorio_manutencao.pdf");
     } catch (error) {
       console.error("Erro ao carregar a imagem ou gerar o PDF:", error);
     }

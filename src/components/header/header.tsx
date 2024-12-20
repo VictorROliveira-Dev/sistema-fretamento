@@ -1,9 +1,10 @@
 "use client";
+
 import Image from "next/image";
-import menu from "../../app/assets/menu.svg";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FC, useState } from "react";
+import menuIcon from "../../app/assets/menu.svg";
 import painel from "@/app/assets/painel-de-controle.png";
 import motorista from "@/app/assets/motorista.png";
 import clientes from "@/app/assets/pessoas.png";
@@ -20,11 +21,14 @@ import sino from "@/app/assets/sino.svg";
 import {
   Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
 import { Button } from "../ui/button";
+import { Label } from "../ui/label";
+import { Menu } from "lucide-react";
 
 const icons = {
   painel: painel.src,
@@ -61,14 +65,8 @@ const navItems: NavItem[] = [
   { href: "/financeiro", label: "Finanças", icon: icons.financeiro },
   { href: "/passageiros", label: "Passageiros", icon: icons.passageiros },
   { href: "/passagens", label: "Passagens", icon: icons.passagens },
-  {
-    href: "/viagensprogramadas",
-    label: "Viagem Programada",
-    icon: icons.viagens,
-  },
 ];
 
-// Tipagem do componente NavLink
 interface NavLinkProps {
   href: string;
   icon: string;
@@ -86,19 +84,22 @@ const NavLink: FC<NavLinkProps> = ({
 }) => (
   <Link
     href={href}
+    onClick={onClick} // Chama a função ao clicar no link
     className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${
       isActive ? "bg-blue-900 border-blue-900 text-white" : ""
     }`}
-    onClick={onClick}
   >
     <Image src={icon} alt={label} width={45} height={45} />
-    <p className="font-bold text-xs">{label}</p>
+    <p className="font-bold text-xs text-center">{label}</p>
   </Link>
 );
 
 const Header: FC = () => {
   const pathname = usePathname() || "";
+  const [isOpen, setIsOpen] = useState(false); // Estado para controlar o menu lateral
 
+  // Função para fechar o Sheet
+  const closeSheet = () => setIsOpen(false);
 
   return (
     <header>
@@ -107,6 +108,8 @@ const Header: FC = () => {
           Infoservice Fretamento
         </p>
       </div>
+
+      {/* Menu para telas maiores */}
       <nav className="sm:h-28 bg-white sm:flex items-center justify-between mx-10 hidden">
         <div className="flex items-center gap-4">
           {navItems.map(({ href, label, icon }) => (
@@ -128,22 +131,25 @@ const Header: FC = () => {
         />
       </nav>
 
-      <div className="sm:hidden flex items-center justify-around p-4">
+      {/* Menu para telas menores com Sheet */}
+      <div className="sm:hidden flex items-center justify-around p-2">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
-            <Button
-              onClick={() => setIsOpen(true)}
-              variant="outline"
-              className="p-2 border-none shadow-none"
-            >
-              <Image src={menu} alt="menu" />
+            <Button variant="ghost" onClick={() => setIsOpen(true)}>
+              <Button className="bg-transparent shadow-none">
+                <Image src={menuIcon} alt="menu" className="w-12" />
+              </Button>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="overflow-y-scroll">
+          <SheetContent
+            side="left"
+            className="p-4 overflow-y-auto max-h-screen"
+          >
             <SheetHeader>
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
-            <div className="grid grid-cols-2 gap-4 mt-4">
+
+            <div className="grid grid-cols-2 gap-4">
               {navItems.map(({ href, label, icon }) => (
                 <NavLink
                   key={href}
@@ -151,13 +157,12 @@ const Header: FC = () => {
                   icon={icon}
                   label={label}
                   isActive={pathname === href}
-                  onClick={closeSheet}
+                  onClick={closeSheet} // Fecha o Sheet ao clicar no link
                 />
               ))}
             </div>
           </SheetContent>
         </Sheet>
-
         <Image
           src={icons.sino}
           alt="Notificações"
