@@ -1,5 +1,4 @@
 "use client";
-import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,15 +8,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { formFieldsVeiculos } from "@/lib/objects";
 import editIcon from "@/app/assets/edit.svg";
 import Image from "next/image";
 import { Veiculo } from "@/lib/types";
 import { FormEvent, useEffect, useState } from "react";
-import { vendored } from "next/dist/server/route-modules/pages/module.compiled";
 import { api } from "@/lib/axios";
 import { Input } from "@/components/ui/input";
+import loading from "../../assets/loading.svg";
+import { toast } from "sonner";
 
 interface VeiculoProps {
   veiculo: Veiculo;
@@ -42,6 +40,7 @@ export default function DialogEditar({
   const [tipo, setTipo] = useState("");
   const [modelo, setModelo] = useState("");
   const [quantidadePoltronas, setQuantidadePoltronas] = useState<number>(0);
+  const [editando, setEditando] = useState(false);
 
   useEffect(() => {
     setPrefixo(veiculo.prefixo);
@@ -60,6 +59,7 @@ export default function DialogEditar({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setEditando(true);
 
     const veiculoData = {
       prefixo,
@@ -84,8 +84,25 @@ export default function DialogEditar({
         return v.id === veiculoAtualizado.id ? veiculoAtualizado : v;
       });
       setVeiculos(veiculosAtualizados);
+      toast.success("Veículo atualizado.", {
+        className:
+          "bg-green-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
     } catch (error) {
+      toast.error("Erro ao tentar atualizar veículo.", {
+        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
+        style: {
+          borderRadius: "10px",
+          padding: "16px",
+        },
+      });
       console.log("erro ao atualizar veículo", error);
+    } finally {
+      setEditando(false);
     }
   };
 
@@ -101,9 +118,9 @@ export default function DialogEditar({
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[1200px] h-[500px] flex flex-col items-center">
+      <DialogContent className="w-[1200px] h-[420px] flex flex-col items-center">
         <DialogHeader className="mb-5">
-          <DialogTitle className="font-black">Cadastro de Veículo</DialogTitle>
+          <DialogTitle className="font-black">Edição de Veículo</DialogTitle>
         </DialogHeader>
         <form
           className="w-full flex flex-col items-center"
@@ -259,10 +276,18 @@ export default function DialogEditar({
             </div>
           </div>
           <DialogFooter className="flex items-center gap-2 mt-10">
-            <Button variant="outline" type="button">
-              Fechar
+            <Button type="submit" className="w-[250px]">
+              {editando ? (
+                <Image
+                  src={loading}
+                  alt="editando"
+                  width={25}
+                  className="text-center animate-spin"
+                />
+              ) : (
+                "Atualizar"
+              )}
             </Button>
-            <Button type="submit">Salvar</Button>
           </DialogFooter>
         </form>
       </DialogContent>

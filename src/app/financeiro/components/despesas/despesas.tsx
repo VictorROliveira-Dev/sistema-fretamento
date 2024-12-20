@@ -1,13 +1,4 @@
 import { Input } from "@/components/ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-  } from "@/components/ui/select";
 import DialogAdicionar from "./dialog-adicionar";
 
 export default function Despesas() {
@@ -21,24 +12,6 @@ export default function Despesas() {
         <div>
           <label htmlFor="final">Data Final:</label>
           <Input type="date" name="final" />
-        </div>
-        <div>
-          <label htmlFor="centrocusto">Centro de Custo:</label>
-          <Select name="centrocusto">
-            <SelectTrigger className="w-[250px]">
-              <SelectValue placeholder="Selecione..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Centro de Custo</SelectLabel>
-                <SelectItem value="extintor">Terceiros</SelectItem>
-                <SelectItem value="ipva">Multas</SelectItem>
-                <SelectItem value="CNH">Viagens</SelectItem>
-                <SelectItem value="alvara">Estacionamento</SelectItem>
-                <SelectItem value="Outros">Outros</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
         </div>
       </form>
       <DialogAdicionar />

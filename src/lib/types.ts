@@ -165,3 +165,54 @@ export interface Viagem {
   veiculoId: number;
   motoristaId: number;
 }
+
+
+
+interface HorarioLocal {
+  data: string;
+  hora: string;
+  local: string;
+}
+
+export interface ViagemProgramda {
+  id: number,
+  titulo: string;
+  descricao: string;
+  saida: HorarioLocal;
+  retorno: HorarioLocal;
+  chegada: HorarioLocal;
+  valorPassagem: number;
+  formaPagto: string;
+  responsavel: string;
+  guia: string;
+  itinerario: string;
+  observacoes: string;
+  veiculoId: number;
+  veiculo?: Veiculo;
+  passagens?: Passagem[];
+
+}
+
+
+export interface Passageiro {
+  id: number,
+  nome: string;
+  dataNascimento: string; // ou `Date` se preferir trabalhar com objetos Date
+  telefone: string;
+  documento: Documento;
+  endereco: Endereco;
+  cpf: string;
+  cartao: string;
+  matricula: string;
+}
+
+export interface Passagem {
+  id?: Number;
+  viagemId: number;
+  passageiroId: number;
+  dataEmissao: string; // ou Date, dependendo do uso no projeto
+  formaPagamento: string;
+  poltrona: number;
+  situacao: string;
+  passageiro?: Passageiro
+}

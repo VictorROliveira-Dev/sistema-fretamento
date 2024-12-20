@@ -1,3 +1,4 @@
+"use client";
 import removeIcon from "@/app/assets/remove.svg";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,108 +22,116 @@ import Image from "next/image";
 import DialogAdicionar from "./components/dialog-adicionar";
 import DialogEditar from "./components/dialog-editar";
 import documentoIcon from "@/app/assets/documentos.svg";
+import { IDocumentos } from "@/lib/types";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/axios";
+import { Input } from "@/components/ui/input";
+import FormInput from "@/components/form-input";
+import DialogRemover from "./components/dialog-remover";
 
 export default function Documentos() {
+  const [documentos, setDocumentos] = useState<IDocumentos[]>([]);
+  const [buscarDocumento, setBuscarDocumento] = useState("");
+
+  const documentosFiltrados = documentos.filter((documento) => {
+    return documento.tipoDocumento
+      .toLowerCase()
+      .includes(buscarDocumento.toLowerCase());
+  });
+
+  useEffect(() => {
+    const fetchDocumentos = async () => {
+      try {
+        const response = await api.get("/documento");
+        setDocumentos(response.data.data ? response.data.data : []);
+      } catch (error) {
+        console.log("Erro ao capturar documentos", error);
+      }
+    };
+
+    fetchDocumentos();
+  }, []);
+
   return (
-    <section className="bg-[#070180] pt-12 h-[424px] max-h-[1000px]">
-      <div className="h-[300px] w-[1000px] max-h-[430px] mx-auto rounded-md bg-white flex flex-col">
+    <section className="bg-[#070180] pt-12 h-[425px]">
+      <div className="h-[400px] w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Documentos
           </p>
         </div>
-        <div className="flex items-center md:h-screen h-[800px]">
-          <div className="mx-auto md:max-w-4xl md:w-[1000px] w-[350px] space-y-4">
+        <div className="flex items-center p-10">
+          <div className="mx-auto w-full space-y-4">
             <div className="flex items-center justify-between">
               <form className="flex gap-2 font-bold">
                 <div>
-                  <label htmlFor="name">Doc/Certificado:</label>
-                  <Select name="tipo">
-                    <SelectTrigger className="w-[250px]">
-                      <SelectValue placeholder="Selecione o doc/certificado..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Tipos</SelectLabel>
-                        <SelectItem value="extintor">Extintor</SelectItem>
-                        <SelectItem value="ipva">IPVA</SelectItem>
-                        <SelectItem value="CNH">CNH</SelectItem>
-                        <SelectItem value="alvara">Alvará</SelectItem>
-                        <SelectItem value="Outros">Outros</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <label htmlFor="tipo">Tipo:</label>
-                  <Select name="tipo">
-                    <SelectTrigger className="w-[250px]">
-                      <SelectValue placeholder="Selecione o tipo..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Tipos</SelectLabel>
-                        <SelectItem value="extintor">Interestadual</SelectItem>
-                        <SelectItem value="ipva">Intermunicipal</SelectItem>
-                        <SelectItem value="alvara">
-                          Outros/CNH/IPVA/Extintor
-                        </SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <FormInput
+                    label="Doc/Certificado:"
+                    name="documento"
+                    placeholder="Digite o Doc/Certificado..."
+                    value={buscarDocumento}
+                    onChange={(e) => setBuscarDocumento(e.target.value)}
+                  />
                 </div>
               </form>
-              <DialogAdicionar />
-            </div>  
-            <Table>
-              <TableHeader className="border-b-2">
-                <TableRow>
-                  <TableHead className="text-black font-bold text-center">
-                    Vencimento
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center">
-                    Referência
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center">
-                    Doc/Certificado
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center">
-                    Tipo
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody className="text-center">
-                <TableRow className="hover:bg-gray-200">
-                  <TableCell>
-                    <p>João</p>
-                  </TableCell>
-                  <TableCell>099.876.345-21</TableCell>
-                  <TableCell>Irecê - BA</TableCell>
-                  <TableCell>(74)98877-0044</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <DialogEditar />
-                      <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                        <Image
-                          src={removeIcon}
-                          alt="Remover"
-                          width={25}
-                          className="hover:scale-110"
-                        />
-                      </Button>
-                      <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                        <Image
-                          src={documentoIcon}
-                          alt="documento"
-                          width={25}
-                          className="hover:scale-110"
-                        />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+              <DialogAdicionar
+                setDocumentos={setDocumentos}
+                documentos={documentos}
+              />
+            </div>
+            <div className="h-[200px] overflow-y-scroll scrollbar-hide">
+              <Table>
+                <TableHeader className="border-b-2">
+                  <TableRow>
+                    <TableHead className="text-black font-bold text-center">
+                      Doc/Certificado
+                    </TableHead>
+                    <TableHead className="text-black font-bold text-center">
+                      Referência
+                    </TableHead>
+                    <TableHead className="text-black font-bold text-center">
+                      Vencimento
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody className="text-center">
+                  {documentosFiltrados.map((documento) => (
+                    <TableRow key={documento.id} className="hover:bg-gray-200">
+                      <TableCell>
+                        {documento.tipoDocumento.toUpperCase()}
+                      </TableCell>
+                      <TableCell>{documento.referencia}</TableCell>
+                      <TableCell>
+                        {new Date(documento.vencimento).toLocaleDateString(
+                          "pt-BR"
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <DialogEditar
+                            setDocumentos={setDocumentos}
+                            documentos={documentos}
+                            documento={documento}
+                          />
+                          <DialogRemover
+                            documento={documento}
+                            setDocumentos={setDocumentos}
+                          />
+                          <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+                            <Image
+                              src={documentoIcon}
+                              alt="documento"
+                              width={25}
+                              className="hover:scale-110"
+                            />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         </div>
       </div>
