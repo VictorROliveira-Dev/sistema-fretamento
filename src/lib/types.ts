@@ -35,6 +35,7 @@ export type FormData = {
   cpf: string;
   habilitacao: Habilitacao;
 };
+
 export type FormDataFornecedor = {
   nome: string;
   dataNascimento: string;
@@ -129,7 +130,6 @@ export interface Cliente {
   tipo: string;
 }
 
-
 export interface Rota {
   saida: {
     ufSaida: string;
@@ -144,7 +144,7 @@ export interface Rota {
 }
 
 export interface DataHorario {
-  data: string
+  data: string;
   hora: string;
 }
 
@@ -165,6 +165,7 @@ export interface Viagem {
   veiculoId: number;
   motoristaId: number;
 }
+
 
 
 
@@ -216,3 +217,4 @@ export interface Passagem {
   situacao: string;
   passageiro?: Passageiro
 }
+
