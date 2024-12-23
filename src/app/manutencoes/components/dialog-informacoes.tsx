@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import dadosViagemIcon from "../../assets/dadosviagem.svg";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,149 +6,162 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { api } from "@/lib/axios";
-import { Servico, Veiculo } from "@/lib/types";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Manutencao } from "@/lib/types";
+import {
+  Wrench,
+  Calendar,
+  Gauge,
+  Clock,
+  Tag,
+  DollarSign,
+  Car,
+} from "lucide-react";
 
-interface IManutencao {
-  id: number;
-  dataVencimento: string;
-  dataLancamento: string;
-  dataRealizada: string;
-  tipo: string;
-  servicoId: number;
-  veiculoId: number;
-  kmPrevista: number;
-  kmAtual: number;
-  kmRealizada: number;
-  custo: number;
-  nomeServico?: string;
-  nomeVeiculo?: string;
-}
-interface ManutencoesProps {
-  manutencaoId: number;
+import Image from "next/image";
+import documentoIcon from "@/app/assets/dadosviagem.svg";
+
+interface ManutencaoDialogProps {
+  manutencao: Manutencao;
 }
 
-export default function DialogInformacoes({ manutencaoId }: ManutencoesProps) {
-  const [manutencoes, setManutencoes] = useState<IManutencao[]>([]);
-  const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
-  const [servicos, setServicos] = useState<Servico[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Busca todas as informações de uma vez
-        const [manutencoesResponse, veiculosResponse, servicosResponse] =
-          await Promise.all([
-            api.get("/manutencao"),
-            api.get("/veiculo"),
-            api.get("/servico"),
-          ]);
-
-        setManutencoes(manutencoesResponse.data.data ?? []);
-        setVeiculos(veiculosResponse.data.data ?? []);
-        setServicos(servicosResponse.data.data ?? []);
-        console.log(veiculosResponse.data.data);
-      } catch (error) {
-        console.error("Erro ao buscar os dados:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Funções para encontrar o nome do veículo e do serviço pelo ID
-  const getVeiculoNome = (veiculoId: number) => {
-    const veiculo = veiculos.find(
-      (v) => v.id.toString() === veiculoId.toString()
-    );
-    return veiculo ? veiculo.placa : "Desconhecido";
-  };
-
-  const getServicoNome = (servicoId: number) => {
-    const servico = servicos.find(
-      (s) => s.id.toString() === servicoId.toString()
-    );
-    return servico ? servico.nomeServico : "Desconhecido";
-  };
+export function DialogInfo({ manutencao }: ManutencaoDialogProps) {
+  const formatDate = (date: string) => new Date(date).toLocaleDateString();
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
+        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
           <Image
-            src={dadosViagemIcon}
+            src={documentoIcon}
             alt="documento"
-            className="w-8 md:w-6"
+            width={25}
+            className="hover:scale-110"
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="md:w-[800px] max-h-screen overflow-y-scroll">
-        <DialogHeader className="mb-5">
-          <DialogTitle className="font-bold text-center">
-            Mais Informações
+      <DialogContent className="max-w-[90vw] md:max-w-[600px] max-h-[90vh]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <Wrench className="h-5 w-5" />
+            Manutenção #{manutencao ? manutencao.id : ""}
           </DialogTitle>
         </DialogHeader>
-        <div className="flex items-center justify-around">
-          {manutencoes.map((manutencao) => (
-            <div key={manutencao.id}>
-              <div className="flex flex-col gap-4">
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Data de Vencimento:</h2>
-                  <p>
-                    {new Date(manutencao.dataVencimento).toLocaleDateString(
-                      "pt-BR"
-                    )}
-                  </p>
+
+        <ScrollArea className="h-[70vh] pr-4">
+          <div className="space-y-6">
+            {/* Informações Principais */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">
+                Informações Principais
+              </h3>
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2">
+                  <Tag className="h-4 w-4 text-muted-foreground" />
+                  <span>Tipo: {manutencao ? manutencao.tipo : " "}</span>
                 </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Data de Lançamento:</h2>
-                  <p>
-                    {new Date(manutencao.dataLancamento).toLocaleDateString(
-                      "pt-BR"
-                    )}
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Data Realizada:</h2>
-                  <p>
-                    {new Date(manutencao.dataRealizada).toLocaleDateString(
-                      "pt-BR"
-                    )}
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Tipo:</h2>
-                  <p>{manutencao.tipo}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Serviço:</h2>
-                  <p>{getVeiculoNome(manutencao.veiculoId)}</p>{" "}
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Veículo:</h2>
-                  <p>{getServicoNome(manutencao.servicoId)}</p>{" "}
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">KM Prevista:</h2>
-                  <p>{manutencao.kmPrevista} KM</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">KM Atual:</h2>
-                  <p>{manutencao.kmAtual} KM</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">KM Realizada:</h2>
-                  <p>{manutencao.kmRealizada}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Custo:</h2>
-                  <p>{manutencao.custo}</p>
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    Custo: {manutencao ? formatCurrency(manutencao.custo) : ""}
+                  </span>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            </section>
+
+            <Separator />
+
+            {/* Datas */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">Datas</h3>
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    Lançamento:{" "}
+                    {manutencao ? formatDate(manutencao.dataLancamento) : " "}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    Vencimento:{" "}
+                    {manutencao ? formatDate(manutencao.dataVencimento) : ""}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    Realizada:{" "}
+                    {manutencao ? formatDate(manutencao.dataRealizada) : ""}
+                  </span>
+                </div>
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Quilometragem */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">Quilometragem</h3>
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2">
+                  <Gauge className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    KM Atual:{" "}
+                    {manutencao ? manutencao.kmAtual.toLocaleString() : ""} km
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Gauge className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    KM Prevista:{" "}
+                    {manutencao ? manutencao.kmPrevista.toLocaleString() : ""}{" "}
+                    km
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Gauge className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    KM Realizada:{" "}
+                    {manutencao ? manutencao.kmRealizada.toLocaleString() : ""}{" "}
+                    km
+                  </span>
+                </div>
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* IDs Relacionados */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">Referências</h3>
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2">
+                  <Tag className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    Serviço:{" "}
+                    {manutencao.servico ? manutencao.servico.nomeServico : ""}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Car className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    Veículo:{" "}
+                    {manutencao.veiculo ? manutencao.veiculo.prefixo : ""} -{" "}
+                    {manutencao.veiculo ? manutencao.veiculo.placa : ""}
+                  </span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

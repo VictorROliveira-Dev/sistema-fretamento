@@ -16,8 +16,8 @@ import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import DialogRemover from "./components/dialog-remover";
 import loading from "../assets/loading-dark.svg";
-import DialogInformacoes from "./components/dialog-informacoes";
 import ManutencaoPDF from "./components/dialog-document";
+import { DialogInfo } from "./components/dialog-informacoes";
 
 export default function Manutencoes() {
   const [manutencoes, setManutencoes] = useState<Manutencao[]>([]);
@@ -176,8 +176,8 @@ export default function Manutencoes() {
                               setManutencoes={setManutencoes}
                             />
                             <ManutencaoPDF manutencaoData={manutencao} />
-                            <DialogInformacoes
-                              manutencaoId={Number(manutencao.id)}
+                            <DialogInfo
+                              manutencao={manutencao}
                             />
                           </div>
                         </TableCell>

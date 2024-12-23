@@ -145,7 +145,7 @@ export default function Veiculos() {
                               veiculo={veiculo}
                               setVeiculos={setVeiculos}
                             />
-                            <DialogInformacoes veiculoId={veiculo.id} />
+                            <DialogInformacoes veiculo={veiculo} />
                           </div>
                         </TableCell>
                       </TableRow>

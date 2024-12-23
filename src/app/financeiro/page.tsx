@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import DialogAdicionarDespesa from "./components/despesas/dialog-adicionar";
 import DialogAdicionarReceita from "./components/receitas/dialog-adicionar";
 import DialogRemoverReceita from "./components/receitas/dialog-remover";
-import DialogInformacoesDespesas from "./components/despesas/dialog-informacoes";
+import DialogInformacoesDespesas, { DialogInfo } from "./components/despesas/dialog-informacoes";
 import DialogInformacoesReceitas from "./components/receitas/dialog-informacoes";
 import DespesaPDF from "./components/despesas/dialog-document";
 
@@ -188,10 +188,7 @@ export default function Financeiro() {
                                   setDespesas={setDespesas}
                                 />
                                 <DespesaPDF despesa={despesa} />
-                                <DialogInformacoesDespesas
-                                  despesaId={despesa.id}
-                                  despesas={despesas}
-                                />
+                                <DialogInfo despesa={despesa}/>
                               </div>
                             </TableCell>
                           </TableRow>

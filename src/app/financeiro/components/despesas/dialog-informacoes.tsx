@@ -6,111 +6,147 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
-import Image from "next/image";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import {
+  Receipt,
+  Calendar,
+  User,
+  CreditCard,
+  Building2,
+  DollarSign,
+  FileText,
+  Car,
+} from "lucide-react";
 import { IDespesas } from "@/lib/types";
-import { useEffect, useState } from "react";
-
-interface DespesasProps {
-  despesaId: string;
-  despesas: IDespesas[]; // Recebe a lista de despesas como prop
+import Image from "next/image";
+import DocumentIcon from "@/app/assets/dadosviagem.svg";
+interface DespesasDialogProps {
+  despesa: IDespesas;
 }
 
-export default function DialogInformacoesDespesas({
-  despesaId,
-  despesas = [], // Define um valor padrão para despesas
-}: DespesasProps) {
-  // Filtra a despesa específica pelo ID
-  const despesa = despesas.find((d) => d.id === despesaId);
+export function DialogInfo({ despesa }: DespesasDialogProps) {
+  const formatDate = (date: string) => new Date(date).toLocaleDateString();
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
           <Image
-            src={dadosViagemIcon}
+            src={DocumentIcon}
             alt="documento"
             width={25}
             className="hover:scale-110"
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="md:w-[800px]">
-        <DialogHeader className="mb-5">
-          <DialogTitle className="font-bold text-center">
-            Mais Informações
+      <DialogContent className="max-w-[90vw] md:max-w-[600px] max-h-[90vh]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <Receipt className="h-5 w-5" />
+            Despesa #{despesa.numeroDocumento}
           </DialogTitle>
         </DialogHeader>
-        <div className="flex items-center justify-around">
-          {despesa ? (
-            <div key={despesa.id}>
-              <div className="flex flex-col gap-4">
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Data Emissão:</h2>
-                  <p>
-                    {new Date(despesa.dataEmissao).toLocaleDateString("pt-BR")}
-                  </p>
+
+        <ScrollArea className="h-[70vh] pr-4">
+          <div className="space-y-6">
+            {/* Status e Valores */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">Status e Valores</h3>
+              <div className="grid gap-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Status:</span>
+                  <Badge variant={despesa.pago ? "secondary" : "destructive"}>
+                    {despesa.pago ? "Pago" : "Pendente"}
+                  </Badge>
                 </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Data Compra:</h2>
-                  <p>
-                    {new Date(despesa.dataCompra).toLocaleDateString("pt-BR")}
-                  </p>
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  <span>Valor Total: {formatCurrency(despesa.valorTotal)}</span>
                 </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Origem do Pagamento:</h2>
-                  <p>{despesa.origemPagamento}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Centro de Custo:</h2>
-                  <p>{despesa.centroCusto}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Número do Documento:</h2>
-                  <p>{despesa.numeroDocumento}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Responsável:</h2>
-                  <p>{despesa.responsavel?.nome}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Data de Vencimento:</h2>
-                  <p>{despesa.vencimento}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Pago:</h2>
-                  <p>{despesa.pago ? "Sim" : "Não"}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Valor Total:</h2>
-                  <p>R$ {despesa.valorTotal.toFixed(2)}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Valor Parcial:</h2>
-                  <p>R$ {despesa.valorParcial.toFixed(2)}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Forma Pagamento:</h2>
-                  <p>{despesa.formaPagamento}</p>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <div className="flex gap-2">
-                    <h2 className="font-bold">Viagem Saída:</h2>
-                    <p>{despesa.viagem.rota.saida.cidadeSaida}</p>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-4">
-                  <div className="flex gap-2">
-                    <h2 className="font-bold">Viagem Retorno:</h2>
-                    <p>{despesa.viagem.rota.retorno.cidadeSaida}</p>
-                  </div>
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    Valor Parcial: {formatCurrency(despesa.valorParcial)}
+                  </span>
                 </div>
               </div>
-            </div>
-          ) : (
-            <p>Despesa não encontrada.</p>
-          )}
-        </div>
+            </section>
+
+            <Separator />
+
+            {/* Datas */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">Datas</h3>
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span>Emissão: {formatDate(despesa.dataEmissao)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span>Compra: {formatDate(despesa.dataCompra)}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span>Vencimento: {formatDate(despesa.vencimento)}</span>
+                </div>
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Informações de Pagamento */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">
+                Informações de Pagamento
+              </h3>
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2">
+                  <CreditCard className="h-4 w-4 text-muted-foreground" />
+                  <span>Forma de Pagamento: {despesa.formaPagamento}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Building2 className="h-4 w-4 text-muted-foreground" />
+                  <span>Origem: {despesa.origemPagamento}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Building2 className="h-4 w-4 text-muted-foreground" />
+                  <span>Centro de Custo: {despesa.centroCusto}</span>
+                </div>
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Responsável e Viagem */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">
+                Responsável e Viagem
+              </h3>
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-muted-foreground" />
+                  <span>Responsável: {despesa.responsavel.nome}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Car className="h-4 w-4 text-muted-foreground" />
+                  <span>Viagem ID: {despesa.viagemId}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <span>Documento: {despesa.numeroDocumento}</span>
+                </div>
+              </div>
+            </section>
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

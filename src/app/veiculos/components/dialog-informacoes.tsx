@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -9,30 +9,27 @@ import {
 } from "@/components/ui/dialog";
 import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+
 import { Veiculo } from "@/lib/types";
-import { api } from "@/lib/axios";
+
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Armchair,
+  Calendar,
+  Car,
+  Fuel,
+  Gauge,
+  MapPin,
+  Tag,
+  Truck,
+} from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 interface VeiculoProps {
-  veiculoId: string;
+  veiculo: Veiculo;
 }
 
-export default function DialogInformacoes({ veiculoId }: VeiculoProps) {
-  const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
-  useEffect(() => {
-    if (!veiculoId) return;
-
-    const fetchVeiculos = async () => {
-      try {
-        const response = await api.get(`/veiculo/${veiculoId}`);
-        setVeiculos(response.data.data ? [response.data.data] : []);
-      } catch (error) {
-        console.log("erro ao buscar ao veículos", error);
-      }
-    };
-    fetchVeiculos();
-  }, [veiculoId]);
-
+export default function DialogInformacoes({ veiculo }: VeiculoProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -45,68 +42,88 @@ export default function DialogInformacoes({ veiculoId }: VeiculoProps) {
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="md:w-[800px] max-h-screen overflow-y-scroll">
-        <DialogHeader className="mb-5">
-          <DialogTitle className="font-bold text-center">
-            Mais Informações
+      <DialogContent className="max-w-[90vw] md:max-w-[600px] max-h-[90vh]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <Car className="h-5 w-5" />
+            {veiculo.modelo} {veiculo.marca}
           </DialogTitle>
         </DialogHeader>
-        <div className="flex items-center justify-around">
-          {veiculos.map((veiculo) => (
-            <div key={veiculo.id}>
-              <div className="flex flex-col gap-4">
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Prefixo:</h2>
-                  <p>{veiculo.prefixo}</p>
+
+        <ScrollArea className="h-[70vh] pr-4">
+          <div className="space-y-6">
+            {/* Informações Principais */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">
+                Informações Principais
+              </h3>
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2">
+                  <Tag className="h-4 w-4 text-muted-foreground" />
+                  <span>Prefixo: {veiculo.prefixo}</span>
                 </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Marca:</h2>
-                  <p>{veiculo.marca}</p>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span>Ano: {veiculo.ano}</span>
                 </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Carroceria:</h2>
-                  <p>{veiculo.carroceria}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Qtd. Poltronas:</h2>
-                  <p>{veiculo.quantidadePoltronas}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Km Atual:</h2>
-                  <p>{veiculo.kmAtual}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Ano Veículo:</h2>
-                  <p>{veiculo.ano}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Local Emplacamento:</h2>
-                  <p>{veiculo.localEmplacado}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Capacidade do Tanque:</h2>
-                  <p>{veiculo.capacidadeTank}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Modelo:</h2>
-                  <p>{veiculo.modelo}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Placa:</h2>
-                  <p>{veiculo.placa}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">UF Emplacamento:</h2>
-                  <p>{veiculo.uf}</p>
-                </div>
-                <div className="flex gap-2">
-                  <h2 className="font-bold">Tipo Veículo:</h2>
-                  <p>{veiculo.tipo}</p>
+                <div className="flex items-center gap-2">
+                  <Tag className="h-4 w-4 text-muted-foreground" />
+                  <span>Tipo: {veiculo.tipo}</span>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            </section>
+
+            <Separator />
+
+            {/* Informações Técnicas */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">
+                Informações Técnicas
+              </h3>
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2">
+                  <Gauge className="h-4 w-4 text-muted-foreground" />
+                  <span>Quilometragem Atual: {veiculo.kmAtual} km</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Fuel className="h-4 w-4 text-muted-foreground" />
+                  <span>Capacidade do Tanque: {veiculo.capacidadeTank}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Armchair className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    Quantidade de Poltronas: {veiculo.quantidadePoltronas}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Tag className="h-4 w-4 text-muted-foreground" />
+                  <span>Carroceria: {veiculo.carroceria}</span>
+                </div>
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Documentação */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">Documentação</h3>
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2">
+                  <Tag className="h-4 w-4 text-muted-foreground" />
+                  <span>Placa: {veiculo.placa}</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <MapPin className="h-4 w-4 text-muted-foreground mt-1" />
+                  <div>
+                    <p>
+                      Local Emplacado: {veiculo.localEmplacado} - {veiculo.uf}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

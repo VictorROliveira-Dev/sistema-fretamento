@@ -56,6 +56,8 @@ export interface Manutencao {
   kmAtual: number;
   kmRealizada: number;
   custo: number;
+  veiculo?: Veiculo;
+  servico?: Servico;
 }
 
 export type FormDataFornecedor = {
