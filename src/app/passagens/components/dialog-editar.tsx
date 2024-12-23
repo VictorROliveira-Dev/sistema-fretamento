@@ -31,7 +31,7 @@ import { Passageiro, Passagem, ViagemProgramda } from "@/lib/types";
 
 interface AtualizarProps {
   viagem: ViagemProgramda;
-  setViagem: React.Dispatch<React.SetStateAction<ViagemProgramda>>;
+  setViagem: React.Dispatch<React.SetStateAction<ViagemProgramda | null>>;
   passagens?: Passagem[];
   passagemSelecionada: Passagem;
 }

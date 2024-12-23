@@ -136,166 +136,169 @@ export default function DialogAdicionar({
           Adicionar Manutenção
         </Button>
       </DialogTrigger>
-      <DialogContent className="md:w-[1200px] h-screen md:h-[400px] flex flex-col items-center overflow-y-scroll">
+      <DialogContent className="md:w-[1200px] h-screen md:h-[480px] flex flex-col items-center overflow-y-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Manutenção
           </DialogTitle>
         </DialogHeader>
-        <form
-          className="w-full flex flex-col items-center"
-          onSubmit={handleSubmit}
-        >
-          <div className="flex flex-wrap gap-4 w-full justify-center">
-            <div>
-              <label htmlFor="tipo">Tipo:</label>
-              <Select
-                name="tipo"
-                value={tipo}
-                onValueChange={(value) => setTipo(value)}
-              >
-                <SelectTrigger className="w-[250px]">
-                  <SelectValue placeholder="Selecione o tipo..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Tipos</SelectLabel>
-                    <SelectItem value="preventiva">Preventiva</SelectItem>
-                    <SelectItem value="corretiva">Corretiva</SelectItem>
-                    <SelectItem value="preditiva">Preditiva</SelectItem>
-                    <SelectItem value="ordem">Ordens de Serviço</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="veiculo">Veículo:</label>
-              <select
-                id="veiculo"
-                name="veiculo"
-                value={veiculoId}
-                onChange={(e) => setVeiculo(Number(e.target.value))}
-                className="w-[250px] border rounded-md p-2"
-              >
-                <option value="" disabled>
-                  Selecione o veículo...
-                </option>
-                {veiculos.map((veiculo) => (
-                  <option key={veiculo.id} value={veiculo.id}>
-                    {veiculo.placa}
+        <fieldset className="border p-4 rounded w-full">
+          <legend className="font-bold text-lg">Informações</legend>
+          <form
+            className="w-full flex flex-col items-center"
+            onSubmit={handleSubmit}
+          >
+            <div className="flex flex-wrap gap-4 w-full justify-center">
+              <div>
+                <label htmlFor="tipo">Tipo:</label>
+                <Select
+                  name="tipo"
+                  value={tipo}
+                  onValueChange={(value) => setTipo(value)}
+                >
+                  <SelectTrigger className="w-[250px]">
+                    <SelectValue placeholder="Selecione o tipo..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Tipos</SelectLabel>
+                      <SelectItem value="preventiva">Preventiva</SelectItem>
+                      <SelectItem value="corretiva">Corretiva</SelectItem>
+                      <SelectItem value="preditiva">Preditiva</SelectItem>
+                      <SelectItem value="ordem">Ordens de Serviço</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="veiculo">Veículo:</label>
+                <select
+                  id="veiculo"
+                  name="veiculo"
+                  value={veiculoId}
+                  onChange={(e) => setVeiculo(Number(e.target.value))}
+                  className="w-[250px] border rounded-md p-2"
+                >
+                  <option value="" disabled>
+                    Selecione o veículo...
                   </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="servico">Serviço:</label>
-              <select
-                id="servico"
-                name="servico"
-                value={servicoId}
-                onChange={(e) => setServico(Number(e.target.value))}
-                className="w-[250px] border rounded-md p-2"
-              >
-                <option value="" disabled>
-                  Selecione o serviço...
-                </option>
-                {servicos.map((servico) => (
-                  <option key={servico.id} value={servico.id}>
-                    {servico.nomeServico}
+                  {veiculos.map((veiculo) => (
+                    <option key={veiculo.id} value={veiculo.id}>
+                      {veiculo.placa}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="servico">Serviço:</label>
+                <select
+                  id="servico"
+                  name="servico"
+                  value={servicoId}
+                  onChange={(e) => setServico(Number(e.target.value))}
+                  className="w-[250px] border rounded-md p-2"
+                >
+                  <option value="" disabled>
+                    Selecione o serviço...
                   </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="dataVencimento">Data Vencimento:</label>
-              <Input
-                type="date"
-                name="dataVencimento"
-                className="border-2 font-medium w-[250px]"
-                value={dataVencimento}
-                onChange={(e) => setDataVencimento(e.target.value.toString())}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="dataLancamento">Data Lançamento:</label>
-              <Input
-                type="date"
-                name="dataLancamento"
-                className="border-2 font-medium w-[250px]"
-                value={dataLancamento}
-                onChange={(e) => setDataLancamento(e.target.value.toString())}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="dataRealizada">Data Realizada:</label>
-              <Input
-                type="date"
-                name="dataRealizada"
-                className="border-2 font-medium w-[250px]"
-                value={dataRealizada}
-                onChange={(e) => setDataRealizada(e.target.value.toString())}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="kmPrevista">KM Prevista:</label>
-              <Input
-                name="kmPrevista"
-                type="number"
-                className="border-2 font-medium  w-[250px]"
-                placeholder="Digite a quilometragem..."
-                value={kmPrevista}
-                onChange={(e) => setKmPrevista(Number(e.target.value))}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="kmAtual">KM Atual:</label>
-              <Input
-                type="number"
-                name="kmAtual"
-                className="border-2 font-medium w-[250px]"
-                placeholder="Digite a quilometragem..."
-                value={kmAtual}
-                onChange={(e) => setKmAtual(Number(e.target.value))}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="kmRealizada">KM Realizada:</label>
-              <Input
-                type="number"
-                name="kmRealizada"
-                className="border-2 font-medium  w-[250px]"
-                placeholder="Digite a quilometragem..."
-                value={kmRealizada}
-                onChange={(e) => setKmRealizada(Number(e.target.value))}
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="custo">Custo:</label>
-              <Input
-                type="number"
-                name="custo"
-                className="border-2 font-medium  w-[250px]"
-                placeholder="Digite o valor..."
-                value={custo}
-                onChange={(e) => setCusto(Number(e.target.value))}
-              />
-            </div>
-          </div>
-
-          <DialogFooter className="flex items-center gap-2 mt-10">
-            <Button type="submit" className="w-[250px]">
-              {adicionando ? (
-                <Image
-                  src={loading}
-                  alt="loading"
-                  className="text-center animate-spin"
+                  {servicos.map((servico) => (
+                    <option key={servico.id} value={servico.id}>
+                      {servico.nomeServico}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="dataVencimento">Data Vencimento:</label>
+                <Input
+                  type="date"
+                  name="dataVencimento"
+                  className="border-2 font-medium w-[250px]"
+                  value={dataVencimento}
+                  onChange={(e) => setDataVencimento(e.target.value.toString())}
                 />
-              ) : (
-                "Salvar"
-              )}
-            </Button>
-          </DialogFooter>
-        </form>
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="dataLancamento">Data Lançamento:</label>
+                <Input
+                  type="date"
+                  name="dataLancamento"
+                  className="border-2 font-medium w-[250px]"
+                  value={dataLancamento}
+                  onChange={(e) => setDataLancamento(e.target.value.toString())}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="dataRealizada">Data Realizada:</label>
+                <Input
+                  type="date"
+                  name="dataRealizada"
+                  className="border-2 font-medium w-[250px]"
+                  value={dataRealizada}
+                  onChange={(e) => setDataRealizada(e.target.value.toString())}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="kmPrevista">KM Prevista:</label>
+                <Input
+                  name="kmPrevista"
+                  type="number"
+                  className="border-2 font-medium  w-[250px]"
+                  placeholder="Digite a quilometragem..."
+                  value={kmPrevista}
+                  onChange={(e) => setKmPrevista(Number(e.target.value))}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="kmAtual">KM Atual:</label>
+                <Input
+                  type="number"
+                  name="kmAtual"
+                  className="border-2 font-medium w-[250px]"
+                  placeholder="Digite a quilometragem..."
+                  value={kmAtual}
+                  onChange={(e) => setKmAtual(Number(e.target.value))}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="kmRealizada">KM Realizada:</label>
+                <Input
+                  type="number"
+                  name="kmRealizada"
+                  className="border-2 font-medium  w-[250px]"
+                  placeholder="Digite a quilometragem..."
+                  value={kmRealizada}
+                  onChange={(e) => setKmRealizada(Number(e.target.value))}
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="custo">Custo:</label>
+                <Input
+                  type="number"
+                  name="custo"
+                  className="border-2 font-medium  w-[250px]"
+                  placeholder="Digite o valor..."
+                  value={custo}
+                  onChange={(e) => setCusto(Number(e.target.value))}
+                />
+              </div>
+            </div>
+
+            <DialogFooter className="flex items-center gap-2 mt-10">
+              <Button type="submit" className="w-[250px]">
+                {adicionando ? (
+                  <Image
+                    src={loading}
+                    alt="loading"
+                    className="text-center animate-spin"
+                  />
+                ) : (
+                  "Salvar"
+                )}
+              </Button>
+            </DialogFooter>
+          </form>
+        </fieldset>
       </DialogContent>
     </Dialog>
   );

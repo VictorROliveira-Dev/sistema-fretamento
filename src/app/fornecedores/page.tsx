@@ -136,7 +136,7 @@ export default function Fornecedores() {
                               fornecedor={fornecedor}
                               setFornecedores={setFornecedores}
                             />
-                            <DialogInformacoes fornecedorId={fornecedor.id} />
+                            <DialogInformacoes fornecedor={fornecedor} />
                           </div>
                         </TableCell>
                       </TableRow>

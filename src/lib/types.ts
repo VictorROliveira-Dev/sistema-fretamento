@@ -188,11 +188,16 @@ export interface ViagemProgramda {
   veiculo?: Veiculo;
   passagens?: Passagem[];
 }
-
 export interface Passageiro {
-  id: number;
+  id: number,
   nome: string;
-  dataNascimento: string; // ou `Date` se preferir trabalhar com objetos Date
+  dataNascimento: string; // ou Date se preferir trabalhar com objetos Date
+  telefone: string;
+  documento: Documento;
+  endereco: Endereco;
+  cpf: string;
+  cartao: string;
+  matricula: string;
 }
 interface Responsavel {
   id: number;
@@ -211,12 +216,15 @@ export interface Servico {
   nomeServico: string;
 }
 
-
 export interface Passagem {
   id?: Number;
   viagemId: number;
   passageiroId: number;
   dataEmissao: string; // ou Date, dependendo do uso no projeto
+  formaPagamento: string;
+  poltrona: number;
+  situacao: string;
+  passageiro?: Passageiro
 }
 
 export interface IDespesas {

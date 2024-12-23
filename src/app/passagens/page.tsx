@@ -31,28 +31,13 @@ import { ViagemProgramda } from "@/lib/types";
 
 export default function Passagens() {
   const [viagens, setViagens] = useState<ViagemProgramda[]>([]);
-  const [viagemSelecionada, setViagemSeleciona] = useState<ViagemProgramda>({
-    id: 0,
-    titulo: "",
-    descricao: "",
-    saida: { data: "", hora: "", local: "" },
-    retorno: { data: "", hora: "", local: "" },
-    chegada: { data: "", hora: "", local: "" },
-    valorPassagem: 0,
-    formaPagto: "",
-    responsavel: "",
-    guia: "",
-    itinerario: "",
-    observacoes: "",
-    veiculoId: 0,
-    veiculo: undefined,
-    passagens: [],
-  });
+  const [viagemSelecionada, setViagemSeleciona] =
+    useState<ViagemProgramda | null>(null);
 
   async function handleViagemChange(id: number) {
-    const response = await api.get(
-      `/ViagemProgramada/${id}?includePassagem=true&includeVeiculo=true`
-    );
+    const response = await api.get(`
+      /ViagemProgramada/${id}?includePassagem=true&includeVeiculo=true
+    `);
     if (!response.data.isSucces) {
       toast("erro ao tentar recuperar viagem");
     }
@@ -68,7 +53,6 @@ export default function Passagens() {
     }
 
     setViagens(response.data.data);
-    setViagemSeleciona(response.data.data[0]);
   }
   useEffect(() => {
     fetchViagens();
@@ -138,8 +122,8 @@ export default function Passagens() {
                 </TableRow>
               </TableHeader>
               <TableBody className="text-center">
-                {viagemSelecionada.passagens?.length ? (
-                  viagemSelecionada.passagens.map((passagem) => (
+                {viagemSelecionada ? (
+                  viagemSelecionada.passagens!.map((passagem) => (
                     <TableRow
                       className="hover:bg-gray-200"
                       key={passagem.poltrona}

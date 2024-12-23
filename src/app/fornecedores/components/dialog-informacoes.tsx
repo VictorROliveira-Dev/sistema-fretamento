@@ -9,102 +9,129 @@ import {
 import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 import Image from "next/image";
 import { Fornecedor } from "@/lib/types";
-import { useEffect, useState } from "react";
-import { api } from "@/lib/axios";
+
+import {
+  Building2,
+  Calendar,
+  CreditCard,
+  FileText,
+  MapPin,
+  Phone,
+  Tag,
+} from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@radix-ui/react-select";
 
 interface FornecedorProps {
-  fornecedorId: string;
+  fornecedor: Fornecedor;
 }
 
-export default function DialogInformacoes({ fornecedorId }: FornecedorProps) {
-  const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
-  useEffect(() => {
-    if (!fornecedorId) return;
-    const fetchFornecedores = async () => {
-      try {
-        const response = await api.get(`/api/fornecedor/${fornecedorId}`);
-        setFornecedores(response.data.data ? [response.data.data] : []);
-      } catch (error) {
-        console.log("Erro ao buscar fornecedores:", error);
-      }
-    };
-
-    fetchFornecedores();
-  }, [fornecedorId]);
-
+export default function DialogInformacoes({ fornecedor }: FornecedorProps) {
+  console.log(fornecedor);
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
+        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
           <Image
             src={dadosViagemIcon}
             alt="documento"
             width={25}
-            className="w-10 md:w-6"
+            className="hover:scale-110"
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="md:w-[800px] max-h-screen overflow-y-scroll">
-        <DialogHeader className="mb-5">
-          <DialogTitle className="font-bold text-center">
-            Mais Informações
+      <DialogContent className="max-w-[90vw] md:max-w-[600px] max-h-[90vh]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <Building2 className="h-5 w-5" />
+            {fornecedor?.nome}
           </DialogTitle>
         </DialogHeader>
-        <div className="flex flex-wrap items-center justify-around">
-          {fornecedores.map((fornecedor) => (
-            <div key={fornecedor.id} className="flex flex-col gap-4">
-              <div className="flex gap-2">
-                <h2 className="font-bold">Nome Completo:</h2>
-                <p>{fornecedor.nome}</p>
-              </div>
-              <div className="flex gap-2">
-                <h2 className="font-bold">Data Nascimento:</h2>
-                <p>
-                  {new Date(fornecedor.dataNascimento).toLocaleDateString(
-                    "pt-BR"
-                  )}
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <h2 className="font-bold">Telefone:</h2>
-                <p>{fornecedor.telefone}</p>
-              </div>
-              <div className="flex gap-2">
-                <h2 className="font-bold">Documento:</h2>
-                <p>{fornecedor.documento.documento}</p>
-              </div>
-              <div className="flex gap-2">
-                <h2 className="font-bold">CPF:</h2>
-                <p>{fornecedor.cpf}</p>
-              </div>
-              <div className="flex gap-2">
-                <h2 className="font-bold">UF:</h2>
-                <p>{fornecedor.endereco.uf}</p>
-              </div>
 
-              <div className="flex gap-2">
-                <h2 className="font-bold">Cidade:</h2>
-                <p>{fornecedor.endereco.cidade}</p>
+        <ScrollArea className="h-[70vh] pr-4">
+          <div className="space-y-6">
+            {/* Informações Principais */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">
+                Informações Principais
+              </h3>
+              <div className="grid gap-3">
+                {fornecedor ? (
+                  <>
+                    <div className="flex items-center gap-2">
+                      <Tag className="h-4 w-4 text-muted-foreground" />
+                      <span>Tipo: {fornecedor.tipo}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Calendar className="h-4 w-4 text-muted-foreground" />
+                      <span>
+                        Data de Nascimento:{" "}
+                        {new Date(
+                          fornecedor.dataNascimento
+                        ).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Phone className="h-4 w-4 text-muted-foreground" />
+                      <span>Telefone: {fornecedor.telefone}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="h-4 w-4 text-muted-foreground" />
+                      <span>CPF: {fornecedor.cpf}</span>
+                    </div>
+                  </>
+                ) : (
+                  <p>Carregando...</p>
+                )}
               </div>
-              <div className="flex gap-2">
-                <h2 className="font-bold">Bairro:</h2>
-                <p>{fornecedor.endereco.bairro}</p>
+            </section>
+
+            <Separator />
+
+            {/* Documento */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">Documento</h3>
+              <div className="grid gap-3">
+                {fornecedor ? (
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-4 w-4 text-muted-foreground" />
+                    <span>
+                      {fornecedor.documento.tipo.toUpperCase()}:{" "}
+                      {fornecedor.documento.documento}
+                    </span>
+                  </div>
+                ) : (
+                  <p>carregando...</p>
+                )}
               </div>
-              <div className="flex gap-2">
-                <h2 className="font-bold">Rua:</h2>
-                <p>{fornecedor.endereco.rua}</p>
+            </section>
+
+            <Separator />
+
+            {/* Endereço */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">Endereço</h3>
+              <div className="grid gap-3">
+                {fornecedor ? (
+                  <div className="flex items-start gap-2">
+                    <MapPin className="h-4 w-4 text-muted-foreground mt-1" />
+                    <div>
+                      <p>
+                        {fornecedor.endereco.rua}, {fornecedor.endereco.numero}
+                      </p>
+                      <p>{fornecedor.endereco.bairro}</p>
+                      <p>
+                        {fornecedor.endereco.cidade} - {fornecedor.endereco.uf}
+                      </p>
+                    </div>
+                  </div>
+                ) : (
+                  <p>carregando...</p>
+                )}
               </div>
-              <div className="flex gap-2">
-                <h2 className="font-bold">Número:</h2>
-                <p>{fornecedor.endereco.numero}</p>
-              </div>
-              <div className="flex gap-2">
-                <h2 className="font-bold">Tipo Pessoa:</h2>
-                <p>{fornecedor.tipo}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+            </section>
+          </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

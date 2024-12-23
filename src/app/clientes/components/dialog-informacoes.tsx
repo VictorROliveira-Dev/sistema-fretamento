@@ -9,6 +9,18 @@ import {
 import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 import Image from "next/image";
 import { Cliente } from "@/lib/types";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Building2,
+  Calendar,
+  CreditCard,
+  FileText,
+  MapPin,
+  Phone,
+  Tag,
+  User,
+} from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 interface InfoProps {
   cliente: Cliente;
@@ -18,69 +30,90 @@ export default function DialogInformacoes({ cliente }: InfoProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
+        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
           <Image
             src={dadosViagemIcon}
             alt="documento"
             width={25}
-            className="w-10 md:w-6"
+            className="hover:scale-110"
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="md:w-[1000px] flex flex-col max-h-screen overflow-y-scroll">
-        <DialogHeader className="mb-5">
-          <DialogTitle className="font-bold text-center">
-            Mais Informações
-          </DialogTitle> 
+      <DialogContent className="max-w-[90vw] md:max-w-[600px] max-h-[90vh]">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2 text-xl">
+            <User className="h-5 w-5" />
+            {cliente.nome}
+          </DialogTitle>
         </DialogHeader>
-        <div className="flex flex-wrap items-center justify-around">
-          <div className="flex flex-col md:flex-wrap gap-4">
-            <div className="flex gap-2">
-              <h2 className="font-bold">Nome Completo:</h2>
-              <p>{cliente.nome}</p>
-            </div>
-            <div className="flex gap-2">
-              <h2 className="font-bold">CPF:</h2>
-              <p>{cliente.cpf}</p>
-            </div>
-            <div className="flex gap-2">
-              <h2 className="font-bold">Bairro:</h2>
-              <p>{cliente.endereco.bairro}</p>
-            </div>
-            <div className="flex gap-2">
-              <h2 className="font-bold">Cidade:</h2>
-              <p>{cliente.endereco.cidade}</p>
-            </div>
-            <div className="flex gap-2">
-              <h2 className="font-bold">Número:</h2>
-              <p>{cliente.endereco.numero}</p>
-            </div>
-            <div className="flex gap-2">
-              <h2 className="font-bold">Data Nascimento:</h2>
-              <p>{cliente.dataNascimento}</p>
-            </div>
-            <div className="flex gap-2">
-              <h2 className="font-bold">UF:</h2>
-              <p>{cliente.endereco.uf}</p>
-            </div>
-            <div className="flex gap-2">
-              <h2 className="font-bold">Telefone:</h2>
-              <p>{cliente.telefone}</p>
-            </div>
-            <div className="flex gap-2">
-              <h2 className="font-bold">Documento:</h2>
-              <p>{cliente.documento.documento}</p>
-            </div>
-            <div className="flex gap-2">
-              <h2 className="font-bold">Tipo Documento:</h2>
-              <p>{cliente.documento.tipo.toUpperCase()}</p>
-            </div>
-            <div className="flex gap-2">
-              <h2 className="font-bold">Rua:</h2>
-              <p>{cliente.endereco.rua}</p>
-            </div>
+
+        <ScrollArea className="h-[70vh] pr-4">
+          <div className="space-y-6">
+            {/* Informações Principais */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">
+                Informações Principais
+              </h3>
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2">
+                  <Tag className="h-4 w-4 text-muted-foreground" />
+                  <span>Tipo: {cliente.tipo}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    Data de Nascimento:{" "}
+                    {new Date(cliente.dataNascimento).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-muted-foreground" />
+                  <span>Telefone: {cliente.telefone}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CreditCard className="h-4 w-4 text-muted-foreground" />
+                  <span>CPF: {cliente.cpf}</span>
+                </div>
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Documento */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">Documento</h3>
+              <div className="grid gap-3">
+                <div className="flex items-center gap-2">
+                  <FileText className="h-4 w-4 text-muted-foreground" />
+                  <span>
+                    {cliente.documento.tipo.toUpperCase()}: {cliente.documento.documento}
+                  </span>
+                </div>
+              </div>
+            </section>
+
+            <Separator />
+
+            {/* Endereço */}
+            <section>
+              <h3 className="text-lg font-semibold mb-3">Endereço</h3>
+              <div className="grid gap-3">
+                <div className="flex items-start gap-2">
+                  <MapPin className="h-4 w-4 text-muted-foreground mt-1" />
+                  <div>
+                    <p>
+                      {cliente.endereco.rua}, {cliente.endereco.numero}
+                    </p>
+                    <p>{cliente.endereco.bairro}</p>
+                    <p>
+                      {cliente.endereco.cidade} - {cliente.endereco.uf}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
-        </div>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

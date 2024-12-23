@@ -74,7 +74,7 @@ export default function DialogAdicionar({
 
     axios
       .get<Cidade[]>(
-        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
+        ` https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
       )
       .then((response) => {
         const sortedCidades = response.data.sort((a, b) =>

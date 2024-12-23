@@ -20,7 +20,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { api } from "@/lib/axios";
-import { formFieldsPassagens } from "@/lib/objects";
 import { Passageiro, Passagem, ViagemProgramda } from "@/lib/types";
 import { Label } from "@radix-ui/react-label";
 import React, { useEffect, useState } from "react";
@@ -28,13 +27,13 @@ import { toast } from "sonner";
 
 interface AdicionarProps {
   viagem: ViagemProgramda;
-  setViagem: React.Dispatch<React.SetStateAction<ViagemProgramda>>;
+  setViagem: React.Dispatch<React.SetStateAction<ViagemProgramda | null>>;
 }
 
 export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
   const [passageiros, setPassageiros] = useState<Passageiro[]>([]);
   const [passagem, setPassagem] = useState<Passagem>({
-    viagemId: viagem.id,
+    viagemId: 0,
     passageiroId: 0,
     dataEmissao: "",
     formaPagamento: "",
@@ -56,13 +55,12 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
   useEffect(() => {
     setPassagem((prevPassagem) => ({
       ...prevPassagem,
-      viagemId: viagem.id, // Certifique-se de que viagem.id é correto
+      viagemId: viagem ? viagem.id : 0, // Certifique-se de que viagem.id é correto
     }));
     fetchPassageiros();
   }, [viagem]);
 
   async function registrarPassagem() {
-    console.log(passagem);
     const response = await api.post("/passagem", passagem);
 
     if (!response.data.isSucces) {
@@ -93,7 +91,7 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
           <DialogTitle className="font-black">Cadastro de Passagem</DialogTitle>
         </DialogHeader>
         <div className="flex gap-4">
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-2">
             <div>
               <label htmlFor="passageiro">Passageiro:</label>
               <Select
