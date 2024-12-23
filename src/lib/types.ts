@@ -36,6 +36,14 @@ export type FormData = {
   habilitacao: Habilitacao;
 };
 
+
+export interface IDocumentos {
+  id: string;
+  vencimento: string;
+  tipoDocumento: string;
+  referencia: string;
+}
+
 export interface Manutencao {
   id: string;
   dataLancamento: string;

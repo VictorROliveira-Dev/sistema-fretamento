@@ -155,7 +155,7 @@ export default function DialogEditar({
             src={editIcon}
             alt="Editar"
             width={25}
-            className="w-10 md:w-6"
+            className="w-8 md:w-6"
           />
         </Button>
       </DialogTrigger>

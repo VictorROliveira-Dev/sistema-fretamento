@@ -11,7 +11,6 @@ import {
 import Image from "next/image";
 import DialogAdicionar from "./components/dialog-adicionar";
 import DialogEditar from "./components/dialog-editar";
-import documentoIcon from "@/app/assets/documentos.svg";
 import { IDocumentos } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
@@ -49,7 +48,7 @@ export default function Documentos() {
 
   return (
     <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px]">
-      <div className="h-[400px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
+      <div className="md:h-[400px] h-[550px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Documentos

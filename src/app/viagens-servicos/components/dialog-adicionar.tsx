@@ -271,7 +271,7 @@ export default function DialogAdicionar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-500">
+        <Button className="bg-green-600 hover:bg-green-500 w-[250px] md:w-[250px]">
           Adicionar Viagem/Serviço
         </Button>
       </DialogTrigger>

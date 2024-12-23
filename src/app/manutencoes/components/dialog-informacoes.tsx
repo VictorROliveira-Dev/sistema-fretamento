@@ -81,7 +81,7 @@ export default function DialogInformacoes({ manutencaoId }: ManutencoesProps) {
           <Image
             src={dadosViagemIcon}
             alt="documento"
-            className="w-10 md:w-6"
+            className="w-8 md:w-6"
           />
         </Button>
       </DialogTrigger>

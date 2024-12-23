@@ -25,6 +25,7 @@ import DialogAdicionarReceita from "./components/receitas/dialog-adicionar";
 import DialogRemoverReceita from "./components/receitas/dialog-remover";
 import DialogInformacoesDespesas from "./components/despesas/dialog-informacoes";
 import DialogInformacoesReceitas from "./components/receitas/dialog-informacoes";
+import DespesaPDF from "./components/despesas/dialog-document";
 
 export default function Financeiro() {
   const [despesas, setDespesas] = useState<IDespesas[]>([]);
@@ -59,7 +60,7 @@ export default function Financeiro() {
 
   return (
     <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px] md:max-h-[1000px]">
-      <div className="md:h-[400px] h-[450px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
+      <div className="md:h-[400px] h-[550px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Finanças
@@ -100,10 +101,12 @@ export default function Financeiro() {
                       />
                     </div>
                   </form>
-                  <DialogAdicionarDespesa
-                    despesas={despesas}
-                    setDespesas={setDespesas}
-                  />
+                  <div className="flex items-center gap-2">
+                    <DialogAdicionarDespesa
+                      despesas={despesas}
+                      setDespesas={setDespesas}
+                    />
+                  </div>
                 </div>
                 {carregando ? (
                   <div className="flex items-center justify-center">
@@ -153,14 +156,26 @@ export default function Financeiro() {
                                 "pt-BR"
                               )}
                             </TableCell>
-                            <TableCell className="hidden sm:table-cell">{despesa.origemPagamento}</TableCell>
-                            <TableCell className="hidden sm:table-cell">{despesa.responsavel ? despesa.responsavel.nome : 'N/A'}</TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {despesa.origemPagamento}
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {despesa.responsavel
+                                ? despesa.responsavel.nome
+                                : "N/A"}
+                            </TableCell>
                             <TableCell className="hidden sm:table-cell">
                               {despesa.pago ? "sim" : "nao"}
                             </TableCell>
-                            <TableCell className="hidden sm:table-cell">{despesa.centroCusto}</TableCell>
-                            <TableCell className="hidden sm:table-cell">{despesa.valorParcial}</TableCell>
-                            <TableCell className="hidden sm:table-cell">{despesa.valorTotal}</TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {despesa.centroCusto}
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {despesa.valorParcial}
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {despesa.valorTotal}
+                            </TableCell>
                             <TableCell>
                               <div className="flex items-center gap-2">
                                 <DialogEditarDespesa
@@ -172,14 +187,7 @@ export default function Financeiro() {
                                   despesa={despesa}
                                   setDespesas={setDespesas}
                                 />
-                                <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                                  <Image
-                                    src={documentoIcon}
-                                    alt="documento"
-                                    width={25}
-                                    className="hover:scale-110"
-                                  />
-                                </Button>
+                                <DespesaPDF despesa={despesa} />
                                 <DialogInformacoesDespesas
                                   despesaId={despesa.id}
                                   despesas={despesas}
@@ -248,9 +256,6 @@ export default function Financeiro() {
                           Pago
                         </TableHead>
                         <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                          Centro de Custo
-                        </TableHead>
-                        <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                           Valor Parcial
                         </TableHead>
                         <TableHead className="text-black font-bold text-center hidden sm:table-cell">
@@ -269,16 +274,23 @@ export default function Financeiro() {
                               "pt-BR"
                             )}
                           </TableCell>
-                          <TableCell className="hidden sm:table-cell">{receita.origemPagamento}</TableCell>
-                          <TableCell className="hidden sm:table-cell">{receita.responsavel.nome}</TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            {receita.origemPagamento}
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            {receita.responsavel.nome}
+                          </TableCell>
                           <TableCell className="hidden sm:table-cell">
                             {receita.pago
                               ? "sim".toUpperCase()
                               : "não".toUpperCase()}
                           </TableCell>
-                          <TableCell className="hidden sm:table-cell">{receita.centroCusto}</TableCell>
-                          <TableCell className="hidden sm:table-cell">{receita.valorParcial}</TableCell>
-                          <TableCell className="hidden sm:table-cell">{receita.valorTotal}</TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            {receita.valorParcial}
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            {receita.valorTotal}
+                          </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <DialogEditarReceita

@@ -61,7 +61,7 @@ export default function DialogRemover({
           <Image
             src={removeIcon}
             alt="Remover"
-            className="w-10 md:w-6"
+            className="w-8 md:w-6"
           />
         </Button>
       </DialogTrigger>

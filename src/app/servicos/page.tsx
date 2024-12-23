@@ -41,7 +41,7 @@ export default function Servicos() {
 
   return (
     <section className="bg-[#070180] px-4 py-6 md:pt-12 m:h-[425px]">
-      <div className="h-[400px] md:w-[400px] mx-auto bg-white flex flex-col items-center">
+      <div className="md:h-[400px] h-[550px] md:w-[400px] mx-auto bg-white flex flex-col items-center">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Serviços

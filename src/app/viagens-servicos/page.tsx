@@ -18,6 +18,7 @@ import { DialogExcluir } from "./components/dialog_excluir";
 import { useEffect, useState } from "react";
 import { Viagem } from "@/lib/types";
 import { api } from "@/lib/axios";
+import ViagemPDF from "./components/dialog-document";
 
 export default function ViagensServicos() {
   const [viagens, setViagens] = useState<Viagem[]>([]);
@@ -66,7 +67,9 @@ export default function ViagensServicos() {
                 </div>
               </form>
 
-              <DialogAdicionar setViagens={setViagens} viagens={viagens} />
+              <div className="flex items-center gap-2">
+                <DialogAdicionar setViagens={setViagens} viagens={viagens} />
+              </div>
             </div>
 
             <Table>
@@ -105,14 +108,30 @@ export default function ViagensServicos() {
                 {viagens.map((viagem) => (
                   <TableRow className="hover:bg-gray-200" key={viagem.id}>
                     <TableCell>{viagem.motoristaId}</TableCell>
-                    <TableCell className="hidden sm:table-cell">{viagem.veiculoId}</TableCell>
-                    <TableCell className="hidden sm:table-cell">{viagem.clienteId}</TableCell>
-                    <TableCell className="hidden sm:table-cell">{viagem.rota.saida.cidadeSaida}</TableCell>
-                    <TableCell className="hidden sm:table-cell">{viagem.dataHorarioSaida.data}</TableCell>
-                    <TableCell className="hidden sm:table-cell">{viagem.rota.retorno.cidadeSaida}</TableCell>
-                    <TableCell className="hidden sm:table-cell">{viagem.dataHorarioRetorno.data}</TableCell>
-                    <TableCell className="hidden sm:table-cell">{viagem.valorContratado}</TableCell>
-                    <TableCell className="hidden sm:table-cell">{viagem.status}</TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {viagem.veiculoId}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {viagem.clienteId}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {viagem.rota.saida.cidadeSaida}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {viagem.dataHorarioSaida.data}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {viagem.rota.retorno.cidadeSaida}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {viagem.dataHorarioRetorno.data}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {viagem.valorContratado}
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      {viagem.status}
+                    </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <DialogEditar
@@ -120,20 +139,12 @@ export default function ViagensServicos() {
                           viagens={viagens}
                           viagemprop={viagem}
                         />
-
+                        <ViagemPDF dadosViagens={viagem} />
                         <DialogExcluir
                           id={viagem.id}
                           setViagens={setViagens}
                           viagens={viagens}
                         />
-                        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                          <Image
-                            src={documentoIcon}
-                            alt="documento"
-                            width={25}
-                            className="hover:scale-110"
-                          />
-                        </Button>
                         <DialogInformacoes />
                       </div>
                     </TableCell>
