@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import Image from "next/image"; 
+import Image from "next/image";
 import dadosViagemIcon from "../../assets/dadosviagem.svg";
 import {
   Dialog,
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/axios";
+import { Servico, Veiculo } from "@/lib/types";
 
 interface IManutencao {
   id: number;
@@ -23,48 +24,55 @@ interface IManutencao {
   kmAtual: number;
   kmRealizada: number;
   custo: number;
-  nomeServico?: string; // Propriedade para armazenar o nome do serviço
-  nomeVeiculo?: string; // Propriedade para armazenar o nome do veículo
+  nomeServico?: string;
+  nomeVeiculo?: string;
 }
-
 interface ManutencoesProps {
   manutencaoId: number;
 }
 
 export default function DialogInformacoes({ manutencaoId }: ManutencoesProps) {
   const [manutencoes, setManutencoes] = useState<IManutencao[]>([]);
+  const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
+  const [servicos, setServicos] = useState<Servico[]>([]);
 
   useEffect(() => {
-    if (!manutencaoId) return;
-
-    const fetchManutencao = async () => {
+    const fetchData = async () => {
       try {
-        const response = await api.get(`/manutencao/${manutencaoId}`);
-        const manutencao = response.data.data;
-
-        if (manutencao) {
-          // Obtém o nome do serviço e do veículo
-          const [servicoResponse, veiculoResponse] = await Promise.all([
-            api.get(`/servico/${manutencao.servicoId}`),
-            api.get(`/veiculo/${manutencao.veiculoId}`),
+        // Busca todas as informações de uma vez
+        const [manutencoesResponse, veiculosResponse, servicosResponse] =
+          await Promise.all([
+            api.get("/manutencao"),
+            api.get("/veiculo"),
+            api.get("/servico"),
           ]);
 
-          manutencao.nomeServico =
-            servicoResponse.data.data?.nome || "Serviço não encontrado";
-          manutencao.nomeVeiculo =
-            veiculoResponse.data.data?.nome || "Veículo não encontrado";
-
-          setManutencoes([manutencao]);
-        } else {
-          setManutencoes([]);
-        }
+        setManutencoes(manutencoesResponse.data.data ?? []);
+        setVeiculos(veiculosResponse.data.data ?? []);
+        setServicos(servicosResponse.data.data ?? []);
+        console.log(veiculosResponse.data.data);
       } catch (error) {
-        console.log("Erro ao buscar manutenções:", error);
+        console.error("Erro ao buscar os dados:", error);
       }
     };
 
-    fetchManutencao();
-  }, [manutencaoId]);
+    fetchData();
+  }, []);
+
+  // Funções para encontrar o nome do veículo e do serviço pelo ID
+  const getVeiculoNome = (veiculoId: number) => {
+    const veiculo = veiculos.find(
+      (v) => v.id.toString() === veiculoId.toString()
+    );
+    return veiculo ? veiculo.placa : "Desconhecido";
+  };
+
+  const getServicoNome = (servicoId: number) => {
+    const servico = servicos.find(
+      (s) => s.id.toString() === servicoId.toString()
+    );
+    return servico ? servico.nomeServico : "Desconhecido";
+  };
 
   return (
     <Dialog>
@@ -117,11 +125,11 @@ export default function DialogInformacoes({ manutencaoId }: ManutencoesProps) {
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">Serviço:</h2>
-                  <p>{manutencao.nomeServico}</p>{" "}
+                  <p>{getVeiculoNome(manutencao.veiculoId)}</p>{" "}
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">Veículo:</h2>
-                  <p>{manutencao.nomeVeiculo}</p>{" "}
+                  <p>{getServicoNome(manutencao.servicoId)}</p>{" "}
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">KM Prevista:</h2>

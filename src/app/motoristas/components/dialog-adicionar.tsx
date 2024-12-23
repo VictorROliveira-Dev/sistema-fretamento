@@ -16,7 +16,6 @@ import {
   Cidade,
   Documento,
   Endereco,
-  FormData,
   Habilitacao,
   Motorista,
   Uf,

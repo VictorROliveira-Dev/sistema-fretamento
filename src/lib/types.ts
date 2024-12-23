@@ -198,6 +198,12 @@ interface Responsavel {
   matricula: string;
 }
 
+export interface Servico {
+  id: string;
+  nomeServico: string;
+}
+
+
 export interface Passagem {
   id?: Number;
   viagemId: number;

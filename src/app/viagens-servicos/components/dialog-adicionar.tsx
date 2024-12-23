@@ -275,16 +275,16 @@ export default function DialogAdicionar({
           Adicionar Viagem/Serviço
         </Button>
       </DialogTrigger>
-      <DialogContent className="w-[90%] max-h-[520px] flex flex-col items-center overflow-scroll">
+      <DialogContent className="md:w-[90%] md:max-h-[520px] flex flex-col items-center h-screen overflow-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Viagem/Serviço
           </DialogTitle>
         </DialogHeader>
         <form className="w-full" onSubmit={handleSubmit}>
-          <div className="flex flex-col">
-            <div className="w-full flex justify-evenly gap-4">
-              <fieldset className="border border-blue-900 rounded-md p-4 flex-1 flex gap-2">
+          <div className="flex h-full overflow-y-scroll flex-col">
+            <div className="w-full flex flex-col md:flex-row md:h-[200px] justify-evenly gap-4">
+              <fieldset className="border h-[200px] border-blue-900 rounded-md p-4 flex-1 flex-col md:flex-row flex gap-2">
                 <legend>Cliente</legend>
                 <div className="flex-1">
                   <Label htmlFor="cliente">Cliente</Label>
@@ -326,7 +326,7 @@ export default function DialogAdicionar({
                   />
                 </div>
               </fieldset>
-              <fieldset className="border border-blue-900 flex-1 rounded-md p-4 flex gap-2">
+              <fieldset className="border border-blue-900 flex-1 flex-col md:flex-row rounded-md p-4 flex gap-2">
                 <legend>Servico</legend>
                 <div className="flex-1">
                   <Label htmlFor="tiposervico">Tipo do Servico</Label>
@@ -409,13 +409,13 @@ export default function DialogAdicionar({
               </fieldset>
             </div>
 
-            <div className="w-full flex gap-2 mt-2">
+            <div className="w-full flex flex-col md:flex-row gap-2 mt-2">
               <div className="flex flex-col flex-1">
                 <div className="w-full">
-                  <fieldset className="border-2 border-green-600 rounded-md justify-between p-4 flex gap-2">
+                  <fieldset className="border-2 border-green-600 rounded-md justify-between p-4 flex flex-col md:flex-row gap-2">
                     <legend>Local Inicial / Origem / Destino</legend>
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-col md:flex-row gap-2">
                       <div>
                         <Label htmlFor="ufsaida">UF Saida</Label>
                         <Select
@@ -562,10 +562,10 @@ export default function DialogAdicionar({
                 </div>
 
                 <div className="w-full">
-                  <fieldset className="border-2 border-red-600 rounded-md justify-between p-4 flex gap-2">
+                  <fieldset className="border-2 border-red-600 rounded-md justify-between p-4 flex flex-col md:flex-row gap-2">
                     <legend>Local Final / Destino / Retorno</legend>
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-col md:flex-row gap-2">
                       <div>
                         <Label htmlFor="ufdestino">UF Destino</Label>
                         <Select
@@ -726,7 +726,7 @@ export default function DialogAdicionar({
               </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col md:flex-row gap-2">
               <fieldset className="rounded border border-yellow-500 p-4">
                 <legend>Veiculo</legend>
                 <div>
@@ -802,7 +802,7 @@ export default function DialogAdicionar({
               </div>
             </div>
           </div>
-          <DialogFooter className="flex items-center gap-2 mt-10">
+          <DialogFooter className="flex flex-row justify-center items-center gap-2 pb-10">
             <DialogClose>
               <Button type="button" variant="outline">
                 Fechar

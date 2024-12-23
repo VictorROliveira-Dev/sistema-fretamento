@@ -194,12 +194,12 @@ export default function DialogAdicionar({
                   />
                 </div>
               </div>
-              <div className="">
+              <div className="flex flex-col gap-2">
                 <label htmlFor="uf">UF</label>
                 <select
                   id="uf"
                   onChange={(e) => handleUfChange(e.target.value)}
-                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  className="w-[250px] border border-gray-300 rounded px-1 py-2"
                 >
                   <option value="">Selecione a UF</option>
                   {ufs.map((uf) => (
@@ -210,7 +210,7 @@ export default function DialogAdicionar({
                 </select>
               </div>
 
-              <div className="flex flex-col">
+              <div className="flex flex-col gap-2">
                 <label htmlFor="localEmplacado">Cidade Emplacamento</label>
                 <select
                   id="localEmplacado"

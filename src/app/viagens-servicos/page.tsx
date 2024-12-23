@@ -37,17 +37,17 @@ export default function ViagensServicos() {
   }, []);
 
   return (
-    <section className="bg-[#070180] pt-12 h-[424px] max-h-[1000px]">
-      <div className="h-[300px] w-[1100px] max-h-screen mx-auto rounded-md bg-white flex flex-col">
-        <div className=" bg-black w-full">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px]">
+      <div className="md:h-[400px] h-[550px] md:w-[1100px] mx-auto rounded-md bg-white flex flex-col">
+        <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Viagens/Serviços
           </p>
         </div>
-        <div className="flex items-center md:h-screen h-[800px]">
-          <div className="mx-auto space-y-4">
-            <div className="flex items-center justify-between">
-              <form className="flex gap-2 font-bold">
+        <div className="flex items-center p-10">
+          <div className="mx-auto md:w-full space-y-4">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between">
+              <form className="flex flex-col md:flex-row gap-2 font-bold">
                 <div>
                   <label htmlFor="fantasia">Localizar Viagem:</label>
                   <Input
@@ -75,28 +75,28 @@ export default function ViagensServicos() {
                   <TableHead className="text-black font-bold text-center">
                     Motorista
                   </TableHead>
-                  <TableHead className="text-black font-bold text-center">
+                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                     Veiculo
                   </TableHead>
-                  <TableHead className="text-black font-bold text-center">
+                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                     Cliente
                   </TableHead>
-                  <TableHead className="text-black font-bold text-center">
+                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                     Cidade Saída
                   </TableHead>
-                  <TableHead className="text-black font-bold text-center">
+                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                     Data Saída
                   </TableHead>
-                  <TableHead className="text-black font-bold text-center">
+                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                     Cidade Destino
                   </TableHead>
-                  <TableHead className="text-black font-bold text-center">
+                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                     Data Chegada
                   </TableHead>
-                  <TableHead className="text-black font-bold text-center">
+                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                     Valor Contratado
                   </TableHead>
-                  <TableHead className="text-black font-bold text-center">
+                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                     Status Viagem
                   </TableHead>
                 </TableRow>
@@ -105,14 +105,14 @@ export default function ViagensServicos() {
                 {viagens.map((viagem) => (
                   <TableRow className="hover:bg-gray-200" key={viagem.id}>
                     <TableCell>{viagem.motoristaId}</TableCell>
-                    <TableCell>{viagem.veiculoId}</TableCell>
-                    <TableCell>{viagem.clienteId}</TableCell>
-                    <TableCell>{viagem.rota.saida.cidadeSaida}</TableCell>
-                    <TableCell>{viagem.dataHorarioSaida.data}</TableCell>
-                    <TableCell>{viagem.rota.retorno.cidadeSaida}</TableCell>
-                    <TableCell>{viagem.dataHorarioRetorno.data}</TableCell>
-                    <TableCell>{viagem.valorContratado}</TableCell>
-                    <TableCell>{viagem.status}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{viagem.veiculoId}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{viagem.clienteId}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{viagem.rota.saida.cidadeSaida}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{viagem.dataHorarioSaida.data}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{viagem.rota.retorno.cidadeSaida}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{viagem.dataHorarioRetorno.data}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{viagem.valorContratado}</TableCell>
+                    <TableCell className="hidden sm:table-cell">{viagem.status}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <DialogEditar

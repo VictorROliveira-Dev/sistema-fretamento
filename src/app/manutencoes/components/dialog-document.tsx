@@ -68,7 +68,7 @@ const ManutencaoPDF: React.FC<ManutencaoPDFProps> = ({ dadosManutencao }) => {
       doc.addImage(logoUrl, "PNG", x, 10, imgWidth, imgHeight);
 
       // Adicionar o título do documento
-      doc.setFontSize(18);
+      doc.setFontSize(14);
       doc.text("Relatório de Manutenção", pageWidth / 2, imgHeight + 20, {
         align: "center",
       });
@@ -83,7 +83,7 @@ const ManutencaoPDF: React.FC<ManutencaoPDFProps> = ({ dadosManutencao }) => {
           new Date(manutencao.dataLancamento).toLocaleDateString(),
           new Date(manutencao.dataVencimento).toLocaleDateString(),
           new Date(manutencao.dataRealizada).toLocaleDateString(),
-          manutencao.tipo,
+          manutencao.tipo.toString(),
           manutencao.kmPrevista,
           manutencao.kmAtual,
           manutencao.kmRealizada,

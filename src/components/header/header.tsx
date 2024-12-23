@@ -136,7 +136,7 @@ const Header: FC = () => {
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" onClick={() => setIsOpen(true)}>
-              <Button className="bg-transparent shadow-none">
+              <Button className="bg-transparent shadow-none hover:bg-transparent">
                 <Image src={menuIcon} alt="menu" className="w-12" />
               </Button>
             </Button>
@@ -149,7 +149,7 @@ const Header: FC = () => {
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 p-2">
               {navItems.map(({ href, label, icon }) => (
                 <NavLink
                   key={href}
