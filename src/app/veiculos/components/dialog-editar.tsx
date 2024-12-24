@@ -118,7 +118,7 @@ export default function DialogEditar({
           />
         </Button>
       </DialogTrigger>
-      <DialogContent className="md:w-[1200px] h-screen md:h-[420px] flex flex-col items-center overflow-y-scroll">
+      <DialogContent className="md:w-[1200px] h-screen md:h-[420px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Edição de Veículo</DialogTitle>
         </DialogHeader>

@@ -151,14 +151,14 @@ export default function DialogAdicionar({
           Adicionar Fornecedor
         </Button>
       </DialogTrigger>
-      <DialogContent className="md:w-[800px] h-screen md:h-[650px] flex flex-col items-center overflow-y-scroll">
+      <DialogContent className="md:w-auto h-screen md:h-[650px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Fornecedor
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} noValidate>
-          <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll gap-10 items-start">
+          <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll md:overflow-auto gap-10 items-start">
             <fieldset className="border p-4 rounded w-full">
               <legend className="font-semibold">Motorista</legend>
               <div>

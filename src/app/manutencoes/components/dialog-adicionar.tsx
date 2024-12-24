@@ -136,7 +136,7 @@ export default function DialogAdicionar({
           Adicionar Manutenção
         </Button>
       </DialogTrigger>
-      <DialogContent className="md:w-[1200px] h-screen md:h-[480px] flex flex-col items-center overflow-y-scroll">
+      <DialogContent className="md:w-[1200px] h-screen md:h-[480px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Manutenção

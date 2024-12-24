@@ -46,9 +46,23 @@ export default function Documentos() {
     fetchDocumentos();
   }, []);
 
+  function getDateVencimento(dataVencimento: string) {
+    const today = new Date();
+    const vencimento = new Date(dataVencimento);
+    const diferenca = Math.ceil(
+      (vencimento.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    if (diferenca <= 7) return "text-red-500 font-bold";
+    if (diferenca <= 15) return "text-yellow-500 font-bold";
+    if (diferenca <= 30) return "text-blue-500 font-bold";
+
+    return "text-black font-medium";
+  }
+
   return (
-    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px]">
-      <div className="md:h-[400px] h-[550px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[650px]">
+      <div className="md:h-[500px] h-[550px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Documentos
@@ -110,7 +124,11 @@ export default function Documentos() {
                         <TableCell className="hidden sm:table-cell">
                           {documento.referencia}
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell">
+                        <TableCell
+                          className={`hidden sm:table-cell ${getDateVencimento(
+                            documento.vencimento
+                          )}`}
+                        >
                           {new Date(documento.vencimento).toLocaleDateString(
                             "pt-BR"
                           )}

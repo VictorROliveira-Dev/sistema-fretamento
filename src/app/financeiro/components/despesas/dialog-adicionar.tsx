@@ -162,7 +162,7 @@ export default function DialogAdicionarDespesa({
           Adicionar Despesa
         </Button>
       </DialogTrigger>
-      <DialogContent className="md:w-[850px] h-screen md:h-[500px] flex flex-col items-center overflow-y-scroll">
+      <DialogContent className="md:w-[850px] h-screen md:h-[690px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Cadastro de Despesa</DialogTitle>
         </DialogHeader>

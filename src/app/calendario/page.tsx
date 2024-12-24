@@ -21,7 +21,6 @@ const CalendarApp = () => {
       try {
         // 1. Recuperar as viagens da API
         const responseViagens = await api.get("/viagem");
-        console.log("Resposta da API de Viagens:", responseViagens.data.data);
         const viagens: Viagem[] = Array.isArray(responseViagens.data.data)
           ? responseViagens.data.data
           : responseViagens.data?.data.viagens || [];
@@ -58,7 +57,6 @@ const CalendarApp = () => {
           params: { ids: veiculoIds.join(",") }, // Envia os IDs dos veículos na requisição
         });
 
-        console.log("Resposta da API de Veículos:", responseVeiculos.data.data);
         const veiculos = Array.isArray(responseVeiculos.data.data)
           ? responseVeiculos.data.data
           : responseVeiculos.data?.data.veiculos || [];
@@ -73,14 +71,27 @@ const CalendarApp = () => {
         );
 
         // 5. Mapear as viagens para criar eventos no calendário
-        const eventos = viagensDoMesAtual.map((viagem) => {
+        const eventos: Event[] = [];
+
+        viagensDoMesAtual.forEach((viagem) => {
           const veiculo = veiculosMap[viagem.veiculoId];
           const placa = veiculo ? veiculo.placa : "Desconhecido";
-          return {
-            id: viagem.id.toString(),
-            title: `${placa}`,
-            start: viagem.dataHorarioSaida.data,
-          };
+
+          // Calcular o intervalo de datas
+          const startDate = new Date(viagem.dataHorarioSaida.data);
+          const endDate = new Date(viagem.dataHorarioRetorno.data);
+
+          for (
+            let date = new Date(startDate);
+            date <= endDate;
+            date.setDate(date.getDate() + 1)
+          ) {
+            eventos.push({
+              id: `${viagem.id}-${date.toISOString()}`,
+              title: `${placa}`,
+              start: date.toISOString().split("T")[0], // Apenas a data
+            });
+          }
         });
 
         // 6. Atualizar os eventos no estado
@@ -92,28 +103,6 @@ const CalendarApp = () => {
 
     fetchData();
   }, []);
-
-  // Função para adicionar um evento manualmente no calendário
-  /*const handleDateClick = (info: { dateStr: string }) => {
-    const title = prompt("Digite o título do evento:");
-    if (title) {
-      const newEvent: Event = {
-        id: Date.now().toString(),
-        title,
-        start: info.dateStr,
-      };
-      setEvents((prevEvents) => [...prevEvents, newEvent]);
-    }
-  };*/
-
-  // Função para remover um evento clicado
-  /*const handleEventClick = (info: { event: { id: string; title: string } }) => {
-    if (window.confirm(`Deseja remover o evento: '${info.event.title}'?`)) {
-      setEvents((prevEvents) =>
-        prevEvents.filter((event) => event.id !== info.event.id)
-      );
-    }
-  };*/
 
   return (
     <div className="App text-white bg-[#070180] pt-10">

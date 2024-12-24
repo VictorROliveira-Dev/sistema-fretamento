@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FC, useState } from "react";
+import { FC, memo, useState } from "react";
 import menuIcon from "../../app/assets/menu.svg";
 import painel from "@/app/assets/painel-de-controle.png";
 import motorista from "@/app/assets/motorista.png";
@@ -17,18 +17,16 @@ import documentos from "@/app/assets/documentos.png";
 import financeiro from "@/app/assets/financa.png";
 import passageiros from "@/app/assets/passageiro.png";
 import passagens from "@/app/assets/passagens.png";
+import pacote from "@/app/assets/pacote.png";
 import sino from "@/app/assets/sino.svg";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
 import { Button } from "../ui/button";
-import { Label } from "../ui/label";
-import { Menu } from "lucide-react";
 
 const icons = {
   painel: painel.src,
@@ -43,6 +41,7 @@ const icons = {
   financeiro: financeiro.src,
   passageiros: passageiros.src,
   passagens: passagens.src,
+  pacote: pacote.src,
   sino: sino.src,
 };
 
@@ -65,6 +64,7 @@ const navItems: NavItem[] = [
   { href: "/financeiro", label: "Finanças", icon: icons.financeiro },
   { href: "/passageiros", label: "Passageiros", icon: icons.passageiros },
   { href: "/passagens", label: "Passagens", icon: icons.passagens },
+  { href: "/estoque", label: "Estoque", icon: icons.pacote },
 ];
 
 interface NavLinkProps {
@@ -75,29 +75,25 @@ interface NavLinkProps {
   onClick?: () => void;
 }
 
-const NavLink: FC<NavLinkProps> = ({
-  href,
-  icon,
-  label,
-  isActive,
-  onClick,
-}) => (
-  <Link
-    href={href}
-    onClick={onClick} // Chama a função ao clicar no link
-    className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${
-      isActive ? "bg-blue-900 border-blue-900 text-white" : ""
-    }`}
-  >
-    <Image src={icon} alt={label} width={45} height={45} />
-    <p className="font-bold text-xs text-center">{label}</p>
-  </Link>
-);
+const NavLink: FC<NavLinkProps> = memo(({ href, icon, label, isActive, onClick }) => {
+  console.log(`Renderizando NavLink: ${label}`); // Para verificar as re-renderizações
+  return (
+    <Link
+      href={href}
+      onClick={onClick}
+      className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${
+        isActive ? "bg-blue-900 border-blue-900 text-white" : ""
+      }`}
+    >
+      <Image src={icon} alt={label} width={45} height={45} />
+      <p className="font-bold text-xs text-center">{label}</p>
+    </Link>
+  );
+});
 
-const Header: FC = () => {
+const Header = memo(function Header() {
   const pathname = usePathname() || "";
   const [isOpen, setIsOpen] = useState(false); // Estado para controlar o menu lateral
-
   // Função para fechar o Sheet
   const closeSheet = () => setIsOpen(false);
 
@@ -173,6 +169,8 @@ const Header: FC = () => {
       </div>
     </header>
   );
-};
+});
+
+NavLink.displayName = "NavLink";
 
 export default Header;
