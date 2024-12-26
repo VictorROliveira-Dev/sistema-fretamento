@@ -159,19 +159,19 @@ export default function DialogAdicionar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-500 w-full md:w-[200px]">
+        <span className="bg-green-600 hover:bg-green-500 w-full md:w-[200px] p-1 text-center rounded-md text-white cursor-pointer transition-all">
           Adicionar Motorista
-        </Button>
+        </span>
       </DialogTrigger>
-      <DialogContent className="md:w-[1200px] h-screen md:h-[650px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
+      <DialogContent className="md:w-auto h-screen md:h-[650px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Motorista
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} noValidate>
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col items-center">
           <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll md:overflow-auto gap-10 items-start">
-            <fieldset className="border p-4 rounded w-full">
+            <fieldset className="border p-4 rounded w-full h-full">
               <legend className="font-semibold">Motorista</legend>
               <div>
                 <label htmlFor="nome">Nome</label>
@@ -251,7 +251,7 @@ export default function DialogAdicionar({
             </fieldset>
 
             {/* Endereço */}
-            <fieldset className="border p-4 rounded w-full">
+            <fieldset className="border p-4 rounded w-full h-full">
               <legend className="font-semibold">Endereço</legend>
               <div className="">
                 <label htmlFor="uf">UF</label>
@@ -308,7 +308,7 @@ export default function DialogAdicionar({
               ))}
             </fieldset>
 
-            <fieldset className="border p-4 rounded w-full">
+            <fieldset className="border p-4 rounded w-full h-full">
               <legend className="font-semibold">Habilitação</legend>
 
               {/* Protocolo */}
@@ -399,7 +399,7 @@ export default function DialogAdicionar({
             </fieldset>
           </div>
           <DialogFooter>
-            <Button type="submit" className="w-full mt-8">
+            <Button type="submit" className="w-[300px] mt-8">
               {adicionando ? (
                 <Image
                   src={loading}

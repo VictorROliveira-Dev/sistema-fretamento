@@ -76,14 +76,14 @@ export default function DialogEditar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
           <Image
             src={editIcon}
             alt="Editar"
             width={25}
-            className="hover:scale-110"
+            className="w-6"
           />
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="md:w-[400px] md:h-[300px] flex flex-col items-center rounded-md">
         <DialogHeader className="mb-5">

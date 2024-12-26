@@ -13,6 +13,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import loading from "./assets/loading-dark.svg";
+import { parseISO } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 
 export default function Home() {
   const [documentos, setDocumentos] = useState<IDocumentos[]>([]);
@@ -53,10 +55,24 @@ export default function Home() {
     fetchData();
   }, []);
 
+  function getDateVencimento(dataVencimento: string) {
+    const today = new Date();
+    const vencimento = parseISO(dataVencimento); // Converte a data para objeto Date
+    const diferenca = Math.ceil(
+      (vencimento.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    if (diferenca <= 7) return "text-red-500 font-bold";
+    if (diferenca <= 15) return "text-yellow-500 font-bold";
+    if (diferenca <= 30) return "text-blue-500 font-bold";
+
+    return "text-black font-medium";
+  }
+
   return (
     <>
       <main className="md:h-[425px] bg-[#070180] pt-10 pb-10 ">
-        <div 
+        <div
           className="w-[90%] mx-auto rounded-md bg-white 
           flex flex-col sm:flex-row sm:justify-around gap-6 p-4"
         >
@@ -156,18 +172,39 @@ export default function Home() {
                   <TableBody className="bg-white text-center text-xs md:text-sm font-medium">
                     {documentos.map((documento) => (
                       <TableRow key={documento.id} className="">
-                        <TableCell>
-                          {new Date(documento.vencimento).toLocaleDateString(
-                            "pt-BR"
+                        <TableCell
+                          className={`${getDateVencimento(
+                            documento.vencimento
+                          )}`}
+                        >
+                          {format(
+                            toZonedTime(parseISO(documento.vencimento), "UTC"),
+                            "dd/MM/yyyy"
                           )}
                         </TableCell>
                         <TableCell>{documento.referencia}</TableCell>
-                        <TableCell>{documento.tipoDocumento}</TableCell>
+                        <TableCell>
+                          {documento.tipoDocumento.toUpperCase()}
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               )}
+            </div>
+            <div className="flex flex-col gap-2 md:flex-row md:gap-4">
+              <div className="flex items-center gap-2">
+                <span className="w-4 h-4 bg-blue-500 rounded-full"></span>
+                <p className="text-xs font-medium">30 Dias para o vencimento</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-4 h-4 bg-yellow-500 rounded-full"></span>
+                <p className="text-xs font-medium">15 Dias para o vencimento</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-4 h-4 bg-red-500 rounded-full"></span>
+                <p className="text-xs font-medium">7 Dias para o vencimento</p>
+              </div>
             </div>
             <div className="flex justify-center">
               <Link

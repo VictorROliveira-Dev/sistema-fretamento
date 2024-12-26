@@ -11,6 +11,8 @@ import Image from "next/image";
 import { IDocumentos, Motorista } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
+import { format, toZonedTime } from "date-fns-tz";
+import { parseISO } from "date-fns";
 
 interface DocumentoProps {
   documentoId: string;
@@ -58,7 +60,7 @@ export default function DialogInformacoes({ documentoId }: DocumentoProps) {
               <div className="flex flex-col gap-4">
                 <div className="flex gap-2">
                   <h2 className="font-bold">Doc/Certificado:</h2>
-                  <p>{documento.tipoDocumento}</p>
+                  <p>{documento.tipoDocumento.toUpperCase()}</p>
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">Referência:</h2>
@@ -67,7 +69,10 @@ export default function DialogInformacoes({ documentoId }: DocumentoProps) {
                 <div className="flex gap-2">
                   <h2 className="font-bold">Vencimento:</h2>
                   <p>
-                    {new Date(documento.vencimento).toLocaleDateString("pt-BR")}
+                    {format(
+                      toZonedTime(parseISO(documento.vencimento), "UTC"),
+                      "dd/MM/yyyy"
+                    )}
                   </p>
                 </div>
               </div>

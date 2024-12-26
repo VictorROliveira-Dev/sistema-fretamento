@@ -71,7 +71,7 @@ export default function Veiculos() {
               <div className="flex gap-2 items-center">
                 <Link
                   href="/calendario"
-                  className="flex items-center gap-2 py-2 px-4 bg-black text-white rounded-md text-sm hover:bg-black/85"
+                  className="flex items-center gap-2 py-1.5 px-4 bg-black text-white rounded-md text-sm hover:bg-black/85"
                 >
                   <p>Calendário</p>
                   <Image src={calendar} alt="calendar" width={22} />
@@ -128,12 +128,24 @@ export default function Veiculos() {
                       <TableRow key={veiculo.id} className="hover:bg-gray-200">
                         <TableCell>{veiculo.prefixo}</TableCell>
                         <TableCell>{veiculo.placa}</TableCell>
-                        <TableCell className="hidden sm:table-cell">{veiculo.kmAtual}</TableCell>
-                        <TableCell className="hidden sm:table-cell">{veiculo.marca}</TableCell>
-                        <TableCell className="hidden sm:table-cell">{veiculo.capacidadeTank}</TableCell>
-                        <TableCell className="hidden sm:table-cell">{veiculo.tipo}</TableCell>
-                        <TableCell className="hidden sm:table-cell">{veiculo.quantidadePoltronas}</TableCell>
-                        <TableCell className="hidden sm:table-cell">{veiculo.ano}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {veiculo.kmAtual}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {veiculo.marca}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {veiculo.capacidadeTank}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {veiculo.tipo}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {veiculo.quantidadePoltronas}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {veiculo.ano}
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <DialogEditar

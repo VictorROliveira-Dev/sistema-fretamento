@@ -33,28 +33,27 @@ export default function DialogAdicionar({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAdicionando(true);
+    // Criar uma data ajustada explicitamente para o fuso horário local
+    const [year, month, day] = vencimento.split("-").map(Number); // Separar o input "YYYY-MM-DD"
+    const vencimentoAjustado = new Date(year, month - 1, day); // Ajustar o mês (baseado em zero)
 
     const documentData = {
       tipoDocumento: tipoDocumento,
-      vencimento: vencimento,
+      vencimento: vencimentoAjustado.toISOString().split("T")[0],
       referencia: referencia,
     };
 
     try {
       const response = await api.post("/documento", documentData);
       setDocumentos([...documentos, response.data.data]);
-      // LIMPAR
-      setTipoDocumento("");
-      setVencimento("");
-      setReferencia("");
       toast.success("Documento adicionado.", {
-        className:
-          "text-white font-semibold border-none shadow-lg",
+        className: "text-white font-semibold border-none shadow-lg",
         style: {
           borderRadius: "10px",
           padding: "16px",
         },
       });
+      console.log(documentData)
     } catch (error) {
       toast.error("Erro ao tentar adicionar documento.", {
         className: "text-white font-semibold border-none shadow-lg",
@@ -65,6 +64,10 @@ export default function DialogAdicionar({
       });
       console.error("Erro ao adicionar documento:", error);
     } finally {
+      // LIMPAR
+      setTipoDocumento("");
+      setVencimento("");
+      setReferencia("");
       setAdicionando(false);
     }
   };
@@ -72,9 +75,9 @@ export default function DialogAdicionar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-500 w-full md:w-[200px]">
+        <span className="bg-green-600 hover:bg-green-500 w-full md:w-[200px] p-1 text-center rounded-md text-white cursor-pointer transition-all">
           Adicionar Documento
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="md:w-[600px] md:h-[350px] flex flex-col items-center">
         <DialogHeader className="mb-5">

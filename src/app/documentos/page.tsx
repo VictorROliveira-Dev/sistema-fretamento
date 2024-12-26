@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/components/ui/button";
+import { format, toZonedTime } from "date-fns-tz";
 import {
   Table,
   TableBody,
@@ -18,6 +18,7 @@ import FormInput from "@/components/form-input";
 import DialogRemover from "./components/dialog-remover";
 import loading from "../assets/loading-dark.svg";
 import DialogInformacoes from "./components/dialog-informacoes";
+import { parseISO } from "date-fns";
 
 export default function Documentos() {
   const [documentos, setDocumentos] = useState<IDocumentos[]>([]);
@@ -36,6 +37,7 @@ export default function Documentos() {
       try {
         const response = await api.get("/documento");
         setDocumentos(response.data.data ? response.data.data : []);
+        console.log("Documentos:", response.data.data);
       } catch (error) {
         console.log("Erro ao capturar documentos", error);
       } finally {
@@ -48,7 +50,7 @@ export default function Documentos() {
 
   function getDateVencimento(dataVencimento: string) {
     const today = new Date();
-    const vencimento = new Date(dataVencimento);
+    const vencimento = parseISO(dataVencimento); // Converte a data para objeto Date
     const diferenca = Math.ceil(
       (vencimento.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
     );
@@ -59,17 +61,16 @@ export default function Documentos() {
 
     return "text-black font-medium";
   }
-
   return (
-    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[650px]">
-      <div className="md:h-[500px] h-[550px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[700px]">
+      <div className="md:h-[600px] h-screen md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Documentos
           </p>
         </div>
         <div className="flex items-center p-10">
-          <div className="mx-auto md:w-full space-y-4">
+          <div className="mx-auto md:w-full space-y-6">
             <div className="flex flex-col md:flex-row items-center gap-2 md:gap-0 justify-between">
               <form className="flex gap-2 font-bold">
                 <div>
@@ -87,7 +88,7 @@ export default function Documentos() {
                 documentos={documentos}
               />
             </div>
-            <div className="h-[200px] overflow-y-scroll scrollbar-hide">
+            <div className="h-[300px] overflow-y-scroll scrollbar-hide">
               {carregando ? (
                 <div className="flex items-center justify-center">
                   <Image
@@ -129,8 +130,9 @@ export default function Documentos() {
                             documento.vencimento
                           )}`}
                         >
-                          {new Date(documento.vencimento).toLocaleDateString(
-                            "pt-BR"
+                          {format(
+                            toZonedTime(parseISO(documento.vencimento), "UTC"),
+                            "dd/MM/yyyy"
                           )}
                         </TableCell>
                         <TableCell>
@@ -152,6 +154,20 @@ export default function Documentos() {
                   </TableBody>
                 </Table>
               )}
+            </div>
+            <div className="flex gap-4">
+              <div className="flex items-center gap-2">
+                <span className="w-4 h-4 bg-blue-500 rounded-full"></span>
+                <p className="text-sm">30 Dias para o vencimento</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-4 h-4 bg-yellow-500 rounded-full"></span>
+                <p className="text-sm">15 Dias para o vencimento</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="w-4 h-4 bg-red-500 rounded-full"></span>
+                <p className="text-sm">7 Dias para o vencimento</p>
+              </div>
             </div>
           </div>
         </div>

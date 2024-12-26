@@ -65,9 +65,9 @@ export default function DialogAdicionarServico({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-500">
+        <span className="bg-green-600 hover:bg-green-500 p-1 text-center text-white rounded-md font-medium cursor-pointer transition-all">
           Adicionar Serviço
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="md:w-[400px] md:h-[300px] flex flex-col items-center rounded-md">
         <DialogHeader className="mb-5">

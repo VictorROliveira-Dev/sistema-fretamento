@@ -75,7 +75,7 @@ const CalendarApp = () => {
 
         viagensDoMesAtual.forEach((viagem) => {
           const veiculo = veiculosMap[viagem.veiculoId];
-          const placa = veiculo ? veiculo.placa : "Desconhecido";
+          const placa = veiculo ? veiculo.prefixo : "Desconhecido";
 
           // Calcular o intervalo de datas
           const startDate = new Date(viagem.dataHorarioSaida.data);

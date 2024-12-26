@@ -131,9 +131,9 @@ export default function DialogAdicionar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-500">
+        <span className="bg-green-600 hover:bg-green-500 py-1 px-2 md:p-1 md:w-[200px] text-center rounded-md text-white cursor-pointer transition-all">
           Adicionar Veículo
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="md:w-[1100px] h-screen md:h-[550px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">

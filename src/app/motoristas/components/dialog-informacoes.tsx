@@ -103,7 +103,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    {motorista?.documento.tipo}:{" "}
+                    {motorista?.documento.tipo.toUpperCase()}:{" "}
                     {motorista?.documento.documento}
                   </span>
                 </div>
@@ -141,7 +141,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                   <Car className="h-4 w-4 text-muted-foreground mt-1" />
                   <div>
                     <p>Protocolo: {motorista?.habilitacao.protocolo}</p>
-                    <p>Categoria: {motorista?.habilitacao.categoria}</p>
+                    <p>Categoria: {motorista?.habilitacao.categoria.toUpperCase()}</p>
                     <p>
                       Vencimento:{" "}
                       {motorista
@@ -152,7 +152,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                     </p>
                     <p>
                       Local: {motorista?.habilitacao.cidade} -{" "}
-                      {motorista?.habilitacao.uf}
+                      {motorista?.habilitacao.uf.toUpperCase()}
                     </p>
                   </div>
                 </div>

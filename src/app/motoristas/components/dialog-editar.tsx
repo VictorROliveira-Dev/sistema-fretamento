@@ -111,22 +111,22 @@ export default function DialogEditar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
+        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 transition-all cursor-pointer">
           <Image
             className="w-10 md:w-6"
             src={editIcon}
             alt="Editar"
             width={25}
           />
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="md:w-auto md:h-[650px] h-screen overflow-y-scroll md:overflow-auto mx-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Formulário</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} noValidate>
+        <form onSubmit={handleSubmit} noValidate className="flex flex-col items-center">
           <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll md:overflow-auto gap-10 items-start">
-            <fieldset className="border p-4 rounded w-full">
+            <fieldset className="border p-4 rounded w-full h-full">
               <legend className="font-semibold">Cliente</legend>
               <div>
                 <Label htmlFor="nome">Nome</Label>
@@ -250,7 +250,7 @@ export default function DialogEditar({
             </fieldset>
 
             {/* Endereço */}
-            <fieldset className="border p-4 rounded w-full">
+            <fieldset className="border p-4 rounded w-full h-full">
               <legend className="font-semibold">Endereço</legend>
               <div className="">
                 <Label htmlFor="uf">UF</Label>
@@ -322,7 +322,7 @@ export default function DialogEditar({
               ))}
             </fieldset>
 
-            <fieldset className="border p-4 rounded w-full">
+            <fieldset className="border p-4 rounded w-full h-full">
               <legend className="font-semibold">Habilitação</legend>
 
               {/* Protocolo */}
@@ -430,7 +430,7 @@ export default function DialogEditar({
             </fieldset>
           </div>
           <DialogFooter>
-            <Button type="submit" className="w-full mt-8">
+            <Button type="submit" className="w-[300px] mt-8">
               {editando ? (
                 <Image
                   src={loading}
