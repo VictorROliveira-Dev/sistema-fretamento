@@ -165,6 +165,14 @@ export interface Viagem {
   itinerario: string;
   veiculoId: number;
   motoristaId: number;
+  veiculo?: Veiculo;
+  motorista?: Motorista;
+  cliente?: Cliente;
+  kmInicialVeiculo: number;
+  kmFinalVeiculo: number;
+  abastecimento?: Abastecimento;
+  adiantamento?: Adiantamento;
+
 }
 
 interface HorarioLocal {
@@ -231,10 +239,9 @@ export interface Passagem {
 
 export interface IDespesas {
   id: string;
-  dataEmissao: string;
+  dataPagamento: string;
   dataCompra: string;
   origemPagamento: string;
-  numeroDocumento: string;
   responsavelId: number;
   responsavel: Responsavel;
   viagemId: number;
@@ -266,4 +273,24 @@ export interface IReceitas {
   poltrona: number;
   situacao: string;
   passageiro?: Passageiro;
+}
+
+export interface Abastecimento {
+  id: number;
+  valorTotal: number;
+  litros: number;
+  codigoNfe: string;
+  viagemId: number;
+  viagem?: Viagem; // Referência ao objeto Viagem
+}
+
+export interface Adiantamento {
+  id: number;
+  tipoVerba: string;
+  verba: number;
+  valorDeAcerto: number;
+  diferenca: number; // Calculado como verba - valorDeAcerto
+  descricao: string;
+  viagemId: number;
+  viagem?: Viagem; // Referência ao objeto Viagem
 }

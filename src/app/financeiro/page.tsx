@@ -78,7 +78,7 @@ export default function Financeiro() {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="despesas">
-                <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between">
+                <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between mb-10">
                   <form className="flex gap-2 font-bold">
                     <div>
                       <label htmlFor="inicio">Data inicio:</label>
@@ -199,7 +199,7 @@ export default function Financeiro() {
                 )}
               </TabsContent>
               <TabsContent value="receitas">
-                <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between">
+                <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between mb-10">
                   <form className="flex gap-2 font-bold">
                     <div>
                       <label htmlFor="inicio">Data inicio:</label>

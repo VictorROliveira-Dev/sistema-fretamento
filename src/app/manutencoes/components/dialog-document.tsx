@@ -110,7 +110,7 @@ const ManutencaoPDF: React.FC<ManutencaoPDFProps> = ({ manutencaoData }) => {
       className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110"
       onClick={gerarPDF}
     >
-      <Image src={documentIcon} alt="documento" className="w- md:w-6" />
+      <Image src={documentIcon} alt="documento" className="w-6 md:w-6" />
     </Button>
   );
 };

@@ -68,7 +68,7 @@ const ViagemPDF: React.FC<ViagemPDFProps> = ({ dadosViagens }) => {
       className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110"
       onClick={gerarPDF}
     >
-      <Image src={documentIcon} alt="documento" className="w-8 md:w-6" />
+      <Image src={documentIcon} alt="documento" className="w-10" />
     </Button>
   );
 };

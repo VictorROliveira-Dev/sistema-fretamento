@@ -34,15 +34,14 @@ export default function DialogAdicionarDespesa({
   despesas,
   setDespesas,
 }: DespesaProps) {
-  const [dataEmissao, setDataEmissao] = useState("");
+  const [dataPagamento, setDataPagamento] = useState("");
   const [dataCompra, setDataCompra] = useState("");
-  const [origemPagamento, setOrigemPagamento] = useState("");
-  const [numeroDocumento, setNumeroDocumento] = useState("");
-  const [responsavelId, setResponsavelId] = useState<number | "">();
+  const [origemPagamento, setOrigemPagamento] = useState("PIX");
+  const [responsavelId, setResponsavelId] = useState<number | "">(0);
   const [vencimento, setVencimento] = useState("");
   const [pago, setPago] = useState(false);
-  const [valorTotal, setValorTotal] = useState<number>();
-  const [valorParcial, setValorParcial] = useState<number>();
+  const [valorTotal, setValorTotal] = useState<number | "">(0);
+  const [valorParcial, setValorParcial] = useState<number | "">(0);
   const [formaPagamento, setFormaPagamento] = useState("");
   const [centroCusto, setCentroCusto] = useState("");
 
@@ -93,10 +92,9 @@ export default function DialogAdicionarDespesa({
     setAdicionando(true);
 
     const despesasData = {
-      dataEmissao,
+      dataPagamento,
       dataCompra,
       origemPagamento,
-      numeroDocumento,
       responsavelId: Number(responsavelId),
       viagemId: Number(viagemSelecionada),
       vencimento,
@@ -109,7 +107,19 @@ export default function DialogAdicionarDespesa({
 
     try {
       const response = await api.post("/despesa", despesasData);
+      if (!response.data.isSucces) {
+        toast.error("Erro ao tentar adicionar despesa.", {
+          className: "text-white font-semibold border-none shadow-lg",
+          style: {
+            borderRadius: "10px",
+            padding: "16px",
+          },
+        });
+        return;
+      }
       setDespesas([...despesas, response.data.data]);
+
+      console.log("despesa adicionada com sucesso", response.data.data);
       toast.success("Despesa adicionada.", {
         className: "text-white font-semibold border-none shadow-lg",
         style: {
@@ -117,6 +127,7 @@ export default function DialogAdicionarDespesa({
           padding: "16px",
         },
       });
+
       console.log("despesa adicionada com sucesso", response.data.data);
     } catch (error) {
       toast.error("Erro ao tentar adicionar despesa.", {
@@ -128,16 +139,6 @@ export default function DialogAdicionarDespesa({
       });
       console.log("erro ao tentar adicionar despesa", error);
     } finally {
-      setDataEmissao("");
-      setDataCompra("");
-      setOrigemPagamento("");
-      setNumeroDocumento("");
-      setResponsavelId("");
-      setVencimento("");
-      setValorTotal(0);
-      setValorParcial(0);
-      setFormaPagamento("");
-      setCentroCusto("");
       setAdicionando(false);
     }
   };
@@ -158,9 +159,9 @@ export default function DialogAdicionarDespesa({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-500">
+        <span className="bg-green-600 hover:bg-green-500 w-[290px] md:w-[200px] px-2 py-1 rounded-md text-white text-center cursor-pointer transition-all">
           Adicionar Despesa
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="md:w-[850px] h-screen md:h-[690px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
@@ -198,13 +199,15 @@ export default function DialogAdicionarDespesa({
                 </Select>
               </div>
               <div className="flex flex-col">
-                <label htmlFor="tipoResponsavel">Tipo Responsável:</label>
+                <label htmlFor="origemPagamento">Tipo Responsável:</label>
                 <select
-                  name="tipoResponsavel"
+                  name="origemPagamento"
                   value={tipoResponsavel}
                   onChange={(e) => {
-                    setTipoResponsavel(e.target.value);
+                    const selectedType = e.target.value;
+                    setTipoResponsavel(selectedType);
                     setResponsavelId("");
+                    setOrigemPagamento(selectedType);
                   }}
                   className="w-[250px] border rounded-md p-2"
                 >
@@ -259,13 +262,13 @@ export default function DialogAdicionarDespesa({
                 </select>
               </div>
               <div className="flex flex-col">
-                <label htmlFor="dataEmissao">Data Emissão:</label>
+                <label htmlFor="dataPagamento">Data Pagamento:</label>
                 <Input
                   type="date"
-                  name="dataEmissao"
+                  name="dataPagamento"
                   className="border-2 font-medium w-[250px]"
-                  value={dataEmissao}
-                  onChange={(e) => setDataEmissao(e.target.value.toString())}
+                  value={dataPagamento}
+                  onChange={(e) => setDataPagamento(e.target.value.toString())}
                 />
               </div>
               <div className="flex flex-col">
@@ -276,16 +279,6 @@ export default function DialogAdicionarDespesa({
                   className="border-2 font-medium w-[250px]"
                   value={dataCompra}
                   onChange={(e) => setDataCompra(e.target.value.toString())}
-                />
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="numeroDocumento">Número Documento:</label>
-                <Input
-                  name="numeroDocumento"
-                  placeholder="Digite o número..."
-                  className="border-2 font-medium w-[250px]"
-                  value={numeroDocumento}
-                  onChange={(e) => setNumeroDocumento(e.target.value)}
                 />
               </div>
               <div className="flex flex-col">
@@ -305,7 +298,7 @@ export default function DialogAdicionarDespesa({
                   name="valorTotal"
                   placeholder="Digite o valor..."
                   className="border-2 font-medium w-[250px]"
-                  value={valorTotal}
+                  value={valorTotal === 0 ? "" : valorTotal}
                   onChange={(e) => setValorTotal(Number(e.target.value))}
                 />
               </div>
@@ -316,31 +309,32 @@ export default function DialogAdicionarDespesa({
                   name="valorParcial"
                   placeholder="Digite o valor..."
                   className="border-2 font-medium w-[250px]"
-                  value={valorParcial}
+                  value={valorParcial === 0 ? "" : valorParcial}
                   onChange={(e) => setValorParcial(Number(e.target.value))}
                 />
               </div>
-              <div>
+              <div className="flex flex-col">
                 <label htmlFor="formaPagamento">Forma Pagamento:</label>
-                <Select
+                <select
+                  id="formaPagamento"
                   name="formaPagamento"
                   value={formaPagamento}
-                  onValueChange={(value) => setFormaPagamento(value)}
+                  onChange={(e) => {
+                    const selectValue = e.target.value;
+                    console.log(selectValue);
+                    setFormaPagamento(selectValue);
+                  }}
+                  className="w-[250px] p-2 border rounded"
                 >
-                  <SelectTrigger className="w-[250px]">
-                    <SelectValue placeholder="Selecione a forma..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Pagamentos</SelectLabel>
-                      <SelectItem value="pix">PIX</SelectItem>
-                      <SelectItem value="credito">Cartão Crédito</SelectItem>
-                      <SelectItem value="debito">Cartão Débito</SelectItem>
-                      <SelectItem value="dinheiro">Dinheiro</SelectItem>
-                      <SelectItem value="cheque">Cheque</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+                  <option value="" disabled>
+                    Selecione...
+                  </option>
+                  <option value="PIX">PIX</option>
+                  <option value="DINHEIRO">Dinheiro</option>
+                  <option value="CHEQUE">Cheque</option>
+                  <option value="CARTÃO CRÉDITO">Cartão Crédito</option>
+                  <option value="CARTÃO DÉBITO">Cartão Débito</option>
+                </select>
               </div>
             </div>
             <DialogFooter className="flex items-center gap-2 mt-10">

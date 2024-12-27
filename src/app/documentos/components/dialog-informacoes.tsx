@@ -36,17 +36,31 @@ export default function DialogInformacoes({ documentoId }: DocumentoProps) {
     fetchDocumentos();
   }, [documentoId]);
 
+  function getDateVencimento(dataVencimento: string) {
+    const today = new Date();
+    const vencimento = parseISO(dataVencimento); // Converte a data para objeto Date
+    const diferenca = Math.ceil(
+      (vencimento.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)
+    );
+
+    if (diferenca <= 7) return "text-red-500 font-bold";
+    if (diferenca <= 15) return "text-yellow-500 font-bold";
+    if (diferenca <= 30) return "text-blue-500 font-bold";
+
+    return "text-black font-medium";
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
+        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
           <Image
             src={dadosViagemIcon}
             alt="documento"
             width={25}
             className="w-6 md:w-6"
           />
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="md:w-[400px]">
         <DialogHeader className="mb-5">
@@ -66,7 +80,11 @@ export default function DialogInformacoes({ documentoId }: DocumentoProps) {
                   <h2 className="font-bold">Referência:</h2>
                   <p>{documento.referencia}</p>
                 </div>
-                <div className="flex gap-2">
+                <div
+                  className={`flex gap-2 ${getDateVencimento(
+                    documento.vencimento
+                  )}`}
+                >
                   <h2 className="font-bold">Vencimento:</h2>
                   <p>
                     {format(

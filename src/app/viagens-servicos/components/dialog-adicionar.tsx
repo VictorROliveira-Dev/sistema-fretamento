@@ -42,8 +42,10 @@ export default function DialogAdicionar({
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const [motoristas, setMotoristas] = useState<Motorista[]>([]);
-  const [ufs, setUfs] = useState<Uf[]>([]);
-  const [cidades, setCidades] = useState<Cidade[]>([]);
+  const [ufsSaida, setUfsSaida] = useState<Uf[]>([]);
+  const [cidadesSaida, setCidadesSaida] = useState<Cidade[]>([]);
+  const [ufsRetorno, setUfsRetorno] = useState<Uf[]>([]);
+  const [cidadesRetorno, setCidadesRetorno] = useState<Cidade[]>([]);
   const [viagem, setViagem] = useState<Viagem>({
     id: 0,
     rota: {
@@ -83,6 +85,8 @@ export default function DialogAdicionar({
     itinerario: "",
     veiculoId: 0,
     motoristaId: 0,
+    kmInicialVeiculo: 0,
+    kmFinalVeiculo: 0,
   });
   const [adicionando, setAdicionando] = useState(false);
 
@@ -126,7 +130,8 @@ export default function DialogAdicionar({
         const sortedUfs = response.data.sort((a, b) =>
           a.nome.localeCompare(b.nome)
         );
-        setUfs(sortedUfs);
+        setUfsSaida(sortedUfs);
+        setUfsRetorno(sortedUfs);
       })
       .catch((error) => {
         console.error("Error fetching UFs:", error);
@@ -139,7 +144,13 @@ export default function DialogAdicionar({
 
     try {
       const response = await api.post("/viagem", viagem);
-      setViagens([...viagens, response.data.data]);
+      if (!response.data.isSucces) {
+        toast(
+          "erro ao tentar criar viagem, recarregue a pagina e tente novamente"
+        );
+        return;
+      }
+      setViagens([...viagens, viagem]);
       toast.success("Viagem adicionada.", {
         className: "text-white font-semibold border-none shadow-lg",
         style: {
@@ -147,6 +158,7 @@ export default function DialogAdicionar({
           padding: "16px",
         },
       });
+      setAdicionando(false);
     } catch (error) {
       toast.error("Erro ao tentar adicionar viagem.", {
         className: "text-white font-semibold border-none shadow-lg",
@@ -156,47 +168,6 @@ export default function DialogAdicionar({
         },
       });
       console.log(error);
-    } finally {
-      setViagem({
-        id: 0,
-        rota: {
-          saida: {
-            ufSaida: "",
-            cidadeSaida: "",
-            localDeSaida: "",
-          },
-          retorno: {
-            ufSaida: "",
-            cidadeSaida: "",
-            localDeSaida: "",
-          },
-        },
-        dataHorarioSaida: {
-          data: "",
-          hora: "",
-        },
-        dataHorarioRetorno: {
-          data: "",
-          hora: "",
-        },
-        dataHorarioSaidaGaragem: {
-          data: "",
-          hora: "",
-        },
-        dataHorarioChegada: {
-          data: "",
-          hora: "",
-        },
-        clienteId: 0,
-        tipoServico: "",
-        status: "",
-        tipoViagem: "",
-        tipoPagamento: "",
-        valorContratado: 0,
-        itinerario: "",
-        veiculoId: 0,
-        motoristaId: 0,
-      });
       setAdicionando(false);
     }
   }
@@ -214,7 +185,7 @@ export default function DialogAdicionar({
         const sortedCidades = response.data.sort((a, b) =>
           a.nome.localeCompare(b.nome)
         );
-        setCidades(sortedCidades);
+        setCidadesSaida(sortedCidades);
       })
       .catch((error) => {
         console.error("Error fetching cidades:", error);
@@ -237,13 +208,41 @@ export default function DialogAdicionar({
         const sortedCidades = response.data.sort((a, b) =>
           a.nome.localeCompare(b.nome)
         );
-        setCidades(sortedCidades);
+        setCidadesRetorno(sortedCidades);
       })
       .catch((error) => {
         console.error("Error fetching cidades:", error);
       });
   };
 
+  function selecionarVeiculo(id: number) {
+    const veiculoSelecionado = veiculos.find((v) => Number(v.id) === id);
+    setViagem((prevViagem) => ({
+      ...prevViagem,
+      veiculoId: id,
+      kmInicialVeiculo:
+        Number(veiculoSelecionado?.kmAtual) || prevViagem.kmInicialVeiculo,
+      veiculo: veiculoSelecionado,
+    }));
+  }
+
+  function selecionarMotorista(id: number) {
+    const motoristaSelecionado = motoristas.find((m) => Number(m.id) === id);
+    setViagem((prevViagem) => ({
+      ...prevViagem,
+      motoristaId: id,
+      motorista: motoristaSelecionado,
+    }));
+  }
+
+  function selecionarCliente(id: number) {
+    const clienteSelecionado = clientes.find((c) => Number(c.id) === id);
+    setViagem((prevViagem) => ({
+      ...prevViagem,
+      clienteId: id,
+      cliente: clienteSelecionado,
+    }));
+  }
   const servicos = [
     { nome: "Turismo", valor: "TURISMO" },
     { nome: "Escolar", valor: "ESCOLAR" },
@@ -271,28 +270,27 @@ export default function DialogAdicionar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-500 w-[250px] md:w-[250px]">
+        <span className="bg-green-600 hover:bg-green-500 w-[250px] md:w-[250px] rounded-sm text-white text-center p-1 cursor-pointer transition-all">
           Adicionar Viagem/Serviço
-        </Button>
+        </span>
       </DialogTrigger>
-      <DialogContent className="md:w-[90%] md:max-h-[520px] flex flex-col items-center h-screen overflow-scroll">
+      <DialogContent className="md:w-[90%] md:h-[700px] flex flex-col items-center h-screen overflow-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Viagem/Serviço
           </DialogTitle>
         </DialogHeader>
         <form className="w-full" onSubmit={handleSubmit}>
-          <div className="flex h-full overflow-y-scroll flex-col">
+          <div className="flex h-full overflow-y-scroll md:overflow-auto flex-col">
             <div className="w-full flex flex-col md:flex-row md:h-[200px] justify-evenly gap-4">
               <fieldset className="border h-[200px] border-blue-900 rounded-md p-4 flex-1 flex-col md:flex-row flex gap-2">
                 <legend>Cliente</legend>
                 <div className="flex-1">
                   <Label htmlFor="cliente">Cliente</Label>
                   <Select
-                    onValueChange={(value) =>
-                      setViagem({ ...viagem, clienteId: Number(value) })
-                    }
+                    onValueChange={(e) => selecionarCliente(Number(e))}
                     name="cliente"
+                    required
                   >
                     <SelectTrigger className="w-[250px]">
                       <SelectValue placeholder="Selecione o cliente" />
@@ -427,7 +425,7 @@ export default function DialogAdicionar({
                           </SelectTrigger>
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
-                              {ufs.map((uf) => (
+                              {ufsSaida.map((uf) => (
                                 <SelectItem key={uf.sigla} value={uf.sigla}>
                                   {uf.sigla}
                                 </SelectItem>
@@ -459,7 +457,7 @@ export default function DialogAdicionar({
                           </SelectTrigger>
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
-                              {cidades.map((cidade) => (
+                              {cidadesSaida.map((cidade) => (
                                 <SelectItem value={cidade.nome}>
                                   {cidade.nome}
                                 </SelectItem>
@@ -577,7 +575,7 @@ export default function DialogAdicionar({
                           </SelectTrigger>
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
-                              {ufs.map((uf) => (
+                              {ufsRetorno.map((uf) => (
                                 <SelectItem key={uf.sigla} value={uf.sigla}>
                                   {uf.sigla}
                                 </SelectItem>
@@ -609,7 +607,7 @@ export default function DialogAdicionar({
                           </SelectTrigger>
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
-                              {cidades.map((cidade) => (
+                              {cidadesRetorno.map((cidade) => (
                                 <SelectItem value={cidade.nome}>
                                   {cidade.nome}
                                 </SelectItem>
@@ -732,10 +730,9 @@ export default function DialogAdicionar({
                 <div>
                   <Label htmlFor="veiculo">Veiculo</Label>
                   <Select
-                    onValueChange={(e) =>
-                      setViagem({ ...viagem, veiculoId: Number(e) })
-                    }
+                    onValueChange={(e) => selecionarVeiculo(Number(e))}
                     name="veiculo"
+                    required
                   >
                     <SelectTrigger className="w-auto">
                       <SelectValue placeholder="Selecionar Veiculo" />
@@ -751,16 +748,19 @@ export default function DialogAdicionar({
                     </SelectContent>
                   </Select>
                 </div>
+                <div>
+                  <Label>Km Inicial</Label>
+                  <Input disabled value={viagem.kmInicialVeiculo} />
+                </div>
               </fieldset>
               <fieldset className="rounded border border-blue-500 p-4">
                 <legend>Motorista</legend>
                 <div>
                   <Label>Motorista</Label>
                   <Select
-                    onValueChange={(e) =>
-                      setViagem({ ...viagem, motoristaId: Number(e) })
-                    }
+                    onValueChange={(e) => selecionarMotorista(Number(e))}
                     name="ufsaida"
+                    required
                   >
                     <SelectTrigger className="w-auto">
                       <SelectValue placeholder="Selecionar Motorista" />

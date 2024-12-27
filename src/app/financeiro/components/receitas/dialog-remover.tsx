@@ -56,14 +56,14 @@ export default function DialogRemoverReceita({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
           <Image
             src={removeIcon}
             alt="Remover"
             width={25}
-            className="hover:scale-110"
+            className="w-6"
           />
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="md:w-[350px] md:h-[150px] flex flex-col items-center rounded-md">
         <DialogHeader className="mb-5">

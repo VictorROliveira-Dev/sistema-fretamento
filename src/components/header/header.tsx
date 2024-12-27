@@ -18,6 +18,7 @@ import financeiro from "@/app/assets/financa.png";
 import passageiros from "@/app/assets/passageiro.png";
 import passagens from "@/app/assets/passagens.png";
 import pacote from "@/app/assets/pacote.png";
+import estoque from "@/app/assets/estoque.png";
 import sino from "@/app/assets/sino.svg";
 import {
   Sheet,
@@ -34,14 +35,14 @@ const icons = {
   clientes: clientes.src,
   fornecedores: fornecedores.src,
   veiculos: veiculos.src,
-  viagens: viagens.src,
+  fretamento: pacote.src,
   manutencao: manutencao.src,
   servicos: servicos.src,
   documentos: documentos.src,
   financeiro: financeiro.src,
   passageiros: passageiros.src,
   passagens: passagens.src,
-  pacote: pacote.src,
+  estoque: estoque.src,
   sino: sino.src,
 };
 
@@ -57,14 +58,14 @@ const navItems: NavItem[] = [
   { href: "/clientes", label: "Clientes", icon: icons.clientes },
   { href: "/fornecedores", label: "Fornecedores", icon: icons.fornecedores },
   { href: "/veiculos", label: "Veículos", icon: icons.veiculos },
-  { href: "/viagens-servicos", label: "Viagens", icon: icons.viagens },
+  { href: "/viagens-servicos", label: "Fretamento", icon: icons.fretamento },
   { href: "/manutencoes", label: "Manutenções", icon: icons.manutencao },
   { href: "/servicos", label: "Serviços", icon: icons.servicos },
   { href: "/documentos", label: "Documentos", icon: icons.documentos },
   { href: "/financeiro", label: "Finanças", icon: icons.financeiro },
   { href: "/passageiros", label: "Passageiros", icon: icons.passageiros },
   { href: "/passagens", label: "Passagens", icon: icons.passagens },
-  { href: "/estoque", label: "Estoque", icon: icons.pacote },
+  { href: "/estoque", label: "Estoque", icon: icons.estoque },
 ];
 
 interface NavLinkProps {

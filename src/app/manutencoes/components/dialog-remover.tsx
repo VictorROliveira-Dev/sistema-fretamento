@@ -57,13 +57,13 @@ export default function DialogRemover({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
+        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
           <Image
             src={removeIcon}
             alt="Remover"
-            className="w-8 md:w-6"
+            className="w-6 md:w-6"
           />
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="md:w-[350px] md:h-[150px] flex flex-col items-center rounded-md">
         <DialogHeader className="mb-5">

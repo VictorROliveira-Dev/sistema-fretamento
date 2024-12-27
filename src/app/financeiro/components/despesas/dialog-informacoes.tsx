@@ -34,23 +34,34 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
       currency: "BRL",
     }).format(value);
 
+  function getStatusPagamento(
+    pago: boolean,
+    valorParcial: number,
+    valorTotal: number
+  ) {
+    if (valorParcial != valorTotal) {
+      return (pago = false);
+    }
+    return (pago = true);
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
           <Image
             src={DocumentIcon}
             alt="documento"
             width={25}
-            className="hover:scale-110"
+            className="w-6"
           />
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="max-w-[90vw] md:max-w-[600px] max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Receipt className="h-5 w-5" />
-            Despesa #{despesa.numeroDocumento}
+            Despesa # {despesa.id}
           </DialogTitle>
         </DialogHeader>
 
@@ -62,8 +73,18 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
               <div className="grid gap-3">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Status:</span>
-                  <Badge variant={despesa.pago ? "secondary" : "destructive"}>
-                    {despesa.pago ? "Pago" : "Pendente"}
+                  <Badge
+                    variant={
+                      getStatusPagamento(
+                        despesa.pago,
+                        despesa.valorParcial,
+                        despesa.valorTotal
+                      )
+                        ? "default"
+                        : "destructive"
+                    }
+                  >
+                    {getStatusPagamento(despesa.pago, despesa.valorParcial, despesa.valorTotal) ? "Pago" : "Pendente"}
                   </Badge>
                 </div>
                 <div className="flex items-center gap-2">
@@ -87,7 +108,7 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
               <div className="grid gap-3">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span>Emissão: {formatDate(despesa.dataEmissao)}</span>
+                  <span>Emissão: {formatDate(despesa.dataPagamento)}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
@@ -138,10 +159,6 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
                 <div className="flex items-center gap-2">
                   <Car className="h-4 w-4 text-muted-foreground" />
                   <span>Viagem ID: {despesa.viagemId}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  <span>Documento: {despesa.numeroDocumento}</span>
                 </div>
               </div>
             </section>

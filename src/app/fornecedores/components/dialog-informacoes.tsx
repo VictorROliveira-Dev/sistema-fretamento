@@ -31,14 +31,14 @@ export default function DialogInformacoes({ fornecedor }: FornecedorProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
           <Image
             src={dadosViagemIcon}
             alt="documento"
             width={25}
-            className="hover:scale-110"
+            className="w-10 md:w-6"
           />
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="max-w-[90vw] md:max-w-[600px] max-h-[90vh]">
         <DialogHeader>

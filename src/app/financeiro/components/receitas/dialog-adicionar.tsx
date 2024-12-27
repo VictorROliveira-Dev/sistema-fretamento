@@ -165,9 +165,9 @@ export default function DialogAdicionarReceita({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-500">
+        <span className="bg-green-600 hover:bg-green-500 md:w-[200px] px-2 py-1 rounded-md text-white text-center cursor-pointer transition-all">
           Adicionar Receita
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="md:w-[850px] h-screen md:h-[690px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">

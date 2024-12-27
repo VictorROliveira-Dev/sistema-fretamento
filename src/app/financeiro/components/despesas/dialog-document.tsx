@@ -37,9 +37,8 @@ const DespesaPDF: React.FC<DespesaPDFProps> = ({ despesa }) => {
       const columns = ["Campo", "Valor"];
       const tableData = [
         ["Data Compra", new Date(despesa.dataCompra).toLocaleDateString()],
-        ["Data Emissão", new Date(despesa.dataEmissao).toLocaleDateString()],
+        ["Data Emissão", new Date(despesa.dataPagamento).toLocaleDateString()],
         ["Forma de Pagamento", despesa.formaPagamento],
-        ["N° Documento", despesa.numeroDocumento],
         ["Origem Pagamento", despesa.origemPagamento],
         ["Responsável", despesa.responsavel.nome],
         ["Valor Parcial", `R$ ${despesa.valorParcial.toFixed(2)}`],
@@ -53,7 +52,7 @@ const DespesaPDF: React.FC<DespesaPDFProps> = ({ despesa }) => {
       });
 
       // Salvar o PDF
-      doc.save(`despesa_${despesa.numeroDocumento}.pdf`);
+      doc.save(`despesa_${despesa.id}.pdf`);
     } catch (error) {
       console.error("Erro ao gerar o PDF:", error);
     }
@@ -64,7 +63,7 @@ const DespesaPDF: React.FC<DespesaPDFProps> = ({ despesa }) => {
       className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110"
       onClick={gerarPDF}
     >
-      <Image src={documentIcon} alt="documento" className="w-8 md:w-6" />
+      <Image src={documentIcon} alt="documento" className="w-6" />
     </Button>
   );
 };

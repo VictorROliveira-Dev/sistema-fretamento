@@ -39,43 +39,13 @@ export default function DialogEditar({
   viagens,
   viagemprop,
 }: EditarProps) {
-  const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
-  const [motoristas, setMotoristas] = useState<Motorista[]>([]);
   const [ufs, setUfs] = useState<Uf[]>([]);
   const [cidadesSaida, setCidadesSaida] = useState<Cidade[]>([]);
   const [cidadesVolta, setCidadesVolta] = useState<Cidade[]>([]);
   const [viagem, setViagem] = useState<Viagem>(viagemprop);
   const [editando, setEditando] = useState(false);
 
-  async function fetchClientes() {
-    const response = await api.get("/cliente");
-    if (!response.data.isSucces) {
-      console.log(response.data.message);
-    }
-    setClientes(response.data.data);
-  }
-
-  async function fetchMotoristas() {
-    const response = await api.get("/motorista");
-    if (!response.data.isSucces) {
-      console.log(response.data.message);
-    }
-    setMotoristas(response.data.data);
-  }
-
-  async function fetchVeiculos() {
-    const response = await api.get("/veiculo");
-    if (!response.data.isSucces) {
-      console.log(response.data.message);
-    }
-    setVeiculos(response.data.data);
-  }
-
   useEffect(() => {
-    fetchClientes();
-    fetchMotoristas();
-    fetchVeiculos();
     axios
       .get<Uf[]>("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
       .then((response) => {
@@ -98,6 +68,16 @@ export default function DialogEditar({
 
     try {
       const response = await api.put(`viagem/${viagem.id}`, viagem);
+      if (!response.data.isSucces) {
+        toast.error("Erro ao tentar atualizar viagem.", {
+          className: "text-white font-semibold border-none shadow-lg",
+          style: {
+            borderRadius: "10px",
+            padding: "16px",
+          },
+        });
+        return;
+      }
       const viagensAtualizada = viagens.filter((v) => v.id !== viagem.id);
       setViagens([...viagensAtualizada, viagem]);
       toast.success("Viagem atualizada.", {
@@ -115,7 +95,6 @@ export default function DialogEditar({
           padding: "16px",
         },
       });
-      console.log(error);
     } finally {
       setEditando(false);
     }
@@ -191,9 +170,9 @@ export default function DialogEditar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
-          <Image src={editIcon} alt="Editar" width={25} />
-        </Button>
+        <span className="hover:scale-110 cursor-pointer transition-all">
+          <Image src={editIcon} alt="Editar" className="w-10" />
+        </span>
       </DialogTrigger>
       <DialogContent className="w-[90%] max-h-[520px] flex flex-col items-center overflow-scroll">
         <DialogHeader className="mb-5">
@@ -210,21 +189,17 @@ export default function DialogEditar({
                   <Label htmlFor="cliente">Cliente</Label>
                   <Select
                     value={viagem.clienteId.toString()}
-                    onValueChange={(value) =>
-                      setViagem({ ...viagem, clienteId: Number(value) })
-                    }
                     name="cliente"
+                    disabled
                   >
                     <SelectTrigger className="w-[250px]">
                       <SelectValue placeholder="Selecione o cliente" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        {clientes.map((cliente) => (
-                          <SelectItem value={cliente.id.toString()}>
-                            {cliente.nome}
-                          </SelectItem>
-                        ))}
+                        <SelectItem value={viagem.clienteId.toString()}>
+                          {viagem.cliente?.nome}
+                        </SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -234,13 +209,11 @@ export default function DialogEditar({
                   <Label htmlFor="telefone">Telefone Cliente</Label>
                   <Input
                     name="telefone"
-                    value={
-                      clientes.find((cliente) => cliente.id == viagem.clienteId)
-                        ?.telefone
-                    }
+                    value={viagem.cliente?.telefone}
                     placeholder="(xx) x xxxx-xxxx"
                     type="tel"
                     id="telefone"
+                    disabled
                   />
                 </div>
               </fieldset>
@@ -665,28 +638,35 @@ export default function DialogEditar({
               <fieldset className="rounded border border-yellow-500 p-4">
                 <legend>Veiculo</legend>
                 <div>
-                  <Label htmlFor="veiculo">Veiculo</Label>
-                  <Select
-                    value={viagem.veiculoId.toString()}
-                    onValueChange={(e) =>
-                      setViagem({ ...viagem, veiculoId: Number(e) })
-                    }
-                    name="veiculo"
-                  >
-                    <SelectTrigger className="w-auto">
-                      <SelectValue placeholder="Selecionar Veiculo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {veiculos.map((veiculo) => (
-                          <SelectItem value={veiculo.id.toString()}>
-                            {veiculo.placa}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <span>
+                    Placa/Prefixo: <strong>{viagem.veiculo?.placa}</strong> -{" "}
+                    <strong>{viagem.veiculo?.prefixo}</strong>
+                  </span>
                 </div>
+                <div className="flex gap-2 mb-2">
+                  <div>
+                    <Label>KmInicial</Label>
+                    <Input disabled value={viagem.kmInicialVeiculo} />
+                  </div>
+                  <div>
+                    <Label>Km Final</Label>
+                    <Input
+                      value={viagem.kmFinalVeiculo}
+                      onChange={(e) =>
+                        setViagem({
+                          ...viagem,
+                          kmFinalVeiculo: Number(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <span>
+                  Total Pecorrido:{" "}
+                  <strong className="text-green-600">
+                    {viagem.kmFinalVeiculo - viagem.kmInicialVeiculo}
+                  </strong>
+                </span>
               </fieldset>
               <fieldset className="rounded border border-blue-500 p-4">
                 <legend>Motorista</legend>
@@ -694,21 +674,17 @@ export default function DialogEditar({
                   <Label>Motorista</Label>
                   <Select
                     value={viagem.motoristaId.toString()}
-                    onValueChange={(e) =>
-                      setViagem({ ...viagem, motoristaId: Number(e) })
-                    }
                     name="ufsaida"
+                    disabled
                   >
                     <SelectTrigger className="w-auto">
                       <SelectValue placeholder="Selecionar Motorista" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        {motoristas.map((motorista) => (
-                          <SelectItem value={motorista.id.toString()}>
-                            {motorista.nome}
-                          </SelectItem>
-                        ))}
+                        <SelectItem value={viagem.motoristaId.toString()}>
+                          {viagem.motorista?.nome}
+                        </SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

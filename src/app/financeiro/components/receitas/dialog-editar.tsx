@@ -162,14 +162,14 @@ export default function DialogEditarDespesa({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
           <Image
             src={editIcon}
             alt="Editar"
             width={25}
             className="hover:scale-110"
           />
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="md:w-[850px] h-screen md:h-[690px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
