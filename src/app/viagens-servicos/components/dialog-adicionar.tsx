@@ -86,7 +86,7 @@ export default function DialogAdicionar({
     kmInicialVeiculo: 0,
     kmFinalVeiculo: 0,
     despesas: [],
-    receitas: [],
+    receitas: undefined,
     totalDespesa: 0,
     valorLiquidoViagem: 0,
   });
