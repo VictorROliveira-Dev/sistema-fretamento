@@ -80,7 +80,7 @@ export default function DialogAdicionarDespesa({
 
     fetchData();
   }, []);
-  const getClienteNome = (clientId: any) => {
+  const getClienteNome = (clientId: number) => {
     if (!clientes) return "Carregando clientes...";
     const cliente = clientes.find((cliente) => cliente.id === clientId);
     return cliente ? cliente.nome : "Cliente não encontrado";

@@ -297,8 +297,8 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 </TableHeader>
                 <TableBody>
                   {viagemCompleta.despesas?.map((despesa) => (
-                    <TableRow>
-                      <TableCell key={despesa.id}>
+                    <TableRow key={despesa.id}>
+                      <TableCell>
                         {formatCurrency(despesa.valorTotal)}
                       </TableCell>
                       <TableCell>{despesa.origemPagamento}</TableCell>
@@ -333,8 +333,8 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 </TableHeader>
                 <TableBody>
                   {viagemCompleta.receitas?.map((receita) => (
-                    <TableRow>
-                      <TableCell key={receita.id}>
+                    <TableRow key={receita.id}>
+                      <TableCell>
                         {formatCurrency(receita.valorTotal)}
                       </TableCell>
                       <TableCell>{receita.origemPagamento}</TableCell>

@@ -89,7 +89,7 @@ export default function DialogAdicionarReceita({
 
     fetchData();
   }, []);
-  const getClienteNome = (clientId: any) => {
+  const getClienteNome = (clientId: number) => {
     const cliente = clientes.find((cliente) => cliente.id === clientId);
     return cliente ? cliente.nome : "Cliente não encontrado";
   };

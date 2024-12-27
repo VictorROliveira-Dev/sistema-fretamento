@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+/*import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -89,4 +89,4 @@ export default function DialogInformacoes() {
       </DialogContent>
     </Dialog>
   );
-}
+}*/

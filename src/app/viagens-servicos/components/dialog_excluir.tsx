@@ -19,7 +19,7 @@ import loading from "../../assets/loading.svg";
 interface ExcluirProps {
   setViagens: React.Dispatch<React.SetStateAction<Viagem[]>>;
   viagens: Viagem[];
-  id: Number;
+  id: number;
 }
 
 export function DialogExcluir({ setViagens, viagens, id }: ExcluirProps) {

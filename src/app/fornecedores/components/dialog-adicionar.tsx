@@ -107,7 +107,7 @@ export default function DialogAdicionar({
         },
       });
       console.log("Fornecedor adicionado:", response.data.data);
-    } catch (error) {
+    } catch {
       toast.error("Erro ao tentar adicionar fornecedor.", {
         className: "bg-red-500 text-white font-semibold border-none shadow-lg",
         style: {

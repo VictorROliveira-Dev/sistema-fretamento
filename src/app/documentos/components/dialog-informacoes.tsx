@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 import Image from "next/image";
-import { IDocumentos, Motorista } from "@/lib/types";
+import { IDocumentos } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import { format, toZonedTime } from "date-fns-tz";

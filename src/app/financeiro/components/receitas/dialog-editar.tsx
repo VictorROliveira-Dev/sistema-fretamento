@@ -54,11 +54,10 @@ export default function DialogEditarDespesa({
   const [formaPagamento, setFormaPagamento] = useState<string | "">("");
   const [centroCusto, setCentroCusto] = useState<string | "">("");
 
-  const [motorista, setMotorista] = useState<Motorista[]>([]);
+  const [, setMotorista] = useState<Motorista[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [fornecedor, setFornecedor] = useState<Fornecedor[]>([]);
+  const [, setFornecedor] = useState<Fornecedor[]>([]);
   const [viagem, setViagem] = useState<Viagem[]>([]);
-  const [tipoResponsavel, setTipoResponsavel] = useState<string | "">("");
   const [viagemSelecionada, setViagemSelecionada] = useState<
     string | undefined
   >("");
@@ -112,7 +111,7 @@ export default function DialogEditarDespesa({
 
     fetchData();
   }, []);
-  const getClienteNome = (clientId: any) => {
+  const getClienteNome = (clientId: number) => {
     if (!clientes) return "Carregando clientes...";
     const cliente = clientes.find((cliente) => cliente.id === clientId);
     return cliente ? cliente.nome : "Cliente não encontrado";
