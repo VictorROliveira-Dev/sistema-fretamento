@@ -55,7 +55,7 @@ export default function ViagensServicos() {
                   <label htmlFor="fantasia">Localizar Viagem:</label>
                   <Input
                     name="fantasia"
-                    className="border-2 font-medium text-white w-[250px]"
+                    className="border-2 font-medium w-[250px]"
                     placeholder="Digite o identificador..."
                   />
                 </div>
@@ -63,7 +63,7 @@ export default function ViagensServicos() {
                   <label htmlFor="cnpj">Veículo:</label>
                   <Input
                     name="cnpj"
-                    className="border-2 font-medium text-white w-[250px]"
+                    className="border-2 font-medium w-[250px]"
                     placeholder="Digite o veículo..."
                   />
                 </div>
@@ -132,13 +132,17 @@ export default function ViagensServicos() {
                             {viagem.rota.saida.cidadeSaida}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
-                            {viagem.dataHorarioSaida.data}
+                            {new Date(
+                              viagem.dataHorarioSaida.data
+                            ).toLocaleDateString("pt-BR")}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
                             {viagem.rota.retorno.cidadeSaida}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
-                            {viagem.dataHorarioRetorno.data}
+                            {new Date(
+                              viagem.dataHorarioChegada.data
+                            ).toLocaleDateString("pt-BR")}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
                             {viagem.valorContratado}
@@ -166,7 +170,9 @@ export default function ViagensServicos() {
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell className="py-10">Nenhuma viagem encontrada</TableCell>
+                        <TableCell className="py-10">
+                          Nenhuma viagem encontrada
+                        </TableCell>
                       </TableRow>
                     )}
                   </TableBody>

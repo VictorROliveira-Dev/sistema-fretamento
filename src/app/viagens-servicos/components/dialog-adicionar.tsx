@@ -87,6 +87,10 @@ export default function DialogAdicionar({
     motoristaId: 0,
     kmInicialVeiculo: 0,
     kmFinalVeiculo: 0,
+    despesas: [],
+    receitas: [],
+    totalDespesa: 0,
+    valorLiquidoViagem: 0,
   });
   const [adicionando, setAdicionando] = useState(false);
 

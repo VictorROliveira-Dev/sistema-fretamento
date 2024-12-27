@@ -171,7 +171,7 @@ export default function DialogEditar({
     <Dialog>
       <DialogTrigger asChild>
         <span className="hover:scale-110 cursor-pointer transition-all">
-          <Image src={editIcon} alt="Editar" className="w-10" />
+          <Image src={editIcon} alt="Editar" className="w-8" />
         </span>
       </DialogTrigger>
       <DialogContent className="w-[90%] max-h-[520px] flex flex-col items-center overflow-scroll">

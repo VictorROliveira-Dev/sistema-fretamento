@@ -96,13 +96,13 @@ export type Fornecedor = {
 export type Veiculo = {
   id: string;
   prefixo: string;
-  kmAtual: string;
+  kmAtual: number;
   placa: string;
   marca: string;
   localEmplacado: string;
   uf: string;
   carroceria: string;
-  capacidadeTank: string;
+  capacidadeTank: number;
   ano: number;
   tipo: string;
   modelo: string;
@@ -172,9 +172,11 @@ export interface Viagem {
   kmFinalVeiculo: number;
   abastecimento?: Abastecimento;
   adiantamento?: Adiantamento;
-
+  totalDespesa: number;
+  valorLiquidoViagem: number;
+  despesas?: IDespesas[];
+  receitas?: IReceitas[];
 }
-
 interface HorarioLocal {
   data: string;
   hora: string;

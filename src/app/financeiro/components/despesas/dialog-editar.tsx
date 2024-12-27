@@ -24,6 +24,7 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import editIcon from "@/app/assets/edit.svg";
 import { toast } from "sonner";
+import loading from "@/app/assets/loading.svg";
 
 interface DespesasProps {
   despesa: IDespesas;
@@ -36,10 +37,9 @@ export default function DialogEditarDespesa({
   setDespesas,
   despesas,
 }: DespesasProps) {
-  const [dataEmissao, setDataEmissao] = useState<string | "">("");
   const [dataCompra, setDataCompra] = useState<string | "">("");
+  const [dataPagamento, setDataPagamento] = useState<string | "">("");
   const [origemPagamento, setOrigemPagamento] = useState<string | "">("");
-  const [numeroDocumento, setNumeroDocumento] = useState<string | "">("");
   const [responsavelId, setResponsavelId] = useState<number | "">();
   const [vencimento, setVencimento] = useState<string | undefined>("");
   const [pago, setPago] = useState(false);
@@ -47,7 +47,6 @@ export default function DialogEditarDespesa({
   const [valorParcial, setValorParcial] = useState<number>();
   const [formaPagamento, setFormaPagamento] = useState<string | "">("");
   const [centroCusto, setCentroCusto] = useState<string | "">("");
-
   const [motorista, setMotorista] = useState<Motorista[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [fornecedor, setFornecedor] = useState<Fornecedor[]>([]);
@@ -56,11 +55,12 @@ export default function DialogEditarDespesa({
   const [viagemSelecionada, setViagemSelecionada] = useState<
     string | undefined
   >("");
+  const [editando, setEditando] = useState(false);
 
   useEffect(() => {
-    setDataEmissao(
-      despesa.dataEmissao
-        ? new Date(despesa.dataEmissao).toISOString().split("T")[0]
+    setDataPagamento(
+      despesa.dataPagamento
+        ? new Date(despesa.dataPagamento).toISOString().split("T")[0]
         : ""
     );
     setDataCompra(
@@ -74,7 +74,6 @@ export default function DialogEditarDespesa({
         : ""
     );
     setOrigemPagamento(despesa.origemPagamento);
-    setNumeroDocumento(despesa.numeroDocumento);
     setViagemSelecionada(despesa.viagemId.toString());
     setValorTotal(despesa.valorTotal);
     setValorParcial(despesa.valorParcial);
@@ -114,12 +113,12 @@ export default function DialogEditarDespesa({
   };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setEditando(true);
 
     const despesasData = {
-      dataEmissao,
+      dataPagamento,
       dataCompra,
       origemPagamento,
-      numeroDocumento,
       responsavelId: Number(responsavelId),
       viagemId: Number(viagemSelecionada),
       vencimento,
@@ -147,6 +146,7 @@ export default function DialogEditarDespesa({
           padding: "16px",
         },
       });
+      setEditando(false);
       console.log("despesa atualizada com sucesso", response.data.data);
     } catch (error) {
       console.error("Erro ao tentar atualizar despesa", error);
@@ -157,15 +157,10 @@ export default function DialogEditarDespesa({
     <Dialog>
       <DialogTrigger asChild>
         <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
-          <Image
-            src={editIcon}
-            alt="Editar"
-            width={25}
-            className="w-6"
-          />
+          <Image src={editIcon} alt="Editar" width={25} className="w-6" />
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-[850px] h-screen md:h-[690px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
+      <DialogContent className="md:w-[850px] h-screen md:h-auto flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Edição de Despesa</DialogTitle>
         </DialogHeader>
@@ -226,13 +221,13 @@ export default function DialogEditarDespesa({
                 </select>
               </div>
               <div className="flex flex-col">
-                <label htmlFor="dataEmissao">Data Emissão:</label>
+                <label htmlFor="dataPagamento">Data Pagamento:</label>
                 <Input
                   type="date"
-                  name="dataEmissao"
+                  name="dataPagamento"
                   className="border-2 font-medium w-[250px]"
-                  value={dataEmissao}
-                  onChange={(e) => setDataEmissao(e.target.value)}
+                  value={dataPagamento}
+                  onChange={(e) => setDataPagamento(e.target.value)}
                 />
               </div>
               <div className="flex flex-col">
@@ -243,17 +238,6 @@ export default function DialogEditarDespesa({
                   className="border-2 font-medium w-[250px]"
                   value={dataCompra}
                   onChange={(e) => setDataCompra(e.target.value)}
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <label htmlFor="numeroDocumento">Número Documento:</label>
-                <Input
-                  name="numeroDocumento"
-                  placeholder="Digite o número..."
-                  className="border-2 font-medium w-[250px]"
-                  value={numeroDocumento}
-                  onChange={(e) => setNumeroDocumento(e.target.value)}
                 />
               </div>
               <div className="flex flex-col">
@@ -273,7 +257,7 @@ export default function DialogEditarDespesa({
                   name="valorTotal"
                   placeholder="Digite o valor..."
                   className="border-2 font-medium w-[250px]"
-                  value={valorTotal}
+                  value={valorTotal === 0 ? "" : valorTotal}
                   onChange={(e) => setValorTotal(Number(e.target.value))}
                 />
               </div>
@@ -284,7 +268,7 @@ export default function DialogEditarDespesa({
                   name="valorParcial"
                   placeholder="Digite o valor..."
                   className="border-2 font-medium w-[250px]"
-                  value={valorParcial}
+                  value={valorParcial === 0 ? "" : valorParcial}
                   onChange={(e) => setValorParcial(Number(e.target.value))}
                 />
               </div>
@@ -313,7 +297,15 @@ export default function DialogEditarDespesa({
             </div>
             <DialogFooter className="flex items-center gap-2 mt-10">
               <Button type="submit" className="w-[250px]">
-                Atualizar
+                {editando ? (
+                  <Image
+                    src={loading}
+                    alt="loading"
+                    className="text-center animate-spin"
+                  />
+                ) : (
+                  "Atualizar"
+                )}
               </Button>
             </DialogFooter>
           </form>

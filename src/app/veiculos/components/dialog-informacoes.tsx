@@ -116,7 +116,7 @@ export default function DialogInformacoes({ veiculo }: VeiculoProps) {
                   <MapPin className="h-4 w-4 text-muted-foreground mt-1" />
                   <div>
                     <p>
-                      Local Emplacado: {veiculo.localEmplacado} - {veiculo.uf}
+                      Local Emplacado: {veiculo.localEmplacado}  {veiculo.uf}
                     </p>
                   </div>
                 </div>

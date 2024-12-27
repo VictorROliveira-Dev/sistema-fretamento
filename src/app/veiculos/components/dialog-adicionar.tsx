@@ -31,6 +31,7 @@ export default function DialogAdicionar({
   const [kmAtual, setKmAtual] = useState("");
   const [marca, setMarca] = useState("");
   const [localEmplacado, setLocalEmplacado] = useState("");
+  const [uf, setUf] = useState("");
   const [ufs, setUfs] = useState<Uf[]>([]);
   const [cidades, setCidades] = useState<Cidade[]>([]);
   const [carroceria, setCarroceria] = useState("");
@@ -56,7 +57,7 @@ export default function DialogAdicionar({
   }, []);
 
   const handleUfChange = (uf: string) => {
-    setLocalEmplacado(uf);
+    setUf(uf);
     axios
       .get<Cidade[]>(
         `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
@@ -198,6 +199,7 @@ export default function DialogAdicionar({
                 <label htmlFor="uf">UF</label>
                 <select
                   id="uf"
+                  value={uf}
                   onChange={(e) => handleUfChange(e.target.value)}
                   className="w-[250px] border border-gray-300 rounded px-1 py-2"
                 >

@@ -58,7 +58,7 @@ export function DialogExcluir({ setViagens, viagens, id }: ExcluirProps) {
               src={removeIcon}
               alt="Remover"
               width={25}
-              className="w-10"
+              className="w-8"
             />
           </span>
         </DialogTrigger>

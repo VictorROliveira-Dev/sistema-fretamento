@@ -21,7 +21,6 @@ import {
   Phone,
   User,
 } from "lucide-react";
-import { toast } from "sonner";
 
 interface MotoristasProps {
   motoristaId: string;
@@ -35,7 +34,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
       const response = await api.get(`/motorista/${motoristaId}`);
       setMotoristas(response.data.data);
     } catch (error) {
-      toast("Erro ao buscar motoristas");
+      console.log("erro", error)
     }
   };
 

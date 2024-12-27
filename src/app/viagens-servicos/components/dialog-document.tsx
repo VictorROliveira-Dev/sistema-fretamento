@@ -37,9 +37,9 @@ const ViagemPDF: React.FC<ViagemPDFProps> = ({ dadosViagens }) => {
       const columns = ["Campo", "Valor"];
       const tableData = [
         ["Data Chegada", new Date(dadosViagens.dataHorarioChegada.data).toLocaleDateString()],
-        ["Hora Chegada", new Date(dadosViagens.dataHorarioChegada.hora).toLocaleDateString()],
+        ["Hora Chegada", dadosViagens.dataHorarioChegada.hora],
         ["Data Retorno", new Date(dadosViagens.dataHorarioRetorno.data).toLocaleDateString()],
-        ["Hora Retorno", new Date(dadosViagens.dataHorarioRetorno.hora).toLocaleDateString()],
+        ["Hora Retorno", dadosViagens.dataHorarioRetorno.hora],
         ["Cidade Saída", dadosViagens.rota.saida.cidadeSaida],
         ["UF Saída", dadosViagens.rota.saida.ufSaida],
         ["Cidade Retorno", dadosViagens.rota.retorno.cidadeSaida],
@@ -68,7 +68,7 @@ const ViagemPDF: React.FC<ViagemPDFProps> = ({ dadosViagens }) => {
       className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110"
       onClick={gerarPDF}
     >
-      <Image src={documentIcon} alt="documento" className="w-10" />
+      <Image src={documentIcon} alt="documento" className="w-8" />
     </Button>
   );
 };

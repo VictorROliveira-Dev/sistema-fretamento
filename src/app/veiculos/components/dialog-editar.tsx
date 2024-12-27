@@ -10,12 +10,14 @@ import {
 } from "@/components/ui/dialog";
 import editIcon from "@/app/assets/edit.svg";
 import Image from "next/image";
-import { Veiculo } from "@/lib/types";
+import { Cidade, Uf, Veiculo } from "@/lib/types";
 import { FormEvent, useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import loading from "../../assets/loading.svg";
 import { toast } from "sonner";
+import axios from "axios";
+import { Label } from "@/components/ui/label";
 
 interface VeiculoProps {
   veiculo: Veiculo;
@@ -28,56 +30,51 @@ export default function DialogEditar({
   setVeiculos,
   veiculos,
 }: VeiculoProps) {
-  const [prefixo, setPrefixo] = useState("");
-  const [placa, setPlaca] = useState("");
-  const [kmAtual, setKmAtual] = useState("");
-  const [marca, setMarca] = useState("");
-  const [localEmplacado, setLocalEmplacado] = useState("");
-  const [uf, setUf] = useState("");
-  const [carroceria, setCarroceria] = useState("");
-  const [capacidadeTank, setCapacidadeTank] = useState<number>(0);
-  const [ano, setAno] = useState<number>(0);
-  const [tipo, setTipo] = useState("");
-  const [modelo, setModelo] = useState("");
-  const [quantidadePoltronas, setQuantidadePoltronas] = useState<number>(0);
+  const [ufs, setUfs] = useState<Uf[]>([]);
+  const [cidades, setCidades] = useState<Cidade[]>([]);
+  const [veiculoState, setVeiculoState] = useState<Veiculo>(veiculo);
   const [editando, setEditando] = useState(false);
 
   useEffect(() => {
-    setPrefixo(veiculo.prefixo);
-    setPlaca(veiculo.placa);
-    setKmAtual(veiculo.kmAtual);
-    setMarca(veiculo.marca);
-    setLocalEmplacado(veiculo.localEmplacado);
-    setUf(veiculo.uf);
-    setCarroceria(veiculo.carroceria);
-    setCapacidadeTank(Number(veiculo.capacidadeTank));
-    setAno(veiculo.ano);
-    setTipo(veiculo.tipo);
-    setModelo(veiculo.modelo);
-    setQuantidadePoltronas(veiculo.quantidadePoltronas);
-  }, [veiculo]);
+    axios
+      .get<Uf[]>("https://servicodados.ibge.gov.br/api/v1/localidades/estados")
+      .then((response) => {
+        const sortedUfs = response.data.sort((a, b) =>
+          a.nome.localeCompare(b.nome)
+        );
+        setUfs(sortedUfs);
+      })
+      .catch((error) => {
+        console.error("Error fetching UFs:", error);
+      });
+
+    handleUfChange(veiculo.uf);
+  }, []);
+
+  const handleUfChange = (uf: string) => {
+    setVeiculoState({ ...veiculoState, uf: uf });
+
+    axios
+      .get<Cidade[]>(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
+      )
+      .then((response) => {
+        const sortedCidades = response.data.sort((a, b) =>
+          a.nome.localeCompare(b.nome)
+        );
+        setCidades(sortedCidades);
+      })
+      .catch((error) => {
+        console.error("Error fetching cidades:", error);
+      });
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setEditando(true);
 
-    const veiculoData = {
-      prefixo,
-      placa,
-      kmAtual,
-      marca,
-      localEmplacado,
-      uf,
-      carroceria,
-      capacidadeTank: Number(capacidadeTank),
-      ano: Number(ano),
-      tipo,
-      modelo,
-      quantidadePoltronas: Number(quantidadePoltronas),
-    };
-
     try {
-      const response = await api.put(`/veiculo/${veiculo.id}`, veiculoData);
+      const response = await api.put(`/veiculo/${veiculo.id}`, veiculoState);
       const veiculoAtualizado = response.data.data;
 
       const veiculosAtualizados = veiculos.map((v) => {
@@ -118,7 +115,7 @@ export default function DialogEditar({
           />
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-[1200px] h-screen md:h-[420px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
+      <DialogContent className="md:w-[1100px] h-screen md:h-auto flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Edição de Veículo</DialogTitle>
         </DialogHeader>
@@ -126,155 +123,199 @@ export default function DialogEditar({
           className="w-full flex flex-col items-center"
           onSubmit={handleSubmit}
         >
-          <div className="flex flex-wrap gap-4 w-full justify-center">
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="prefixo">Prefixo:</label>
-                <Input
-                  name="prefixo"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o prefixo..."
-                  value={prefixo}
-                  onChange={(e) => setPrefixo(e.target.value)}
-                />
+          <fieldset className="border p-4 rounded w-full">
+            <legend className="font-semibold">Veículo</legend>
+            <div className="flex flex-wrap gap-4 w-full justify-center">
+              <div className="flex flex-col gap-2">
+                <div>
+                  <label htmlFor="prefixo">Prefixo:</label>
+                  <Input
+                    name="prefixo"
+                    className="border-2 font-medium text-black w-[250px]"
+                    placeholder="Digite o prefixo..."
+                    value={veiculoState.prefixo}
+                    onChange={(e) => {
+                      setVeiculoState({
+                        ...veiculoState,
+                        prefixo: e.target.value,
+                      });
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="placa">Placa:</label>
-                <Input
-                  name="placa"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite a placa..."
-                  value={placa}
-                  onChange={(e) => setPlaca(e.target.value)}
-                />
+              <div className="flex flex-col gap-2">
+                <div>
+                  <label htmlFor="placa">Placa:</label>
+                  <Input
+                    name="placa"
+                    className="border-2 font-medium text-black w-[250px]"
+                    placeholder="Digite a placa..."
+                    value={veiculoState.placa}
+                    onChange={(e) =>
+                      setVeiculoState({
+                        ...veiculoState,
+                        placa: e.target.value,
+                      })
+                    }
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="kmAtual">KM Atual:</label>
-                <Input
-                  name="kmAtual"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite a quilometragem atual..."
-                  value={kmAtual}
-                  onChange={(e) => setKmAtual(e.target.value)}
-                />
+              <div className="flex flex-col gap-2">
+                <div>
+                  <label htmlFor="kmAtual">KM Atual:</label>
+                  <Input
+                    name="kmAtual"
+                    className="border-2 font-medium text-black w-[250px]"
+                    placeholder="Digite a quilometragem atual..."
+                    value={veiculoState.kmAtual}
+                    onChange={(e) =>
+                      setVeiculoState({
+                        ...veiculoState,
+                        kmAtual: Number(e.target.value),
+                      })
+                    }
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="marca">Marca:</label>
-                <Input
-                  name="marca"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite a marca..."
-                  value={marca}
-                  onChange={(e) => setMarca(e.target.value)}
-                />
+              <div className="flex flex-col gap-2">
+                <div>
+                  <label htmlFor="marca">Marca:</label>
+                  <Input
+                    name="marca"
+                    className="border-2 font-medium text-black w-[250px]"
+                    placeholder="Digite a marca..."
+                    value={veiculoState.marca}
+                    onChange={(e) =>
+                      setVeiculoState({
+                        ...veiculoState,
+                        marca: e.target.value,
+                      })
+                    }
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="localEmplacado">Local Emplacamento:</label>
-                <Input
-                  name="localEmplacado"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite a cidade..."
-                  value={localEmplacado}
-                  onChange={(e) => setLocalEmplacado(e.target.value)}
-                />
+              <div className="flex flex-col mt-4">
+                <Label htmlFor="uf">UF Emplacamento</Label>
+                <select
+                  id="uf"
+                  value={veiculoState.uf}
+                  onChange={(e) => handleUfChange(e.target.value)}
+                  className="w-[250px] border border-gray-300 rounded px-3 py-2"
+                >
+                  <option value="">Selecione a UF</option>
+                  {ufs.map((uf) => (
+                    <option key={uf.id} value={uf.sigla}>
+                      {uf.nome}
+                    </option>
+                  ))}
+                </select>
               </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="uf">UF Emplacamento:</label>
-                <Input
-                  name="uf"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o Estado..."
-                  value={uf}
-                  onChange={(e) => setUf(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="carroceria">Carroceria:</label>
-                <Input
-                  name="carroceria"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite a carroceria..."
-                  value={carroceria}
-                  onChange={(e) => setCarroceria(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="capacidadeTank">Cap. Tanque:</label>
-                <Input
-                  name="capacidadeTank"
-                  type="number"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite a capacidade..."
-                  value={capacidadeTank}
-                  onChange={(e) => setCapacidadeTank(Number(e.target.value))}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="ano">Ano:</label>
-                <Input
-                  name="ano"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o ano..."
-                  value={ano}
-                  onChange={(e) => setAno(Number(e.target.value))}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="tipo">Tipo:</label>
-                <Input
-                  name="tipo"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o tipo..."
-                  value={tipo}
-                  onChange={(e) => setTipo(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="modelo">Modelo:</label>
-                <Input
-                  name="modelo"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite o modelo..."
-                  value={modelo}
-                  onChange={(e) => setModelo(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <div>
-                <label htmlFor="quantidadePoltronas">Qtd. Poltronas:</label>
-                <Input
-                  name="quantidadePoltronas"
-                  className="border-2 font-medium text-black w-[250px]"
-                  placeholder="Digite a quantidade..."
-                  value={quantidadePoltronas}
+              <div className="flex flex-col mt-4">
+                <Label htmlFor="localEmplacado">Local Emplacamento</Label>
+                <select
+                  id="localEmplacado"
+                  value={veiculoState.localEmplacado}
                   onChange={(e) =>
-                    setQuantidadePoltronas(Number(e.target.value))
+                    setVeiculoState({
+                      ...veiculoState,
+                      localEmplacado: e.target.value,
+                    })
                   }
-                />
+                  className="w-[250px] border border-gray-300 rounded px-3 py-2"
+                >
+                  <option value="">Selecione uma cidade</option>
+                  {cidades.map((cidade) => (
+                    <option key={cidade.id} value={cidade.nome}>
+                      {cidade.nome}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col gap-2">
+                <div>
+                  <label htmlFor="capacidadeTank">Cap. Tanque:</label>
+                  <Input
+                    name="capacidadeTank"
+                    type="number"
+                    className="border-2 font-medium text-black w-[250px]"
+                    placeholder="Digite a capacidade..."
+                    value={veiculoState.capacidadeTank}
+                    onChange={(e) =>
+                      setVeiculoState({
+                        ...veiculoState,
+                        capacidadeTank: Number(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <div>
+                  <label htmlFor="ano">Ano:</label>
+                  <Input
+                    name="ano"
+                    className="border-2 font-medium text-black w-[250px]"
+                    placeholder="Digite o ano..."
+                    value={veiculoState.ano}
+                    onChange={(e) =>
+                      setVeiculoState({
+                        ...veiculoState,
+                        ano: Number(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <div>
+                  <label htmlFor="tipo">Tipo:</label>
+                  <Input
+                    name="tipo"
+                    className="border-2 font-medium text-black w-[250px]"
+                    placeholder="Digite o tipo..."
+                    value={veiculoState.tipo}
+                    onChange={(e) => setVeiculoState({
+                      ...veiculoState,
+                      tipo: e.target.value
+                    })}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <div>
+                  <label htmlFor="modelo">Modelo:</label>
+                  <Input
+                    name="modelo"
+                    className="border-2 font-medium text-black w-[250px]"
+                    placeholder="Digite o modelo..."
+                    value={veiculoState.modelo}
+                    onChange={(e) => setVeiculoState({
+                      ...veiculoState,
+                      modelo: e.target.value
+                    })}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <div>
+                  <label htmlFor="quantidadePoltronas">Qtd. Poltronas:</label>
+                  <Input
+                    name="quantidadePoltronas"
+                    className="border-2 font-medium text-black w-[250px]"
+                    placeholder="Digite a quantidade..."
+                    value={veiculoState.quantidadePoltronas}
+                    onChange={(e) =>
+                      setVeiculoState({
+                        ...veiculoState,
+                        quantidadePoltronas: Number(e.target.value),
+                      })
+                    }
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          </fieldset>
+
           <DialogFooter className="flex items-center gap-2 mt-10">
             <Button type="submit" className="w-[250px]">
               {editando ? (

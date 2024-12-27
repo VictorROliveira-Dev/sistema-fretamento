@@ -40,7 +40,7 @@ export default function DialogInformacoes({ fornecedor }: FornecedorProps) {
           />
         </span>
       </DialogTrigger>
-      <DialogContent className="max-w-[90vw] md:max-w-[600px] max-h-[90vh]">
+      <DialogContent className="max-w-[90vw] md:max-w-[600px] h-auto rounded-md">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Building2 className="h-5 w-5" />
@@ -48,7 +48,7 @@ export default function DialogInformacoes({ fornecedor }: FornecedorProps) {
           </DialogTitle>
         </DialogHeader>
 
-        <ScrollArea className="h-[70vh] pr-4">
+        <ScrollArea className="pr-4">
           <div className="space-y-6">
             {/* Informações Principais */}
             <section>

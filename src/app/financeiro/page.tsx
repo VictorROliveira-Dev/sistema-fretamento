@@ -58,6 +58,18 @@ export default function Financeiro() {
     fetchData();
   }, [dataInicio, dataFinal]);
 
+  function getStatusPagamento(
+    pago: boolean,
+    valorParcial: number,
+    valorTotal: number
+  ) {
+    if (valorParcial != valorTotal) {
+      return (pago = false);
+    }
+    return (pago = true);
+  }
+
+
   return (
     <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[650px] md:max-h-[1000px]">
       <div className="md:h-[500px] h-[550px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
@@ -165,7 +177,7 @@ export default function Financeiro() {
                                 : "N/A"}
                             </TableCell>
                             <TableCell className="hidden sm:table-cell">
-                              {despesa.pago ? "sim" : "nao"}
+                              {getStatusPagamento(despesa.pago, despesa.valorParcial, despesa.valorTotal) ? "sim" : "nao"}
                             </TableCell>
                             <TableCell className="hidden sm:table-cell">
                               {despesa.centroCusto}
