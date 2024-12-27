@@ -1,5 +1,4 @@
-"use client";
-
+/*"use client";
 import {
   Dialog,
   DialogContent,
@@ -135,8 +134,6 @@ export default function DialogAdicionar({
                   }
                 />
               </div>
-
-              {/* Data de Nascimento */}
               <div>
                 <Label htmlFor="dataNascimento">Data de Nascimento</Label>
                 <Input
@@ -150,8 +147,6 @@ export default function DialogAdicionar({
                   }
                 />
               </div>
-
-              {/* Telefone */}
               <div>
                 <Label htmlFor="telefone">Telefone</Label>
                 <Input
@@ -161,7 +156,6 @@ export default function DialogAdicionar({
                   }
                 />
               </div>
-              {/* CPF */}
               <div>
                 <Label htmlFor="cpf">CPF</Label>
                 <Input
@@ -172,7 +166,6 @@ export default function DialogAdicionar({
                 />
               </div>
 
-              {/* Documento */}
               <div>
                 <Label htmlFor="documento">Documento</Label>
                 <Input
@@ -244,7 +237,6 @@ export default function DialogAdicionar({
               </div>
             </fieldset>
 
-            {/* Endereço */}
             <fieldset className="border p-4 rounded">
               <legend className="font-semibold">Endereço</legend>
               <div className="">
@@ -349,3 +341,4 @@ export default function DialogAdicionar({
     </Dialog>
   );
 }
+*/

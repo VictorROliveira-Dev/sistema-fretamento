@@ -1,5 +1,5 @@
-"use client";
-/*import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
+/*"use client";
+import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 import passageirosIcon from "@/app/assets/passageiros.svg";
 import { Button } from "@/components/ui/button";
 import {

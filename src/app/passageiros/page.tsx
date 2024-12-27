@@ -1,4 +1,4 @@
-"use client";
+/*"use client";
 import passagemIcon from "@/app/assets/passagem.svg";
 import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
@@ -125,4 +125,4 @@ export default function Passageiros() {
       </div>
     </section>
   );
-}
+}*/
