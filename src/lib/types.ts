@@ -175,7 +175,7 @@ export interface Viagem {
   totalDespesa: number;
   valorLiquidoViagem: number;
   despesas?: IDespesas[];
-  receitas?: IReceitas[];
+  receitas?: IReceitas;
 }
 interface HorarioLocal {
   data: string;
