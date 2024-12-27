@@ -27,7 +27,7 @@ export function DialogExcluir({ setViagens, viagens, id }: ExcluirProps) {
   async function excluirViagem() {
     setRemovendo(true);
     try {
-      const response = await api.delete(`/viagem/${id}`);
+      await api.delete(`/viagem/${id}`);
       setViagens(viagens.filter((v) => v.id !== id));
       toast.success("Viagem removida.", {
         className: "text-white font-semibold border-none shadow-lg",

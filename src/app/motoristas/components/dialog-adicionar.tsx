@@ -123,7 +123,7 @@ export default function DialogAdicionar({
         },
       });
       console.log("Motorista adicionado:", response.data.data);
-    } catch (error) {
+    } catch {
       toast.error("Erro ao tentar adicionar motorista.", {
         className: "bg-red-500 text-white font-semibold border-none shadow-lg",
         style: {

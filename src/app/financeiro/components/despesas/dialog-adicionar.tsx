@@ -39,7 +39,7 @@ export default function DialogAdicionarDespesa({
   const [origemPagamento, setOrigemPagamento] = useState<string | "">("");
   const [responsavelId, setResponsavelId] = useState<number | "">();
   const [vencimento, setVencimento] = useState<string | undefined>("");
-  const [pago, setPago] = useState(false);
+  //const [pago, setPago] = useState(false);
   const [valorTotal, setValorTotal] = useState<number>();
   const [valorParcial, setValorParcial] = useState<number>();
   const [formaPagamento, setFormaPagamento] = useState<string | "">("");
@@ -96,7 +96,7 @@ export default function DialogAdicionarDespesa({
       responsavelId: Number(responsavelId),
       viagemId: Number(viagemSelecionada),
       vencimento,
-      pago,
+      //pago,
       valorTotal,
       valorParcial,
       formaPagamento,

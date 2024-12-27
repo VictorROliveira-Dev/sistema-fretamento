@@ -1,7 +1,4 @@
 "use client";
-import removeIcon from "@/app/assets/remove.svg";
-import documentoIcon from "@/app/assets/documentos.svg";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,

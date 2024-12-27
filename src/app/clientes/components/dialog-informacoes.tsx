@@ -11,7 +11,6 @@ import Image from "next/image";
 import { Cliente } from "@/lib/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  Building2,
   Calendar,
   CreditCard,
   FileText,

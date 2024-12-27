@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +15,6 @@ import {
   CreditCard,
   Building2,
   DollarSign,
-  FileText,
   Car,
 } from "lucide-react";
 import { IDespesas } from "@/lib/types";

@@ -13,22 +13,11 @@ import {
   Cidade,
   Documento,
   Endereco,
-  FormDataFornecedor,
   Fornecedor,
   Uf,
 } from "@/lib/types";
 import { useEffect, useState } from "react";
-import { FormData } from "@/lib/types";
 import { api } from "@/lib/axios";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import Image from "next/image";
 import loading from "../../assets/loading.svg";
 import { toast } from "sonner";

@@ -107,7 +107,7 @@ export default function Motoristas() {
                     </TableRow>
                   </TableHeader>
                   <TableBody className="text-center">
-                    {filtroMotoristas.map((motorista, index) => (
+                    {filtroMotoristas.map((motorista) => (
                       <TableRow
                         key={motorista.id}
                         className="hover:bg-gray-200"

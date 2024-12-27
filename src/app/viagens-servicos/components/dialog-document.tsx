@@ -1,7 +1,7 @@
 import React from "react";
 import jsPDF from "jspdf";
 import "jspdf-autotable"; // Certifique-se de que o plugin foi importado corretamente
-import { IDespesas, Viagem } from "@/lib/types";
+import { Viagem } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import documentIcon from "../../assets/documentos.svg";

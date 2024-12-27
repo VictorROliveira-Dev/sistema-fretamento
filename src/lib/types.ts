@@ -229,7 +229,7 @@ export interface Servico {
 }
 
 export interface Passagem {
-  id?: Number;
+  id?: number;
   viagemId: number;
   passageiroId: number;
   dataEmissao: string; // ou Date, dependendo do uso no projeto

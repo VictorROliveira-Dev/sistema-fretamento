@@ -1,5 +1,4 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -10,13 +9,10 @@ import motorista from "@/app/assets/motorista.png";
 import clientes from "@/app/assets/pessoas.png";
 import fornecedores from "@/app/assets/grupo.png";
 import veiculos from "@/app/assets/onibus.png";
-import viagens from "@/app/assets/montanha.png";
 import manutencao from "@/app/assets/manutencao.png";
 import servicos from "@/app/assets/servico.png";
 import documentos from "@/app/assets/documentos.png";
 import financeiro from "@/app/assets/financa.png";
-import passageiros from "@/app/assets/passageiro.png";
-import passagens from "@/app/assets/passagens.png";
 import pacote from "@/app/assets/pacote.png";
 import estoque from "@/app/assets/estoque.png";
 import sino from "@/app/assets/sino.svg";
@@ -40,8 +36,6 @@ const icons = {
   servicos: servicos.src,
   documentos: documentos.src,
   financeiro: financeiro.src,
-  passageiros: passageiros.src,
-  passagens: passagens.src,
   estoque: estoque.src,
   sino: sino.src,
 };
@@ -63,8 +57,6 @@ const navItems: NavItem[] = [
   { href: "/servicos", label: "Serviços", icon: icons.servicos },
   { href: "/documentos", label: "Documentos", icon: icons.documentos },
   { href: "/financeiro", label: "Finanças", icon: icons.financeiro },
-  { href: "/passageiros", label: "Passageiros", icon: icons.passageiros },
-  { href: "/passagens", label: "Passagens", icon: icons.passagens },
   { href: "/estoque", label: "Estoque", icon: icons.estoque },
 ];
 

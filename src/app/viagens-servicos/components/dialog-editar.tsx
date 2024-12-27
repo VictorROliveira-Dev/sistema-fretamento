@@ -22,7 +22,7 @@ import editIcon from "@/app/assets/edit.svg";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
-import { Cidade, Cliente, Motorista, Uf, Veiculo, Viagem } from "@/lib/types";
+import { Cidade, Uf, Viagem } from "@/lib/types";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -87,7 +87,7 @@ export default function DialogEditar({
           padding: "16px",
         },
       });
-    } catch (error) {
+    } catch {
       toast.error("Erro ao tentar atualizar viagem.", {
         className: "text-white font-semibold border-none shadow-lg",
         style: {
@@ -234,7 +234,7 @@ export default function DialogEditar({
                     <SelectContent>
                       <SelectGroup>
                         {servicos.map((servico) => (
-                          <SelectItem value={servico.valor}>
+                          <SelectItem key={servico.nome} value={servico.valor}>
                             {servico.nome}
                           </SelectItem>
                         ))}
@@ -258,7 +258,7 @@ export default function DialogEditar({
                     <SelectContent>
                       <SelectGroup>
                         {tipo_viagem.map((tipo) => (
-                          <SelectItem value={tipo}>{tipo}</SelectItem>
+                          <SelectItem key={tipo} value={tipo}>{tipo}</SelectItem>
                         ))}
                       </SelectGroup>
                     </SelectContent>
@@ -322,7 +322,7 @@ export default function DialogEditar({
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
                               {ufs.map((uf) => (
-                                <SelectItem value={uf.sigla}>
+                                <SelectItem key={uf.sigla} value={uf.sigla}>
                                   {uf.sigla}
                                 </SelectItem>
                               ))}
@@ -355,7 +355,7 @@ export default function DialogEditar({
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
                               {cidadesSaida.map((cidade) => (
-                                <SelectItem value={cidade.nome}>
+                                <SelectItem key={cidade.id} value={cidade.nome}>
                                   {cidade.nome}
                                 </SelectItem>
                               ))}
@@ -479,7 +479,7 @@ export default function DialogEditar({
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
                               {ufs.map((uf) => (
-                                <SelectItem value={uf.sigla}>
+                                <SelectItem key={uf.sigla} value={uf.sigla}>
                                   {uf.sigla}
                                 </SelectItem>
                               ))}
@@ -512,7 +512,7 @@ export default function DialogEditar({
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
                               {cidadesVolta.map((cidade) => (
-                                <SelectItem value={cidade.nome}>
+                                <SelectItem key={cidade.id} value={cidade.nome}>
                                   {cidade.nome}
                                 </SelectItem>
                               ))}
@@ -703,7 +703,7 @@ export default function DialogEditar({
                   <SelectContent className="absolute max-h-[200px]">
                     <SelectGroup>
                       {status_viagem.map((status_viagem) => (
-                        <SelectItem value={status_viagem.valor}>
+                        <SelectItem key={status_viagem.nome} value={status_viagem.valor}>
                           {status_viagem.nome}
                         </SelectItem>
                       ))}

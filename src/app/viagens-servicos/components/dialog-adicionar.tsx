@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,7 +15,6 @@ import {
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -462,7 +460,7 @@ export default function DialogAdicionar({
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
                               {cidadesSaida.map((cidade) => (
-                                <SelectItem value={cidade.nome}>
+                                <SelectItem key={cidade.id} value={cidade.nome}>
                                   {cidade.nome}
                                 </SelectItem>
                               ))}
@@ -612,7 +610,7 @@ export default function DialogAdicionar({
                           <SelectContent className="absolute max-h-[200px]">
                             <SelectGroup>
                               {cidadesRetorno.map((cidade) => (
-                                <SelectItem value={cidade.nome}>
+                                <SelectItem key={cidade.id} value={cidade.nome}>
                                   {cidade.nome}
                                 </SelectItem>
                               ))}
@@ -744,7 +742,7 @@ export default function DialogAdicionar({
                     <SelectContent>
                       <SelectGroup>
                         {veiculos.map((veiculo) => (
-                          <SelectItem value={veiculo.id.toString()}>
+                          <SelectItem key={veiculo.id} value={veiculo.id.toString()}>
                             {veiculo.placa}
                           </SelectItem>
                         ))}
@@ -772,7 +770,7 @@ export default function DialogAdicionar({
                     <SelectContent>
                       <SelectGroup>
                         {motoristas.map((motorista) => (
-                          <SelectItem value={motorista.id.toString()}>
+                          <SelectItem key={motorista.id} value={motorista.id.toString()}>
                             {motorista.nome}
                           </SelectItem>
                         ))}

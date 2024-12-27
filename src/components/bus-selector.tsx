@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, CircleDot } from "lucide-react";
 import volateImg from "@/app/assets/volante.png";
 import Image from "next/image";
 import { Passagem } from "@/lib/types";

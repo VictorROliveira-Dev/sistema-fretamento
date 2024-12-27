@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 import Image from "next/image";
-import { IDespesas, IReceitas, Motorista } from "@/lib/types";
+import { IReceitas } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 
@@ -100,9 +100,7 @@ export default function DialogInformacoesReceitas({
                 </div>
                 <div className="flex gap-2">
                   <h2 className="font-bold">Forma Pagamento:</h2>
-                  <div className="flex gap-2">
-                    <p>{receita.centroCusto}</p>
-                  </div>
+                  <p>{receita.formaPagamento}</p>
                 </div>
                 <div className="flex flex-col gap-4">
                   <div className="flex gap-2">

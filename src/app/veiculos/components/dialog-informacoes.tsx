@@ -1,5 +1,4 @@
  "use client";
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,9 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 import Image from "next/image";
-
 import { Veiculo } from "@/lib/types";
-
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Armchair,
@@ -21,7 +18,6 @@ import {
   Gauge,
   MapPin,
   Tag,
-  Truck,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 

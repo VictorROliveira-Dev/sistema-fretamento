@@ -1,4 +1,4 @@
-import React from "react";
+/*import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -153,3 +153,4 @@ export function DialogInfo({ viagem }: TripDetailsDialogProps) {
     </Dialog>
   );
 }
+*/

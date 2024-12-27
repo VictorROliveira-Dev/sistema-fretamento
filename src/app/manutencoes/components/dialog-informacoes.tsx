@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -18,7 +17,6 @@ import {
   DollarSign,
   Car,
 } from "lucide-react";
-
 import Image from "next/image";
 import documentoIcon from "@/app/assets/dadosviagem.svg";
 

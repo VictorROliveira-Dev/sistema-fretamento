@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import axios from "axios";
-import { Cidade, Fornecedor, Motorista, Uf } from "@/lib/types";
+import { Cidade, Fornecedor, Uf } from "@/lib/types";
 import loading from "../../assets/loading.svg";
 import { toast } from "sonner";
 

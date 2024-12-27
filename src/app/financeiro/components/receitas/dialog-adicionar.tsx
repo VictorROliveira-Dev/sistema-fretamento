@@ -21,7 +21,6 @@ import { FormEvent, useEffect, useState } from "react";
 import {
   Cliente,
   Fornecedor,
-  IDespesas,
   IReceitas,
   Motorista,
   Viagem,
@@ -47,7 +46,7 @@ export default function DialogAdicionarReceita({
   const [numeroDocumento, setNumeroDocumento] = useState("");
   const [responsavelId, setResponsavelId] = useState<number | "">();
   const [vencimento, setVencimento] = useState("");
-  const [pago, setPago] = useState(false);
+  //const [pago, setPago] = useState(false);
   const [valorTotal, setValorTotal] = useState<number>();
   const [valorParcial, setValorParcial] = useState<number>();
   const [formaPagamento, setFormaPagamento] = useState("");
@@ -107,7 +106,7 @@ export default function DialogAdicionarReceita({
       responsavelId: Number(responsavelId),
       viagemId: Number(viagemSelecionada),
       vencimento,
-      pago,
+      //pago,
       valorTotal,
       valorParcial,
       formaPagamento,
