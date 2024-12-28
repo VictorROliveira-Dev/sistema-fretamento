@@ -32,15 +32,14 @@ import { Abastecimento, Adiantamento, Viagem } from "@/lib/types";
 
 import {
   DollarSign,
+  FileText,
   Fuel,
   HandCoins,
   PlusCircle,
   ReceiptText,
 } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 
 interface TravelDialogProps {
   viagem: Viagem;
@@ -113,7 +112,8 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
       toast("abastecimento da viagem atualizado com sucesso");
     } else {
       const response = await api.put(
-        `/abastecimento/${abastecimento?.id}`,
+        `
+        abastecimento/${abastecimento?.id}`,
         abastecimento
       );
       if (!response.data.isSucces) {
@@ -137,7 +137,8 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
       toast("Adiantamento da viagem atualizado com sucesso");
     } else {
       const response = await api.put(
-        `/adiantamento/${adiantamento?.id}`,
+        `
+        adiantamento/${adiantamento?.id}`,
         adiantamento
       );
       if (!response.data.isSucces) {
@@ -152,18 +153,13 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
-          <Image
-            src={dadosViagemIcon}
-            alt="documento"
-            width={25}
-            className="w-8"
-          />
+        <span>
+          <FileText className="h-4 w-4" />
         </span>
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Informações da Viagem</DialogTitle>
+          <DialogTitle>Travel Information</DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
           {/* Travel Details Section */}
@@ -180,7 +176,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   </p>
                 </div>
                 <div>
-                  <Label>Destino</Label>
+                  <Label>Destination</Label>
                   <p className="text-sm text-muted-foreground">
                     {viagem.rota.retorno.cidadeSaida}
                   </p>
@@ -190,17 +186,13 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 <div>
                   <Label>Data Partida</Label>
                   <p className="text-sm text-muted-foreground">
-                    {new Date(viagem.dataHorarioSaida.data).toLocaleDateString(
-                      "pt-BR"
-                    )}
+                    {viagem.dataHorarioSaida.data}
                   </p>
                 </div>
                 <div>
                   <Label>Data Retorno</Label>
                   <p className="text-sm text-muted-foreground">
-                    {new Date(
-                      viagem.dataHorarioRetorno.data
-                    ).toLocaleDateString("pt-BR")}
+                    {viagem.dataHorarioRetorno.data}
                   </p>
                 </div>
               </div>
@@ -218,11 +210,9 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
+              <div>
                 <Label>Status</Label>
-                <Badge className="w-[100px] bg-blue-500 hover:bg-blue-500 select-none">
-                  {viagem.status}
-                </Badge>
+                <p className="text-sm text-muted-foreground">{viagem.status}</p>
               </div>
             </CardContent>
           </Card>
@@ -297,7 +287,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 </TableHeader>
                 <TableBody>
                   {viagemCompleta.despesas?.map((despesa) => (
-                    <TableRow key={despesa.id}>
+                    <TableRow>
                       <TableCell>
                         {formatCurrency(despesa.valorTotal)}
                       </TableCell>
@@ -333,7 +323,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 </TableHeader>
                 <TableBody>
                   {viagemCompleta.receitas ? (
-                    <TableRow key={viagemCompleta.receitas.id}>
+                    <TableRow>
                       <TableCell>
                         {formatCurrency(viagemCompleta.receitas.valorTotal)}
                       </TableCell>
@@ -351,11 +341,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    <TableRow>
-                      <TableCell colSpan={3} className="text-center">
-                        Nenhuma receita encontrada
-                      </TableCell>
-                    </TableRow>
+                    <TableRow></TableRow>
                   )}
                 </TableBody>
               </Table>
