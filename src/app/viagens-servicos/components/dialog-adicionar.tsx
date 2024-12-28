@@ -152,7 +152,7 @@ export default function DialogAdicionar({
         );
         return;
       }
-      setViagens([...viagens, viagem]);
+      setViagens([...viagens, response.data.data]);
       toast.success("Viagem adicionada.", {
         className: "text-white font-semibold border-none shadow-lg",
         style: {
