@@ -24,7 +24,6 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem("token");
       setCarregando(true);
       try {
         const [documentosReponse, viagensResponse] = await Promise.all([

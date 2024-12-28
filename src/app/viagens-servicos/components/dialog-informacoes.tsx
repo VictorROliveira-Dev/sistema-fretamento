@@ -287,7 +287,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 </TableHeader>
                 <TableBody>
                   {viagemCompleta.despesas?.map((despesa) => (
-                    <TableRow>
+                    <TableRow key={despesa.id}>
                       <TableCell>
                         {formatCurrency(despesa.valorTotal)}
                       </TableCell>
