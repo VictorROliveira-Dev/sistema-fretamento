@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Raleway } from "next/font/google";
 import "./globals.css";
-import Footer from "@/components/footer/footer";
-import Header from "@/components/header/header";
-import { Toaster } from "@/components/ui/sonner";
 import LayoutWrapper from "./layoutWrapper";
 
 const raleway = Raleway({
