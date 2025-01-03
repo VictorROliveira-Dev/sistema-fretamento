@@ -15,14 +15,6 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
 
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
-}
-
 export default function Login() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -47,7 +39,9 @@ export default function Login() {
         });
         router.replace("/");
       }
-    } catch (error: ApiError | any) {
+    } 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "Credenciais Inválidas.";
       toast.error(errorMessage, {
