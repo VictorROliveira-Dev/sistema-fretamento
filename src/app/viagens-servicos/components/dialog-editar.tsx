@@ -171,19 +171,19 @@ export default function DialogEditar({
     <Dialog>
       <DialogTrigger asChild>
         <span className="hover:scale-110 cursor-pointer transition-all">
-          <Image src={editIcon} alt="Editar" className="w-8" />
+          <Image src={editIcon} alt="Editar" className="w-6" />
         </span>
       </DialogTrigger>
-      <DialogContent className="w-[90%] max-h-[520px] flex flex-col items-center overflow-scroll">
+      <DialogContent className="w-[90%] md:h-[700px] h-[550px] flex flex-col items-center overflow-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
-            Cadastro de Viagem/Serviço
+            Edição de Viagem/Serviço
           </DialogTitle>
         </DialogHeader>
         <form className="w-full" onSubmit={handleSubmit}>
-          <div className="flex flex-col">
-            <div className="w-full flex justify-evenly gap-4">
-              <fieldset className="border border-blue-900 rounded-md p-4 flex-1 flex gap-2">
+          <div className="flex flex-col h-full overflow-y-scroll md:overflow-auto">
+            <div className="w-full flex flex-col md:flex-row md:h-[200px] justify-evenly gap-4">
+              <fieldset className="border h-[200px] border-blue-900 rounded-md p-4 flex-1 flex-col md:flex-row flex gap-2">
                 <legend>Cliente</legend>
                 <div className="flex-1">
                   <Label htmlFor="cliente">Cliente</Label>
@@ -217,7 +217,7 @@ export default function DialogEditar({
                   />
                 </div>
               </fieldset>
-              <fieldset className="border border-blue-900 flex-1 rounded-md p-4 flex gap-2">
+              <fieldset className="border border-blue-900 flex-1 flex-col md:flex-row rounded-md p-4 flex gap-2">
                 <legend>Servico</legend>
                 <div className="flex-1">
                   <Label htmlFor="tiposervico">Tipo do Servico</Label>
@@ -302,13 +302,13 @@ export default function DialogEditar({
               </fieldset>
             </div>
 
-            <div className="w-full flex gap-2 mt-2">
+            <div className="w-full flex flex-col md:flex-row gap-2 mt-2">
               <div className="flex flex-col flex-1">
                 <div className="w-full">
-                  <fieldset className="border-2 border-green-600 rounded-md justify-between p-4 flex gap-2">
+                  <fieldset className="border-2 border-green-600 rounded-md justify-between p-4 flex flex-col md:flex-row gap-2">
                     <legend>Local Inicial / Origem / Destino</legend>
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-col md:flex-row gap-2">
                       <div>
                         <Label htmlFor="ufsaida">UF Saida</Label>
                         <Select
@@ -462,10 +462,10 @@ export default function DialogEditar({
                 </div>
 
                 <div className="w-full">
-                  <fieldset className="border-2 border-red-600 rounded-md justify-between p-4 flex gap-2">
+                  <fieldset className="border-2 border-red-600 rounded-md justify-between p-4 flex flex-col md:flex-row gap-2">
                     <legend>Local Final / Destino / Retorno</legend>
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-col md:flex-row gap-2">
                       <div>
                         <Label htmlFor="ufdestino">UF Destino</Label>
                         <Select
@@ -634,7 +634,7 @@ export default function DialogEditar({
               </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col md:flex-row gap-2">
               <fieldset className="rounded border border-yellow-500 p-4">
                 <legend>Veiculo</legend>
                 <div>
@@ -713,14 +713,14 @@ export default function DialogEditar({
               </div>
             </div>
           </div>
-          <DialogFooter className="flex items-center gap-2 mt-10">
+          <DialogFooter className="flex items-center gap-2">
             <DialogClose>
-              <Button type="button" variant="outline">
+              <Button type="button" variant="outline" className="mb-10">
                 Fechar
               </Button>
             </DialogClose>
 
-            <Button type="submit">
+            <Button type="submit" className="md:mb-10">
               {editando ? (
                 <Image
                   src={loading}

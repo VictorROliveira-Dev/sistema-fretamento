@@ -1,5 +1,4 @@
 "use client";
-
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -9,7 +8,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import DialogAdicionar from "./components/dialog-adicionar";
 import DialogEditar from "./components/dialog-editar";
 import { DialogExcluir } from "./components/dialog_excluir";
@@ -20,14 +18,18 @@ import ViagemPDF from "./components/dialog-document";
 import { TravelDialog } from "./components/dialog-informacoes";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import Image from "next/image";
+import loading from "../assets/loading-dark.svg";
 
 export default function ViagensServicos() {
   const [minDate, setMinDate] = useState<string>("");
   const [maxDate, setMaxDate] = useState<string>("");
   const [veiculo, setVeiculo] = useState<string>("");
   const [viagens, setViagens] = useState<Viagem[]>([]);
+  const [carregando, setCarregando] = useState(false);
 
   async function fetchViagens() {
+    setCarregando(true);
     const response = await api.get("/viagem");
 
     if (!response.data.isSucces) {
@@ -36,6 +38,7 @@ export default function ViagensServicos() {
     }
     console.log(response.data.data);
     setViagens(response.data.data);
+    setCarregando(false);
   }
   useEffect(() => {
     fetchViagens();
@@ -65,8 +68,8 @@ export default function ViagensServicos() {
   }
 
   return (
-    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[425px]">
-      <div className="md:h-[400px] h-[550px] md:w-[1100px] mx-auto rounded-md bg-white flex flex-col">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[800px]">
+      <div className="h-[700px] md:w-[1400px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Viagens/Serviços
@@ -83,7 +86,7 @@ export default function ViagensServicos() {
                   <label htmlFor="fantasia">De:</label>
                   <Input
                     name="fantasia"
-                    className="border-2 font-medium text-black w-min"
+                    className="border-2 font-medium text-black md:w-min"
                     placeholder="Digite o identificador..."
                     onChange={(e) => setMinDate(e.target.value)}
                     type="date"
@@ -94,7 +97,7 @@ export default function ViagensServicos() {
                   <label htmlFor="fantasia">até:</label>
                   <Input
                     name="fantasia"
-                    className="border-2 font-medium text-black w-min"
+                    className="border-2 font-medium text-black md:w-min"
                     placeholder="Digite o identificador..."
                     type="date"
                     onChange={(e) => setMaxDate(e.target.value)}
@@ -120,92 +123,104 @@ export default function ViagensServicos() {
               </div>
             </div>
 
-            <Table>
-              <TableHeader className="border-b-2">
-                <TableRow>
-                  <TableHead className="text-black font-bold text-center">
-                    Motorista
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                    Veiculo
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                    Cliente
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                    Cidade Saída
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                    Data Saída
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                    Cidade Destino
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                    Data Chegada
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                    Valor Contratado
-                  </TableHead>
-                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                    Status Viagem
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody className="text-center">
-                {viagens.length > 0 ? (
-                  viagens.map((viagem) => (
-                    <TableRow className="hover:bg-gray-200" key={viagem.id}>
-                      <TableCell>{viagem.motorista?.nome}</TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        {viagem.veiculo?.prefixo}
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        {viagem.cliente?.nome}
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        {viagem.rota.saida.cidadeSaida}
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        {viagem.dataHorarioSaida.data}
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        {viagem.rota.retorno.cidadeSaida}
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        {viagem.dataHorarioRetorno.data}
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        {viagem.valorContratado}
-                      </TableCell>
-                      <TableCell className="hidden sm:table-cell">
-                        {viagem.status}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <DialogEditar
-                            setViagens={setViagens}
-                            viagens={viagens}
-                            viagemprop={viagem}
-                          />
-                          <ViagemPDF dadosViagens={viagem} />
-                          <DialogExcluir
-                            id={viagem.id}
-                            setViagens={setViagens}
-                            viagens={viagens}
-                          />
-                          <TravelDialog viagem={viagem} />
-                        </div>
-                      </TableCell>
+            {carregando ? (
+              <div className="flex items-center justify-center p-10">
+                <Image
+                  src={loading}
+                  alt="loading"
+                  className="text-center animate-spin"
+                  width={50}
+                  height={50}
+                />
+              </div>
+            ) : (
+              <div className="h-[400px] overflow-y-scroll scrollbar-hide">
+                <Table>
+                  <TableHeader className="border-b-2">
+                    <TableRow>
+                      <TableHead className="text-black font-bold text-center">
+                        Motorista
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                        Veiculo
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                        Cliente
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                        Cidade Saída
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                        Data Saída
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                        Cidade Destino
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                        Data Chegada
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                        Valor Contratado
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                        Status Viagem
+                      </TableHead>
                     </TableRow>
-                  ))
-                ) : (
-                  <TableRow>
-                    <TableCell>Nenhuma viagem encontrada</TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
+                  </TableHeader>
+                  <TableBody className="text-center">
+                    {viagens.map((viagem) => (
+                      <TableRow className="hover:bg-gray-200" key={viagem.id}>
+                        <TableCell>{viagem.motorista?.nome}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {viagem.veiculo?.prefixo}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {viagem.cliente?.nome}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {viagem.rota.saida.cidadeSaida}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {new Date(
+                            viagem.dataHorarioSaida.data
+                          ).toLocaleDateString("pt-BR")}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {viagem.rota.retorno.cidadeSaida}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {new Date(
+                            viagem.dataHorarioRetorno.data
+                          ).toLocaleDateString("pt-BR")}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {viagem.valorContratado}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {viagem.status}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <DialogEditar
+                              setViagens={setViagens}
+                              viagens={viagens}
+                              viagemprop={viagem}
+                            />
+                            <ViagemPDF dadosViagens={viagem} />
+                            <DialogExcluir
+                              id={viagem.id}
+                              setViagens={setViagens}
+                              viagens={viagens}
+                            />
+                            <TravelDialog viagem={viagem} />
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
           </div>
         </div>
       </div>

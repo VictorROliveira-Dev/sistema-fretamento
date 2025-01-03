@@ -59,14 +59,14 @@ export default function DialogExcluir({
     <>
       <Dialog>
         <DialogTrigger>
-          <Button className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
+          <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
             <Image
               src={removeIcon}
               alt="Remover"
               width={25}
               className="w-10 md:w-6"
             />
-          </Button>
+          </span>
         </DialogTrigger>
         <DialogContent className="w-[90%] md:w-[50%] flex flex-col items-center rounded-md">
           <DialogHeader>

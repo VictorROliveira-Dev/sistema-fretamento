@@ -29,17 +29,17 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/axios";
 import { Abastecimento, Adiantamento, Viagem } from "@/lib/types";
-
 import {
   DollarSign,
-  FileText,
   Fuel,
   HandCoins,
   PlusCircle,
   ReceiptText,
 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 
 interface TravelDialogProps {
   viagem: Viagem;
@@ -110,10 +110,9 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
       }
 
       toast("abastecimento da viagem atualizado com sucesso");
-    } else {
+    } else if (abastecimento !== undefined) {
       const response = await api.put(
-        `
-        abastecimento/${abastecimento?.id}`,
+        `abastecimento/${abastecimento?.id}`,
         abastecimento
       );
       if (!response.data.isSucces) {
@@ -125,9 +124,15 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
     }
   }
 
+  function calcularValorTotal(valorTotal: number, litros: number) {
+    const valor = valorTotal / litros;
+
+    return valor.toFixed(2);
+  }
+
   async function enviarAdiantamento(e: React.FormEvent) {
     e.preventDefault();
-    if (abastecimento !== undefined && abastecimento.id == 0) {
+    if (adiantamento !== undefined && adiantamento.id == 0) {
       const response = await api.post("adiantamento", adiantamento);
       if (!response.data.isSucces) {
         toast("não foi possivel adicionar um adiantamento a viagem");
@@ -135,10 +140,9 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
       }
 
       toast("Adiantamento da viagem atualizado com sucesso");
-    } else {
+    } else if (adiantamento !== undefined) {
       const response = await api.put(
-        `
-        adiantamento/${adiantamento?.id}`,
+        `adiantamento/${adiantamento?.id}`,
         adiantamento
       );
       if (!response.data.isSucces) {
@@ -153,8 +157,13 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span>
-          <FileText className="h-4 w-4" />
+        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
+          <Image
+            src={dadosViagemIcon}
+            alt="documento"
+            width={25}
+            className="w-6 md:w-6"
+          />
         </span>
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -186,13 +195,17 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 <div>
                   <Label>Data Partida</Label>
                   <p className="text-sm text-muted-foreground">
-                    {viagem.dataHorarioSaida.data}
+                    {new Date(viagem.dataHorarioSaida.data).toLocaleDateString(
+                      "pt-BR"
+                    )}
                   </p>
                 </div>
                 <div>
                   <Label>Data Retorno</Label>
                   <p className="text-sm text-muted-foreground">
-                    {viagem.dataHorarioRetorno.data}
+                    {new Date(
+                      viagem.dataHorarioRetorno.data
+                    ).toLocaleDateString("pt-BR")}
                   </p>
                 </div>
               </div>
@@ -425,20 +438,36 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   <div className="flex gap-2">
                     <span>Km Inicial:{viagem.kmInicialVeiculo}</span>
                     <span>Km Final:{viagem.kmFinalVeiculo}</span>
-                    <span>
-                      Total:{viagem.kmFinalVeiculo - viagem.kmInicialVeiculo}{" "}
-                    </span>
+                    {viagem.kmFinalVeiculo > 0 ? (
+                      <span>
+                        Total:{viagem.kmFinalVeiculo - viagem.kmInicialVeiculo}{" "}
+                      </span>
+                    ) : (
+                      <span>Total: 0</span>
+                    )}
                   </div>
                   <div className="space-x-2">
-                    <span>
-                      Km/L:{" "}
-                      {(viagem.kmFinalVeiculo - viagem.kmInicialVeiculo) /
-                        abastecimento.litros}
-                    </span>
-                    <span>
-                      Valor Litro:{" "}
-                      {abastecimento.valorTotal / abastecimento.litros}
-                    </span>
+                    {viagem.kmFinalVeiculo > 0 ? (
+                      <span>
+                        Km/L:{" "}
+                        {(viagem.kmFinalVeiculo - viagem.kmInicialVeiculo) /
+                          abastecimento.litros}
+                      </span>
+                    ) : (
+                      <span>Km/L: 0</span>
+                    )}
+
+                    {abastecimento.valorTotal > 0 ? (
+                      <span>
+                        Valor Litro:{" "}
+                        {calcularValorTotal(
+                          abastecimento.valorTotal,
+                          abastecimento.litros
+                        )}
+                      </span>
+                    ) : (
+                      <span>Valor Litro: 0</span>
+                    )}
                   </div>
                   <Button type="submit" className="w-full">
                     Atualizar
@@ -539,6 +568,12 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                       id="descricao"
                       name="descricao"
                       defaultValue={adiantamento!.descricao}
+                      onChange={(e) =>
+                        setAdiantamento({
+                          ...adiantamento,
+                          descricao: e.target.value,
+                        })
+                      }
                     />
                   </div>
                   <Button type="submit" className="w-full">

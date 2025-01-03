@@ -47,8 +47,8 @@ export default function Motoristas() {
   });
 
   return (
-    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[600px]">
-      <div className="md:h-[500px] h-[550px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[700px]">
+      <div className="h-[700px] md:w-[1400px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Motoristas
@@ -82,7 +82,7 @@ export default function Motoristas() {
                 />
               </div>
             ) : (
-              <div className="h-[200px] overflow-y-scroll scrollbar-hide">
+              <div className="h-[400px] overflow-y-scroll scrollbar-hide">
                 <Table>
                   <TableHeader className="border-b-2">
                     <TableRow>

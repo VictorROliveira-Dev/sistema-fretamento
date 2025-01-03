@@ -120,7 +120,7 @@ export default function DialogEditar({
           />
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-auto md:h-[90%] h-screen overflow-y-scroll mx-auto">
+      <DialogContent className="md:w-auto md:h-[90%] h-[550px] overflow-y-scroll mx-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Formulário</DialogTitle>
         </DialogHeader>

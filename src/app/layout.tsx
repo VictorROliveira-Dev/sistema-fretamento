@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "@/components/footer/footer";
 import Header from "@/components/header/header";
 import { Toaster } from "@/components/ui/sonner";
+import LayoutWrapper from "./layoutWrapper";
 
 const raleway = Raleway({
   subsets: ["latin-ext"],
@@ -25,10 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={` ${raleway.className} antialiased`}>
-        <Toaster />
-        <Header />
-        {children}
-        <Footer />
+        <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>
   );

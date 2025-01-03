@@ -133,11 +133,11 @@ export default function DialogAdicionar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-green-600 hover:bg-green-600 w-[280px] md:w-[200px]">
+        <span className="bg-green-600 hover:bg-green-600 text-center text-white p-1 rounded-md cursor-pointer transition-all w-[280px] md:w-[200px]">
           Adicionar Cliente
-        </Button>
+        </span>
       </DialogTrigger>
-      <DialogContent className="md:w-auto h-screen md:h-[90%] overflow-y-scroll md:overflow-auto mx-auto">
+      <DialogContent className="md:w-auto h-[550px] md:h-[90%] overflow-y-scroll md:overflow-auto mx-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Cadastro Cliente</DialogTitle>
         </DialogHeader>

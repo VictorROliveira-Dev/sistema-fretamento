@@ -63,7 +63,7 @@ export default function Documentos() {
   }
   return (
     <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[700px]">
-      <div className="md:h-[600px] h-screen md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
+      <div className="h-[750px] md:w-[1400px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Documentos
@@ -88,7 +88,7 @@ export default function Documentos() {
                 documentos={documentos}
               />
             </div>
-            <div className="h-[300px] overflow-y-scroll scrollbar-hide">
+            <div className="h-[400px] overflow-y-scroll scrollbar-hide">
               {carregando ? (
                 <div className="flex items-center justify-center">
                   <Image
@@ -155,7 +155,7 @@ export default function Documentos() {
                 </Table>
               )}
             </div>
-            <div className="flex gap-4">
+            <div className="flex items-center flex-col md:flex-row gap-4 md:pt-10">
               <div className="flex items-center gap-2">
                 <span className="w-4 h-4 bg-blue-500 rounded-full"></span>
                 <p className="text-sm">30 Dias para o vencimento</p>

@@ -29,14 +29,14 @@ export default function DialogInformacoes({ cliente }: InfoProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
+        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
           <Image
             src={dadosViagemIcon}
             alt="documento"
             width={25}
-            className="hover:scale-110"
+            className="w-10 md:w-6"
           />
-        </Button>
+        </span>
       </DialogTrigger>
       <DialogContent className="max-w-[90vw] md:max-w-[600px] max-h-[90vh]">
         <DialogHeader>
@@ -85,7 +85,8 @@ export default function DialogInformacoes({ cliente }: InfoProps) {
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    {cliente.documento.tipo.toUpperCase()}: {cliente.documento.documento}
+                    {cliente.documento.tipo.toUpperCase()}:{" "}
+                    {cliente.documento.documento}
                   </span>
                 </div>
               </div>

@@ -140,7 +140,7 @@ export default function DialogAdicionar({
           Adicionar Fornecedor
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-auto h-screen md:h-[650px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
+      <DialogContent className="md:w-auto h-[550px] md:h-[650px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Fornecedor

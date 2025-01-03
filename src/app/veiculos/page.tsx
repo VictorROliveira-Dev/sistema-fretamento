@@ -48,7 +48,7 @@ export default function Veiculos() {
 
   return (
     <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[650px]">
-      <div className="md:h-[500px] h-[550px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
+      <div className="h-[700px] md:w-[1400px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Veículos
