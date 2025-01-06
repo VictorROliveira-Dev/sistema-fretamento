@@ -55,7 +55,7 @@ export default function Login() {
 
   return (
     <section className="h-screen bg-[#070180] flex items-center justify-center">
-      <Card className="w-[500px] bg-slate-50 border-none rounded-md">
+      <Card className="md:w-[500px] bg-slate-50 border-none rounded-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Login</CardTitle>
           <CardDescription className="font-medium">Entre com sua conta.</CardDescription>
