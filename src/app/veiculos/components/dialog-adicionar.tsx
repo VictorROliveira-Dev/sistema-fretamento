@@ -95,22 +95,9 @@ export default function DialogAdicionar({
     try {
       const response = await api.post("/veiculo", veiculoData);
       setVeiculos([...veiculos, response.data.data]);
-      toast.success("Veículo adicionado.", {
-        className:
-          "bg-green-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Veículo adicionado.");
     } catch (error) {
-      toast.error("Erro ao tentar adicionar veículo.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar adicionar veículo.");
       console.log("erro ao tentar adicionar veículo", error);
     } finally {
       setPrefixo("");
@@ -227,7 +214,6 @@ export default function DialogAdicionar({
                   ))}
                 </select>
               </div>
-
               <div className="flex flex-col gap-2">
                 <div>
                   <label htmlFor="carroceria">Carroceria:</label>

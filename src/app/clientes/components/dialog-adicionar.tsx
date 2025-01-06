@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Dialog,
   DialogContent,
@@ -8,7 +7,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -102,21 +100,9 @@ export default function DialogAdicionar({
     try {
       const response = await api.post("/cliente", cliente);
       setClientes([...clientes, response.data.data]);
-      toast.success("Cliente adicionado.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Cliente adicionado.");
     } catch (error) {
-      toast.error("Erro ao tentar adicionar cliente.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar adicionar cliente.");
       console.log(error);
     } finally {
       setNome("");
@@ -139,7 +125,9 @@ export default function DialogAdicionar({
       </DialogTrigger>
       <DialogContent className="md:w-auto h-[550px] md:h-[90%] overflow-y-scroll md:overflow-auto mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Cadastro Cliente</DialogTitle>
+          <DialogTitle className="text-xl font-bold">
+            Cadastro Cliente
+          </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} noValidate>
           <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll md:overflow-auto gap-10 items-start">
@@ -149,8 +137,6 @@ export default function DialogAdicionar({
                 <Label htmlFor="nome">Nome</Label>
                 <Input id="nome" onChange={(e) => setNome(e.target.value)} />
               </div>
-
-              {/* Data de Nascimento */}
               <div>
                 <Label htmlFor="dataNascimento">Data de Nascimento</Label>
                 <Input
@@ -159,8 +145,6 @@ export default function DialogAdicionar({
                   onChange={(e) => setDataNascimento(e.target.value)}
                 />
               </div>
-
-              {/* Telefone */}
               <div>
                 <Label htmlFor="telefone">Telefone</Label>
                 <Input
@@ -168,13 +152,10 @@ export default function DialogAdicionar({
                   onChange={(e) => setTelefone(e.target.value)}
                 />
               </div>
-              {/* CPF */}
               <div>
                 <Label htmlFor="cpf">CPF</Label>
                 <Input id="cpf" onChange={(e) => setCpf(e.target.value)} />
               </div>
-
-              {/* Tipo */}
               <div>
                 <Label htmlFor="tipocliente">Tipo do cliente</Label>
                 <RadioGroup
@@ -192,7 +173,6 @@ export default function DialogAdicionar({
                   </div>
                 </RadioGroup>
               </div>
-              {/* Documento */}
               <div>
                 <Label htmlFor="documento">Documento</Label>
                 <Input
@@ -202,7 +182,6 @@ export default function DialogAdicionar({
                   }
                 />
               </div>
-
               <div>
                 <Label htmlFor="tipoDocumento">Tipo de Documento</Label>
                 <RadioGroup
@@ -221,8 +200,6 @@ export default function DialogAdicionar({
                 </RadioGroup>
               </div>
             </fieldset>
-
-            {/* Endereço */}
             <fieldset className="border p-4 rounded w-full">
               <legend className="font-semibold">Endereço</legend>
               <div className="">
@@ -240,7 +217,6 @@ export default function DialogAdicionar({
                   ))}
                 </select>
               </div>
-
               <div className="mt-4">
                 <Label htmlFor="cidade">Cidade</Label>
                 <select
@@ -258,7 +234,6 @@ export default function DialogAdicionar({
                   ))}
                 </select>
               </div>
-
               {[
                 { label: "Rua", name: "rua" },
                 { label: "Bairro", name: "bairro" },

@@ -33,22 +33,9 @@ export default function DialogRemover({
       setMotoristas((prevMotoristas) =>
         prevMotoristas.filter((m) => m.id !== id)
       );
-      toast.success("Motorista removido com sucesso.", {
-        className:
-          "bg-slate-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Motorista removido com sucesso.");
     } catch (error) {
-      toast.error("Erro ao tentar remover motorista.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar remover motorista.");
       console.error("Erro ao remover motorista:", error);
     } finally {
       setRemovendo(false);
@@ -59,11 +46,7 @@ export default function DialogRemover({
     <Dialog>
       <DialogTrigger asChild>
         <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
-          <Image
-            src={removeIcon}
-            alt="Remover"
-            className="w-10 md:w-6"
-          />
+          <Image src={removeIcon} alt="Remover" className="w-10 md:w-6" />
         </span>
       </DialogTrigger>
       <DialogContent className="w-[350px] h-[150px] rounded-md flex flex-col items-center">

@@ -32,11 +32,7 @@ export default function Login() {
 
       if (response.status === 200) {
         localStorage.setItem("token", response.data.data);
-
-        toast.success("Login bem-sucedido!", {
-          className: "bg-green-500 text-white font-semibold shadow-lg",
-          style: { borderRadius: "10px", padding: "16px" },
-        });
+        toast.success("Login bem-sucedido!");
         router.replace("/");
       }
     } 
@@ -44,10 +40,7 @@ export default function Login() {
     catch (error: any) {
       const errorMessage =
         error.response?.data?.message || "Credenciais Inválidas.";
-      toast.error(errorMessage, {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
-        style: { borderRadius: "10px", padding: "16px" },
-      });
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

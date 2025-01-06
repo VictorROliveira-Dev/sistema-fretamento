@@ -46,22 +46,10 @@ export default function DialogAdicionar({
     try {
       const response = await api.post("/documento", documentData);
       setDocumentos([...documentos, response.data.data]);
-      toast.success("Documento adicionado.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
-      console.log(documentData)
+      toast.success("Documento adicionado.");
+      console.log(documentData);
     } catch (error) {
-      toast.error("Erro ao tentar adicionar documento.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar adicionar documento.");
       console.error("Erro ao adicionar documento:", error);
     } finally {
       // LIMPAR
@@ -129,7 +117,6 @@ export default function DialogAdicionar({
               />
             </div>
           </div>
-
           <DialogFooter className="flex items-center gap-2 mt-10">
             <Button type="submit" className="w-[250px]">
               {adicionando ? (

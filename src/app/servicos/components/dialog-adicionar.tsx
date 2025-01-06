@@ -38,23 +38,10 @@ export default function DialogAdicionarServico({
     try {
       const response = await api.post("/servico", servicoData);
       setServicos([...servicos, response.data.data]);
-      toast.success("Serviço adicionado.", {
-        className:
-          "bg-green-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Serviço adicionado.");
       console.log("Serviço adicionado:", response.data.data);
     } catch (error) {
-      toast.error("Erro ao tentar adicionar serviço.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar adicionar serviço.");
       console.error("Erro ao adicionar serviço:", error);
     } finally {
       setNomeServico("");

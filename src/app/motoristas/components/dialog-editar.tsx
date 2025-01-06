@@ -88,21 +88,9 @@ export default function DialogEditar({
         (motorista) => motorista.id !== motoristaAtualizado.id
       );
       setMotoristas([...motoristasAtualizados, motoristaAtualizado]);
-      toast.success("Motorista atualizado.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Motorista atualizado.");
     } catch (error) {
-      toast.error("Erro ao tentar atualizar motorista.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar atualizar motorista.");
       console.log("Erro ao tentar editar motorista.", error);
     } finally {
       setEditando(false);
@@ -124,7 +112,11 @@ export default function DialogEditar({
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">Formulário</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col items-center">
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="flex flex-col items-center"
+        >
           <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll md:overflow-auto gap-10 items-start">
             <fieldset className="border p-4 rounded w-full h-full">
               <legend className="font-semibold">Cliente</legend>
@@ -141,8 +133,6 @@ export default function DialogEditar({
                   }
                 />
               </div>
-
-              {/* Data de Nascimento */}
               <div>
                 <Label htmlFor="dataNascimento">Data de Nascimento</Label>
                 <Input
@@ -157,8 +147,6 @@ export default function DialogEditar({
                   }
                 />
               </div>
-
-              {/* Telefone */}
               <div>
                 <Label htmlFor="telefone">Telefone</Label>
                 <Input
@@ -172,7 +160,6 @@ export default function DialogEditar({
                   }
                 />
               </div>
-              {/* CPF */}
               <div>
                 <Label htmlFor="cpf">CPF</Label>
                 <Input
@@ -186,8 +173,6 @@ export default function DialogEditar({
                   }
                 />
               </div>
-
-              {/* Tipo */}
               <div>
                 <Label htmlFor="tipocliente">Tipo do cliente</Label>
                 <RadioGroup
@@ -207,7 +192,6 @@ export default function DialogEditar({
                   </div>
                 </RadioGroup>
               </div>
-              {/* Documento */}
               <div>
                 <Label htmlFor="documento">Documento</Label>
                 <Input
@@ -224,7 +208,6 @@ export default function DialogEditar({
                   }
                 />
               </div>
-
               <div>
                 <Label htmlFor="tipoDocumento">Tipo de Documento</Label>
                 <RadioGroup
@@ -248,8 +231,6 @@ export default function DialogEditar({
                 </RadioGroup>
               </div>
             </fieldset>
-
-            {/* Endereço */}
             <fieldset className="border p-4 rounded w-full h-full">
               <legend className="font-semibold">Endereço</legend>
               <div className="">
@@ -268,7 +249,6 @@ export default function DialogEditar({
                   ))}
                 </select>
               </div>
-
               <div className="mt-4">
                 <Label htmlFor="cidade">Cidade</Label>
                 <select
@@ -293,7 +273,6 @@ export default function DialogEditar({
                   ))}
                 </select>
               </div>
-
               {[
                 { label: "Rua", name: "rua" },
                 { label: "Bairro", name: "bairro" },
@@ -321,11 +300,8 @@ export default function DialogEditar({
                 </div>
               ))}
             </fieldset>
-
             <fieldset className="border p-4 rounded w-full h-full">
               <legend className="font-semibold">Habilitação</legend>
-
-              {/* Protocolo */}
               <div>
                 <label htmlFor="protocolo">Protocolo</label>
                 <Input
@@ -342,8 +318,6 @@ export default function DialogEditar({
                   }
                 />
               </div>
-
-              {/* Vencimento */}
               <div className="mt-4">
                 <label htmlFor="vencimento">Vencimento</label>
                 <Input
@@ -358,8 +332,6 @@ export default function DialogEditar({
                   }
                 />
               </div>
-
-              {/* Categoria */}
               <div className="mt-4">
                 <label htmlFor="categoria">Categoria</label>
                 <Input
@@ -378,8 +350,6 @@ export default function DialogEditar({
                   }
                 />
               </div>
-
-              {/* UF */}
               <div className="mt-4">
                 <label htmlFor="ufHabilitacao">UF</label>
                 <select
@@ -401,8 +371,6 @@ export default function DialogEditar({
                   ))}
                 </select>
               </div>
-
-              {/* Cidade */}
               <div className="mt-4">
                 <label htmlFor="cidade">Cidade</label>
                 <select

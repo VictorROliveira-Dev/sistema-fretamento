@@ -19,11 +19,9 @@ import {
   User,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-
 interface InfoProps {
   cliente: Cliente;
 }
-
 export default function DialogInformacoes({ cliente }: InfoProps) {
   return (
     <Dialog>
@@ -44,10 +42,8 @@ export default function DialogInformacoes({ cliente }: InfoProps) {
             {cliente.nome}
           </DialogTitle>
         </DialogHeader>
-
         <ScrollArea className="h-[70vh] pr-4">
           <div className="space-y-6">
-            {/* Informações Principais */}
             <section>
               <h3 className="text-lg font-semibold mb-3">
                 Informações Principais
@@ -74,10 +70,7 @@ export default function DialogInformacoes({ cliente }: InfoProps) {
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Documento */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Documento</h3>
               <div className="grid gap-3">
@@ -90,10 +83,7 @@ export default function DialogInformacoes({ cliente }: InfoProps) {
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Endereço */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Endereço</h3>
               <div className="grid gap-3">

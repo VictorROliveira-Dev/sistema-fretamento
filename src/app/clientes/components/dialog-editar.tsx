@@ -81,21 +81,9 @@ export default function DialogEditar({
         (cliente) => cliente.id !== clienteAtualizado.id
       );
       setClientes([...clientesAtualizados, clienteAtualizado]);
-      toast.success("Cliente atualizado.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Cliente atualizado.");
     } catch (error) {
-      toast.error("Erro ao tentar atualizar cliente.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar atualizar cliente.");
       console.log("Erro ao tentar editar cliente.", error);
     } finally {
       setEditando(false);
@@ -131,8 +119,6 @@ export default function DialogEditar({
                   }
                 />
               </div>
-
-              {/* Data de Nascimento */}
               <div>
                 <Label htmlFor="dataNascimento">Data de Nascimento</Label>
                 <Input
@@ -147,8 +133,6 @@ export default function DialogEditar({
                   }
                 />
               </div>
-
-              {/* Telefone */}
               <div>
                 <Label htmlFor="telefone">Telefone</Label>
                 <Input
@@ -159,7 +143,6 @@ export default function DialogEditar({
                   }
                 />
               </div>
-              {/* CPF */}
               <div>
                 <Label htmlFor="cpf">CPF</Label>
                 <Input
@@ -170,8 +153,6 @@ export default function DialogEditar({
                   }
                 />
               </div>
-
-              {/* Tipo */}
               <div>
                 <Label htmlFor="tipocliente">Tipo do cliente</Label>
                 <RadioGroup
@@ -189,7 +170,6 @@ export default function DialogEditar({
                   </div>
                 </RadioGroup>
               </div>
-              {/* Documento */}
               <div>
                 <Label htmlFor="documento">Documento</Label>
                 <Input
@@ -206,7 +186,6 @@ export default function DialogEditar({
                   }
                 />
               </div>
-
               <div>
                 <Label htmlFor="tipoDocumento">Tipo de Documento</Label>
                 <RadioGroup
@@ -230,8 +209,6 @@ export default function DialogEditar({
                 </RadioGroup>
               </div>
             </fieldset>
-
-            {/* Endereço */}
             <fieldset className="border p-4 rounded w-full">
               <legend className="font-semibold">Endereço</legend>
               <div className="">
@@ -250,7 +227,6 @@ export default function DialogEditar({
                   ))}
                 </select>
               </div>
-
               <div className="mt-4">
                 <Label htmlFor="cidade">Cidade</Label>
                 <select
@@ -272,7 +248,6 @@ export default function DialogEditar({
                   ))}
                 </select>
               </div>
-
               {[
                 { label: "Rua", name: "rua" },
                 { label: "Bairro", name: "bairro" },

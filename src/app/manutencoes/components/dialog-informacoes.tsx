@@ -51,10 +51,8 @@ export function DialogInfo({ manutencao }: ManutencaoDialogProps) {
             Manutenção #{manutencao ? manutencao.id : ""}
           </DialogTitle>
         </DialogHeader>
-
         <ScrollArea className="h-[70vh] pr-4">
           <div className="space-y-6">
-            {/* Informações Principais */}
             <section>
               <h3 className="text-lg font-semibold mb-3">
                 Informações Principais
@@ -72,10 +70,7 @@ export function DialogInfo({ manutencao }: ManutencaoDialogProps) {
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Datas */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Datas</h3>
               <div className="grid gap-3">
@@ -102,10 +97,7 @@ export function DialogInfo({ manutencao }: ManutencaoDialogProps) {
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Quilometragem */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Quilometragem</h3>
               <div className="grid gap-3">
@@ -134,10 +126,7 @@ export function DialogInfo({ manutencao }: ManutencaoDialogProps) {
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* IDs Relacionados */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Referências</h3>
               <div className="grid gap-3">

@@ -45,10 +45,8 @@ export default function DialogInformacoes({ fornecedor }: FornecedorProps) {
             {fornecedor?.nome}
           </DialogTitle>
         </DialogHeader>
-
         <ScrollArea className="pr-4">
           <div className="space-y-6">
-            {/* Informações Principais */}
             <section>
               <h3 className="text-lg font-semibold mb-3">
                 Informações Principais
@@ -83,10 +81,7 @@ export default function DialogInformacoes({ fornecedor }: FornecedorProps) {
                 )}
               </div>
             </section>
-
             <Separator />
-
-            {/* Documento */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Documento</h3>
               <div className="grid gap-3">
@@ -103,10 +98,7 @@ export default function DialogInformacoes({ fornecedor }: FornecedorProps) {
                 )}
               </div>
             </section>
-
             <Separator />
-
-            {/* Endereço */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Endereço</h3>
               <div className="grid gap-3">

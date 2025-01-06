@@ -32,22 +32,9 @@ export default function DialogRemover({
       setManutencoes((prevManutencao) =>
         prevManutencao.filter((m) => m.id !== id)
       );
-      toast.success("Manutenção removida.", {
-        className:
-          "bg-green-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Manutenção removida.");
     } catch (error) {
-      toast.error("Erro ao tentar remover manutenção.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar remover manutenção.");
       console.error("Erro ao remover manutenção:", error);
     } finally {
       setRemovendo(false);
@@ -58,11 +45,7 @@ export default function DialogRemover({
     <Dialog>
       <DialogTrigger asChild>
         <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
-          <Image
-            src={removeIcon}
-            alt="Remover"
-            className="w-6 md:w-6"
-          />
+          <Image src={removeIcon} alt="Remover" className="w-6 md:w-6" />
         </span>
       </DialogTrigger>
       <DialogContent className="md:w-[350px] md:h-[150px] flex flex-col items-center rounded-md">

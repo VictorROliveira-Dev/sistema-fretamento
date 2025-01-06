@@ -34,21 +34,9 @@ export default function DialogExcluir({
     try {
       await api.delete(`/cliente/${id}`);
       setClientes((prevClientes) => prevClientes.filter((c) => c.id !== id));
-      toast.success("Cliente removida.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Cliente removida.");
     } catch (error) {
-      toast.error("Erro ao tentar remover cliente.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar remover cliente.");
       console.error("Erro ao remover cliente:", error);
     } finally {
       setRemovendo(false);

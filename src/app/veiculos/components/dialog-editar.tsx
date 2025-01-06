@@ -81,22 +81,9 @@ export default function DialogEditar({
         return v.id === veiculoAtualizado.id ? veiculoAtualizado : v;
       });
       setVeiculos(veiculosAtualizados);
-      toast.success("Veículo atualizado.", {
-        className:
-          "bg-green-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Veículo atualizado.");
     } catch (error) {
-      toast.error("Erro ao tentar atualizar veículo.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar atualizar veículo.");
       console.log("erro ao atualizar veículo", error);
     } finally {
       setEditando(false);
@@ -274,10 +261,12 @@ export default function DialogEditar({
                     className="border-2 font-medium text-black w-[250px]"
                     placeholder="Digite o tipo..."
                     value={veiculoState.tipo}
-                    onChange={(e) => setVeiculoState({
-                      ...veiculoState,
-                      tipo: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setVeiculoState({
+                        ...veiculoState,
+                        tipo: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -289,10 +278,12 @@ export default function DialogEditar({
                     className="border-2 font-medium text-black w-[250px]"
                     placeholder="Digite o modelo..."
                     value={veiculoState.modelo}
-                    onChange={(e) => setVeiculoState({
-                      ...veiculoState,
-                      modelo: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setVeiculoState({
+                        ...veiculoState,
+                        modelo: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>

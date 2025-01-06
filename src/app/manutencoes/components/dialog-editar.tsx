@@ -126,21 +126,9 @@ export default function DialogEditar({
         return m.id === manutencaoAtualizada.id ? manutencaoAtualizada : m;
       });
       setManutencoes(manutencoesAtualizados);
-      toast.success("Manutenção atualizada.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Manutenção atualizada.");
     } catch (error) {
-      toast.error("Erro ao tentar atualizar manutenção.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar atualizar manutenção.");
       console.error("Erro ao atualizar manutenção:", error);
     } finally {
       setEditando(false);

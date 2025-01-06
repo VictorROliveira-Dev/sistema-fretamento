@@ -9,13 +9,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Cidade,
-  Documento,
-  Endereco,
-  Fornecedor,
-  Uf,
-} from "@/lib/types";
+import { Cidade, Documento, Endereco, Fornecedor, Uf } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import Image from "next/image";
@@ -98,23 +92,10 @@ export default function DialogAdicionar({
     try {
       const response = await api.post("/api/fornecedor", fornecedor);
       setFornecedor([...fornecedores, response.data.data]);
-      toast.success("Fornecedor adicionado.", {
-        className:
-          "bg-green-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Fornecedor adicionado.");
       console.log("Fornecedor adicionado:", response.data.data);
     } catch {
-      toast.error("Erro ao tentar adicionar fornecedor.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar adicionar fornecedor.");
     } finally {
       setNome("");
       setDataNascimento("");
@@ -154,8 +135,6 @@ export default function DialogAdicionar({
                 <label htmlFor="nome">Nome</label>
                 <Input id="nome" onChange={(e) => setNome(e.target.value)} />
               </div>
-
-              {/* Data de Nascimento */}
               <div>
                 <label htmlFor="dataNascimento">Data de Nascimento</label>
                 <Input
@@ -164,8 +143,6 @@ export default function DialogAdicionar({
                   onChange={(e) => setDataNascimento(e.target.value)}
                 />
               </div>
-
-              {/* Telefone */}
               <div>
                 <label htmlFor="telefone">Telefone</label>
                 <Input
@@ -173,13 +150,10 @@ export default function DialogAdicionar({
                   onChange={(e) => setTelefone(e.target.value)}
                 />
               </div>
-              {/* CPF */}
               <div>
                 <label htmlFor="cpf">CPF</label>
                 <Input id="cpf" onChange={(e) => setCpf(e.target.value)} />
               </div>
-
-              {/* Tipo */}
               <div>
                 <label htmlFor="tipocliente">Tipo do cliente</label>
                 <RadioGroup
@@ -197,7 +171,6 @@ export default function DialogAdicionar({
                   </div>
                 </RadioGroup>
               </div>
-              {/* Documento */}
               <div>
                 <label htmlFor="documento">Documento</label>
                 <Input
@@ -207,7 +180,6 @@ export default function DialogAdicionar({
                   }
                 />
               </div>
-
               <div>
                 <label htmlFor="tipoDocumento">Tipo de Documento</label>
                 <RadioGroup
@@ -226,8 +198,6 @@ export default function DialogAdicionar({
                 </RadioGroup>
               </div>
             </fieldset>
-
-            {/* Endereço */}
             <fieldset className="border p-4 rounded w-full">
               <legend className="font-semibold">Endereço</legend>
               <div className="">
@@ -245,7 +215,6 @@ export default function DialogAdicionar({
                   ))}
                 </select>
               </div>
-
               <div className="mt-4">
                 <label htmlFor="cidade">Cidade</label>
                 <select
@@ -263,7 +232,6 @@ export default function DialogAdicionar({
                   ))}
                 </select>
               </div>
-
               {[
                 { label: "Rua", name: "rua" },
                 { label: "Bairro", name: "bairro" },

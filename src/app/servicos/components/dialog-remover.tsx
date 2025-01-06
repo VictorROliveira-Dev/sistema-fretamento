@@ -27,22 +27,9 @@ export default function DialogRemover({ servico, setServicos }: VeiculoProps) {
     try {
       await api.delete(`/servico/${id}`);
       setServicos((prevServicos) => prevServicos.filter((s) => s.id !== id));
-      toast.success("Serviço removido.", {
-        className:
-          "bg-green-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Serviço removido.");
     } catch (error) {
-      toast.error("Erro ao tentar remover serviço.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar remover serviço.");
       console.error("Erro ao remover serviço:", error);
     } finally {
       setRemovendo(false);

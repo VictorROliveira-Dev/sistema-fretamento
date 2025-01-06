@@ -29,21 +29,9 @@ export function DialogExcluir({ setViagens, viagens, id }: ExcluirProps) {
     try {
       await api.delete(`/viagem/${id}`);
       setViagens(viagens.filter((v) => v.id !== id));
-      toast.success("Viagem removida.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Viagem removida.");
     } catch (error) {
-      toast.error("Erro ao tentar remover viagem.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar remover viagem.");
       console.log(error);
     } finally {
       setRemovendo(false);
@@ -54,12 +42,7 @@ export function DialogExcluir({ setViagens, viagens, id }: ExcluirProps) {
       <Dialog>
         <DialogTrigger asChild>
           <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
-            <Image
-              src={removeIcon}
-              alt="Remover"
-              width={25}
-              className="w-6"
-            />
+            <Image src={removeIcon} alt="Remover" width={25} className="w-6" />
           </span>
         </DialogTrigger>
         <DialogContent className="w-[350px] h-[150px] flex flex-col items-center">

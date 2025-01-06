@@ -32,22 +32,9 @@ export default function DialogRemover({
       setFornecedores((prevFornecedor) =>
         prevFornecedor.filter((m) => m.id !== id)
       );
-      toast.success("Fornecedor removido.", {
-        className:
-          "bg-green-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Fornecedor removido.");
     } catch (error) {
-      toast.error("Erro ao tentar remover fornecedor.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar remover fornecedor.");
       console.error("Erro ao remover motorista:", error);
     } finally {
       setRemovendo(false);

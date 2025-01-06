@@ -27,22 +27,9 @@ export default function DialogRemover({ veiculo, setVeiculos }: VeiculoProps) {
     try {
       await api.delete(`/veiculo/${id}`);
       setVeiculos((prevVeiculos) => prevVeiculos.filter((v) => v.id !== id));
-      toast.success("Veículo removido.", {
-        className:
-          "bg-green-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Veículo removido.");
     } catch (error) {
-      toast.error("Erro ao tentar remover veículo.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar remover veículo.");
       console.error("Erro ao remover motorista:", error);
     } finally {
       setRemovendo(false);

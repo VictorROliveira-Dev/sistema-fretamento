@@ -34,21 +34,9 @@ export default function DialogRemover({
       setDocumentos((prevDocumento) =>
         prevDocumento.filter((d) => d.id !== id)
       );
-      toast.success("Documento removido.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Documento removido.");
     } catch (error) {
-      toast.error("Erro ao tentar remover documento.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar remover documento.");
       console.error("Erro ao remover documento:", error);
     } finally {
       setRemovendo(false);

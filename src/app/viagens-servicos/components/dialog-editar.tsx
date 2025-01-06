@@ -69,32 +69,14 @@ export default function DialogEditar({
     try {
       const response = await api.put(`viagem/${viagem.id}`, viagem);
       if (!response.data.isSucces) {
-        toast.error("Erro ao tentar atualizar viagem.", {
-          className: "text-white font-semibold border-none shadow-lg",
-          style: {
-            borderRadius: "10px",
-            padding: "16px",
-          },
-        });
+        toast.error("Erro ao tentar atualizar viagem.");
         return;
       }
       const viagensAtualizada = viagens.filter((v) => v.id !== viagem.id);
       setViagens([...viagensAtualizada, viagem]);
-      toast.success("Viagem atualizada.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Viagem atualizada.");
     } catch {
-      toast.error("Erro ao tentar atualizar viagem.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar atualizar viagem.");
     } finally {
       setEditando(false);
     }
@@ -204,7 +186,6 @@ export default function DialogEditar({
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div className="flex-1">
                   <Label htmlFor="telefone">Telefone Cliente</Label>
                   <Input
@@ -242,7 +223,6 @@ export default function DialogEditar({
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div className="flex-1">
                   <Label htmlFor="tiposervico">Tipo da viagem</Label>
                   <Select
@@ -258,7 +238,9 @@ export default function DialogEditar({
                     <SelectContent>
                       <SelectGroup>
                         {tipo_viagem.map((tipo) => (
-                          <SelectItem key={tipo} value={tipo}>{tipo}</SelectItem>
+                          <SelectItem key={tipo} value={tipo}>
+                            {tipo}
+                          </SelectItem>
                         ))}
                       </SelectGroup>
                     </SelectContent>
@@ -301,13 +283,11 @@ export default function DialogEditar({
                 </div>
               </fieldset>
             </div>
-
             <div className="w-full flex flex-col md:flex-row gap-2 mt-2">
               <div className="flex flex-col flex-1">
                 <div className="w-full">
                   <fieldset className="border-2 border-green-600 rounded-md justify-between p-4 flex flex-col md:flex-row gap-2">
                     <legend>Local Inicial / Origem / Destino</legend>
-
                     <div className="flex flex-col md:flex-row gap-2">
                       <div>
                         <Label htmlFor="ufsaida">UF Saida</Label>
@@ -330,7 +310,6 @@ export default function DialogEditar({
                           </SelectContent>
                         </Select>
                       </div>
-
                       <div>
                         <Label htmlFor="origem">Origem</Label>
                         <Select
@@ -363,7 +342,6 @@ export default function DialogEditar({
                           </SelectContent>
                         </Select>
                       </div>
-
                       <div>
                         <Label htmlFor="localsaida">Local saida</Label>
                         <Input
@@ -385,7 +363,6 @@ export default function DialogEditar({
                           placeholder="digite o local de saída"
                         />
                       </div>
-
                       <div>
                         <Label htmlFor="date">Data saida</Label>
                         <Input
@@ -421,7 +398,6 @@ export default function DialogEditar({
                         />
                       </div>
                     </div>
-
                     <div className="flex gap-2">
                       <div>
                         <Label htmlFor="saidagaragem">Saida Garagem</Label>
@@ -460,7 +436,6 @@ export default function DialogEditar({
                     </div>
                   </fieldset>
                 </div>
-
                 <div className="w-full">
                   <fieldset className="border-2 border-red-600 rounded-md justify-between p-4 flex flex-col md:flex-row gap-2">
                     <legend>Local Final / Destino / Retorno</legend>
@@ -487,7 +462,6 @@ export default function DialogEditar({
                           </SelectContent>
                         </Select>
                       </div>
-
                       <div>
                         <Label htmlFor="destino">Destino</Label>
                         <Select
@@ -520,7 +494,6 @@ export default function DialogEditar({
                           </SelectContent>
                         </Select>
                       </div>
-
                       <div>
                         <Label htmlFor="localsaida">Local saida</Label>
                         <Input
@@ -542,7 +515,6 @@ export default function DialogEditar({
                           placeholder="digite o local de saída"
                         />
                       </div>
-
                       <div>
                         <Label htmlFor="date">Data retorno</Label>
                         <Input
@@ -578,7 +550,6 @@ export default function DialogEditar({
                         />
                       </div>
                     </div>
-
                     <div className="flex gap-2">
                       <div>
                         <Label htmlFor="saidagaragem">Data Chegada</Label>
@@ -633,7 +604,6 @@ export default function DialogEditar({
                 ></Textarea>
               </div>
             </div>
-
             <div className="flex flex-col md:flex-row gap-2">
               <fieldset className="rounded border border-yellow-500 p-4">
                 <legend>Veiculo</legend>
@@ -703,7 +673,10 @@ export default function DialogEditar({
                   <SelectContent className="absolute max-h-[200px]">
                     <SelectGroup>
                       {status_viagem.map((status_viagem) => (
-                        <SelectItem key={status_viagem.nome} value={status_viagem.valor}>
+                        <SelectItem
+                          key={status_viagem.nome}
+                          value={status_viagem.valor}
+                        >
                           {status_viagem.nome}
                         </SelectItem>
                       ))}

@@ -34,7 +34,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
       const response = await api.get(`/motorista/${motoristaId}`);
       setMotoristas(response.data.data);
     } catch (error) {
-      console.log("erro", error)
+      console.log("erro", error);
     }
   };
 
@@ -63,10 +63,8 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
             {motorista?.nome ?? "Carregando.."}
           </DialogTitle>
         </DialogHeader>
-
         <ScrollArea className="h-[70vh] pr-4">
           <div className="space-y-6">
-            {/* Informações Pessoais */}
             <section>
               <h3 className="text-lg font-semibold mb-3">
                 Informações Pessoais
@@ -91,10 +89,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Documento */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Documento</h3>
               <div className="grid gap-3">
@@ -107,10 +102,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Endereço */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Endereço</h3>
               <div className="grid gap-3">
@@ -128,10 +120,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Habilitação */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Habilitação</h3>
               <div className="grid gap-3">
@@ -139,7 +128,10 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                   <Car className="h-4 w-4 text-muted-foreground mt-1" />
                   <div>
                     <p>Protocolo: {motorista?.habilitacao.protocolo}</p>
-                    <p>Categoria: {motorista?.habilitacao.categoria.toUpperCase()}</p>
+                    <p>
+                      Categoria:{" "}
+                      {motorista?.habilitacao.categoria.toUpperCase()}
+                    </p>
                     <p>
                       Vencimento:{" "}
                       {motorista
@@ -160,5 +152,5 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
         </ScrollArea>
       </DialogContent>
     </Dialog>
-  );
+  );
 }

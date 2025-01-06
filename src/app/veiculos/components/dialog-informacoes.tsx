@@ -1,4 +1,4 @@
- "use client";
+"use client";
 import {
   Dialog,
   DialogContent,
@@ -45,10 +45,8 @@ export default function DialogInformacoes({ veiculo }: VeiculoProps) {
             {veiculo.modelo} {veiculo.marca}
           </DialogTitle>
         </DialogHeader>
-
         <ScrollArea className="h-[70vh] pr-4">
           <div className="space-y-6">
-            {/* Informações Principais */}
             <section>
               <h3 className="text-lg font-semibold mb-3">
                 Informações Principais
@@ -68,10 +66,7 @@ export default function DialogInformacoes({ veiculo }: VeiculoProps) {
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Informações Técnicas */}
             <section>
               <h3 className="text-lg font-semibold mb-3">
                 Informações Técnicas
@@ -97,10 +92,7 @@ export default function DialogInformacoes({ veiculo }: VeiculoProps) {
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Documentação */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Documentação</h3>
               <div className="grid gap-3">
@@ -112,7 +104,7 @@ export default function DialogInformacoes({ veiculo }: VeiculoProps) {
                   <MapPin className="h-4 w-4 text-muted-foreground mt-1" />
                   <div>
                     <p>
-                      Local Emplacado: {veiculo.localEmplacado}  {veiculo.uf}
+                      Local Emplacado: {veiculo.localEmplacado} {veiculo.uf}
                     </p>
                   </div>
                 </div>

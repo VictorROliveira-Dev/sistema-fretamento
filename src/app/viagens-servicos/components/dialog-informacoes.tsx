@@ -168,10 +168,9 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Travel Information</DialogTitle>
+          <DialogTitle>Informações de Viagem</DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
-          {/* Travel Details Section */}
           <Card>
             <CardHeader>
               <CardTitle>Viagem Detalhes</CardTitle>
@@ -250,7 +249,6 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   </span>
                 </div>
               </Card>
-
               <Card className="flex justify-center flex-col p-2 gap-2 items-center w-min">
                 <CardTitle>Adiantamentos</CardTitle>
                 <div className="flex gap-2">
@@ -262,7 +260,6 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   </span>
                 </div>
               </Card>
-
               <Card className="flex flex-col justify-center p-2 gap-2 items-center w-min">
                 <CardTitle>Despesas</CardTitle>
                 <div className="flex gap-2">
@@ -270,7 +267,6 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   <span>{formatCurrency(viagemCompleta?.totalDespesa)}</span>
                 </div>
               </Card>
-
               <Card className="flex flex-col p-2 gap-2 items-center w-min">
                 <CardTitle>Valor Contrato</CardTitle>
                 <div className="flex gap-2">
@@ -284,7 +280,6 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               </Card>
             </CardContent>
           </Card>
-
           <Card className="w-full">
             <CardHeader>
               <CardTitle>Despesas</CardTitle>
@@ -320,7 +315,6 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               </Table>
             </CardContent>
           </Card>
-
           <Card className="w-full">
             <CardHeader>
               <CardTitle>Receitas</CardTitle>
@@ -360,8 +354,6 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               </Table>
             </CardContent>
           </Card>
-
-          {/* Fueling Section */}
           <Card>
             <CardHeader>
               <CardTitle>Abastecimento da viagem</CardTitle>
@@ -434,7 +426,6 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                       </p>
                     </div>
                   </div>
-
                   <div className="flex gap-2">
                     <span>Km Inicial:{viagem.kmInicialVeiculo}</span>
                     <span>Km Final:{viagem.kmFinalVeiculo}</span>
@@ -456,7 +447,6 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                     ) : (
                       <span>Km/L: 0</span>
                     )}
-
                     {abastecimento.valorTotal > 0 ? (
                       <span>
                         Valor Litro:{" "}
@@ -476,8 +466,6 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               )}
             </CardContent>
           </Card>
-
-          {/* Advance Payment Section */}
           <Card>
             <CardHeader>
               <CardTitle>Adiantamento de viagem</CardTitle>

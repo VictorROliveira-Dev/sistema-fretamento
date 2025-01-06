@@ -61,21 +61,9 @@ export default function DialogEditar({
         return doc.id === documentoAtualizado.id ? documentoAtualizado : doc;
       });
       setDocumentos(documentosAtualizados);
-      toast.success("Documento atualizado.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Documento atualizado.");
     } catch (error) {
-      toast.error("Erro ao tentar atualizar documento.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar atualizar documento.");
       console.error("Erro ao adicionar documento:", error);
     } finally {
       setEditando(false);

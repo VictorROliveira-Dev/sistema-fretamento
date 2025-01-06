@@ -50,23 +50,10 @@ export default function DialogEditar({
         return s.id === servicoAtualizado.id ? servicoAtualizado : s;
       });
       setServicos(servicosAtualizados);
-      toast.success("Serviço atualizado.", {
-        className:
-          "bg-green-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Serviço atualizado.");
       console.log("Serviço atualizado:", response.data.data);
     } catch (error) {
-      toast.error("Erro ao tentar atualizar serviço.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar atualizar serviço.");
       console.error("Erro ao adicionar motorista:", error);
     } finally {
       setEditando(false);

@@ -114,23 +114,10 @@ export default function DialogAdicionar({
     try {
       const response = await api.post("/motorista", motorista);
       setMotoristas([...motoristas, response.data.data]);
-      toast.success("Motorista adicionado.", {
-        className:
-          "bg-green-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.success("Motorista adicionado.");
       console.log("Motorista adicionado:", response.data.data);
     } catch {
-      toast.error("Erro ao tentar adicionar motorista.", {
-        className: "bg-red-500 text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
+      toast.error("Erro ao tentar adicionar motorista.");
     } finally {
       setNome("");
       setDataNascimento("");
@@ -169,7 +156,11 @@ export default function DialogAdicionar({
             Cadastro de Motorista
           </DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col items-center">
+        <form
+          onSubmit={handleSubmit}
+          noValidate
+          className="flex flex-col items-center"
+        >
           <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll md:overflow-auto gap-10 items-start">
             <fieldset className="border p-4 rounded w-full h-full">
               <legend className="font-semibold">Motorista</legend>
@@ -177,8 +168,6 @@ export default function DialogAdicionar({
                 <label htmlFor="nome">Nome</label>
                 <Input id="nome" onChange={(e) => setNome(e.target.value)} />
               </div>
-
-              {/* Data de Nascimento */}
               <div>
                 <label htmlFor="dataNascimento">Data de Nascimento</label>
                 <Input
@@ -187,8 +176,6 @@ export default function DialogAdicionar({
                   onChange={(e) => setDataNascimento(e.target.value)}
                 />
               </div>
-
-              {/* Telefone */}
               <div>
                 <label htmlFor="telefone">Telefone</label>
                 <Input
@@ -196,13 +183,10 @@ export default function DialogAdicionar({
                   onChange={(e) => setTelefone(e.target.value)}
                 />
               </div>
-              {/* CPF */}
               <div>
                 <label htmlFor="cpf">CPF</label>
                 <Input id="cpf" onChange={(e) => setCpf(e.target.value)} />
               </div>
-
-              {/* Tipo */}
               <div>
                 <label htmlFor="tipocliente">Tipo do cliente</label>
                 <RadioGroup
@@ -220,7 +204,6 @@ export default function DialogAdicionar({
                   </div>
                 </RadioGroup>
               </div>
-              {/* Documento */}
               <div>
                 <label htmlFor="documento">Documento</label>
                 <Input
@@ -230,7 +213,6 @@ export default function DialogAdicionar({
                   }
                 />
               </div>
-
               <div>
                 <label htmlFor="tipoDocumento">Tipo de Documento</label>
                 <RadioGroup
@@ -249,8 +231,6 @@ export default function DialogAdicionar({
                 </RadioGroup>
               </div>
             </fieldset>
-
-            {/* Endereço */}
             <fieldset className="border p-4 rounded w-full h-full">
               <legend className="font-semibold">Endereço</legend>
               <div className="">
@@ -268,7 +248,6 @@ export default function DialogAdicionar({
                   ))}
                 </select>
               </div>
-
               <div className="mt-4">
                 <label htmlFor="cidade">Cidade</label>
                 <select
@@ -286,7 +265,6 @@ export default function DialogAdicionar({
                   ))}
                 </select>
               </div>
-
               {[
                 { label: "Rua", name: "rua" },
                 { label: "Bairro", name: "bairro" },
@@ -307,11 +285,8 @@ export default function DialogAdicionar({
                 </div>
               ))}
             </fieldset>
-
             <fieldset className="border p-4 rounded w-full h-full">
               <legend className="font-semibold">Habilitação</legend>
-
-              {/* Protocolo */}
               <div>
                 <label htmlFor="protocolo">Protocolo</label>
                 <Input
@@ -325,8 +300,6 @@ export default function DialogAdicionar({
                   }
                 />
               </div>
-
-              {/* Vencimento */}
               <div className="mt-4">
                 <label htmlFor="vencimento">Vencimento</label>
                 <Input
@@ -341,8 +314,6 @@ export default function DialogAdicionar({
                   }
                 />
               </div>
-
-              {/* Categoria */}
               <div className="mt-4">
                 <label htmlFor="categoria">Categoria</label>
                 <Input
@@ -357,8 +328,6 @@ export default function DialogAdicionar({
                   }
                 />
               </div>
-
-              {/* UF */}
               <div className="mt-4">
                 <label htmlFor="ufHabilitacao">UF</label>
                 <select
@@ -377,8 +346,6 @@ export default function DialogAdicionar({
                   ))}
                 </select>
               </div>
-
-              {/* Cidade */}
               <div className="mt-4">
                 <label htmlFor="cidade">Cidade</label>
                 <select
