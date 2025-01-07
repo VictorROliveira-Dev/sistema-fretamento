@@ -25,12 +25,12 @@ export default function DialogRemover({
   setFornecedores,
 }: FornecedoresProps) {
   const [removendo, setRemovendo] = useState(false);
-  const handleRemoverFornecedor = async (id: string) => {
+  const handleRemoverFornecedor = async (id: number) => {
     setRemovendo(true);
     try {
       await api.delete(`/api/fornecedor/${id}`);
       setFornecedores((prevFornecedor) =>
-        prevFornecedor.filter((m) => m.id !== id)
+        prevFornecedor.filter((f) => f.id !== id)
       );
       toast.success("Fornecedor removido.");
     } catch (error) {
