@@ -37,11 +37,11 @@ const DespesaPDF: React.FC<ReceitaPDFProps> = ({ receita }) => {
       const columns = ["Campo", "Valor"];
       const tableData = [
         ["Data Compra", new Date(receita.dataCompra).toLocaleDateString()],
-        ["Data Emissão", new Date(receita.dataEmissao).toLocaleDateString()],
+        ["Data Emissão", new Date(receita.dataPagamento).toLocaleDateString()],
         ["Forma de Pagamento", receita.formaPagamento],
         ["N° Documento", receita.numeroDocumento],
         ["Origem Pagamento", receita.origemPagamento],
-        ["Responsável", receita.responsavel.nome],
+        ["Responsável", receita.responsavel?.nome],
         ["Valor Parcial", `R$ ${receita.valorParcial.toFixed(2)}`],
         ["Valor Total", `R$ ${receita.valorTotal.toFixed(2)}`],
         ["Pago", receita.pago ? "Sim" : "Não"],
