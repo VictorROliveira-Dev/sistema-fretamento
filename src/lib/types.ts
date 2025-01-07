@@ -36,7 +36,6 @@ export type FormData = {
   habilitacao: Habilitacao;
 };
 
-
 export interface IDocumentos {
   id: string;
   vencimento: string;
@@ -70,28 +69,14 @@ export type FormDataFornecedor = {
   tipo: string;
 };
 
-export type Motorista = {
-  id: string;
-  nome: string;
-  dataNascimento: string;
-  telefone: string;
-  documento: Documento;
-  endereco: Endereco;
-  cpf: string;
+export interface Motorista extends Responsavel {
   tipo: string;
   habilitacao: Habilitacao;
-};
+}
 
-export type Fornecedor = {
-  id: string;
-  nome: string;
-  dataNascimento: string;
-  telefone: string;
-  documento: Documento;
-  endereco: Endereco;
-  cpf: string;
+export interface Fornecedor extends Responsavel {
   tipo: string;
-};
+}
 
 export type Veiculo = {
   id: string;
@@ -120,14 +105,7 @@ export interface Cidade {
   nome: string;
 }
 
-export interface Cliente {
-  id: number;
-  nome: string;
-  dataNascimento: string;
-  telefone: string;
-  documento: Documento;
-  endereco: Endereco;
-  cpf: string;
+export interface Cliente extends Responsavel {
   tipo: string;
 }
 
@@ -201,7 +179,7 @@ export interface ViagemProgramda {
   passagens?: Passagem[];
 }
 export interface Passageiro {
-  id: number,
+  id: number;
   nome: string;
   dataNascimento: string; // ou Date se preferir trabalhar com objetos Date
   telefone: string;
@@ -211,7 +189,17 @@ export interface Passageiro {
   cartao: string;
   matricula: string;
 }
-interface Responsavel {
+export interface Responsavel {
+  id: number;
+  nome: string;
+  dataNascimento: string;
+  telefone: string;
+  documento: Documento;
+  endereco: Endereco;
+  cpf: string;
+}
+
+export interface Colaborador {
   id: number;
   nome: string;
   dataNascimento: string;
@@ -221,6 +209,42 @@ interface Responsavel {
   cpf: string;
   cartao: string;
   matricula: string;
+  ferias: Ferias[];
+}
+
+export interface Ferias {
+  id: number;
+  responsavelId: number;
+  responsavel?: Responsavel;
+  inicioFerias: string;
+  fimFerias: string;
+}
+
+export interface Peca {
+  id: number;
+  quantidade: number;
+  nome: string;
+  preco: number;
+}
+
+export interface RetiradaPeca {
+  id: number;
+  pecaId: number;
+  peca?: Peca;
+  veiculoId: number;
+  veiculo?: Veiculo;
+  quantidade: number;
+  precoTotal: number;
+  dataDeRetirada: string;
+}
+
+export interface AdicionarPeca {
+  id: number;
+  pecaId: number;
+  peca?: Peca;
+  quantidade: number;
+  precoTotal: number;
+  dataDeEntrada: string;
 }
 
 export interface Servico {
@@ -236,7 +260,7 @@ export interface Passagem {
   formaPagamento: string;
   poltrona: number;
   situacao: string;
-  passageiro?: Passageiro
+  passageiro?: Passageiro;
 }
 
 export interface IDespesas {
@@ -245,36 +269,33 @@ export interface IDespesas {
   dataCompra: string;
   origemPagamento: string;
   responsavelId: number;
-  responsavel: Responsavel;
+  responsavel?: Responsavel;
   viagemId: number;
-  viagem: Viagem;
+  viagem?: Viagem;
   vencimento: string;
   pago: boolean;
   valorTotal: number;
   valorParcial: number;
   formaPagamento: string;
   centroCusto: string;
-  responsavelNome: string;
 }
 
 export interface IReceitas {
   id: string;
-  dataEmissao: string;
+  dataPagamento: string;
   dataCompra: string;
   origemPagamento: string;
   numeroDocumento: string;
   responsavelId: number;
-  responsavel: Responsavel;
+  responsavel?: Responsavel;
   viagemId: number;
-  viagem: Viagem;
+  viagem?: Viagem;
   vencimento: string;
   pago: boolean;
   valorTotal: number;
   valorParcial: number;
   formaPagamento: string;
-  poltrona: number;
-  situacao: string;
-  passageiro?: Passageiro;
+  centroCusto: string;
 }
 
 export interface Abastecimento {
@@ -295,4 +316,12 @@ export interface Adiantamento {
   descricao: string;
   viagemId: number;
   viagem?: Viagem; // Referência ao objeto Viagem
+}
+
+export interface Ferias {
+  id: number;
+  responsavelId: number;
+  responsavel?: Responsavel;
+  inicioFerias: string;
+  fimFerias: string;
 }

@@ -17,52 +17,54 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { FormEvent, useEffect, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import {
   Cliente,
   Fornecedor,
+  IDespesas,
   IReceitas,
   Motorista,
+  Responsavel,
   Viagem,
 } from "@/lib/types";
 import { api } from "@/lib/axios";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
 import Image from "next/image";
-import loading from "../../../assets/loading.svg";
+import { toast } from "sonner";
+import loading from "@/app/assets/loading.svg";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
-interface ReceitaProps {
-  receitas: IReceitas[];
+interface DespesasProps {
   setReceitas: React.Dispatch<React.SetStateAction<IReceitas[]>>;
+  receitas: IReceitas[];
 }
 
 export default function DialogAdicionarReceita({
-  receitas,
   setReceitas,
-}: ReceitaProps) {
-  const [dataEmissao, setDataEmissao] = useState("");
-  const [dataCompra, setDataCompra] = useState("");
-  const [origemPagamento, setOrigemPagamento] = useState("");
-  const [numeroDocumento, setNumeroDocumento] = useState("");
+  receitas,
+}: DespesasProps) {
+  const [dataCompra, setDataCompra] = useState<string | "">("");
+  const [dataPagamento, setDataPagamento] = useState<string | "">("");
+  const [origemPagamento, setOrigemPagamento] = useState<string | "">("");
   const [responsavelId, setResponsavelId] = useState<number | "">();
-  const [vencimento, setVencimento] = useState("");
+  const [responsavel, setResponsavel] = useState<Responsavel>();
+  const [vencimento, setVencimento] = useState<string | undefined>("");
   //const [pago, setPago] = useState(false);
-  const [valorTotal, setValorTotal] = useState<number>();
-  const [valorParcial, setValorParcial] = useState<number>();
-  const [formaPagamento, setFormaPagamento] = useState("");
-  const [centroCusto, setCentroCusto] = useState("");
-
+  const [valorTotal, setValorTotal] = useState<number>(0);
+  const [valorParcial, setValorParcial] = useState<number>(0);
+  const [formaPagamento, setFormaPagamento] = useState<string | "">("");
+  const [centroCusto, setCentroCusto] = useState<string | "">("");
   const [motorista, setMotorista] = useState<Motorista[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [fornecedor, setFornecedor] = useState<Fornecedor[]>([]);
-  const [viagem, setViagem] = useState<Viagem[]>([]);
-  const [tipoResponsavel, setTipoResponsavel] = useState("");
-  const [viagemSelecionada, setViagemSelecionada] = useState<
-    string | undefined
-  >("");
-
-  const [adicionando, setAdicionando] = useState(false);
-
+  const [viagems, setViagems] = useState<Viagem[]>([]);
+  const [tipoResponsavel, setTipoResponsavel] = useState<string | "">("");
+  const [numeroDocumento, setNumeroDocumento] = useState<string>("");
+  const [viagemId, setViagemId] = useState<number>(0);
+  const [editando, setEditando] = useState(false);
+  const [viagem, setViagem] = useState<Viagem>();
+  const router = useRouter();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -81,7 +83,7 @@ export default function DialogAdicionarReceita({
         setMotorista(motoristaResponse.data.data);
         setClientes(clienteResponse.data.data);
         setFornecedor(fornecedorResponse.data.data);
-        setViagem(viagemResponse.data.data);
+        setViagems(viagemResponse.data.data);
       } catch (error) {
         console.log("Erro ao tentar recuperar os dados", error);
       }
@@ -90,32 +92,33 @@ export default function DialogAdicionarReceita({
     fetchData();
   }, []);
   const getClienteNome = (clientId: number) => {
+    if (!clientes) return "Carregando clientes...";
     const cliente = clientes.find((cliente) => cliente.id === clientId);
     return cliente ? cliente.nome : "Cliente não encontrado";
   };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setAdicionando(true);
+    setEditando(true);
 
     const receitaData = {
-      dataEmissao,
-      dataCompra,
-      origemPagamento,
-      numeroDocumento,
+      dataPagamento: dataPagamento,
+      dataCompra: dataCompra,
+      origemPagamento: origemPagamento,
       responsavelId: Number(responsavelId),
-      viagemId: Number(viagemSelecionada),
-      vencimento,
-      //pago,
-      valorTotal,
-      valorParcial,
-      formaPagamento,
-      centroCusto,
-    };
+      viagemId: Number(viagemId),
+      vencimento: vencimento,
+      numeroDocumento: numeroDocumento,
+      valorTotal: valorTotal,
+      valorParcial: valorParcial,
+      formaPagamento: formaPagamento,
+      centroCusto: centroCusto,
+      responsavel: responsavel,
+      viagem: viagem,
+    } as IReceitas;
 
     try {
-      const response = await api.post("/api/receita", receitaData);
-      setReceitas([...receitas, response.data.data]);
+      const response = await api.post("api/receita", receitaData);
+      setReceitas([...receitas, receitaData]);
       toast.success("Receita adicionada.", {
         className: "text-white font-semibold border-none shadow-lg",
         style: {
@@ -123,28 +126,18 @@ export default function DialogAdicionarReceita({
           padding: "16px",
         },
       });
-      console.log("Receita adicionada com sucesso", response.data.data);
+      setEditando(false);
     } catch (error) {
-      toast.error("Erro ao tentar adicionar receita.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
-      console.log("erro ao tentar adicionar receita", error);
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        } else {
+          toast.error("Erro ao tentar remover peca.");
+        }
+      }
     } finally {
-      setDataEmissao("");
-      setDataCompra("");
-      setOrigemPagamento("");
-      setNumeroDocumento("");
-      setResponsavelId("");
-      setVencimento("");
-      setValorTotal(0);
-      setValorParcial(0);
-      setFormaPagamento("");
-      setCentroCusto("");
-      setAdicionando(false);
+      setEditando(false);
     }
   };
 
@@ -164,16 +157,16 @@ export default function DialogAdicionarReceita({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="bg-green-600 hover:bg-green-500 md:w-[200px] px-2 py-1 rounded-md text-white text-center cursor-pointer transition-all">
-          Adicionar Receita
+        <span className="bg-green-600 hover:bg-green-500 w-[280px] md:w-[200px] p-1 text-center rounded-md text-white cursor-pointer transition-all">
+          Adicionar Despesa
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-[850px] h-screen md:h-[690px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
+      <DialogContent className="md:w-[850px] h-screen md:h-auto flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Cadastro de Receita</DialogTitle>
         </DialogHeader>
         <fieldset className="border p-4 rounded w-full">
-          <legend className="font-semibold">Receitas</legend>
+          <legend className="font-semibold">Informacoes</legend>
           <form
             className="w-full flex flex-col items-center"
             onSubmit={handleSubmit}
@@ -182,6 +175,7 @@ export default function DialogAdicionarReceita({
               <div>
                 <label htmlFor="centrocusto">Centro de Custo:</label>
                 <Select
+                  required
                   name="centrocusto"
                   value={centroCusto}
                   onValueChange={(value) => setCentroCusto(value)}
@@ -204,13 +198,16 @@ export default function DialogAdicionarReceita({
                 </Select>
               </div>
               <div className="flex flex-col">
-                <label htmlFor="tipoResponsavel">Tipo Responsável:</label>
+                <label htmlFor="origemPagamento">Tipo Responsável:</label>
                 <select
-                  name="tipoResponsavel"
+                  required
+                  name="origemPagamento"
                   value={tipoResponsavel}
                   onChange={(e) => {
-                    setTipoResponsavel(e.target.value);
+                    const selectedType = e.target.value;
+                    setTipoResponsavel(selectedType);
                     setResponsavelId("");
+                    setOrigemPagamento(selectedType);
                   }}
                   className="w-[250px] border rounded-md p-2"
                 >
@@ -225,11 +222,18 @@ export default function DialogAdicionarReceita({
               <div className="flex flex-col">
                 <label htmlFor="responsavel">Responsável:</label>
                 <select
+                  required
                   name="responsavel"
                   value={responsavelId}
-                  onChange={(e) =>
-                    setResponsavelId(Number(e.target.value) || "")
-                  }
+                  onChange={(e) => {
+                    const responsavelSelecionado = getResponsaveis().find(
+                      (r) => r.id === Number(e.target.value)
+                    );
+                    setResponsavelId(
+                      responsavelSelecionado ? responsavelSelecionado.id : 0
+                    );
+                    setResponsavel(responsavelSelecionado || undefined); // Atualiza o estado com o objeto completo
+                  }}
                   className="w-[250px] border rounded-md p-2"
                   disabled={!tipoResponsavel}
                 >
@@ -245,33 +249,47 @@ export default function DialogAdicionarReceita({
               </div>
               <div className="flex flex-col">
                 <label htmlFor="viagem">Viagem:</label>
-                <select
+                <Select
+                  required
                   name="viagem"
-                  value={viagemSelecionada}
-                  onChange={(e) => setViagemSelecionada(e.target.value)}
-                  className="w-[250px] border rounded-md p-2"
+                  value={viagemId.toString()}
+                  onValueChange={(e) => {
+                    const viagemSelecionada = viagems.find(
+                      (r) => r.id === Number(e)
+                    );
+                    setViagemId(viagemSelecionada ? viagemSelecionada.id : 0);
+                    setViagem(viagemSelecionada || undefined); // Atualiza o estado com o objeto completo
+                  }}
                 >
-                  <option value="" disabled>
-                    Selecione a viagem...
-                  </option>
-                  {viagem.map((viagem) => (
-                    <option key={viagem.id} value={viagem.id.toString()}>
-                      {new Date(
-                        viagem.dataHorarioSaida.data
-                      ).toLocaleDateString("pt-BR")}{" "}
-                      | {getClienteNome(viagem.clienteId)}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-[250px]">
+                    <SelectValue placeholder="Selecione..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {viagems.map((viagem) => (
+                        <SelectItem
+                          key={viagem.id}
+                          value={viagem.id.toString()}
+                        >
+                          {new Date(
+                            viagem.dataHorarioSaida.data
+                          ).toLocaleDateString("pt-BR")}{" "}
+                          | {getClienteNome(viagem.clienteId)}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
               </div>
               <div className="flex flex-col">
-                <label htmlFor="dataEmissao">Data Emissão:</label>
+                <label htmlFor="dataPagamento">Data Pagamento:</label>
                 <Input
                   type="date"
-                  name="dataEmissao"
+                  name="dataPagamento"
                   className="border-2 font-medium w-[250px]"
-                  value={dataEmissao}
-                  onChange={(e) => setDataEmissao(e.target.value.toString())}
+                  value={dataPagamento}
+                  onChange={(e) => setDataPagamento(e.target.value)}
+                  required
                 />
               </div>
               <div className="flex flex-col">
@@ -281,17 +299,8 @@ export default function DialogAdicionarReceita({
                   name="DataCompra"
                   className="border-2 font-medium w-[250px]"
                   value={dataCompra}
-                  onChange={(e) => setDataCompra(e.target.value.toString())}
-                />
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="numeroDocumento">Número Documento:</label>
-                <Input
-                  name="numeroDocumento"
-                  placeholder="Digite o número..."
-                  className="border-2 font-medium w-[250px]"
-                  value={numeroDocumento}
-                  onChange={(e) => setNumeroDocumento(e.target.value)}
+                  onChange={(e) => setDataCompra(e.target.value)}
+                  required
                 />
               </div>
               <div className="flex flex-col">
@@ -301,7 +310,8 @@ export default function DialogAdicionarReceita({
                   name="vencimento"
                   className="border-2 font-medium w-[250px]"
                   value={vencimento}
-                  onChange={(e) => setVencimento(e.target.value.toString())}
+                  onChange={(e) => setVencimento(e.target.value)}
+                  required
                 />
               </div>
               <div className="flex flex-col">
@@ -311,24 +321,26 @@ export default function DialogAdicionarReceita({
                   name="valorTotal"
                   placeholder="Digite o valor..."
                   className="border-2 font-medium w-[250px]"
-                  value={valorTotal}
+                  value={valorTotal === 0 ? "" : valorTotal}
                   onChange={(e) => setValorTotal(Number(e.target.value))}
+                  required
                 />
               </div>
               <div className="flex flex-col">
-                <label htmlFor="valorParcial">Valor Parcial:</label>
+                <label htmlFor="valorParcial">Valor Pago:</label>
                 <Input
                   type="number"
                   name="valorParcial"
                   placeholder="Digite o valor..."
                   className="border-2 font-medium w-[250px]"
-                  value={valorParcial}
+                  value={valorParcial === 0 ? "" : valorParcial}
                   onChange={(e) => setValorParcial(Number(e.target.value))}
                 />
               </div>
               <div>
                 <label htmlFor="formaPagamento">Forma Pagamento:</label>
                 <Select
+                  required
                   name="formaPagamento"
                   value={formaPagamento}
                   onValueChange={(value) => setFormaPagamento(value)}
@@ -348,13 +360,25 @@ export default function DialogAdicionarReceita({
                   </SelectContent>
                 </Select>
               </div>
+              <div className="flex flex-col">
+                <label htmlFor="documento">Numero documento:</label>
+                <Input
+                  type="text"
+                  name="documento"
+                  placeholder="Digite o valor..."
+                  className="border-2 font-medium w-[250px]"
+                  value={numeroDocumento}
+                  onChange={(e) => setNumeroDocumento(e.target.value)}
+                  required
+                />
+              </div>
             </div>
             <DialogFooter className="flex items-center gap-2 mt-10">
               <Button type="submit" className="w-[250px]">
-                {adicionando ? (
+                {editando ? (
                   <Image
                     src={loading}
-                    alt="carregando"
+                    alt="loading"
                     className="text-center animate-spin"
                   />
                 ) : (

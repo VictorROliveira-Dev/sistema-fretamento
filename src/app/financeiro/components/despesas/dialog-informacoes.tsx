@@ -62,10 +62,8 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
             Despesa # {despesa.id}
           </DialogTitle>
         </DialogHeader>
-
         <ScrollArea className="h-[70vh] pr-4">
           <div className="space-y-6">
-            {/* Status e Valores */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Status e Valores</h3>
               <div className="grid gap-3">
@@ -82,7 +80,13 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
                         : "destructive"
                     }
                   >
-                    {getStatusPagamento(despesa.pago, despesa.valorParcial, despesa.valorTotal) ? "Pago" : "Pendente"}
+                    {getStatusPagamento(
+                      despesa.pago,
+                      despesa.valorParcial,
+                      despesa.valorTotal
+                    )
+                      ? "Pago"
+                      : "Pendente"}
                   </Badge>
                 </div>
                 <div className="flex items-center gap-2">
@@ -97,10 +101,7 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Datas */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Datas</h3>
               <div className="grid gap-3">
@@ -118,10 +119,7 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Informações de Pagamento */}
             <section>
               <h3 className="text-lg font-semibold mb-3">
                 Informações de Pagamento
@@ -141,10 +139,7 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Responsável e Viagem */}
             <section>
               <h3 className="text-lg font-semibold mb-3">
                 Responsável e Viagem
@@ -152,7 +147,10 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
               <div className="grid gap-3">
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4 text-muted-foreground" />
-                  <span>Responsável: {despesa.responsavel.nome}</span>
+                  <span>
+                    Responsável:{" "}
+                    {despesa.responsavel ? despesa.responsavel.nome : "n/a"}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Car className="h-4 w-4 text-muted-foreground" />

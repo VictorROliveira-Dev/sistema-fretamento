@@ -23,15 +23,21 @@ import DialogAdicionarDespesa from "./components/despesas/dialog-adicionar";
 import DialogAdicionarReceita from "./components/receitas/dialog-adicionar";
 import DialogRemoverReceita from "./components/receitas/dialog-remover";
 import { DialogInfo } from "./components/despesas/dialog-informacoes";
-import DialogInformacoesReceitas from "./components/receitas/dialog-informacoes";
 import DespesaPDF from "./components/despesas/dialog-document";
+import { toast } from "sonner";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
+import { DialogInformacoesReceitas } from "./components/receitas/dialog-informacoes";
 
 export default function Financeiro() {
   const [despesas, setDespesas] = useState<IDespesas[]>([]);
   const [receitas, setReceitas] = useState<IReceitas[]>([]);
   const [dataInicio, setDataInicio] = useState<string>("");
   const [dataFinal, setDataFinal] = useState<string>("");
+  const [veiculo, setVeiculo] = useState<string>("");
   const [carregando, setCarregando] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,7 +61,7 @@ export default function Financeiro() {
     };
 
     fetchData();
-  }, [dataInicio, dataFinal]);
+  }, []);
 
   function getStatusPagamento(
     pago: boolean,
@@ -68,10 +74,48 @@ export default function Financeiro() {
     return (pago = true);
   }
 
+  async function getByFilters(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      setCarregando(true);
+      // Objeto com os parâmetros
+      const params: Record<string, string> = {};
+
+      if (dataInicio) params["startDate"] = dataFinal;
+      if (dataFinal) params["endDate"] = dataFinal;
+      if (veiculo) params["prefixo"] = veiculo;
+
+      // Constrói a query string com os parâmetros
+      const queryString = new URLSearchParams(params).toString();
+
+      // Faz a requisição com a query dinâmica
+      const response = await api.get(`/despesa?${queryString}`);
+      if (!response.data.isSucces) {
+        toast("erro ao tentar buscar dados");
+        return;
+      }
+
+      setDespesas(response.data.data);
+
+      console.log(response.data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        } else {
+          toast.error("Erro ao tentar remover peca.");
+        }
+        console.error("Erro ao buscar viagens:", error);
+      }
+    } finally {
+      setCarregando(false);
+    }
+  }
 
   return (
-    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[800px]">
-      <div className="h-[700px] md:w-[1400px] mx-auto rounded-md bg-white flex flex-col">
+    <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[650px] md:max-h-[1000px]">
+      <div className="md:h-[500px] h-[550px] md:w-[1000px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
             Visualizar Finanças
@@ -90,7 +134,10 @@ export default function Financeiro() {
               </TabsList>
               <TabsContent value="despesas">
                 <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between mb-10">
-                  <form className="flex gap-2 font-bold">
+                  <form
+                    className="flex gap-2 font-bold h-[60px]"
+                    onSubmit={(e) => getByFilters(e)}
+                  >
                     <div>
                       <label htmlFor="inicio">Data inicio:</label>
                       <Input
@@ -110,6 +157,21 @@ export default function Financeiro() {
                         onChange={(e) => setDataFinal(e.target.value)}
                         className="w-[140px] md:w-[160px]"
                       />
+                    </div>
+                    <div>
+                      <label htmlFor="prefixo">Prefixo Veiculo:</label>
+                      <Input
+                        type="text"
+                        name="prefixo"
+                        value={veiculo}
+                        onChange={(e) => setVeiculo(e.target.value)}
+                        className="w-[140px] md:w-[160px]"
+                      />
+                    </div>
+                    <div className="flex items-end h-full">
+                      <Button type="submit" className="bg-blue-600">
+                        <Search className="text-white" />
+                      </Button>
                     </div>
                   </form>
                   <div className="flex items-center gap-2">
@@ -141,6 +203,9 @@ export default function Financeiro() {
                           </TableHead>
                           <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                             Responsável
+                          </TableHead>
+                          <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                            Veiculo
                           </TableHead>
                           <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                             Pago
@@ -176,7 +241,18 @@ export default function Financeiro() {
                                 : "N/A"}
                             </TableCell>
                             <TableCell className="hidden sm:table-cell">
-                              {getStatusPagamento(despesa.pago, despesa.valorParcial, despesa.valorTotal) ? "sim" : "nao"}
+                              {despesa.viagem
+                                ? despesa.viagem.veiculo!.prefixo
+                                : "N/A"}
+                            </TableCell>
+                            <TableCell className="hidden sm:table-cell">
+                              {getStatusPagamento(
+                                despesa.pago,
+                                despesa.valorParcial,
+                                despesa.valorTotal
+                              )
+                                ? "sim"
+                                : "nao"}
                             </TableCell>
                             <TableCell className="hidden sm:table-cell">
                               {despesa.centroCusto}
@@ -199,7 +275,7 @@ export default function Financeiro() {
                                   setDespesas={setDespesas}
                                 />
                                 <DespesaPDF despesa={despesa} />
-                                <DialogInfo despesa={despesa}/>
+                                <DialogInfo despesa={despesa} />
                               </div>
                             </TableCell>
                           </TableRow>
@@ -286,8 +362,11 @@ export default function Financeiro() {
                             {receita.origemPagamento}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
-                            {receita.responsavel.nome}
+                            {receita.responsavel
+                              ? receita.responsavel.nome
+                              : "N/a"}
                           </TableCell>
+
                           <TableCell className="hidden sm:table-cell">
                             {receita.pago
                               ? "sim".toUpperCase()
@@ -318,9 +397,7 @@ export default function Financeiro() {
                                   className="hover:scale-110"
                                 />
                               </Button>
-                              <DialogInformacoesReceitas
-                                receitaId={receita.id}
-                              />
+                              <DialogInformacoesReceitas receita={receita} />
                             </div>
                           </TableCell>
                         </TableRow>
