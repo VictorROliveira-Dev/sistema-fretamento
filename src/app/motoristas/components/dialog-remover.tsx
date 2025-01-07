@@ -26,7 +26,7 @@ export default function DialogRemover({
 }: MotoristasProps) {
   const [removendo, setRemovendo] = useState(false);
 
-  const handleRemoverMotorista = async (id: string) => {
+  const handleRemoverMotorista = async (id: number) => {
     setRemovendo(true);
     try {
       await api.delete(`/motorista/${id}`);
