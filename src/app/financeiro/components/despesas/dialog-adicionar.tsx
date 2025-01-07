@@ -115,7 +115,7 @@ export default function DialogAdicionarDespesa({
     } as IDespesas;
 
     try {
-      const response = await api.post("/despesa", despesasData);
+      await api.post("/despesa", despesasData);
       setDespesas([...despesas, despesasData]);
       toast.success("Despesa adicionada.", {
         className: "text-white font-semibold border-none shadow-lg",

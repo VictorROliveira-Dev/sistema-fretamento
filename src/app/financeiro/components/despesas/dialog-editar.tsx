@@ -42,7 +42,7 @@ export default function DialogEditarDespesa({
   const [motoristas, setMotoristas] = useState<Motorista[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
-  const [formaPagamento, setFormaPagamento] = useState<string | "">("");
+  //const [formaPagamento, setFormaPagamento] = useState<string | "">("");
   const [viagems, setViagems] = useState<Viagem[]>([]);
   const [tipoResponsavel, setTipoResponsavel] = useState<string | "">("");
   const [editando, setEditando] = useState(false);

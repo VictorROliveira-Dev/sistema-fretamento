@@ -21,7 +21,6 @@ import React, { FormEvent, useEffect, useState } from "react";
 import {
   Cliente,
   Fornecedor,
-  IDespesas,
   IReceitas,
   Motorista,
   Responsavel,
@@ -117,7 +116,7 @@ export default function DialogAdicionarReceita({
     } as IReceitas;
 
     try {
-      const response = await api.post("api/receita", receitaData);
+      await api.post("api/receita", receitaData);
       setReceitas([...receitas, receitaData]);
       toast.success("Receita adicionada.", {
         className: "text-white font-semibold border-none shadow-lg",
