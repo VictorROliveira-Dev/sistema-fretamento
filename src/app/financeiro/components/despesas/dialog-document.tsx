@@ -40,7 +40,7 @@ const DespesaPDF: React.FC<DespesaPDFProps> = ({ despesa }) => {
         ["Data Emissão", new Date(despesa.dataPagamento).toLocaleDateString()],
         ["Forma de Pagamento", despesa.formaPagamento],
         ["Origem Pagamento", despesa.origemPagamento],
-        ["Responsável", despesa.responsavel.nome],
+        ["Responsável", despesa.responsavel?.nome],
         ["Valor Parcial", `R$ ${despesa.valorParcial.toFixed(2)}`],
         ["Valor Total", `R$ ${despesa.valorTotal.toFixed(2)}`],
         ["Pago", despesa.pago ? "Sim" : "Não"],
