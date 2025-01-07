@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 
 interface MotoristasProps {
-  motoristaId: string;
+  motoristaId: number;
 }
 
 export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
