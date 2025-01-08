@@ -235,7 +235,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                   <TableBody>
                     {motorista?.ferias?.length ? (
                       motorista?.ferias.map((feriasAtual) => (
-                        <TableRow>
+                        <TableRow key={feriasAtual.id}>
                           <TableCell>{feriasAtual.inicioFerias}</TableCell>
                           <TableCell>{feriasAtual.fimFerias}</TableCell>
                         </TableRow>
