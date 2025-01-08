@@ -85,7 +85,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
         ...motorista!,
         ferias: motorista?.ferias ? [...motorista.ferias, ferias] : [ferias],
       });
-    } catch (error) {
+    } catch {
       toast("erro");
     } finally {
       setFerias({

@@ -164,7 +164,7 @@ export default function DialogAdicionar({
       setViagens([...viagens, viagemCriada]);
       toast.success("Viagem adicionada.");
       setAdicionando(false);
-    } catch (error) {
+    } catch {
       toast.error("Erro ao tentar adicionar viagem.");
 
       setAdicionando(false);
