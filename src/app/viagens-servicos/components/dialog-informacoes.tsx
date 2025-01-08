@@ -29,17 +29,17 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/axios";
 import { Abastecimento, Adiantamento, Viagem } from "@/lib/types";
+
 import {
   DollarSign,
+  FileText,
   Fuel,
   HandCoins,
   PlusCircle,
   ReceiptText,
 } from "lucide-react";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 
 interface TravelDialogProps {
   viagem: Viagem;
@@ -58,6 +58,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
       style: "currency",
       currency: "BRL",
     }).format(value);
+
   async function fetchViagem() {
     const response = await api.get(`viagem/${viagem.id}`);
     if (!response.data.isSucces) {
@@ -67,8 +68,13 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
 
     const viagemResponse = response.data.data;
     setViagemCompleta(viagemResponse);
-    setAbastecimento(viagemResponse.abastecimento);
-    setAdiantamento(viagemResponse.adiantamento);
+    setAbastecimento(
+      viagemResponse.abastecimento ? viagem.abastecimento : undefined
+    );
+
+    setAdiantamento(
+      viagemResponse.adiantamento ? viagem.adiantamento : undefined
+    );
   }
   useEffect(() => {
     fetchViagem();
@@ -157,20 +163,16 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
-          <Image
-            src={dadosViagemIcon}
-            alt="documento"
-            width={25}
-            className="w-6 md:w-6"
-          />
+        <span>
+          <FileText className="h-4 w-4" />
         </span>
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Informações de Viagem</DialogTitle>
+          <DialogTitle>Informações Da Viagem</DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
+          {/* Travel Details Section */}
           <Card>
             <CardHeader>
               <CardTitle>Viagem Detalhes</CardTitle>
@@ -194,17 +196,13 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 <div>
                   <Label>Data Partida</Label>
                   <p className="text-sm text-muted-foreground">
-                    {new Date(viagem.dataHorarioSaida.data).toLocaleDateString(
-                      "pt-BR"
-                    )}
+                    {viagem.dataHorarioSaida.data}
                   </p>
                 </div>
                 <div>
                   <Label>Data Retorno</Label>
                   <p className="text-sm text-muted-foreground">
-                    {new Date(
-                      viagem.dataHorarioRetorno.data
-                    ).toLocaleDateString("pt-BR")}
+                    {viagem.dataHorarioRetorno.data}
                   </p>
                 </div>
               </div>
@@ -233,7 +231,9 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               <CardTitle>
                 Valor Líquido:{" "}
                 <strong className="text-green-600">
-                  {formatCurrency(viagemCompleta.valorLiquidoViagem)}
+                  {formatCurrency(
+                    viagemCompleta ? viagemCompleta.valorLiquidoViagem : 0
+                  )}
                 </strong>
               </CardTitle>
             </CardHeader>
@@ -249,6 +249,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   </span>
                 </div>
               </Card>
+
               <Card className="flex justify-center flex-col p-2 gap-2 items-center w-min">
                 <CardTitle>Adiantamentos</CardTitle>
                 <div className="flex gap-2">
@@ -260,6 +261,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   </span>
                 </div>
               </Card>
+
               <Card className="flex flex-col justify-center p-2 gap-2 items-center w-min">
                 <CardTitle>Despesas</CardTitle>
                 <div className="flex gap-2">
@@ -267,6 +269,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   <span>{formatCurrency(viagemCompleta?.totalDespesa)}</span>
                 </div>
               </Card>
+
               <Card className="flex flex-col p-2 gap-2 items-center w-min">
                 <CardTitle>Valor Contrato</CardTitle>
                 <div className="flex gap-2">
@@ -280,6 +283,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               </Card>
             </CardContent>
           </Card>
+
           <Card className="w-full">
             <CardHeader>
               <CardTitle>Despesas</CardTitle>
@@ -294,27 +298,32 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {viagemCompleta.despesas?.map((despesa) => (
-                    <TableRow key={despesa.id}>
-                      <TableCell>
-                        {formatCurrency(despesa.valorTotal)}
-                      </TableCell>
-                      <TableCell>{despesa.origemPagamento}</TableCell>
-                      <TableCell>
-                        {despesa.pago ? (
-                          <Badge variant="secondary" className="text-white">
-                            Pago
-                          </Badge>
-                        ) : (
-                          <Badge variant="destructive">Pendente</Badge>
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {viagemCompleta.despesas != undefined ? (
+                    viagemCompleta.despesas.map((despesa) => (
+                      <TableRow key={despesa.id}>
+                        <TableCell>
+                          {formatCurrency(despesa.valorTotal)}
+                        </TableCell>
+                        <TableCell>{despesa.origemPagamento}</TableCell>
+                        <TableCell>
+                          {despesa.pago ? (
+                            <Badge variant="secondary" className="text-white">
+                              Pago
+                            </Badge>
+                          ) : (
+                            <Badge variant="destructive">Pendente</Badge>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>Sem despesas</TableRow>
+                  )}
                 </TableBody>
               </Table>
             </CardContent>
           </Card>
+
           <Card className="w-full">
             <CardHeader>
               <CardTitle>Receitas</CardTitle>
@@ -348,12 +357,14 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                       </TableCell>
                     </TableRow>
                   ) : (
-                    <TableRow></TableRow>
+                    <TableRow>Sem receitas</TableRow>
                   )}
                 </TableBody>
               </Table>
             </CardContent>
           </Card>
+
+          {/* Fueling Section */}
           <Card>
             <CardHeader>
               <CardTitle>Abastecimento da viagem</CardTitle>
@@ -426,6 +437,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                       </p>
                     </div>
                   </div>
+
                   <div className="flex gap-2">
                     <span>Km Inicial:{viagem.kmInicialVeiculo}</span>
                     <span>Km Final:{viagem.kmFinalVeiculo}</span>
@@ -447,6 +459,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                     ) : (
                       <span>Km/L: 0</span>
                     )}
+
                     {abastecimento.valorTotal > 0 ? (
                       <span>
                         Valor Litro:{" "}
@@ -466,6 +479,8 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               )}
             </CardContent>
           </Card>
+
+          {/* Advance Payment Section */}
           <Card>
             <CardHeader>
               <CardTitle>Adiantamento de viagem</CardTitle>

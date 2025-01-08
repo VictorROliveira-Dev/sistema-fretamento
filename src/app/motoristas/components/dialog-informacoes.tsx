@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 import Image from "next/image";
-import { Motorista } from "@/lib/types";
+import { Ferias, Motorista } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -21,6 +21,20 @@ import {
   Phone,
   User,
 } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 
 interface MotoristasProps {
   motoristaId: number;
@@ -28,6 +42,13 @@ interface MotoristasProps {
 
 export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
   const [motorista, setMotoristas] = useState<Motorista>();
+  const [ferias, setFerias] = useState<Ferias>({
+    id: 0,
+    responsavel: motorista,
+    responsavelId: motoristaId,
+    inicioFerias: "",
+    fimFerias: "",
+  });
 
   const fetchMotoristas = async () => {
     try {
@@ -38,11 +59,44 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
     }
   };
 
+  const verificarFeriasAtual = (feriasList: Ferias[]): boolean => {
+    const dataAtual = new Date();
+    return feriasList.some((ferias) => {
+      const inicio = new Date(ferias.inicioFerias);
+      const fim = new Date(ferias.fimFerias);
+      return dataAtual >= inicio && dataAtual <= fim;
+    });
+  };
+
   useEffect(() => {
     if (!motoristaId) return;
 
     fetchMotoristas();
   }, [motoristaId]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    try {
+      e.preventDefault();
+      const response = await api.post("/ferias", ferias);
+      if (!response.data.isSucces) {
+        toast("nao foi possivel fazer o registro");
+      }
+      setMotoristas({
+        ...motorista!,
+        ferias: motorista?.ferias ? [...motorista.ferias, ferias] : [ferias],
+      });
+    } catch (error) {
+      toast("erro");
+    } finally {
+      setFerias({
+        id: 0,
+        responsavel: motorista,
+        responsavelId: motoristaId,
+        inicioFerias: "",
+        fimFerias: "",
+      });
+    }
+  }
 
   return (
     <Dialog>
@@ -61,10 +115,21 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
           <DialogTitle className="flex items-center gap-2 text-xl">
             <User className="h-5 w-5" />
             {motorista?.nome ?? "Carregando.."}
+            {motorista?.ferias ? (
+              verificarFeriasAtual(motorista.ferias) ? (
+                <Badge className="bg-red-600">De Folga</Badge>
+              ) : (
+                <Badge className="bg-green-600">Trabalhando</Badge>
+              )
+            ) : (
+              <Badge className="bg-green-600">Trabalhando</Badge>
+            )}
           </DialogTitle>
         </DialogHeader>
+
         <ScrollArea className="h-[70vh] pr-4">
           <div className="space-y-6">
+            {/* Informações Pessoais */}
             <section>
               <h3 className="text-lg font-semibold mb-3">
                 Informações Pessoais
@@ -89,7 +154,10 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                 </div>
               </div>
             </section>
+
             <Separator />
+
+            {/* Documento */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Documento</h3>
               <div className="grid gap-3">
@@ -102,7 +170,10 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                 </div>
               </div>
             </section>
+
             <Separator />
+
+            {/* Endereço */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Endereço</h3>
               <div className="grid gap-3">
@@ -120,7 +191,10 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                 </div>
               </div>
             </section>
+
             <Separator />
+
+            {/* Habilitação */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Habilitação</h3>
               <div className="grid gap-3">
@@ -146,6 +220,66 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                     </p>
                   </div>
                 </div>
+              </div>
+            </section>
+            <section className="w-full">
+              <h3 className="text-lg font-semibold mb-3">Férias</h3>
+              <Card>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Data Inicio</TableHead>
+                      <TableHead>Data DataFinal</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {motorista?.ferias?.length ? (
+                      motorista?.ferias.map((feriasAtual) => (
+                        <TableRow>
+                          <TableCell>{feriasAtual.inicioFerias}</TableCell>
+                          <TableCell>{feriasAtual.fimFerias}</TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow className="text-black">
+                        <TableCell>Sem registros</TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </Card>
+
+              <div className="w-full mt-4">
+                <form
+                  onSubmit={(e) => handleSubmit(e)}
+                  className="w-full flex gap-2 items-end"
+                >
+                  <div>
+                    <Label>Inicio Ferias</Label>
+                    <Input
+                      type="date"
+                      value={ferias?.inicioFerias}
+                      onChange={(e) =>
+                        setFerias({ ...ferias, inicioFerias: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Label>Fim Ferias</Label>
+                    <Input
+                      type="date"
+                      value={ferias?.fimFerias}
+                      onChange={(e) =>
+                        setFerias({ ...ferias, fimFerias: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div>
+                    <Button type="submit" className="bg-blue-600">
+                      Registrar Novo Periodo
+                    </Button>
+                  </div>
+                </form>
               </div>
             </section>
           </div>

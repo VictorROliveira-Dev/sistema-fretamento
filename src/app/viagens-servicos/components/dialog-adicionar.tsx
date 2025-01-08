@@ -152,12 +152,21 @@ export default function DialogAdicionar({
         );
         return;
       }
-      setViagens([...viagens, response.data.data]);
+
+      let viagemCriada = response.data.data as Viagem;
+      viagemCriada = {
+        ...viagemCriada,
+        despesas: [],
+        veiculo: viagem.veiculo,
+        motorista: viagem.motorista,
+        cliente: viagem.cliente,
+      };
+      setViagens([...viagens, viagemCriada]);
       toast.success("Viagem adicionada.");
       setAdicionando(false);
     } catch (error) {
       toast.error("Erro ao tentar adicionar viagem.");
-      console.log(error);
+
       setAdicionando(false);
     }
   }
@@ -192,7 +201,7 @@ export default function DialogAdicionar({
     });
     axios
       .get<Cidade[]>(
-        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
+       `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
       )
       .then((response) => {
         const sortedCidades = response.data.sort((a, b) =>
@@ -264,7 +273,7 @@ export default function DialogAdicionar({
           Adicionar Viagem/Serviço
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-[90%] md:h-[700px] flex flex-col items-center h-[550px] overflow-scroll">
+      <DialogContent className="md:w-[90%] md:h-[700px] flex flex-col items-center h-screen overflow-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Viagem/Serviço
@@ -299,6 +308,7 @@ export default function DialogAdicionar({
                     </SelectContent>
                   </Select>
                 </div>
+
                 <div className="flex-1">
                   <Label htmlFor="telefone">Telefone Cliente</Label>
                   <Input
@@ -337,6 +347,7 @@ export default function DialogAdicionar({
                     </SelectContent>
                   </Select>
                 </div>
+
                 <div className="flex-1">
                   <Label htmlFor="tiposervico">Tipo da viagem</Label>
                   <Select
@@ -394,6 +405,7 @@ export default function DialogAdicionar({
                 </div>
               </fieldset>
             </div>
+
             <div className="w-full flex flex-col md:flex-row gap-2 mt-2">
               <div className="flex flex-col flex-1">
                 <div className="w-full">
@@ -421,6 +433,7 @@ export default function DialogAdicionar({
                           </SelectContent>
                         </Select>
                       </div>
+
                       <div>
                         <Label htmlFor="origem">Origem</Label>
                         <Select
@@ -452,6 +465,7 @@ export default function DialogAdicionar({
                           </SelectContent>
                         </Select>
                       </div>
+
                       <div>
                         <Label htmlFor="localsaida">Local saida</Label>
                         <Input
@@ -472,6 +486,7 @@ export default function DialogAdicionar({
                           placeholder="digite o local de saída"
                         />
                       </div>
+
                       <div>
                         <Label htmlFor="date">Data saida</Label>
                         <Input
@@ -505,6 +520,7 @@ export default function DialogAdicionar({
                         />
                       </div>
                     </div>
+
                     <div className="flex gap-2">
                       <div>
                         <Label htmlFor="saidagaragem">Saida Garagem</Label>
@@ -541,6 +557,7 @@ export default function DialogAdicionar({
                     </div>
                   </fieldset>
                 </div>
+
                 <div className="w-full">
                   <fieldset className="border-2 border-red-600 rounded-md justify-between p-4 flex flex-col md:flex-row gap-2">
                     <legend>Local Final / Destino / Retorno</legend>
@@ -566,6 +583,7 @@ export default function DialogAdicionar({
                           </SelectContent>
                         </Select>
                       </div>
+
                       <div>
                         <Label htmlFor="destino">Destino</Label>
                         <Select
@@ -597,6 +615,7 @@ export default function DialogAdicionar({
                           </SelectContent>
                         </Select>
                       </div>
+
                       <div>
                         <Label htmlFor="localsaida">Local saida</Label>
                         <Input
@@ -617,6 +636,7 @@ export default function DialogAdicionar({
                           placeholder="digite o local de saída"
                         />
                       </div>
+
                       <div>
                         <Label htmlFor="date">Data retorno</Label>
                         <Input
@@ -650,6 +670,7 @@ export default function DialogAdicionar({
                         />
                       </div>
                     </div>
+
                     <div className="flex gap-2">
                       <div>
                         <Label htmlFor="saidagaragem">Data Chegada</Label>
@@ -701,6 +722,7 @@ export default function DialogAdicionar({
                 ></Textarea>
               </div>
             </div>
+
             <div className="flex flex-col md:flex-row gap-2">
               <fieldset className="rounded border border-yellow-500 p-4">
                 <legend>Veiculo</legend>
