@@ -72,6 +72,7 @@ export type FormDataFornecedor = {
 export interface Motorista extends Responsavel {
   tipo: string;
   habilitacao: Habilitacao;
+  ferias?: Ferias[];
 }
 
 export interface Fornecedor extends Responsavel {
