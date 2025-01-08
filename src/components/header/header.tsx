@@ -16,6 +16,7 @@ import financeiro from "@/app/assets/financa.png";
 import pacote from "@/app/assets/pacote.png";
 import estoque from "@/app/assets/estoque.png";
 import sino from "@/app/assets/sino.svg";
+import ferias from "@/app/assets/ferias.png";
 import {
   Sheet,
   SheetContent,
@@ -30,6 +31,7 @@ const icons = {
   motorista: motorista.src,
   clientes: clientes.src,
   fornecedores: fornecedores.src,
+  ferias: ferias.src,
   veiculos: veiculos.src,
   fretamento: pacote.src,
   manutencao: manutencao.src,
@@ -51,6 +53,7 @@ const navItems: NavItem[] = [
   { href: "/motoristas", label: "Motoristas", icon: icons.motorista },
   { href: "/clientes", label: "Clientes", icon: icons.clientes },
   { href: "/fornecedores", label: "Fornecedores", icon: icons.fornecedores },
+  { href: "/ferias", label: "Férias", icon: icons.ferias },
   { href: "/veiculos", label: "Veículos", icon: icons.veiculos },
   { href: "/viagens-servicos", label: "Fretamento", icon: icons.fretamento },
   { href: "/manutencoes", label: "Manutenções", icon: icons.manutencao },

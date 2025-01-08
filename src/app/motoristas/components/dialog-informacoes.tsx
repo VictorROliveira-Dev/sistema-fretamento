@@ -110,7 +110,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
           />
         </span>
       </DialogTrigger>
-      <DialogContent className="max-w-[90vw] md:max-w-[600px] max-h-[90vh]">
+      <DialogContent className="max-w-[90vw] md:max-w-[600px] h-auto overflow-y-scroll">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <User className="h-5 w-5" />
@@ -252,7 +252,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
               <div className="w-full mt-4">
                 <form
                   onSubmit={(e) => handleSubmit(e)}
-                  className="w-full flex gap-2 items-end"
+                  className="w-full flex flex-col md:flex-row gap-2 md:items-end"
                 >
                   <div>
                     <Label>Inicio Ferias</Label>
@@ -275,7 +275,7 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                     />
                   </div>
                   <div>
-                    <Button type="submit" className="bg-blue-600">
+                    <Button type="submit" className="bg-blue-600 w-full">
                       Registrar Novo Periodo
                     </Button>
                   </div>
