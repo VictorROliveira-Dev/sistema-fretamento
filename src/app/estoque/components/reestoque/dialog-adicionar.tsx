@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import React, { useEffect, useState } from "react";
-import { AdicionarPeca, Peca, RetiradaPeca, Veiculo } from "@/lib/types";
+import { AdicionarPeca, Peca } from "@/lib/types";
 import { api } from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
@@ -25,7 +25,7 @@ import loadingicon from "@/app/assets/loading.svg";
 import { Label } from "@radix-ui/react-label";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { SelectContent, SelectLabel } from "@radix-ui/react-select";
+import { SelectContent } from "@radix-ui/react-select";
 
 interface AdicionarProps {
   setReestoques: React.Dispatch<React.SetStateAction<AdicionarPeca[]>>;

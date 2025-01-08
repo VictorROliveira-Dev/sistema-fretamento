@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
-import { AdicionarPeca, RetiradaPeca } from "@/lib/types";
+import { AdicionarPeca } from "@/lib/types";
 import { useState } from "react";
 import { api } from "@/lib/axios";
 import { toast } from "sonner";
