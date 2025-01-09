@@ -114,17 +114,10 @@ const Header = memo(function Header() {
             />
           ))}
         </div>
-        <Image
-          src={icons.sino}
-          alt="Notificações"
-          width={45}
-          height={45}
-          className="cursor-pointer"
-        />
       </nav>
 
       {/* Menu para telas menores com Sheet */}
-      <div className="sm:hidden flex items-center justify-around p-2">
+      <div className="sm:hidden flex items-start px-2 py-4">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" onClick={() => setIsOpen(true)}>
@@ -155,13 +148,6 @@ const Header = memo(function Header() {
             </div>
           </SheetContent>
         </Sheet>
-        <Image
-          src={icons.sino}
-          alt="Notificações"
-          width={45}
-          height={45}
-          className="cursor-pointer"
-        />
       </div>
     </header>
   );
