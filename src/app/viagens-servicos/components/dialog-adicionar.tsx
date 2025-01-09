@@ -273,7 +273,7 @@ export default function DialogAdicionar({
           Adicionar Viagem/Serviço
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-[90%] md:h-[700px] flex flex-col items-center h-screen overflow-scroll">
+      <DialogContent className="md:w-[90%] md:h-[700px] flex flex-col items-center h-[570px] overflow-scroll">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Viagem/Serviço

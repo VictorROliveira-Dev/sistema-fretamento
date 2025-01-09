@@ -167,8 +167,8 @@ export default function Financeiro() {
                           type="text"
                           name="prefixo"
                           value={veiculo}
+                          placeholder="Prefixo..."
                           onChange={(e) => setVeiculo(e.target.value)}
-                          className="w-[140px] md:w-[160px]"
                         />
                       </div>
                       <div className="flex items-end h-full">
