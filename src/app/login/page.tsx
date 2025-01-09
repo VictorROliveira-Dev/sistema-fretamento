@@ -48,7 +48,7 @@ export default function Login() {
 
   return (
     <section className="h-screen bg-[#070180] flex items-center justify-center">
-      <Card className="md:w-[500px] bg-slate-50 border-none rounded-md">
+      <Card className="md:w-[500px] w-[80%] bg-slate-50 border-none rounded-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Login</CardTitle>
           <CardDescription className="font-medium">Entre com sua conta.</CardDescription>
@@ -57,7 +57,7 @@ export default function Login() {
           <form onSubmit={handleLogin}>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="email">Nome de Usuário</Label>
+                <Label htmlFor="email" className="font-semibold">Nome de Usuário</Label>
                 <Input
                   id="email"
                   type="text"
@@ -67,7 +67,7 @@ export default function Login() {
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="password">Senha</Label>
+                <Label htmlFor="password" className="font-semibold">Senha</Label>
                 <Input
                   id="password"
                   type="password"
