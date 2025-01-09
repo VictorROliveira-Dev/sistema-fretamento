@@ -144,7 +144,7 @@ export default function Financeiro() {
                         {pecas.map((peca) => (
                           <TableRow key={peca.id}>
                             <TableCell>{peca.nome}</TableCell>
-                            <TableCell>{peca.preco}</TableCell>
+                            <TableCell>R${peca.preco}</TableCell>
                             <TableCell>{peca.quantidade}</TableCell>
                             <TableCell className="flex gap-2">
                               <DialogEditarPeca
