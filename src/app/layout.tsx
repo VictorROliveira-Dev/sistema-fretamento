@@ -12,6 +12,17 @@ export const metadata: Metadata = {
   description: "Sistema de fretamento e transporte de passageiros",
   icons: {
     icon: "/favicon.ico",
+    apple: [
+      { url: "/apple-touch-icon.png" },
+      { url: "/apple-touch-icon-72x72.png", sizes: "72x72" },
+      { url: "/apple-touch-icon-114x114.png", sizes: "114x114" },
+      { url: "/apple-touch-icon-180x180.png", sizes: "180x180" },
+    ],
+  },
+  appleWebApp: {
+    title: "Sistema fretamento",
+    statusBarStyle: "black-translucent",
+    capable: true,
   },
 };
 
@@ -22,17 +33,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <head>
-        {/* Ícone para tela de início no iPhone */}
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        {/* Configurações adicionais para PWA no iOS */}
-        <meta name="apple-mobile-web-app-title" content="Sistema fretamento" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta
-          name="apple-mobile-web-app-status-bar-style"
-          content="black-translucent"
-        />
-      </head>
       <body className={` ${raleway.className} antialiased`}>
         <LayoutWrapper>{children}</LayoutWrapper>
       </body>
