@@ -20,6 +20,8 @@ import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import Image from "next/image";
 import loading from "../assets/loading-dark.svg";
+import { parseISO } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 
 export default function ViagensServicos() {
   const [minDate, setMinDate] = useState<string>("");
@@ -181,17 +183,25 @@ export default function ViagensServicos() {
                           {viagem.rota.saida.cidadeSaida}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
-                          {new Date(
-                            viagem.dataHorarioSaida.data
-                          ).toLocaleDateString("pt-BR")}
+                          {format(
+                            toZonedTime(
+                              parseISO(viagem.dataHorarioSaida.data),
+                              "UTC"
+                            ),
+                            "dd/MM/yyyy"
+                          )}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
                           {viagem.rota.retorno.cidadeSaida}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
-                          {new Date(
-                            viagem.dataHorarioRetorno.data
-                          ).toLocaleDateString("pt-BR")}
+                          {format(
+                            toZonedTime(
+                              parseISO(viagem.dataHorarioRetorno.data),
+                              "UTC"
+                            ),
+                            "dd/MM/yyyy"
+                          )}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
                           {viagem.valorContratado}
