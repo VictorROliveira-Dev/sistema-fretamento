@@ -234,7 +234,7 @@ export default function Financeiro() {
                           {retirada.quantidade}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
-                          {retirada.precoTotal}
+                          R${retirada.precoTotal}
                         </TableCell>
                         <TableCell>
                           <DialogRemoverRetirada
@@ -293,7 +293,7 @@ export default function Financeiro() {
                         </TableCell>
                         <TableCell>{reestoque.peca?.nome || "peca"}</TableCell>
                         <TableCell className="hidden sm:table-cell">{reestoque.quantidade}</TableCell>
-                        <TableCell className="hidden sm:table-cell">{reestoque.precoTotal}</TableCell>
+                        <TableCell className="hidden sm:table-cell">R${reestoque.precoTotal}</TableCell>
                         <TableCell>
                           <DialogRemoverReestoque
                             reestoque={reestoque}
