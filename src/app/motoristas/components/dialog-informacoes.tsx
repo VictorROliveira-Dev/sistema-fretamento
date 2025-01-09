@@ -35,6 +35,8 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
+import { parseISO } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 
 interface MotoristasProps {
   motoristaId: number;
@@ -236,8 +238,24 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                     {motorista?.ferias?.length ? (
                       motorista?.ferias.map((feriasAtual) => (
                         <TableRow key={feriasAtual.id}>
-                          <TableCell>{feriasAtual.inicioFerias}</TableCell>
-                          <TableCell>{feriasAtual.fimFerias}</TableCell>
+                          <TableCell>
+                            {format(
+                              toZonedTime(
+                                parseISO(feriasAtual.inicioFerias),
+                                "UTC"
+                              ),
+                              "dd/MM/yyyy"
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {format(
+                              toZonedTime(
+                                parseISO(feriasAtual.fimFerias),
+                                "UTC"
+                              ),
+                              "dd/MM/yyyy"
+                            )}
+                          </TableCell>
                         </TableRow>
                       ))
                     ) : (
