@@ -22,6 +22,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Ícone para tela de início no iPhone */}
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        {/* Configurações adicionais para PWA no iOS */}
+        <meta name="apple-mobile-web-app-title" content="Sistema fretamento" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta
+          name="apple-mobile-web-app-status-bar-style"
+          content="black-translucent"
+        />
+      </head>
       <body className={` ${raleway.className} antialiased`}>
         <LayoutWrapper>{children}</LayoutWrapper>
       </body>
