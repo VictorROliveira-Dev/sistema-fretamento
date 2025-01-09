@@ -179,7 +179,6 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
           <DialogTitle>Informações Da Viagem</DialogTitle>
         </DialogHeader>
         <div className="space-y-6">
-          {/* Travel Details Section */}
           <Card>
             <CardHeader>
               <CardTitle>Viagem Detalhes</CardTitle>
@@ -193,7 +192,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   </p>
                 </div>
                 <div>
-                  <Label>Destination</Label>
+                  <Label>Destino</Label>
                   <p className="text-sm text-muted-foreground">
                     {viagem.rota.retorno.cidadeSaida}
                   </p>
