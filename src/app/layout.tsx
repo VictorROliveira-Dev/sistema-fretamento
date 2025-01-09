@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <head>
         {/* Ícone para tela de início no iPhone */}
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

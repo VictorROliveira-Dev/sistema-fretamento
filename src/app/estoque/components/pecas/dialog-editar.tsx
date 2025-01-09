@@ -63,7 +63,7 @@ export default function DialogEditar({ setPecas, pecas, peca }: PecasProps) {
           <Image src={editicon} alt="Editar" className="w-8" />
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-[850px] h-screen md:h-auto flex flex-col items-center overflow-y-scroll md:overflow-auto">
+      <DialogContent className="md:w-[850px] h-auto md:h-auto flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Edição de peça</DialogTitle>
         </DialogHeader>

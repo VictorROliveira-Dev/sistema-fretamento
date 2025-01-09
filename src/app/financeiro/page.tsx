@@ -133,54 +133,59 @@ export default function Financeiro() {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="despesas">
-                <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between mb-10">
+                <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between mb-10 md:mb-0">
                   <form
-                    className="flex gap-2 font-bold h-[60px]"
+                    className="flex gap-2 mb-20 md:md-0 font-bold h-[60px]"
                     onSubmit={(e) => getByFilters(e)}
                   >
-                    <div>
-                      <label htmlFor="inicio">Data inicio:</label>
-                      <Input
-                        type="date"
-                        name="inicio"
-                        value={dataInicio}
-                        onChange={(e) => setDataInicio(e.target.value)}
-                        className="w-[140px] md:w-[160px]"
-                      />
+                    <div className="md:flex">
+                      <div>
+                        <label htmlFor="inicio">Data inicio:</label>
+                        <Input
+                          type="date"
+                          name="inicio"
+                          value={dataInicio}
+                          onChange={(e) => setDataInicio(e.target.value)}
+                          className="w-[140px] md:w-[160px]"
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="final">Data Final:</label>
+                        <Input
+                          type="date"
+                          name="final"
+                          value={dataFinal}
+                          onChange={(e) => setDataFinal(e.target.value)}
+                          className="w-[140px] md:w-[160px]"
+                        />
+                      </div>
                     </div>
-                    <div>
-                      <label htmlFor="final">Data Final:</label>
-                      <Input
-                        type="date"
-                        name="final"
-                        value={dataFinal}
-                        onChange={(e) => setDataFinal(e.target.value)}
-                        className="w-[140px] md:w-[160px]"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="prefixo">Prefixo Veiculo:</label>
-                      <Input
-                        type="text"
-                        name="prefixo"
-                        value={veiculo}
-                        onChange={(e) => setVeiculo(e.target.value)}
-                        className="w-[140px] md:w-[160px]"
-                      />
-                    </div>
-                    <div className="flex items-end h-full">
-                      <Button type="submit" className="bg-blue-600">
-                        <Search className="text-white" />
-                      </Button>
+                    <div className="flex gap-2">
+                      <div>
+                        <label htmlFor="prefixo">Prefixo Veiculo:</label>
+                        <Input
+                          type="text"
+                          name="prefixo"
+                          value={veiculo}
+                          onChange={(e) => setVeiculo(e.target.value)}
+                          className="w-[140px] md:w-[160px]"
+                        />
+                      </div>
+                      <div className="flex items-end h-full">
+                        <Button type="submit" className="bg-blue-600">
+                          <Search className="text-white" />
+                        </Button>
+                      </div>
                     </div>
                   </form>
                   <div className="flex items-center gap-2">
-                    <DialogAdicionarDespesa
-                      despesas={despesas}
-                      setDespesas={setDespesas}
-                    />
-                  </div>
+                  <DialogAdicionarDespesa
+                    despesas={despesas}
+                    setDespesas={setDespesas}
+                  />
                 </div>
+                </div>
+                
                 {carregando ? (
                   <div className="flex items-center justify-center">
                     <Image

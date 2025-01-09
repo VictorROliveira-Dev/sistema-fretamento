@@ -22,6 +22,8 @@ import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { format, toZonedTime } from "date-fns-tz";
+import { parseISO } from "date-fns";
 
 export default function FeriasPage() {
   const router = useRouter();
@@ -130,18 +132,30 @@ export default function FeriasPage() {
                         key={feriasAtual.id}
                         className="hover:bg-gray-200"
                       >
-                        <TableCell className="hidden sm:table-cell">
+                        <TableCell>
                           {feriasAtual.responsavel
                             ? feriasAtual.responsavel.nome
                             : "n/a"}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
-                          {feriasAtual.inicioFerias}
+                          {format(
+                            toZonedTime(
+                              parseISO(feriasAtual.inicioFerias),
+                              "UTC"
+                            ),
+                            "dd/MM/yyyy"
+                          )}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
-                          {feriasAtual.fimFerias}
+                        {format(
+                            toZonedTime(
+                              parseISO(feriasAtual.fimFerias),
+                              "UTC"
+                            ),
+                            "dd/MM/yyyy"
+                          )}
                         </TableCell>
-                        <TableCell>
+                        <TableCell className="hidden sm:table-cell">
                           {(() => {
                             const status = feriasAtivas(
                               feriasAtual.inicioFerias,

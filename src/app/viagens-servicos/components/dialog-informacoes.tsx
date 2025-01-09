@@ -29,17 +29,19 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/axios";
 import { Abastecimento, Adiantamento, Viagem } from "@/lib/types";
-
+import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 import {
   DollarSign,
-  FileText,
   Fuel,
   HandCoins,
   PlusCircle,
   ReceiptText,
 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { parseISO } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 
 interface TravelDialogProps {
   viagem: Viagem;
@@ -163,8 +165,13 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span>
-          <FileText className="h-4 w-4" />
+        <span className="hover:scale-110 hover:cursor-pointer">
+          <Image
+            src={dadosViagemIcon}
+            alt="documento"
+            width={25}
+            className="w-10 md:w-6"
+          />
         </span>
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
@@ -196,13 +203,25 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 <div>
                   <Label>Data Partida</Label>
                   <p className="text-sm text-muted-foreground">
-                    {viagem.dataHorarioSaida.data}
+                    {format(
+                      toZonedTime(
+                        parseISO(viagem.dataHorarioSaida.data),
+                        "UTC"
+                      ),
+                      "dd/MM/yyyy"
+                    )}
                   </p>
                 </div>
                 <div>
                   <Label>Data Retorno</Label>
                   <p className="text-sm text-muted-foreground">
-                    {viagem.dataHorarioRetorno.data}
+                  {format(
+                      toZonedTime(
+                        parseISO(viagem.dataHorarioRetorno.data),
+                        "UTC"
+                      ),
+                      "dd/MM/yyyy"
+                    )}
                   </p>
                 </div>
               </div>

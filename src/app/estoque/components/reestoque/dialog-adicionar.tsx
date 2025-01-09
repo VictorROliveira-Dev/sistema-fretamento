@@ -103,7 +103,7 @@ export default function DialogAdicionar({
           Registrar Reestoque
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-[850px] h-screen md:h-auto flex flex-col items-center overflow-y-scroll md:overflow-auto">
+      <DialogContent className="md:w-[850px] h-auto md:h-auto flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Reestoque de Peça</DialogTitle>
         </DialogHeader>

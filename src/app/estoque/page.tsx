@@ -174,11 +174,13 @@ export default function Financeiro() {
                       <Input
                         type="date"
                         value={dataInicio}
+                        className="w-full"
                         onChange={(e) => setDataInicio(e.target.value)}
                       />
                       <Input
                         type="date"
                         value={dataFinal}
+                        className="w-full"
                         onChange={(e) => setDataFinal(e.target.value)}
                       />
                     </div>
@@ -186,7 +188,7 @@ export default function Financeiro() {
                     <Input
                       type="text"
                       value={prefixoVeiculo}
-                      placeholder="Digite o prefixo..."
+                      placeholder="Prefixo..."
                       onChange={(e) => setPrefixoVeiculo(e.target.value)}
                     />
                     <Button type="submit" className="bg-blue-600">
@@ -254,11 +256,13 @@ export default function Financeiro() {
                     <Input
                       type="date"
                       value={dataInicio}
+                      className="w-full"
                       onChange={(e) => setDataInicio(e.target.value)}
                     />
                     <Input
                       type="date"
                       value={dataFinal}
+                      className="w-full"
                       onChange={(e) => setDataFinal(e.target.value)}
                     />
                     <Button type="submit" className="bg-blue-600">
