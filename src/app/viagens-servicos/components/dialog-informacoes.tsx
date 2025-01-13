@@ -30,18 +30,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/axios";
 import { Abastecimento, Adiantamento, Viagem } from "@/lib/types";
 import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
-import {
-  DollarSign,
-  Fuel,
-  HandCoins,
-  PlusCircle,
-  ReceiptText,
-} from "lucide-react";
+import { DollarSign, Fuel, HandCoins, ReceiptText } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { parseISO } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
+import loading from "../../assets/loading.svg";
 
 interface TravelDialogProps {
   viagem: Viagem;
@@ -49,12 +44,28 @@ interface TravelDialogProps {
 
 export function TravelDialog({ viagem }: TravelDialogProps) {
   const [viagemCompleta, setViagemCompleta] = useState<Viagem>(viagem);
-  const [adiantamento, setAdiantamento] = useState<Adiantamento | undefined>(
-    viagem.adiantamento
+  const [adiantamento, setAdiantamento] = useState<Adiantamento>(
+    viagemCompleta.adiantamento ?? {
+      id: 0,
+      tipoVerba: "",
+      verba: 0,
+      valorDeAcerto: 0,
+      diferenca: 0, // Calculado como verba - valorDeAcerto
+      descricao: "",
+      viagemId: 0,
+    }
   );
-  const [abastecimento, setAbastecimento] = useState<Abastecimento | undefined>(
-    viagem.abastecimento
+  const [abastecimento, setAbastecimento] = useState<Abastecimento>(
+    viagemCompleta.abastecimento ?? {
+      id: 0,
+      valorTotal: 0,
+      litros: 0,
+      codigoNfe: "",
+      viagemId: 0,
+    }
   );
+  const [addAbastecimento, setAddAbastecimento] = useState(false);
+  const [addAdiantamento, setAddAdiantamento] = useState(false);
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -71,45 +82,40 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
     const viagemResponse = response.data.data;
     setViagemCompleta(viagemResponse);
     setAbastecimento(
-      viagemResponse.abastecimento ? viagem.abastecimento : undefined
+      viagemResponse.abastecimento
+        ? viagemResponse.abastecimento
+        : {
+            id: 0,
+            valorTotal: 0,
+            litros: 0,
+            codigoNfe: "",
+            viagemId: viagem.id,
+          }
     );
 
     setAdiantamento(
-      viagemResponse.adiantamento ? viagem.adiantamento : undefined
+      viagemResponse.adiantamento
+        ? viagemResponse.adiantamento
+        : {
+            id: 0,
+            tipoVerba: "",
+            verba: 0,
+            valorDeAcerto: 0,
+            diferenca: 0, // Calculado como verba - valorDeAcerto
+            descricao: "",
+            viagemId: viagem.id,
+          }
     );
+
+    console.log("Viagem completa:", viagemCompleta);
   }
   useEffect(() => {
     fetchViagem();
-  }, []);
-
-  async function adicionarAdiantamento() {
-    if (adiantamento != undefined) return;
-
-    setAdiantamento({
-      id: 0,
-      tipoVerba: "",
-      verba: 0,
-      valorDeAcerto: 0,
-      diferenca: 0, // Calculado como verba - valorDeAcerto
-      descricao: "",
-      viagemId: viagem.id,
-    });
-  }
-
-  async function adicionarAbastecimento() {
-    if (abastecimento != undefined) return;
-
-    setAbastecimento({
-      id: 0,
-      valorTotal: 0,
-      litros: 0,
-      codigoNfe: "",
-      viagemId: viagem.id,
-    });
-  }
+  }, [viagem.abastecimento, viagem.adiantamento]);
 
   async function enviarAbastecimento(e: React.FormEvent) {
     e.preventDefault();
+    setAddAbastecimento(true);
     if (abastecimento !== undefined && abastecimento.id == 0) {
       const response = await api.post("abastecimento", abastecimento);
       if (!response.data.isSucces) {
@@ -129,6 +135,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
       }
 
       toast("abastecimento da viagem atualizado com sucesso");
+      setAddAbastecimento(false);
     }
   }
 
@@ -140,6 +147,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
 
   async function enviarAdiantamento(e: React.FormEvent) {
     e.preventDefault();
+    setAddAdiantamento(true);
     if (adiantamento !== undefined && adiantamento.id == 0) {
       const response = await api.post("adiantamento", adiantamento);
       if (!response.data.isSucces) {
@@ -159,6 +167,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
       }
 
       toast("abastecimento da viagem atualizado com sucesso");
+      setAddAdiantamento(false);
     }
   }
 
@@ -214,7 +223,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 <div>
                   <Label>Data Retorno</Label>
                   <p className="text-sm text-muted-foreground">
-                  {format(
+                    {format(
                       toZonedTime(
                         parseISO(viagem.dataHorarioRetorno.data),
                         "UTC"
@@ -226,10 +235,15 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label>Driver</Label>
-                  <p className="text-sm text-muted-foreground">
-                    {viagem.motorista?.nome}
-                  </p>
+                  <Label>Motoristas</Label>
+                  {viagem.motoristaViagens?.map((motorista) => (
+                    <p
+                      key={motorista.motoristaId}
+                      className="text-sm text-muted-foreground"
+                    >
+                      {motorista.motorista?.nome}
+                    </p>
+                  ))}
                 </div>
                 <div>
                   <Label>Vehicle</Label>
@@ -256,7 +270,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               </CardTitle>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-2">
-              <Card className="flex justify-center flex-col p-2 gap-2 items-center w-min">
+              <Card className="flex justify-center flex-col p-2 gap-2 items-center w-full md:w-[200px]">
                 <CardTitle>Abastecimento</CardTitle>
                 <div className="flex gap-2">
                   <Fuel className="text-yellow-500" />
@@ -268,7 +282,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 </div>
               </Card>
 
-              <Card className="flex justify-center flex-col p-2 gap-2 items-center w-min">
+              <Card className="flex justify-center flex-col p-2 gap-2 items-center w-full md:w-[200px]">
                 <CardTitle>Adiantamentos</CardTitle>
                 <div className="flex gap-2">
                   <DollarSign className="text-blue-600" />
@@ -280,7 +294,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 </div>
               </Card>
 
-              <Card className="flex flex-col justify-center p-2 gap-2 items-center w-min">
+              <Card className="flex flex-col justify-center p-2 gap-2 items-center w-full md:w-[200px]">
                 <CardTitle>Despesas</CardTitle>
                 <div className="flex gap-2">
                   <HandCoins className="text-red-600" />
@@ -288,7 +302,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 </div>
               </Card>
 
-              <Card className="flex flex-col p-2 gap-2 items-center w-min">
+              <Card className="flex flex-col p-2 gap-2 items-center md:w-[200px] w-full">
                 <CardTitle>Valor Contrato</CardTitle>
                 <div className="flex gap-2">
                   <ReceiptText className="text-green-500" />
@@ -381,227 +395,218 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               </Table>
             </CardContent>
           </Card>
-
-          {/* Fueling Section */}
           <Card>
             <CardHeader>
               <CardTitle>Abastecimento da viagem</CardTitle>
             </CardHeader>
             <CardContent>
-              {abastecimento == undefined ? (
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => adicionarAbastecimento()}
-                >
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Adicionar Registro
+              <form
+                onSubmit={enviarAbastecimento}
+                className="flex flex-col w-full"
+              >
+                <div className="w-full flex gap-2 items-start justify-evenly">
+                  <div className="grid gap-2">
+                    <Label htmlFor="valorTotal">Total Value (R$)</Label>
+                    <Input
+                      id="valorTotal"
+                      name="valorTotal"
+                      defaultValue={abastecimento?.valorTotal}
+                      onChange={(e) =>
+                        setAbastecimento({
+                          ...abastecimento!,
+                          valorTotal: Number(e.target.value),
+                        })
+                      }
+                      type="number"
+                      required
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="litros">Litros</Label>
+                    <Input
+                      id="litros"
+                      name="litros"
+                      type="number"
+                      step="0.01"
+                      defaultValue={abastecimento?.litros}
+                      required
+                      onChange={(e) =>
+                        setAbastecimento({
+                          ...abastecimento!,
+                          litros: Number(e.target.value),
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="codigoNfe">NFe de pagamento</Label>
+                    <Input
+                      id="codigoNfe"
+                      name="codigoNfe"
+                      defaultValue={abastecimento?.codigoNfe}
+                      required
+                      onChange={(e) =>
+                        setAbastecimento({
+                          ...abastecimento!,
+                          codigoNfe: e.target.value,
+                        })
+                      }
+                    />
+                    <p className="text-gray-500 text-xs">
+                      Informe quando efetuar o pagamento
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <span>Km Inicial: {viagem.kmInicialVeiculo}</span>
+                  <span>Km Final:{viagem.kmFinalVeiculo}</span>
+                  {viagem.kmFinalVeiculo > 0 ? (
+                    <span>
+                      Total:{viagem.kmFinalVeiculo - viagem.kmInicialVeiculo}{" "}
+                    </span>
+                  ) : (
+                    <span>Total: 0</span>
+                  )}
+                </div>
+                <div className="space-x-2">
+                  {viagem.kmFinalVeiculo > 0 ? (
+                    <span>
+                      Km/L:{" "}
+                      {(viagem.kmFinalVeiculo - viagem.kmInicialVeiculo) /
+                        abastecimento!.litros}
+                    </span>
+                  ) : (
+                    <span>Km/L: 0</span>
+                  )}
+
+                  {abastecimento!.valorTotal > 0 ? (
+                    <span>
+                      Valor Litro: R${" "}
+                      {calcularValorTotal(
+                        abastecimento!.valorTotal,
+                        abastecimento!.litros
+                      )}
+                    </span>
+                  ) : (
+                    <span>Valor Litro: 0</span>
+                  )}
+                </div>
+
+                <Button type="submit" className="w-full">
+                  {addAbastecimento ? (
+                    <Image
+                      src={loading}
+                      alt="loading"
+                      className="text-center animate-spin"
+                    />
+                  ) : (
+                    "Atualizar"
+                  )}
                 </Button>
-              ) : (
-                <form
-                  onSubmit={enviarAbastecimento}
-                  className="flex flex-col w-full"
-                >
-                  <div className="w-full flex gap-2 items-start justify-evenly">
-                    <div className="grid gap-2">
-                      <Label htmlFor="valorTotal">Total Value (R$)</Label>
-                      <Input
-                        id="valorTotal"
-                        name="valorTotal"
-                        value={abastecimento.valorTotal}
-                        onChange={(e) =>
-                          setAbastecimento({
-                            ...abastecimento,
-                            valorTotal: Number(e.target.value),
-                          })
-                        }
-                        type="number"
-                        required
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="litros">Litros</Label>
-                      <Input
-                        id="litros"
-                        name="litros"
-                        type="number"
-                        step="0.01"
-                        defaultValue={abastecimento.litros}
-                        required
-                        onChange={(e) =>
-                          setAbastecimento({
-                            ...abastecimento,
-                            litros: Number(e.target.value),
-                          })
-                        }
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="codigoNfe">NFe de pagamento</Label>
-                      <Input
-                        id="codigoNfe"
-                        name="codigoNfe"
-                        defaultValue={abastecimento.codigoNfe}
-                        required
-                        onChange={(e) =>
-                          setAbastecimento({
-                            ...abastecimento,
-                            codigoNfe: e.target.value,
-                          })
-                        }
-                      />
-                      <p className="text-gray-500 text-xs">
-                        Informe quando efetuar o pagamento
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <span>Km Inicial:{viagem.kmInicialVeiculo}</span>
-                    <span>Km Final:{viagem.kmFinalVeiculo}</span>
-                    {viagem.kmFinalVeiculo > 0 ? (
-                      <span>
-                        Total:{viagem.kmFinalVeiculo - viagem.kmInicialVeiculo}{" "}
-                      </span>
-                    ) : (
-                      <span>Total: 0</span>
-                    )}
-                  </div>
-                  <div className="space-x-2">
-                    {viagem.kmFinalVeiculo > 0 ? (
-                      <span>
-                        Km/L:{" "}
-                        {(viagem.kmFinalVeiculo - viagem.kmInicialVeiculo) /
-                          abastecimento.litros}
-                      </span>
-                    ) : (
-                      <span>Km/L: 0</span>
-                    )}
-
-                    {abastecimento.valorTotal > 0 ? (
-                      <span>
-                        Valor Litro:{" "}
-                        {calcularValorTotal(
-                          abastecimento.valorTotal,
-                          abastecimento.litros
-                        )}
-                      </span>
-                    ) : (
-                      <span>Valor Litro: 0</span>
-                    )}
-                  </div>
-                  <Button type="submit" className="w-full">
-                    Atualizar
-                  </Button>
-                </form>
-              )}
+              </form>
             </CardContent>
           </Card>
-
-          {/* Advance Payment Section */}
           <Card>
             <CardHeader>
               <CardTitle>Adiantamento de viagem</CardTitle>
             </CardHeader>
             <CardContent>
-              {adiantamento == undefined ? (
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => adicionarAdiantamento()}
-                >
-                  <PlusCircle className="mr-2 h-4 w-4" />
-                  Adicionar Adiantamento
+              <form
+                onSubmit={enviarAdiantamento}
+                className="grid grid-cols-2 md:grid-cols-5 gap-4 items-end"
+              >
+                <div className="grid gap-2">
+                  <Label htmlFor="tipoVerba">Origem</Label>
+                  <Select
+                    value={adiantamento!.tipoVerba}
+                    onValueChange={(e) =>
+                      setAdiantamento({ ...adiantamento!, tipoVerba: e })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Origem"></SelectValue>
+                    </SelectTrigger>
+                    <SelectContent className="">
+                      <SelectGroup>
+                        <SelectItem value="Almoço">Almoço</SelectItem>
+                        <SelectItem value="Hospedagem">Hospedagem</SelectItem>
+                        <SelectItem value="Estacionamento">
+                          Estacionamento
+                        </SelectItem>
+                        <SelectItem value="Pedagio">Pedagio</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="verba">Valor</Label>
+                  <Input
+                    id="verba"
+                    name="verba"
+                    value={adiantamento!.verba}
+                    onChange={(e) =>
+                      setAdiantamento({
+                        ...adiantamento!,
+                        verba: Number(e.target.value),
+                      })
+                    }
+                    type="number"
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="valorDeAcerto">Valor de Acerto</Label>
+                  <Input
+                    id="valorDeAcerto"
+                    name="valorDeAcerto"
+                    value={adiantamento!.valorDeAcerto}
+                    onChange={(e) =>
+                      setAdiantamento({
+                        ...adiantamento!,
+                        valorDeAcerto: Number(e.target.value),
+                      })
+                    }
+                    required
+                    type="number"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="diferenca">Diferença</Label>
+                  <Input
+                    id="diferenca"
+                    name="diferenca"
+                    value={adiantamento!.verba - adiantamento!.valorDeAcerto}
+                    required
+                    disabled
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="descricao">Descrição</Label>
+                  <Textarea
+                    id="descricao"
+                    name="descricao"
+                    defaultValue={adiantamento!.descricao}
+                    onChange={(e) =>
+                      setAdiantamento({
+                        ...adiantamento!,
+                        descricao: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                <Button type="submit" className="w-full">
+                  {addAdiantamento ? (
+                    <Image
+                      src={loading}
+                      alt="loading"
+                      className="text-center animate-spin"
+                    />
+                  ) : (
+                    "Atualizar"
+                  )}
                 </Button>
-              ) : (
-                <form
-                  onSubmit={enviarAdiantamento}
-                  className="grid grid-cols-2 md:grid-cols-5 gap-2 items-end"
-                >
-                  <div className="grid gap-2">
-                    <Label htmlFor="tipoVerba">Origem da Verba</Label>
-                    <Select
-                      value={adiantamento.tipoVerba}
-                      onValueChange={(e) =>
-                        setAdiantamento({ ...adiantamento, tipoVerba: e })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="origem da verba"></SelectValue>
-                      </SelectTrigger>
-                      <SelectContent className="">
-                        <SelectGroup>
-                          <SelectItem value="Almoço">Almoço</SelectItem>
-                          <SelectItem value="Hospedagem">Hospedagem</SelectItem>
-                          <SelectItem value="Estacionamento">
-                            Estacionamento
-                          </SelectItem>
-                          <SelectItem value="Pedagio">Pedagio</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="verba">Valor</Label>
-                    <Input
-                      id="verba"
-                      name="verba"
-                      value={adiantamento.verba}
-                      onChange={(e) =>
-                        setAdiantamento({
-                          ...adiantamento,
-                          verba: Number(e.target.value),
-                        })
-                      }
-                      type="number"
-                      required
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="valorDeAcerto">Valor de Acerto</Label>
-                    <Input
-                      id="valorDeAcerto"
-                      name="valorDeAcerto"
-                      value={adiantamento.valorDeAcerto}
-                      onChange={(e) =>
-                        setAdiantamento({
-                          ...adiantamento,
-                          valorDeAcerto: Number(e.target.value),
-                        })
-                      }
-                      required
-                      type="number"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="diferenca">Diferenca</Label>
-                    <Input
-                      id="diferenca"
-                      name="diferenca"
-                      value={adiantamento.verba - adiantamento.valorDeAcerto}
-                      required
-                      disabled
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="descricao">Description</Label>
-                    <Textarea
-                      id="descricao"
-                      name="descricao"
-                      defaultValue={adiantamento!.descricao}
-                      onChange={(e) =>
-                        setAdiantamento({
-                          ...adiantamento,
-                          descricao: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <Button type="submit" className="w-full">
-                    Atualizar
-                  </Button>
-                </form>
-              )}
+              </form>
             </CardContent>
           </Card>
         </div>

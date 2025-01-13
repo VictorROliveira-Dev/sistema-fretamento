@@ -61,6 +61,7 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
             <Receipt className="h-5 w-5" />
             Despesa # {despesa.id}
           </DialogTitle>
+          <span>{despesa.descricao}</span>
         </DialogHeader>
         <ScrollArea className="h-[70vh] pr-4">
           <div className="space-y-6">
@@ -69,6 +70,7 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
               <div className="grid gap-3">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Status:</span>
+                 
                   <Badge
                     variant={
                       getStatusPagamento(

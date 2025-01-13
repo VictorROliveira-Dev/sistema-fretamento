@@ -42,7 +42,6 @@ export default function DialogEditarDespesa({
   const [motoristas, setMotoristas] = useState<Motorista[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
-  //const [formaPagamento, setFormaPagamento] = useState<string | "">("");
   const [viagems, setViagems] = useState<Viagem[]>([]);
   const [tipoResponsavel, setTipoResponsavel] = useState<string | "">("");
   const [editando, setEditando] = useState(false);
@@ -270,6 +269,21 @@ export default function DialogEditarDespesa({
                     setDespesaEditada({
                       ...despesa,
                       dataPagamento: e.target.value,
+                    })
+                  }
+                  required
+                />
+              </div> <div className="flex flex-col">
+                <label htmlFor="descricao">Descricao:</label>
+                <Input
+                  type="text"
+                  name="descricao"
+                  className="border-2 font-medium w-[250px]"
+                  value={despesaEditada.descricao}
+                  onChange={(e) =>
+                    setDespesaEditada({
+                      ...despesa,
+                      descricao: e.target.value,
                     })
                   }
                   required

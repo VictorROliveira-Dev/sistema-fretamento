@@ -16,6 +16,8 @@ import { FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 import loading from "../../assets/loading.svg";
 import axios from "axios";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Label } from "@radix-ui/react-label";
 
 interface VeiculosProps {
   setVeiculos: React.Dispatch<React.SetStateAction<Veiculo[]>>;
@@ -41,6 +43,7 @@ export default function DialogAdicionar({
   const [modelo, setModelo] = useState("");
   const [quantidadePoltronas, setQuantidadePoltronas] = useState<number>();
   const [adicionando, setAdicionando] = useState(false);
+  const [acessoriosVeiculo, setAcessoriosVeiculo] = useState<string[]>([]); 
 
   useEffect(() => {
     axios
@@ -90,6 +93,7 @@ export default function DialogAdicionar({
       tipo,
       modelo,
       quantidadePoltronas: Number(quantidadePoltronas),
+      acessorios: acessoriosVeiculo.toString(),
     };
 
     try {
@@ -116,6 +120,12 @@ export default function DialogAdicionar({
     }
   };
 
+  const acessorios = [
+    "ar condicionado",
+   "tv",
+   "radio",
+   "banheiro",
+   ]
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -165,7 +175,7 @@ export default function DialogAdicionar({
                     name="kmAtual"
                     className="border-2 font-medium text-black w-[250px]"
                     placeholder="Digite a quilometragem atual..."
-                    value={kmAtual}
+                    value={kmAtual ? kmAtual : ""}
                     onChange={(e) => setKmAtual(e.target.value)}
                   />
                 </div>
@@ -234,7 +244,7 @@ export default function DialogAdicionar({
                     type="number"
                     className="border-2 font-medium text-black w-[250px]"
                     placeholder="Digite a capacidade..."
-                    value={capacidadeTank}
+                    value={capacidadeTank ? capacidadeTank : ""}
                     onChange={(e) => setCapacidadeTank(Number(e.target.value))}
                   />
                 </div>
@@ -243,10 +253,11 @@ export default function DialogAdicionar({
                 <div>
                   <label htmlFor="ano">Ano:</label>
                   <Input
+                    type="number"
                     name="ano"
                     className="border-2 font-medium text-black w-[250px]"
                     placeholder="Digite o ano..."
-                    value={ano}
+                    value={ano ? ano : ""}
                     onChange={(e) => setAno(Number(e.target.value))}
                   />
                 </div>
@@ -282,13 +293,21 @@ export default function DialogAdicionar({
                     name="quantidadePoltronas"
                     className="border-2 font-medium text-black w-[250px]"
                     placeholder="Digite a quantidade..."
-                    value={quantidadePoltronas}
+                    value={quantidadePoltronas ? quantidadePoltronas : ""}
                     onChange={(e) =>
                       setQuantidadePoltronas(Number(e.target.value))
                     }
                   />
                 </div>
               </div>
+            </div>
+            <div className="mt-2">
+              <Label>Acessorios</Label>
+            <ToggleGroup type="multiple">
+              {acessorios.map((nome) => (
+                 <ToggleGroupItem key={nome} onClick={() => setAcessoriosVeiculo([...acessoriosVeiculo, nome]) } value={nome }>{nome}</ToggleGroupItem>
+              ))}
+            </ToggleGroup>
             </div>
           </fieldset>
           <DialogFooter className="flex items-center gap-2 mt-10">

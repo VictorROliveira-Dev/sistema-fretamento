@@ -38,6 +38,7 @@ export default function Financeiro() {
   const [veiculo, setVeiculo] = useState<string>("");
   const [carregando, setCarregando] = useState(false);
   const router = useRouter();
+  const [statusFiltro, setStatusFiltro] = useState("todas");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -113,6 +114,16 @@ export default function Financeiro() {
     }
   }
 
+  const despesasFiltradas = despesas.filter((despesa) => {
+    if (statusFiltro === "sim") {
+      return despesa.pago; // Retorna apenas despesas pagas
+    }
+    if (statusFiltro === "nao") {
+      return !despesa.pago; // Retorna apenas despesas não pagas
+    }
+    return true; // Retorna todas as despesas
+  });
+
   return (
     <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[800px]">
       <div className="h-[700px] md:w-[1400px] mx-auto rounded-md bg-white flex flex-col">
@@ -135,7 +146,7 @@ export default function Financeiro() {
               <TabsContent value="despesas">
                 <div className="flex flex-col md:flex-row gap-2 md:gap-0 items-center justify-between mb-10 md:mb-0">
                   <form
-                    className="flex gap-2 mb-20 md:md-0 font-bold h-[60px]"
+                    className="flex flex-col md:flex-row gap-2 mb-56 md:mb-0 font-bold h-[60px]"
                     onSubmit={(e) => getByFilters(e)}
                   >
                     <div className="md:flex">
@@ -146,7 +157,7 @@ export default function Financeiro() {
                           name="inicio"
                           value={dataInicio}
                           onChange={(e) => setDataInicio(e.target.value)}
-                          className="w-[140px] md:w-[160px]"
+                          className="w-[180px] md:w-[160px]"
                         />
                       </div>
                       <div>
@@ -156,7 +167,7 @@ export default function Financeiro() {
                           name="final"
                           value={dataFinal}
                           onChange={(e) => setDataFinal(e.target.value)}
-                          className="w-[140px] md:w-[160px]"
+                          className="w-[180px] md:w-[160px]"
                         />
                       </div>
                     </div>
@@ -169,6 +180,7 @@ export default function Financeiro() {
                           value={veiculo}
                           placeholder="Prefixo..."
                           onChange={(e) => setVeiculo(e.target.value)}
+                          className="w-[180px]"
                         />
                       </div>
                       <div className="flex items-end h-full">
@@ -177,15 +189,28 @@ export default function Financeiro() {
                         </Button>
                       </div>
                     </div>
+                    <div className="flex flex-col">
+                      <label htmlFor="status">Status:</label>
+                      <select
+                        name="status"
+                        value={statusFiltro}
+                        onChange={(e) => setStatusFiltro(e.target.value)}
+                        className="w-[180px] md:w-[160px] border rounded-md px-2 py-2"
+                      >
+                        <option value="todas">Todas</option>
+                        <option value="sim">Pagas</option>
+                        <option value="nao">Não Pagas</option>
+                      </select>
+                    </div>
                   </form>
                   <div className="flex items-center gap-2">
-                  <DialogAdicionarDespesa
-                    despesas={despesas}
-                    setDespesas={setDespesas}
-                  />
+                    <DialogAdicionarDespesa
+                      despesas={despesas}
+                      setDespesas={setDespesas}
+                    />
+                  </div>
                 </div>
-                </div>
-                
+
                 {carregando ? (
                   <div className="flex items-center justify-center">
                     <Image
@@ -227,7 +252,7 @@ export default function Financeiro() {
                         </TableRow>
                       </TableHeader>
                       <TableBody className="text-center">
-                        {despesas.map((despesa) => (
+                        {despesasFiltradas.map((despesa) => (
                           <TableRow
                             key={despesa.id}
                             className="hover:bg-gray-200"

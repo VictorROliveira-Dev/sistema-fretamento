@@ -154,7 +154,7 @@ export default function DialogEditar({
                     name="kmAtual"
                     className="border-2 font-medium text-black w-[250px]"
                     placeholder="Digite a quilometragem atual..."
-                    value={veiculoState.kmAtual}
+                    value={veiculoState.kmAtual ? veiculoState.kmAtual : ""}
                     onChange={(e) =>
                       setVeiculoState({
                         ...veiculoState,
@@ -226,7 +226,7 @@ export default function DialogEditar({
                     type="number"
                     className="border-2 font-medium text-black w-[250px]"
                     placeholder="Digite a capacidade..."
-                    value={veiculoState.capacidadeTank}
+                    value={veiculoState.capacidadeTank ? veiculoState.capacidadeTank : ""}
                     onChange={(e) =>
                       setVeiculoState({
                         ...veiculoState,
@@ -243,7 +243,7 @@ export default function DialogEditar({
                     name="ano"
                     className="border-2 font-medium text-black w-[250px]"
                     placeholder="Digite o ano..."
-                    value={veiculoState.ano}
+                    value={veiculoState.ano ? veiculoState.ano : ""}
                     onChange={(e) =>
                       setVeiculoState({
                         ...veiculoState,
@@ -294,7 +294,7 @@ export default function DialogEditar({
                     name="quantidadePoltronas"
                     className="border-2 font-medium text-black w-[250px]"
                     placeholder="Digite a quantidade..."
-                    value={veiculoState.quantidadePoltronas}
+                    value={veiculoState.quantidadePoltronas ? veiculoState.quantidadePoltronas : ""}
                     onChange={(e) =>
                       setVeiculoState({
                         ...veiculoState,

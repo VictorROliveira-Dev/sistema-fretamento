@@ -59,6 +59,7 @@ export default function DialogAdicionarDespesa({
   const [fornecedor, setFornecedor] = useState<Fornecedor[]>([]);
   const [viagems, setViagems] = useState<Viagem[]>([]);
   const [tipoResponsavel, setTipoResponsavel] = useState<string | "">("");
+  const [descricao, setDescricao] = useState<string | "">("");
   const [viagemId, setViagemId] = useState<number>(0);
   const [editando, setEditando] = useState(false);
   const [viagem, setViagem] = useState<Viagem>();
@@ -155,7 +156,7 @@ export default function DialogAdicionarDespesa({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="bg-green-600 hover:bg-green-500 w-[340px] md:w-[200px] p-1 text-center rounded-md text-white cursor-pointer transition-all">
+        <span className="bg-green-600 hover:bg-green-500 w-[230px] md:w-[200px] p-1 text-center rounded-md text-white cursor-pointer transition-all">
           Adicionar Despesa
         </span>
       </DialogTrigger>
@@ -284,6 +285,17 @@ export default function DialogAdicionarDespesa({
                 <Input
                   type="date"
                   name="dataPagamento"
+                  className="border-2 font-medium w-[250px]"
+                  value={dataPagamento}
+                  onChange={(e) => setDataPagamento(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="flex flex-col">
+                <label htmlFor="descricao">Descricao:</label>
+                <Input
+                  type="text"
+                  name="descricao"
                   className="border-2 font-medium w-[250px]"
                   value={dataPagamento}
                   onChange={(e) => setDataPagamento(e.target.value)}

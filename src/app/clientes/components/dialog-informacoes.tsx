@@ -19,6 +19,8 @@ import {
   User,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import { parseISO } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 interface InfoProps {
   cliente: Cliente;
 }
@@ -26,7 +28,7 @@ export default function DialogInformacoes({ cliente }: InfoProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110">
+        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer">
           <Image
             src={dadosViagemIcon}
             alt="documento"
@@ -57,7 +59,10 @@ export default function DialogInformacoes({ cliente }: InfoProps) {
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span>
                     Data de Nascimento:{" "}
-                    {new Date(cliente.dataNascimento).toLocaleDateString()}
+                    {format(
+                      toZonedTime(parseISO(cliente.dataNascimento), "UTC"),
+                      "dd/MM/yyyy"
+                    )}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">

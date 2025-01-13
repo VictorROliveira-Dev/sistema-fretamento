@@ -44,6 +44,8 @@ export default function DialogAdicionar({
   const [cidadesSaida, setCidadesSaida] = useState<Cidade[]>([]);
   const [ufsRetorno, setUfsRetorno] = useState<Uf[]>([]);
   const [cidadesRetorno, setCidadesRetorno] = useState<Cidade[]>([]);
+  const [motorista1, setMotorista1] = useState<number >(0);
+  const [motorista2, setMotorista2] = useState<number >(0);
   const [viagem, setViagem] = useState<Viagem>({
     id: 0,
     rota: {
@@ -82,7 +84,8 @@ export default function DialogAdicionar({
     valorContratado: 0,
     itinerario: "",
     veiculoId: 0,
-    motoristaId: 0,
+    motoristaViagens: [],
+    motoristasId : [],
     kmInicialVeiculo: 0,
     kmFinalVeiculo: 0,
     despesas: [],
@@ -110,6 +113,7 @@ export default function DialogAdicionar({
     }
 
     setMotoristas(response.data.data);
+
   }
 
   async function fetchVeiculos() {
@@ -158,8 +162,12 @@ export default function DialogAdicionar({
         ...viagemCriada,
         despesas: [],
         veiculo: viagem.veiculo,
-        motorista: viagem.motorista,
+        motoristasId: viagem.motoristasId,
         cliente: viagem.cliente,
+        motoristaViagens: viagemCriada.motoristaViagens.map((m) => ({
+          ...m,
+          motorista: motoristas.find((motorista) => motorista.id === m.motoristaId),
+        })),
       };
       setViagens([...viagens, viagemCriada]);
       toast.success("Viagem adicionada.");
@@ -225,14 +233,31 @@ export default function DialogAdicionar({
     }));
   }
 
-  function selecionarMotorista(id: number) {
-    const motoristaSelecionado = motoristas.find((m) => Number(m.id) === id);
-    setViagem((prevViagem) => ({
-      ...prevViagem,
-      motoristaId: id,
-      motorista: motoristaSelecionado,
-    }));
+  function selecionarMotorista(id: number, motorista: number) {
+    if (motorista === 1) {
+      // Atualiza motorista1 e reinicia a lista com apenas motorista1
+      setMotorista1(id);
+      setMotorista2(0); // Reseta motorista2
+      setViagem({
+        ...viagem,
+        motoristasId: [id], // Lista com apenas motorista1
+      });
+    } else if (motorista === 2 && motorista1 !== motorista2) {
+      // Atualiza motorista2 sem remover motorista1 da lista
+      setMotorista2(id);
+      setViagem((prevViagem) => ({
+        ...prevViagem,
+        motoristasId: [
+          motorista1, // Garante que motorista1 permaneça na lista
+          ...prevViagem.motoristasId.filter((m) => m !== motorista2 && m !== motorista1), // Remove apenas o antigo motorista2
+          id, // Adiciona o novo motorista2
+        ],
+      }));
+    }
+  
+    console.log(motorista1, motorista2);  
   }
+  
 
   function selecionarCliente(id: number) {
     const clienteSelecionado = clientes.find((c) => Number(c.id) === id);
@@ -260,8 +285,6 @@ export default function DialogAdicionar({
   ];
   const status_viagem = [
     { nome: "Pendente", valor: "PENDENTE" },
-    { nome: "Orcamento", valor: "ORCAMENTO" },
-    { nome: "Agendado", valor: "AGENDADO" },
     { nome: "Confirmado", valor: "CONFIRMADO" },
     { nome: "Finalizado", valor: "FINALIZADO" },
     { nome: "Cancelado", valor: "TURISMO_RELIGIOSO" },
@@ -279,7 +302,7 @@ export default function DialogAdicionar({
             Cadastro de Viagem/Serviço
           </DialogTitle>
         </DialogHeader>
-        <form className="w-full" onSubmit={handleSubmit}>
+        <form className="w-full" onSubmit={(e) => handleSubmit(e)}>
           <div className="flex h-full overflow-y-scroll md:overflow-auto flex-col">
             <div className="w-full flex flex-col md:flex-row md:h-[200px] justify-evenly gap-4">
               <fieldset className="border h-[200px] border-blue-900 rounded-md p-4 flex-1 flex-col md:flex-row flex gap-2">
@@ -709,7 +732,7 @@ export default function DialogAdicionar({
                 </div>
               </div>
               <div className="flex flex-col md:min-w-[20%]">
-                <Label htmlFor="intinerario" className="text-md">
+                <Label htmlFor="itinerario" className="text-md">
                   Itinerario
                 </Label>
                 <Textarea
@@ -758,10 +781,11 @@ export default function DialogAdicionar({
               <fieldset className="rounded border border-blue-500 p-4">
                 <legend>Motorista</legend>
                 <div>
-                  <Label>Motorista</Label>
+                  <Label htmlFor="motorista1">Motorista 1</Label>
                   <Select
-                    onValueChange={(e) => selecionarMotorista(Number(e))}
-                    name="ufsaida"
+                    
+                    onValueChange={(e) =>   selecionarMotorista(Number(e),1) }
+                    name="motorista1"
                     required
                   >
                     <SelectTrigger className="w-auto">
@@ -780,11 +804,37 @@ export default function DialogAdicionar({
                       </SelectGroup>
                     </SelectContent>
                   </Select>
+
+                  <Label htmlFor="motorista2">Motorista 2</Label>
+                  <Select
+                    onValueChange={(e) => selecionarMotorista(Number(e),2)}
+                    name="motorista2"
+                    disabled={motorista1 === 0}
+                    
+                  >
+                    <SelectTrigger className="w-auto">
+                      <SelectValue placeholder="Selecionar Motorista" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="0">Nenhum</SelectItem>
+                        {motoristas.filter(m => m.id !== motorista1).map((motorista) => (
+                          <SelectItem
+                            key={motorista.id}
+                            value={motorista.id.toString()}
+                          >
+                            {motorista.nome}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
               </fieldset>
               <div>
                 <Label htmlFor="status">Situacao da viagem</Label>
                 <Select
+                  value={viagem.status}
                   onValueChange={(e) => setViagem({ ...viagem, status: e })}
                   name="status"
                 >

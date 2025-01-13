@@ -22,7 +22,7 @@ import editIcon from "@/app/assets/edit.svg";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
-import { Cidade, Uf, Viagem } from "@/lib/types";
+import { Cidade, Motorista, Uf, Veiculo, Viagem } from "@/lib/types";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -44,6 +44,27 @@ export default function DialogEditar({
   const [cidadesVolta, setCidadesVolta] = useState<Cidade[]>([]);
   const [viagem, setViagem] = useState<Viagem>(viagemprop);
   const [editando, setEditando] = useState(false);
+  const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
+  const [motoristas, setMotoristas] = useState<Motorista[]>([]);
+  const [motorista1, setMotorista1] = useState<number>(viagemprop.motoristaViagens.length > 0 ? viagemprop.motoristaViagens[0].motoristaId : 0);
+  const [motorista2, setMotorista2] = useState<number>(viagemprop.motoristaViagens.length > 1 ? viagemprop.motoristaViagens[1].motoristaId : 0);
+  async function fetchMotoristas() {
+    try {
+      const response = await api.get("/motorista");
+      setMotoristas(response.data.data);
+    } catch (error) {
+      console.log("erro", error);
+    }
+  }
+
+  async function fetchVeiculos() {
+    try {
+      const response = await api.get("/veiculo");
+      setVeiculos(response.data.data);
+    } catch (error) {
+      console.log("Erro ao capturar veículos", error);
+    }
+  }
 
   useEffect(() => {
     axios
@@ -58,22 +79,53 @@ export default function DialogEditar({
         console.error("Error fetching UFs:", error);
       });
 
+    fetchVeiculos();
+    fetchMotoristas();
     handleUfSaidaChange(viagem.rota.saida.ufSaida);
     handleUfDestinoChange(viagem.rota.retorno.ufSaida);
   }, []);
 
+  function selecionarVeiculo(id: number) {
+    const veiculoSelecionado = veiculos.find((v) => Number(v.id) === id);
+    setViagem((prevViagem) => ({
+      ...prevViagem,
+      veiculoId: id,
+      kmInicialVeiculo:
+        Number(veiculoSelecionado?.kmAtual) || prevViagem.kmInicialVeiculo,
+      veiculo: veiculoSelecionado,
+    }));
+  }
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setEditando(true);
 
     try {
+      if(motorista1 === 0 ){
+        toast("Selecione um motorista novamente");	
+        return
+      }
+      const motoristasId = [motorista1, motorista2].filter((m) => m !== 0);
+      setViagem({...viagem, motoristasId: motoristasId});
       const response = await api.put(`viagem/${viagem.id}`, viagem);
       if (!response.data.isSucces) {
         toast.error("Erro ao tentar atualizar viagem.");
         return;
       }
       const viagensAtualizada = viagens.filter((v) => v.id !== viagem.id);
-      setViagens([...viagensAtualizada, viagem]);
+      let viagemCriada = response.data.data as Viagem;
+      viagemCriada = {
+        ...viagemCriada,
+        despesas: [],
+        veiculo: viagem.veiculo,
+        motoristasId: viagem.motoristasId,
+        cliente: viagem.cliente,
+        motoristaViagens: viagemCriada.motoristaViagens.map((m) => ({
+          ...m,
+          motorista: motoristas.find((motorista) => motorista.id === m.motoristaId),
+        })),
+      } ;
+      console.log(viagemCriada);
+      setViagens([...viagensAtualizada, {...viagemCriada}]);
       toast.success("Viagem atualizada.");
     } catch {
       toast.error("Erro ao tentar atualizar viagem.");
@@ -125,6 +177,36 @@ export default function DialogEditar({
       });
   };
 
+  function selecionarMotorista(id: number, motorista: number) {
+    if (motorista === 1) {
+      // Atualiza motorista1 e reinicia a lista com apenas motorista1
+      setMotorista1(id);
+      setMotorista2(0); // Reseta motorista2
+      setViagem({
+        ...viagem,
+        motoristasId: [id], // Lista com apenas motorista1
+      });
+    } else if (motorista === 2 && motorista1 !== motorista2) {
+      // Atualiza motorista2 sem remover motorista1 da lista
+
+      setMotorista2(id);
+      setViagem((prevViagem) => ({
+        ...prevViagem,
+        motoristasId: [
+          motorista1, // Garante que motorista1 permaneça na lista
+          ...(prevViagem.motoristasId
+            ? prevViagem.motoristasId.filter(
+                (m) => m !== motorista2 && m !== motorista1
+              )
+            : []), // Remove apenas o antigo motorista2
+          id !== 0 ? id : null, // Adiciona o novo motorista2 apenas se id for diferente de 0
+        ].filter((m) => m !== null), // Remove valores null ou indesejados da lista
+      }));
+    }
+
+    console.log(motorista1, motorista2);
+  }
+
   const servicos = [
     { nome: "Turismo", valor: "TURISMO" },
     { nome: "Escolar", valor: "ESCOLAR" },
@@ -143,8 +225,6 @@ export default function DialogEditar({
   ];
   const status_viagem = [
     { nome: "Pendente", valor: "PENDENTE" },
-    { nome: "Orcamento", valor: "ORCAMENTO" },
-    { nome: "Agendado", valor: "AGENDADO" },
     { nome: "Confirmado", valor: "CONFIRMADO" },
     { nome: "Finalizado", valor: "FINALIZADO" },
     { nome: "Cancelado", valor: "TURISMO_RELIGIOSO" },
@@ -590,13 +670,12 @@ export default function DialogEditar({
                 </div>
               </div>
               <div className="flex flex-col md:min-w-[20%]">
-                <Label htmlFor="intinerario" className="text-md">
+                <Label htmlFor="itinerario" className="text-md">
                   Itinerario
                 </Label>
                 <Textarea
                   value={viagem.itinerario}
                   name="itinerario"
-                  id=""
                   className="border border-black rounded-md h-full"
                   onChange={(e) =>
                     setViagem({ ...viagem, itinerario: e.target.value })
@@ -608,53 +687,91 @@ export default function DialogEditar({
               <fieldset className="rounded border border-yellow-500 p-4">
                 <legend>Veiculo</legend>
                 <div>
-                  <span>
-                    Placa/Prefixo: <strong>{viagem.veiculo?.placa}</strong> -{" "}
-                    <strong>{viagem.veiculo?.prefixo}</strong>
-                  </span>
+                  <Label htmlFor="veiculo">Veiculo</Label>
+                  <Select
+                    defaultValue={viagem.veiculoId.toString()}
+                    onValueChange={(e) => selecionarVeiculo(Number(e))}
+                    name="veiculo"
+                    required
+                  >
+                    <SelectTrigger className="w-auto">
+                      <SelectValue placeholder="Selecionar Veiculo" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {veiculos.map((veiculo) => (
+                          <SelectItem
+                            key={veiculo.id}
+                            value={veiculo.id.toString()}
+                          >
+                            {veiculo.placa}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </div>
-                <div className="flex gap-2 mb-2">
-                  <div>
-                    <Label>KmInicial</Label>
-                    <Input disabled value={viagem.kmInicialVeiculo} />
-                  </div>
-                  <div>
-                    <Label>Km Final</Label>
-                    <Input
-                      value={viagem.kmFinalVeiculo}
-                      onChange={(e) =>
-                        setViagem({
-                          ...viagem,
-                          kmFinalVeiculo: Number(e.target.value),
-                        })
-                      }
-                    />
-                  </div>
+                <div className="flex gap-2 ">
+                <div className="w-full">
+                  <Label>Km Inicial</Label>
+                  <Input disabled value={viagem.kmInicialVeiculo} />
                 </div>
-                <span>
-                  Total Pecorrido:{" "}
-                  <strong className="text-green-600">
-                    {viagem.kmFinalVeiculo - viagem.kmInicialVeiculo}
-                  </strong>
-                </span>
+                <div className="w-full">
+                  <Label>Km Final</Label>
+                  <Input onChange={(e) => setViagem({ ...viagem, kmFinalVeiculo: Number(e.target.value) })} value={viagem.kmFinalVeiculo} />
+                </div>
+                </div>
               </fieldset>
               <fieldset className="rounded border border-blue-500 p-4">
                 <legend>Motorista</legend>
                 <div>
-                  <Label>Motorista</Label>
+                  <Label htmlFor="motorista1">Motorista 1</Label>
                   <Select
-                    value={viagem.motoristaId.toString()}
-                    name="ufsaida"
-                    disabled
+                    defaultValue={viagemprop.motoristaViagens.length >0 ? viagem.motoristaViagens[0].motoristaId.toString() : "0"}
+                    onValueChange={(e) => selecionarMotorista(Number(e), 1)}
+                    name="motorista1"
+                    required
                   >
                     <SelectTrigger className="w-auto">
                       <SelectValue placeholder="Selecionar Motorista" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value={viagem.motoristaId.toString()}>
-                          {viagem.motorista?.nome}
-                        </SelectItem>
+                        {motoristas.map((motorista) => (
+                          <SelectItem
+                            key={motorista.id}
+                            value={motorista.id.toString()}
+                          >
+                            {motorista.nome}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+
+                  <Label htmlFor="motorista2">Motorista 2</Label>
+                  <Select
+                    onValueChange={(e) => selecionarMotorista(Number(e), 2)}
+                    name="motorista2"
+                    defaultValue={viagemprop.motoristaViagens.length >1 ? viagem.motoristaViagens[1].motoristaId.toString() : "0"}
+                    required
+                  >
+                    <SelectTrigger className="w-auto">
+                      <SelectValue placeholder="Selecionar Motorista" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="0">Nenhum</SelectItem>
+                        {motoristas
+                          .filter((m) => m.id !== motorista1)
+                          .map((motorista) => (
+                            <SelectItem
+                              key={motorista.id}
+                              value={motorista.id.toString()}
+                            >
+                              {motorista.nome}
+                            </SelectItem>
+                          ))}
                       </SelectGroup>
                     </SelectContent>
                   </Select>

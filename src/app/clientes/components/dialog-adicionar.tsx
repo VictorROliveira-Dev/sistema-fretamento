@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { api } from "@/lib/axios";
-import { Cidade, Cliente, Documento, Endereco, Uf } from "@/lib/types";
+import { Cidade, Cliente, Endereco, Uf } from "@/lib/types";
 import { toast } from "sonner";
 import Image from "next/image";
 import loading from "../../assets/loading.svg";
@@ -30,24 +30,18 @@ export default function DialogAdicionar({
 }: ClienteProps) {
   const [ufs, setUfs] = useState<Uf[]>([]);
   const [cidades, setCidades] = useState<Cidade[]>([]);
-  const [nome, setNome] = useState<string>("");
-  const [dataNascimento, setDataNascimento] = useState<string>("");
-  const [telefone, setTelefone] = useState<string>("");
-  const [cpf, setCpf] = useState<string>("");
-  const [tipo, setTipo] = useState<string>("");
   const [adicionando, setAdicionando] = useState(false);
-
-  const [documento, setDocumento] = useState<Documento>({
-    documento: "",
+  const [cliente, setCliente] = useState<Cliente>({
+    id: 0,
+    nome: "",
+    nomeFantasia: "",
+    dataNascimento: "",
+    telefone: "",
+    cpf: "",
+    email: "",
     tipo: "",
-  });
-
-  const [endereco, setEndereco] = useState<Endereco>({
-    uf: "",
-    cidade: "",
-    rua: "",
-    bairro: "",
-    numero: "",
+    documento: { documento: "", tipo: "" },
+    endereco: { uf: "", cidade: "", rua: "", bairro: "", numero: "" },
   });
 
   // Carrega as UFs ao montar o componente
@@ -67,7 +61,7 @@ export default function DialogAdicionar({
 
   // Carrega as cidades com base na UF selecionada
   const handleUfChange = (uf: string) => {
-    setEndereco({ ...endereco, uf: uf });
+    setCliente({ ...cliente, endereco: { ...cliente.endereco, uf: uf } });
     axios
       .get<Cidade[]>(
         `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
@@ -87,16 +81,6 @@ export default function DialogAdicionar({
     e.preventDefault();
     setAdicionando(true);
 
-    const cliente = {
-      nome: nome,
-      dataNascimento: dataNascimento,
-      telefone: telefone,
-      documento: documento,
-      endereco: endereco,
-      cpf: cpf,
-      tipo: tipo,
-    };
-    console.log(cliente);
     try {
       const response = await api.post("/cliente", cliente);
       setClientes([...clientes, response.data.data]);
@@ -105,13 +89,18 @@ export default function DialogAdicionar({
       toast.error("Erro ao tentar adicionar cliente.");
       console.log(error);
     } finally {
-      setNome("");
-      setDataNascimento("");
-      setTelefone("");
-      setDocumento({ documento: "", tipo: "" });
-      setEndereco({ uf: "", cidade: "", rua: "", bairro: "", numero: "" });
-      setCpf("");
-      setTipo("");
+      setCliente({
+        id: 0,
+        nome: "",
+        nomeFantasia: "",
+        dataNascimento: "",
+        telefone: "",
+        cpf: "",
+        email: "",
+        tipo: "",
+        documento: { documento: "", tipo: "" },
+        endereco: { uf: "", cidade: "", rua: "", bairro: "", numero: "" },
+      });
       setAdicionando(false);
     }
   };
@@ -133,34 +122,37 @@ export default function DialogAdicionar({
           <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll md:overflow-auto gap-10 items-start">
             <fieldset className="border p-4 rounded w-full">
               <legend className="font-semibold">Cliente</legend>
-              <div>
-                <Label htmlFor="nome">Nome</Label>
-                <Input id="nome" onChange={(e) => setNome(e.target.value)} />
-              </div>
-              <div>
-                <Label htmlFor="dataNascimento">Data de Nascimento</Label>
-                <Input
-                  type="date"
-                  id="dataNascimento"
-                  onChange={(e) => setDataNascimento(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="telefone">Telefone</Label>
-                <Input
-                  id="telefone"
-                  onChange={(e) => setTelefone(e.target.value)}
-                />
-              </div>
-              <div>
-                <Label htmlFor="cpf">CPF</Label>
-                <Input id="cpf" onChange={(e) => setCpf(e.target.value)} />
-              </div>
-              <div>
-                <Label htmlFor="tipocliente">Tipo do cliente</Label>
+              {[{ label: "Nome", name: "nome" }, 
+              { label: "Nome Fantasia", name: "nomeFantasia" }, 
+              { label: "Email", name: "email" }, 
+              { label: "Data de Nascimento", name: "dataNascimento", type: "date" }, 
+              { label: "Telefone", name: "telefone" }, 
+              { label: "CPF", name: "cpf" }
+              ].map(({ label, name, type }) => {
+                // Verificar se a propriedade é do tipo string ou number antes de renderizar
+                const value = cliente[name as keyof Cliente];
+                if (typeof value === "string" || typeof value === "number" || value === undefined) {
+                  return (
+                    <div key={name} className="mt-4">
+                      <Label htmlFor={name}>{label}</Label>
+                      <Input
+                        id={name}
+                        type={type || "text"}
+                        value={value || ""}
+                        onChange={(e) =>
+                          setCliente((prev) => ({ ...prev, [name]: e.target.value }))
+                        }
+                      />
+                    </div>
+                  );
+                }
+                return null; // Não renderizar para propriedades que não são string ou number
+              })}
+              <div className="mt-4">
+                <Label htmlFor="tipo">Tipo do cliente</Label>
                 <RadioGroup
-                  value={tipo}
-                  onValueChange={(e) => setTipo(e)}
+                  value={cliente.tipo}
+                  onValueChange={(e) => setCliente({ ...cliente, tipo: e })}
                   className="flex"
                 >
                   <div className="flex items-center space-x-2">
@@ -173,20 +165,29 @@ export default function DialogAdicionar({
                   </div>
                 </RadioGroup>
               </div>
-              <div>
+              <div className="mt-4">
                 <Label htmlFor="documento">Documento</Label>
                 <Input
                   id="documento"
+                  value={cliente.documento.documento}
                   onChange={(e) =>
-                    setDocumento({ ...documento, documento: e.target.value })
+                    setCliente({
+                      ...cliente,
+                      documento: { ...cliente.documento, documento: e.target.value },
+                    })
                   }
                 />
               </div>
-              <div>
+              <div className="mt-4">
                 <Label htmlFor="tipoDocumento">Tipo de Documento</Label>
                 <RadioGroup
-                  value={documento.tipo}
-                  onValueChange={(e) => setDocumento({ ...documento, tipo: e })}
+                  value={cliente.documento.tipo}
+                  onValueChange={(e) =>
+                    setCliente({
+                      ...cliente,
+                      documento: { ...cliente.documento, tipo: e },
+                    })
+                  }
                   className="flex"
                 >
                   <div className="flex items-center space-x-2">
@@ -206,6 +207,7 @@ export default function DialogAdicionar({
                 <Label htmlFor="uf">UF</Label>
                 <select
                   id="uf"
+                  value={cliente.endereco.uf}
                   onChange={(e) => handleUfChange(e.target.value)}
                   className="w-full border border-gray-300 rounded px-3 py-2"
                 >
@@ -221,8 +223,12 @@ export default function DialogAdicionar({
                 <Label htmlFor="cidade">Cidade</Label>
                 <select
                   id="cidade"
+                  value={cliente.endereco.cidade}
                   onChange={(e) =>
-                    setEndereco({ ...endereco, cidade: e.target.value })
+                    setCliente({
+                      ...cliente,
+                      endereco: { ...cliente.endereco, cidade: e.target.value },
+                    })
                   }
                   className="w-full border border-gray-300 rounded px-3 py-2"
                 >
@@ -234,21 +240,20 @@ export default function DialogAdicionar({
                   ))}
                 </select>
               </div>
-              {[
-                { label: "Rua", name: "rua" },
-                { label: "Bairro", name: "bairro" },
-                { label: "Número", name: "numero" },
-              ].map(({ label, name }) => (
-                <div key={name} className="mt-4">
-                  <Label htmlFor={name}>{label}</Label>
+              {["rua", "bairro", "numero"].map((field) => (
+                <div key={field} className="mt-4">
+                  <Label htmlFor={field}>{field.charAt(0).toUpperCase() + field.slice(1)}</Label>
                   <Input
-                    id={name}
-                    value={endereco[name as keyof typeof endereco] || ""}
+                    id={field}
+                    value={cliente.endereco[field as keyof Endereco] || ""}
                     onChange={(e) =>
-                      setEndereco((prev) => ({
-                        ...prev,
-                        [name]: e.target.value,
-                      }))
+                      setCliente({
+                        ...cliente,
+                        endereco: {
+                          ...cliente.endereco,
+                          [field]: e.target.value,
+                        },
+                      })
                     }
                   />
                 </div>

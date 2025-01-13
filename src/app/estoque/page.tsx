@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { Label } from "@/components/ui/label";
 
 export default function Financeiro() {
   const [pecas, setPecas] = useState<Peca[]>([]);
@@ -170,28 +171,36 @@ export default function Financeiro() {
                     className="flex gap-2"
                     onSubmit={(e) => getByFilters(e, "retirada")}
                   >
-                    <div className="space-y-2 mb-2">
-                      <Input
-                        type="date"
-                        value={dataInicio}
-                        className="w-full"
-                        onChange={(e) => setDataInicio(e.target.value)}
-                      />
-                      <Input
-                        type="date"
-                        value={dataFinal}
-                        className="w-full"
-                        onChange={(e) => setDataFinal(e.target.value)}
-                      />
+                    <div className="flex flex-col md:flex-row gap-2 mb-2">
+                      <div className="flex flex-col">
+                        <Label htmlFor="inicio">De:</Label>
+                        <Input
+                          type="date"
+                          name="inicio"
+                          value={dataInicio}
+                          className="w-full"
+                          onChange={(e) => setDataInicio(e.target.value)}
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <Label htmlFor="final">Até:</Label>
+                        <Input
+                          type="date"
+                          name="final"
+                          value={dataFinal}
+                          className="w-full"
+                          onChange={(e) => setDataFinal(e.target.value)}
+                        />
+                      </div>
                     </div>
-
                     <Input
                       type="text"
                       value={prefixoVeiculo}
                       placeholder="Prefixo..."
                       onChange={(e) => setPrefixoVeiculo(e.target.value)}
+                      className="mt-4"
                     />
-                    <Button type="submit" className="bg-blue-600">
+                    <Button type="submit" className="bg-blue-600 mt-4">
                       <Search className="text-white" />
                     </Button>
                   </form>
@@ -250,22 +259,30 @@ export default function Financeiro() {
               <TabsContent value="reestoque">
                 <div className="flex flex-col md:flex-row items-center justify-between mb-10">
                   <form
-                    className="flex flex-col gap-2 mb-4"
+                    className="flex flex-col md:flex-row gap-2 mb-4"
                     onSubmit={(e) => getByFilters(e, "reestoque")}
                   >
-                    <Input
-                      type="date"
-                      value={dataInicio}
-                      className="w-full"
-                      onChange={(e) => setDataInicio(e.target.value)}
-                    />
-                    <Input
-                      type="date"
-                      value={dataFinal}
-                      className="w-full"
-                      onChange={(e) => setDataFinal(e.target.value)}
-                    />
-                    <Button type="submit" className="bg-blue-600">
+                    <div>
+                      <Label htmlFor="inicio">De:</Label>
+                      <Input
+                        type="date"
+                        name="inicio"
+                        value={dataInicio}
+                        className="w-full"
+                        onChange={(e) => setDataInicio(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="final">Até:</Label>
+                      <Input
+                        type="date"
+                        name="final"
+                        value={dataFinal}
+                        className="w-full"
+                        onChange={(e) => setDataFinal(e.target.value)}
+                      />
+                    </div>
+                    <Button type="submit" className="bg-blue-600 mt-6">
                       <Search className="text-white" />
                     </Button>
                   </form>
@@ -279,8 +296,12 @@ export default function Financeiro() {
                     <TableRow>
                       <TableHead>Data</TableHead>
                       <TableHead>Peca</TableHead>
-                      <TableHead className="hidden sm:table-cell">Quantidade</TableHead>
-                      <TableHead className="hidden sm:table-cell">Preco Total</TableHead>
+                      <TableHead className="hidden sm:table-cell">
+                        Quantidade
+                      </TableHead>
+                      <TableHead className="hidden sm:table-cell">
+                        Preco Total
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -292,8 +313,12 @@ export default function Financeiro() {
                           )}
                         </TableCell>
                         <TableCell>{reestoque.peca?.nome || "peca"}</TableCell>
-                        <TableCell className="hidden sm:table-cell">{reestoque.quantidade}</TableCell>
-                        <TableCell className="hidden sm:table-cell">R${reestoque.precoTotal}</TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {reestoque.quantidade}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          R${reestoque.precoTotal}
+                        </TableCell>
                         <TableCell>
                           <DialogRemoverReestoque
                             reestoque={reestoque}

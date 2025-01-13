@@ -1,9 +1,79 @@
-export type FormField = {
-  label: string;
-  name: string;
-  type?: string;
-  placeholder: string;
+export interface Responsavel {
+  id: number;
+  nome: string;
+  dataNascimento: string;
+  telefone: string;
+  documento: Documento;
+  endereco: Endereco;
+  cpf: string;
+}
+
+export interface Motorista extends Responsavel {
+  habilitacao: Habilitacao;
+  ferias?: Ferias[];
+  dataAdmissao: string;
 };
+
+export interface Cliente extends Responsavel {
+  tipo: string;
+  email: string;
+  nomeFantasia: string;
+}
+
+export interface Fornecedor extends Responsavel {
+  tipo: string;
+  nomeFantasia: string;
+};
+
+export interface  Colaborador   {
+  id: number;
+  nome: string;
+  dataNascimento: string;
+  telefone: string;
+  documento: Documento;
+  endereco: Endereco;
+  cpf: string;
+  cartao: string;
+  matricula: string;
+  ferias: Ferias[];
+}
+
+
+export interface Viagem {
+  id: number;
+  rota: Rota;
+  dataHorarioSaida: DataHorario;
+  dataHorarioRetorno: DataHorario;
+  dataHorarioSaidaGaragem: DataHorario;
+  dataHorarioChegada: DataHorario;
+  clienteId: number;
+  tipoServico: string;
+  status: string;
+  tipoViagem: string;
+  tipoPagamento: string;
+  valorContratado: number;
+  itinerario: string;
+  veiculoId: number;
+  motoristasId: number[];
+  veiculo?: Veiculo;
+  motoristaViagens: MotoristaViagem[];	
+  cliente?: Cliente;
+  kmInicialVeiculo: number;
+  kmFinalVeiculo: number;
+  abastecimento?: Abastecimento;
+  adiantamento?: Adiantamento;
+  totalDespesa: number;
+  valorLiquidoViagem: number;
+  despesas?: IDespesas[];
+  receitas?: IReceitas;
+}
+
+export interface MotoristaViagem {
+  viagemId: number;
+  viagem?: Viagem;  
+  motoristaId: number;
+  motorista?: Motorista;
+}
 
 export type Endereco = {
   uf: string;
@@ -12,6 +82,7 @@ export type Endereco = {
   bairro: string;
   numero: string;
 };
+
 
 export type Habilitacao = {
   protocolo: string;
@@ -24,6 +95,14 @@ export type Habilitacao = {
 export type Documento = {
   documento: string;
   tipo: string;
+};
+
+
+export type FormField = {
+  label: string;
+  name: string;
+  type?: string;
+  placeholder: string;
 };
 
 export type FormData = {
@@ -41,6 +120,7 @@ export interface IDocumentos {
   vencimento: string;
   tipoDocumento: string;
   referencia: string;
+  pendente: boolean;
 }
 
 export interface Manutencao {
@@ -69,15 +149,6 @@ export type FormDataFornecedor = {
   tipo: string;
 };
 
-export interface Motorista extends Responsavel {
-  tipo: string;
-  habilitacao: Habilitacao;
-  ferias?: Ferias[];
-}
-
-export interface Fornecedor extends Responsavel {
-  tipo: string;
-}
 
 export type Veiculo = {
   id: string;
@@ -93,6 +164,7 @@ export type Veiculo = {
   tipo: string;
   modelo: string;
   quantidadePoltronas: number;
+  acessorios: string[];
 };
 
 export interface Uf {
@@ -106,9 +178,7 @@ export interface Cidade {
   nome: string;
 }
 
-export interface Cliente extends Responsavel {
-  tipo: string;
-}
+
 
 export interface Rota {
   saida: {
@@ -128,34 +198,7 @@ export interface DataHorario {
   hora: string;
 }
 
-export interface Viagem {
-  id: number;
-  rota: Rota;
-  dataHorarioSaida: DataHorario;
-  dataHorarioRetorno: DataHorario;
-  dataHorarioSaidaGaragem: DataHorario;
-  dataHorarioChegada: DataHorario;
-  clienteId: number;
-  tipoServico: string;
-  status: string;
-  tipoViagem: string;
-  tipoPagamento: string;
-  valorContratado: number;
-  itinerario: string;
-  veiculoId: number;
-  motoristaId: number;
-  veiculo?: Veiculo;
-  motorista?: Motorista;
-  cliente?: Cliente;
-  kmInicialVeiculo: number;
-  kmFinalVeiculo: number;
-  abastecimento?: Abastecimento;
-  adiantamento?: Adiantamento;
-  totalDespesa: number;
-  valorLiquidoViagem: number;
-  despesas?: IDespesas[];
-  receitas?: IReceitas;
-}
+
 interface HorarioLocal {
   data: string;
   hora: string;
@@ -179,41 +222,11 @@ export interface ViagemProgramda {
   veiculo?: Veiculo;
   passagens?: Passagem[];
 }
-export interface Passageiro {
-  id: number;
-  nome: string;
-  dataNascimento: string; // ou Date se preferir trabalhar com objetos Date
-  telefone: string;
-  documento: Documento;
-  endereco: Endereco;
-  cpf: string;
-  cartao: string;
-  matricula: string;
-}
-export interface Responsavel {
-  id: number;
-  nome: string;
-  dataNascimento: string;
-  telefone: string;
-  documento: Documento;
-  endereco: Endereco;
-  cpf: string;
-}
 
-export interface Colaborador {
-  id: number;
-  nome: string;
-  dataNascimento: string;
-  telefone: string;
-  documento: Documento;
-  endereco: Endereco;
-  cpf: string;
-  cartao: string;
-  matricula: string;
-  ferias: Ferias[];
-}
 
-export interface Ferias {
+
+
+export interface Ferias{
   id: number;
   responsavelId: number;
   responsavel?: Responsavel;
@@ -221,14 +234,14 @@ export interface Ferias {
   fimFerias: string;
 }
 
-export interface Peca {
+export interface Peca{
   id: number;
   quantidade: number;
   nome: string;
   preco: number;
 }
 
-export interface RetiradaPeca {
+export interface RetiradaPeca{
   id: number;
   pecaId: number;
   peca?: Peca;
@@ -236,16 +249,16 @@ export interface RetiradaPeca {
   veiculo?: Veiculo;
   quantidade: number;
   precoTotal: number;
-  dataDeRetirada: string;
+  dataDeRetirada: string; 
 }
 
-export interface AdicionarPeca {
+export interface AdicionarPeca{
   id: number;
   pecaId: number;
   peca?: Peca;
   quantidade: number;
   precoTotal: number;
-  dataDeEntrada: string;
+  dataDeEntrada: string; 
 }
 
 export interface Servico {
@@ -256,12 +269,14 @@ export interface Servico {
 export interface Passagem {
   id?: number;
   viagemId: number;
-  passageiroId: number;
+  passageiroEmail: string;
+  telefonePassageiro: string;
+  cpfPassageiro: string;
+  nomePassageiro: string;
   dataEmissao: string; // ou Date, dependendo do uso no projeto
   formaPagamento: string;
   poltrona: number;
   situacao: string;
-  passageiro?: Passageiro;
 }
 
 export interface IDespesas {
@@ -279,6 +294,7 @@ export interface IDespesas {
   valorParcial: number;
   formaPagamento: string;
   centroCusto: string;
+  descricao: string;  
 }
 
 export interface IReceitas {
@@ -319,10 +335,18 @@ export interface Adiantamento {
   viagem?: Viagem; // Referência ao objeto Viagem
 }
 
+
 export interface Ferias {
   id: number;
   responsavelId: number;
   responsavel?: Responsavel;
   inicioFerias: string;
   fimFerias: string;
+}
+
+export interface ReceitasMensais{
+  month: string;
+  depesas: number;
+  receitas: number;
+  valorLiquido: number
 }

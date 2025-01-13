@@ -9,14 +9,15 @@ import motorista from "@/app/assets/motorista.png";
 import clientes from "@/app/assets/pessoas.png";
 import fornecedores from "@/app/assets/grupo.png";
 import veiculos from "@/app/assets/onibus.png";
+import van from "@/app/assets/van.png";
 import manutencao from "@/app/assets/manutencao.png";
 import servicos from "@/app/assets/servico.png";
 import documentos from "@/app/assets/documentos.png";
 import financeiro from "@/app/assets/financa.png";
-import pacote from "@/app/assets/pacote.png";
 import estoque from "@/app/assets/estoque.png";
-import sino from "@/app/assets/sino.svg";
 import ferias from "@/app/assets/ferias.png";
+import viagem from "@/app/assets/montanha.png";
+import colaborador from "@/app/assets/colaborador.png";
 import {
   Sheet,
   SheetContent,
@@ -31,15 +32,16 @@ const icons = {
   motorista: motorista.src,
   clientes: clientes.src,
   fornecedores: fornecedores.src,
+  colaboradores: colaborador.src,
   ferias: ferias.src,
-  veiculos: veiculos.src,
-  fretamento: pacote.src,
+  veiculos: van.src,
+  fretamento: veiculos.src,
+  viagem: viagem.src,
   manutencao: manutencao.src,
   servicos: servicos.src,
   documentos: documentos.src,
   financeiro: financeiro.src,
   estoque: estoque.src,
-  sino: sino.src,
 };
 
 interface NavItem {
@@ -53,9 +55,11 @@ const navItems: NavItem[] = [
   { href: "/motoristas", label: "Motoristas", icon: icons.motorista },
   { href: "/clientes", label: "Clientes", icon: icons.clientes },
   { href: "/fornecedores", label: "Fornecedores", icon: icons.fornecedores },
+  { href: "/colaborador", label: "Colaboradores", icon: icons.colaboradores },
   { href: "/ferias", label: "Férias", icon: icons.ferias },
   { href: "/veiculos", label: "Veículos", icon: icons.veiculos },
   { href: "/viagens-servicos", label: "Fretamento", icon: icons.fretamento },
+  { href: "/viagem-programada", label: "Viagens", icon: icons.viagem },
   { href: "/manutencoes", label: "Manutenções", icon: icons.manutencao },
   { href: "/servicos", label: "Serviços", icon: icons.servicos },
   { href: "/documentos", label: "Documentos", icon: icons.documentos },
@@ -102,7 +106,7 @@ const Header = memo(function Header() {
       </div>
 
       {/* Menu para telas maiores */}
-      <nav className="sm:h-28 bg-white sm:flex items-center justify-between mx-10 hidden">
+      <nav className="sm:h-28 bg-white sm:flex items-center justify-center mx-10 hidden">
         <div className="flex items-center gap-4">
           {navItems.map(({ href, label, icon }) => (
             <NavLink

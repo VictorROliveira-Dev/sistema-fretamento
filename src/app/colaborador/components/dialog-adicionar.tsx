@@ -14,36 +14,33 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Cidade,
+  Colaborador,
   Documento,
   Endereco,
-  Habilitacao,
-  Motorista,
   Uf,
 } from "@/lib/types";
 import { toast } from "sonner";
 import Image from "next/image";
 import loading from "../../assets/loading.svg";
 import axios from "axios";
-import { set } from "date-fns";
 
-interface MotoristasProps {
-  setMotoristas: React.Dispatch<React.SetStateAction<Motorista[]>>;
-  motoristas: Motorista[];
+interface ColaboradorProps {
+  setColaboradores: React.Dispatch<React.SetStateAction<Colaborador[]>>;
+  colaboradores: Colaborador[];
 }
 
 export default function DialogAdicionar({
-  setMotoristas,
-  motoristas,
-}: MotoristasProps) {
+  setColaboradores,
+  colaboradores,
+}: ColaboradorProps) {
   const [nome, setNome] = useState<string>("");
   const [dataNascimento, setDataNascimento] = useState<string>("");
   const [telefone, setTelefone] = useState<string>("");
   const [cpf, setCpf] = useState<string>("");
+  const [tipo, setTipo] = useState<string>("");
   const [ufs, setUfs] = useState<Uf[]>([]);
   const [cidades, setCidades] = useState<Cidade[]>([]);
-  const [ufHabilitacao, setUfHabilitacao] = useState<Uf[]>([]);
-  const [cidadeHabilitacao, setCidadeHabilitacao] = useState<Cidade[]>([]); 
-  const [dataAdmissao, setDataAdmissao] = useState<string>("");
+
   const [documento, setDocumento] = useState<Documento>({
     documento: "",
     tipo: "",
@@ -57,13 +54,6 @@ export default function DialogAdicionar({
     numero: "",
   });
 
-  const [habilitacao, setHabilitacao] = useState<Habilitacao>({
-    protocolo: "",
-    vencimento: "",
-    categoria: "",
-    cidade: "",
-    uf: "",
-  });
 
   const [adicionando, setAdicionando] = useState(false);
 
@@ -75,7 +65,6 @@ export default function DialogAdicionar({
           a.nome.localeCompare(b.nome)
         );
         setUfs(sortedUfs);
-        setUfHabilitacao(sortedUfs)
       })
       .catch((error) => {
         console.error("Error fetching UFs:", error);
@@ -99,50 +88,33 @@ export default function DialogAdicionar({
       });
   };
 
-  const handleUfHabilitacaoChange = (uf: string) => {
-    setHabilitacao({...habilitacao, uf: uf});
-    axios
-      .get<Cidade[]>(
-        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
-      )
-      .then((response) => {
-        const sortedCidades = response.data.sort((a, b) =>
-          a.nome.localeCompare(b.nome)
-        );
-        setCidadeHabilitacao(sortedCidades);
-      })
-      .catch((error) => {
-        console.error("Error fetching cidades:", error);
-      });
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAdicionando(true);
 
-    const motorista = {
+    const colaborador = {
       nome: nome,
       dataNascimento: dataNascimento,
       telefone: telefone,
       documento: documento,
       endereco: endereco,
       cpf: cpf,
-      habilitacao: habilitacao,
-      dataAdmissao: dataAdmissao
-    } as Motorista;
+      tipo: tipo,
+    };
 
     try {
-      const response = await api.post("/motorista", motorista);
-      setMotoristas([...motoristas, response.data.data]);
-      toast.success("Motorista adicionado.");
-     
+      const response = await api.post("/colaborador", colaborador);
+      setColaboradores([...colaboradores, response.data.data]);
+      toast.success("Colaborador adicionado.");
+      console.log("Colaborador adicionado:", response.data.data);
     } catch {
-      toast.error("Erro ao tentar adicionar motorista.");
+      toast.error("Erro ao tentar adicionar colaborador.");
     } finally {
       setNome("");
       setDataNascimento("");
       setTelefone("");
       setCpf("");
+      setTipo("");
       setDocumento({ documento: "", tipo: "" });
       setEndereco({
         uf: "",
@@ -151,30 +123,21 @@ export default function DialogAdicionar({
         bairro: "",
         numero: "",
       });
-      setHabilitacao({
-        protocolo: "",
-        vencimento: "",
-        categoria: "",
-        cidade: "",
-        uf: "",
-      });
       setAdicionando(false);
     }
   };
-
-
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <span className="bg-green-600 hover:bg-green-500 w-[280px] md:w-[200px] p-1 text-center rounded-md text-white cursor-pointer transition-all">
-          Adicionar Motorista
+          Adicionar Colaborador
         </span>
       </DialogTrigger>
       <DialogContent className="md:w-auto h-[550px] md:h-[650px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
-            Cadastro de Motorista
+            Cadastro de Colaborador
           </DialogTitle>
         </DialogHeader>
         <form
@@ -184,43 +147,54 @@ export default function DialogAdicionar({
         >
           <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll md:overflow-auto gap-10 items-start">
             <fieldset className="border p-4 rounded w-full h-full">
-              <legend className="font-semibold">Motorista</legend>
+              <legend className="font-semibold">Colaborador</legend>
               <div>
                 <label htmlFor="nome">Nome</label>
-                <Input id="nome" onChange={(e) => setNome(e.target.value)} />
+                <Input id="nome" value={nome} onChange={(e) => setNome(e.target.value)} />
               </div>
               <div>
                 <label htmlFor="dataNascimento">Data de Nascimento</label>
                 <Input
                   type="date"
                   id="dataNascimento"
+                  value={dataNascimento}
                   onChange={(e) => setDataNascimento(e.target.value)}
-                />
-              </div>
-              <div>
-                <label htmlFor="dataAdmissao">Data de Admissao</label>
-                <Input
-                  type="date"
-                  id="dataAdmissao"
-                  onChange={(e) => setDataAdmissao(e.target.value)}
                 />
               </div>
               <div>
                 <label htmlFor="telefone">Telefone</label>
                 <Input
                   id="telefone"
+                  value={telefone}
                   onChange={(e) => setTelefone(e.target.value)}
                 />
               </div>
               <div>
                 <label htmlFor="cpf">CPF</label>
-                <Input id="cpf" onChange={(e) => setCpf(e.target.value)} />
+                <Input id="cpf" value={cpf} onChange={(e) => setCpf(e.target.value)} />
               </div>
-              
+              <div>
+                <label htmlFor="tipocliente">Tipo do cliente</label>
+                <RadioGroup
+                  value={tipo}
+                  onValueChange={(e) => setTipo(e)}
+                  className="flex"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="FISICA" id="fisica" />
+                    <label htmlFor="fisica">Física</label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="JURIDICA" id="juridica" />
+                    <label htmlFor="juridica">Jurídica</label>
+                  </div>
+                </RadioGroup>
+              </div>
               <div>
                 <label htmlFor="documento">Documento</label>
                 <Input
                   id="documento"
+                  value={documento.documento}
                   onChange={(e) =>
                     setDocumento({ ...documento, documento: e.target.value })
                   }
@@ -250,6 +224,7 @@ export default function DialogAdicionar({
                 <label htmlFor="uf">UF</label>
                 <select
                   id="uf"
+                  value={endereco.uf}
                   onChange={(e) => handleUfChange(e.target.value)}
                   className="w-full border border-gray-300 rounded px-3 py-2"
                 >
@@ -265,6 +240,7 @@ export default function DialogAdicionar({
                 <label htmlFor="cidade">Cidade</label>
                 <select
                   id="cidade"
+                  value={endereco.cidade}
                   onChange={(e) =>
                     setEndereco({ ...endereco, cidade: e.target.value })
                   }
@@ -298,87 +274,7 @@ export default function DialogAdicionar({
                 </div>
               ))}
             </fieldset>
-            <fieldset className="border p-4 rounded w-full h-full">
-              <legend className="font-semibold">Habilitação</legend>
-              <div>
-                <label htmlFor="protocolo">Protocolo</label>
-                <Input
-                  id="protocolo"
-                  value={habilitacao.protocolo}
-                  onChange={(e) =>
-                    setHabilitacao((prev) => ({
-                      ...prev,
-                      protocolo: e.target.value,
-                    }))
-                  }
-                />
-              </div>
-              <div className="mt-4">
-                <label htmlFor="vencimento">Vencimento</label>
-                <Input
-                  type="date"
-                  id="vencimento"
-                  value={habilitacao.vencimento}
-                  onChange={(e) =>
-                    setHabilitacao((prev) => ({
-                      ...prev,
-                      vencimento: e.target.value,
-                    }))
-                  }
-                />
-              </div>
-              <div className="mt-4">
-                <label htmlFor="categoria">Categoria</label>
-                <Input
-                  name="categoria"
-                  placeholder="Digite a(s) categoria(s)..."
-                  value={habilitacao.categoria}
-                  onChange={(e) =>
-                    setHabilitacao((prev) => ({
-                      ...prev,
-                      categoria: e.target.value,
-                    }))
-                  }
-                />
-              </div>
-              <div className="mt-4">
-                <label htmlFor="ufHabilitacao">UF</label>
-                <select
-                  id="ufHabilitacao"
-                  value={habilitacao.uf}
-                  onChange={(e) => {
-                    handleUfHabilitacaoChange(e.target.value);
-                  }
-                   
-                  }
-                  className="w-full border border-gray-300 rounded px-3 py-2"
-                >
-                  <option value="">Selecione a UF</option>
-                  {ufHabilitacao.map((uf) => (
-                    <option key={uf.id} value={uf.sigla}>
-                      {uf.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="mt-4">
-                <label htmlFor="cidade">Cidade</label>
-                <select
-                  id="cidade"
-                  onChange={(e) =>
-                    setHabilitacao({ ...habilitacao, cidade: e.target.value })
-                  }
-                  className="w-full border border-gray-300 rounded px-3 py-2"
-                >
-                  <option value="">Selecione a Cidade</option>
-                  {cidadeHabilitacao.map((cidade) => (
-                    <option key={cidade.id} value={cidade.nome}>
-                      {cidade.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </fieldset>
+           
           </div>
           <DialogFooter>
             <Button type="submit" className="w-[300px] mt-8">

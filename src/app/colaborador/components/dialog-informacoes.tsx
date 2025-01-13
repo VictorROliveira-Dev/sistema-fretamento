@@ -14,7 +14,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import {
   Calendar,
-  Car,
   CreditCard,
   FileText,
   MapPin,
@@ -38,24 +37,24 @@ import { Badge } from "@/components/ui/badge";
 import { parseISO } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
 
-interface MotoristasProps {
-  motoristaId: number;
+interface ColaboradorProps {
+  colaboradorId: number;
 }
 
-export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
-  const [motorista, setMotoristas] = useState<Motorista>();
+export default function DialogInformacoes({ colaboradorId }: ColaboradorProps) {
+  const [colaborador, setColaborador] = useState<Motorista>();
   const [ferias, setFerias] = useState<Ferias>({
     id: 0,
-    responsavel: motorista,
-    responsavelId: motoristaId,
+    responsavel: colaborador,
+    responsavelId: colaboradorId,
     inicioFerias: "",
     fimFerias: "",
   });
 
-  const fetchMotoristas = async () => {
+  const fetchColaborador = async () => {
     try {
-      const response = await api.get(`/motorista/${motoristaId}`);
-      setMotoristas(response.data.data);
+      const response = await api.get(`/colaborador/${colaboradorId}`);
+      setColaborador(response.data.data);
     } catch (error) {
       console.log("erro", error);
     }
@@ -71,10 +70,10 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
   };
 
   useEffect(() => {
-    if (!motoristaId) return;
+    if (!colaboradorId) return;
 
-    fetchMotoristas();
-  }, [motoristaId]);
+    fetchColaborador();
+  }, [colaboradorId]);
 
   async function handleSubmit(e: React.FormEvent) {
     try {
@@ -83,17 +82,19 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
       if (!response.data.isSucces) {
         toast("nao foi possivel fazer o registro");
       }
-      setMotoristas({
-        ...motorista!,
-        ferias: motorista?.ferias ? [...motorista.ferias, ferias] : [ferias],
+      setColaborador({
+        ...colaborador!,
+        ferias: colaborador?.ferias
+          ? [...colaborador.ferias, ferias]
+          : [ferias],
       });
     } catch {
       toast("erro");
     } finally {
       setFerias({
         id: 0,
-        responsavel: motorista,
-        responsavelId: motoristaId,
+        responsavel: colaborador,
+        responsavelId: colaboradorId,
         inicioFerias: "",
         fimFerias: "",
       });
@@ -116,9 +117,9 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <User className="h-5 w-5" />
-            {motorista?.nome ?? "Carregando.."}
-            {motorista?.ferias ? (
-              verificarFeriasAtual(motorista.ferias) ? (
+            {colaborador?.nome ?? "Carregando.."}
+            {colaborador?.ferias ? (
+              verificarFeriasAtual(colaborador.ferias) ? (
                 <Badge className="bg-red-600">De Folga</Badge>
               ) : (
                 <Badge className="bg-green-600">Trabalhando</Badge>
@@ -128,10 +129,8 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
             )}
           </DialogTitle>
         </DialogHeader>
-
         <ScrollArea className="h-[70vh] pr-4">
           <div className="space-y-6">
-            {/* Informações Pessoais */}
             <section>
               <h3 className="text-lg font-semibold mb-3">
                 Informações Pessoais
@@ -141,53 +140,40 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span>
                     Data de Nascimento:{" "}
-                    {motorista
-                      ? new Date(motorista.dataNascimento).toLocaleDateString()
-                      : "Carregando..."}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span>
-                    Data de Admissao:{" "}
-                    {motorista
+                    {colaborador
                       ? format(
-                          toZonedTime(parseISO(motorista.dataAdmissao), "UTC"),
-                          "dd/MM/yyyy"
-                        )
-                      : "Carregando..."}
+                        toZonedTime(parseISO(colaborador.dataNascimento), "UTC"),
+                        "dd/MM/yyyy"
+                      )
+                      : "Carregando.."}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="h-4 w-4 text-muted-foreground" />
-                  <span>Telefone: {motorista?.telefone ?? "Carregando.."}</span>
+                  <span>
+                    Telefone: {colaborador?.telefone ?? "Carregando.."}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CreditCard className="h-4 w-4 text-muted-foreground" />
-                  <span>CPF: {motorista?.cpf ?? "Carregando..."}</span>
+                  <span>CPF: {colaborador?.cpf ?? "Carregando..."}</span>
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Documento */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Documento</h3>
               <div className="grid gap-3">
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    {motorista?.documento.tipo.toUpperCase()}:{" "}
-                    {motorista?.documento.documento}
+                    {colaborador?.documento.tipo.toUpperCase()}:{" "}
+                    {colaborador?.documento.documento}
                   </span>
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Endereço */}
             <section>
               <h3 className="text-lg font-semibold mb-3">Endereço</h3>
               <div className="grid gap-3">
@@ -195,47 +181,19 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                   <MapPin className="h-4 w-4 text-muted-foreground mt-1" />
                   <div>
                     <p>
-                      {motorista?.endereco.rua}, {motorista?.endereco.numero}
+                      {colaborador?.endereco.rua},{" "}
+                      {colaborador?.endereco.numero}
                     </p>
-                    <p>{motorista?.endereco.bairro}</p>
+                    <p>{colaborador?.endereco.bairro}</p>
                     <p>
-                      {motorista?.endereco.cidade} - {motorista?.endereco.uf}
+                      {colaborador?.endereco.cidade} -{" "}
+                      {colaborador?.endereco.uf}
                     </p>
                   </div>
                 </div>
               </div>
             </section>
-
             <Separator />
-
-            {/* Habilitação */}
-            <section>
-              <h3 className="text-lg font-semibold mb-3">Habilitação</h3>
-              <div className="grid gap-3">
-                <div className="flex items-start gap-2">
-                  <Car className="h-4 w-4 text-muted-foreground mt-1" />
-                  <div>
-                    <p>Protocolo: {motorista?.habilitacao.protocolo}</p>
-                    <p>
-                      Categoria:{" "}
-                      {motorista?.habilitacao.categoria.toUpperCase()}
-                    </p>
-                    <p>
-                      Vencimento:{" "}
-                      {motorista
-                        ? new Date(
-                            motorista.habilitacao.vencimento
-                          ).toLocaleDateString()
-                        : "Carregando.."}
-                    </p>
-                    <p>
-                      Local: {motorista?.habilitacao.cidade} -{" "}
-                      {motorista?.habilitacao.uf.toUpperCase()}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </section>
             <section className="w-full">
               <h3 className="text-lg font-semibold mb-3">Férias</h3>
               <Card>
@@ -247,8 +205,8 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {motorista?.ferias?.length ? (
-                      motorista?.ferias.map((feriasAtual) => (
+                    {colaborador?.ferias?.length ? (
+                      colaborador?.ferias.map((feriasAtual) => (
                         <TableRow key={feriasAtual.id}>
                           <TableCell>
                             {format(
@@ -278,7 +236,6 @@ export default function DialogInformacoes({ motoristaId }: MotoristasProps) {
                   </TableBody>
                 </Table>
               </Card>
-
               <div className="w-full mt-4">
                 <form
                   onSubmit={(e) => handleSubmit(e)}

@@ -109,50 +109,32 @@ export default function DialogEditar({
           <div className="flex flex-col md:flex-row h-screen md:h-[90%] overflow-y-scroll md:overflow-auto gap-10 items-start">
             <fieldset className="border p-4 rounded w-full">
               <legend className="font-semibold">Cliente</legend>
-              <div>
-                <Label htmlFor="nome">Nome</Label>
-                <Input
-                  value={client.nome}
-                  id="nome"
-                  onChange={(e) =>
-                    setCliente({ ...client, nome: e.target.value })
-                  }
-                />
-              </div>
-              <div>
-                <Label htmlFor="dataNascimento">Data de Nascimento</Label>
-                <Input
-                  type="date"
-                  value={client.dataNascimento}
-                  id="dataNascimento"
-                  onChange={(e) =>
-                    setCliente({
-                      ...client,
-                      dataNascimento: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div>
-                <Label htmlFor="telefone">Telefone</Label>
-                <Input
-                  id="telefone"
-                  value={client.telefone}
-                  onChange={(e) =>
-                    setCliente({ ...client, telefone: e.target.value })
-                  }
-                />
-              </div>
-              <div>
-                <Label htmlFor="cpf">CPF</Label>
-                <Input
-                  id="cpf"
-                  value={client.cpf}
-                  onChange={(e) =>
-                    setCliente({ ...client, cpf: e.target.value })
-                  }
-                />
-              </div>
+                {[{ label: "Nome", name: "nome" }, 
+                    { label: "Nome Fantasia", name: "nomeFantasia" }, 
+                    { label: "Email", name: "email" }, 
+                    { label: "Data de Nascimento", name: "dataNascimento", type: "date" }, 
+                    { label: "Telefone", name: "telefone" }, 
+                    { label: "CPF", name: "cpf" }
+                    ].map(({ label, name, type }) => {
+                      // Verificar se a propriedade é do tipo string, number ou undefined antes de renderizar
+                      const value = cliente[name as keyof Cliente];
+                      if (typeof value === "string" || typeof value === "number" || value === undefined) {
+                        return (
+                          <div key={name} className="mt-4">
+                            <Label htmlFor={name}>{label}</Label>
+                            <Input
+                              id={name}
+                              type={type || "text"}
+                            defaultValue={value || ""}
+                            onChange={(e) =>
+                              setCliente((prev) => ({ ...prev, [name]: e.target.value }))
+                            }
+                          />
+                        </div>
+                      );
+                    }
+                    return null; // Não renderizar para propriedades que não são string, number ou undefined
+                  })}
               <div>
                 <Label htmlFor="tipocliente">Tipo do cliente</Label>
                 <RadioGroup
@@ -248,25 +230,25 @@ export default function DialogEditar({
                   ))}
                 </select>
               </div>
-              {[
-                { label: "Rua", name: "rua" },
-                { label: "Bairro", name: "bairro" },
-                { label: "Número", name: "numero" },
-              ].map(({ label, name }) => (
-                <div key={name} className="mt-4">
-                  <Label htmlFor={name}>{label}</Label>
+              {["rua", "bairro", "numero"].map((property) => (
+                <div key={property} className="mt-4">
+                  <Label htmlFor={property}>{property}</Label>
                   <Input
-                    id={name}
+                    id={property}
                     value={
-                      client.endereco[name as keyof typeof client.endereco] ||
-                      ""
+                      typeof client.endereco[property as keyof typeof client.endereco] ===
+                        "string" ||
+                      typeof client.endereco[property as keyof typeof client.endereco] ===
+                        "number"
+                        ? client.endereco[property as keyof typeof client.endereco]
+                        : ""
                     }
                     onChange={(e) =>
                       setCliente((prev) => ({
                         ...prev,
                         endereco: {
                           ...prev.endereco,
-                          [name]: e.target.value,
+                          [property]: e.target.value,
                         },
                       }))
                     }

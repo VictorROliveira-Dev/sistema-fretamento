@@ -19,11 +19,14 @@ import DialogRemover from "./components/dialog-remover";
 import loading from "../assets/loading-dark.svg";
 import DialogInformacoes from "./components/dialog-informacoes";
 import { parseISO } from "date-fns";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 
 export default function Documentos() {
   const [documentos, setDocumentos] = useState<IDocumentos[]>([]);
   const [buscarDocumento, setBuscarDocumento] = useState("");
   const [carregando, setCarregando] = useState(false);
+  const [atualizando, setAtualizando] = useState(false);
 
   const documentosFiltrados = documentos.filter((documento) => {
     return documento.tipoDocumento
@@ -47,6 +50,30 @@ export default function Documentos() {
 
     fetchDocumentos();
   }, []);
+
+  async function handlePendente(documento : IDocumentos) {
+    try{
+      setAtualizando(true);
+      const response = await api.put(`/documento/${documento.id}`,{
+        ...documento,
+        pendente: !documento.pendente
+      });
+      if(!response.data.isSucces){
+        toast("Erro ao tentar atualizar documento."); 
+      }
+
+      const documentosAtualizados = documentos.map((doc) => {
+        return doc.id === documento.id ? response.data.data : doc;
+      });
+      setDocumentos(documentosAtualizados);
+
+    }catch(error){
+      toast("Erro ao tentar atualizar documento.");	
+    }finally{
+      setAtualizando(false);
+    }
+
+  }
 
   function getDateVencimento(dataVencimento: string) {
     const today = new Date();
@@ -111,6 +138,9 @@ export default function Documentos() {
                       <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Vencimento
                       </TableHead>
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                        Pendente
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody className="text-center">
@@ -134,6 +164,22 @@ export default function Documentos() {
                             toZonedTime(parseISO(documento.vencimento), "UTC"),
                             "dd/MM/yyyy"
                           )}
+                        </TableCell>
+                        <TableCell>
+                          {atualizando ? (
+                            <div className="flex items-center justify-center">
+                              <Image
+                                src={loading}
+                                alt="carregando"
+                                width={50}
+                                className="animate-spin"
+                              />
+                            </div>
+                          ) : (
+                            <Switch onClick={() => handlePendente(documento)}  checked={documento.pendente} id="airplane-mode" />
+                          )}
+                      
+                        
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">

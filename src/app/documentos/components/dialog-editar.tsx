@@ -93,23 +93,15 @@ export default function DialogEditar({
           className="w-full flex flex-col items-center"
         >
           <div className="flex flex-wrap gap-4 w-full justify-center">
-            <div className="flex flex-col">
-              <label htmlFor="tipoDocumento">Doc/Certificado:</label>
-              <select
-                name="tipoDocumento"
+          <div className="flex flex-col">
+              <label htmlFor="referencia">Doc/Certificado:</label>
+              <Input
+                name="referencia"
+                placeholder="Digite a referência..."
                 value={tipoDocumento}
                 onChange={(e) => setTipoDocumento(e.target.value)}
-                className="w-[250px] border rounded-md p-2"
-              >
-                <option value="" disabled>
-                  Selecione o documento...
-                </option>
-                <option value="cnh">CNH</option>
-                <option value="ipva">IPVA</option>
-                <option value="extintor">Extintor</option>
-                <option value="alvará">Alvará</option>
-                <option value="Outros">Outros</option>
-              </select>
+                className="w-[250px]"
+              />
             </div>
             <div className="flex flex-col">
               <label htmlFor="referencia">Referência:</label>

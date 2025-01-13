@@ -74,7 +74,7 @@ export default function ViagensServicos() {
       <div className="h-[700px] md:w-[1400px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">
-            Visualizar Viagens/Serviços
+            Visualizar Fretamentos
           </p>
         </div>
         <div className="flex items-center p-10">
@@ -172,7 +172,13 @@ export default function ViagensServicos() {
                   <TableBody className="text-center">
                     {viagens.map((viagem) => (
                       <TableRow className="hover:bg-gray-200" key={viagem.id}>
-                        <TableCell>{viagem.motorista?.nome}</TableCell>
+                        <TableCell>
+                          {viagem.motoristaViagens &&
+                          viagem.motoristaViagens.length > 0 &&
+                          viagem.motoristaViagens[0].motorista
+                            ? viagem.motoristaViagens[0].motorista.nome
+                            : "Sem motorista"}
+                        </TableCell>
                         <TableCell className="hidden sm:table-cell">
                           {viagem.veiculo?.prefixo}
                         </TableCell>

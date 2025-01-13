@@ -148,6 +148,20 @@ export default function DialogEditar({
                 />
               </div>
               <div>
+                <Label htmlFor="dataNascimento">Data de Admissao</Label>
+                <Input
+                  type="date"
+                  value={motoristaAtualizar.dataAdmissao}
+                  id="dataNascimento"
+                  onChange={(e) =>
+                    setMotoristasAtualizar({
+                      ...motoristaAtualizar,
+                      dataAdmissao: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div>
                 <Label htmlFor="telefone">Telefone</Label>
                 <Input
                   id="telefone"
@@ -173,25 +187,7 @@ export default function DialogEditar({
                   }
                 />
               </div>
-              <div>
-                <Label htmlFor="tipocliente">Tipo do cliente</Label>
-                <RadioGroup
-                  value={motoristaAtualizar.tipo}
-                  onValueChange={(e) =>
-                    setMotoristasAtualizar({ ...motoristaAtualizar, tipo: e })
-                  }
-                  className="flex"
-                >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="FISICA" id="fisica" />
-                    <label htmlFor="fisica">Física</label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="JURIDICA" id="juridica" />
-                    <label htmlFor="juridica">Jurídica</label>
-                  </div>
-                </RadioGroup>
-              </div>
+            
               <div>
                 <Label htmlFor="documento">Documento</Label>
                 <Input
