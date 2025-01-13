@@ -51,28 +51,26 @@ export default function Documentos() {
     fetchDocumentos();
   }, []);
 
-  async function handlePendente(documento : IDocumentos) {
-    try{
+  async function handlePendente(documento: IDocumentos) {
+    try {
       setAtualizando(true);
-      const response = await api.put(`/documento/${documento.id}`,{
+      const response = await api.put(`/documento/${documento.id}`, {
         ...documento,
-        pendente: !documento.pendente
+        pendente: !documento.pendente,
       });
-      if(!response.data.isSucces){
-        toast("Erro ao tentar atualizar documento."); 
+      if (!response.data.isSucces) {
+        toast("Erro ao tentar atualizar documento.");
       }
 
       const documentosAtualizados = documentos.map((doc) => {
         return doc.id === documento.id ? response.data.data : doc;
       });
       setDocumentos(documentosAtualizados);
-
-    }catch(error){
-      toast("Erro ao tentar atualizar documento.");	
-    }finally{
+    } catch {
+      toast("Erro ao tentar atualizar documento.");
+    } finally {
       setAtualizando(false);
     }
-
   }
 
   function getDateVencimento(dataVencimento: string) {
@@ -176,10 +174,12 @@ export default function Documentos() {
                               />
                             </div>
                           ) : (
-                            <Switch onClick={() => handlePendente(documento)}  checked={documento.pendente} id="airplane-mode" />
+                            <Switch
+                              onClick={() => handlePendente(documento)}
+                              checked={documento.pendente}
+                              id="airplane-mode"
+                            />
                           )}
-                      
-                        
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">

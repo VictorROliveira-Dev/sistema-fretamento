@@ -1,11 +1,8 @@
 "use client";
-import BusSelector from "@/components/bus-selector";
-import FormInput from "@/components/form-input";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -19,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { formFieldsPassagens } from "@/lib/objects";
 import Image from "next/image";
 import editIcon from "@/app/assets/edit.svg";
 import { Label } from "@/components/ui/label";

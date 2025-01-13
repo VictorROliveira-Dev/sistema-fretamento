@@ -7,7 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import Image from "next/image";
 import {
   Select,
   SelectContent,
@@ -33,7 +32,7 @@ export default function Passagens() {
     useState<ViagemProgramda | null>(null);
 
   async function handleViagemChange(id: number) {
-    let url = `/viagemProgramada/${id}?includePassagem=true&includeVeiculo=true`;
+    const url = `/viagemProgramada/${id}?includePassagem=true&includeVeiculo=true`;
     const response = await api.get(url);
     if (!response.data.isSucces) {
       toast("erro ao tentar recuperar viagem");
@@ -77,7 +76,7 @@ export default function Passagens() {
                   <SelectContent>
                     <SelectGroup>
                       {viagens.map((viagem) => (
-                        <SelectItem value={viagem.id.toString()}>
+                        <SelectItem key={viagem.id} value={viagem.id.toString()}>
                           {viagem.titulo}
                         </SelectItem>
                       ))}

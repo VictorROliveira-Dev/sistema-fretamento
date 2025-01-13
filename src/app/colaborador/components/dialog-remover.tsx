@@ -10,7 +10,7 @@ import {
 import Image from "next/image";
 import removeIcon from "@/app/assets/remove.svg";
 import { api } from "@/lib/axios";
-import { Colaborador, Motorista } from "@/lib/types";
+import { Colaborador } from "@/lib/types";
 import { toast } from "sonner";
 import { useState } from "react";
 import loading from "../../assets/loading.svg";

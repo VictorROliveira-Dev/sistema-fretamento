@@ -59,7 +59,7 @@ export default function DialogAdicionarDespesa({
   const [fornecedor, setFornecedor] = useState<Fornecedor[]>([]);
   const [viagems, setViagems] = useState<Viagem[]>([]);
   const [tipoResponsavel, setTipoResponsavel] = useState<string | "">("");
-  const [descricao, setDescricao] = useState<string | "">("");
+  //const [descricao, setDescricao] = useState<string | "">("");
   const [viagemId, setViagemId] = useState<number>(0);
   const [editando, setEditando] = useState(false);
   const [viagem, setViagem] = useState<Viagem>();

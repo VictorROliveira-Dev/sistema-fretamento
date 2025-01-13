@@ -24,7 +24,6 @@ import { toast } from "sonner";
 import Image from "next/image";
 import loading from "../../assets/loading.svg";
 import axios from "axios";
-import { set } from "date-fns";
 
 interface MotoristasProps {
   setMotoristas: React.Dispatch<React.SetStateAction<Motorista[]>>;
@@ -119,7 +118,6 @@ export default function DialogAdicionar({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAdicionando(true);
-
     const motorista = {
       nome: nome,
       dataNascimento: dataNascimento,
