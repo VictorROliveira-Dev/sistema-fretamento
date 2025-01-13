@@ -459,17 +459,17 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 </div>
 
                 <div className="flex gap-2">
-                  <span>Km Inicial: {viagem.kmInicialVeiculo}</span>
-                  <span>Km Final:{viagem.kmFinalVeiculo}</span>
+                  <span>Km Inicial: {viagem.kmInicialVeiculo} | </span>
+                  <span>Km Final: {viagem.kmFinalVeiculo} | </span>
                   {viagem.kmFinalVeiculo > 0 ? (
                     <span>
-                      Total:{viagem.kmFinalVeiculo - viagem.kmInicialVeiculo}{" "}
+                      Total: {viagem.kmFinalVeiculo - viagem.kmInicialVeiculo}{" "}
                     </span>
                   ) : (
                     <span>Total: 0</span>
                   )}
                 </div>
-                <div className="space-x-2">
+                <div className="space-x-2 mb-2">
                   {viagem.kmFinalVeiculo > 0 ? (
                     <span>
                       Km/L:{" "}
@@ -477,7 +477,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                         abastecimento!.litros}
                     </span>
                   ) : (
-                    <span>Km/L: 0</span>
+                    <span>Km/L: 0 |</span>
                   )}
 
                   {abastecimento!.valorTotal > 0 ? (
