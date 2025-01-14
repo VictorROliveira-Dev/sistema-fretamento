@@ -84,8 +84,8 @@ const adminRoutes = [
   "/estoque",
 ];
 const userRoutes = ["/viagem-programada", "/passagem", "/estoque"];
-console.log("Admin Routes:", adminRoutes);
-console.log("User Routes:", userRoutes);
+//console.log("Admin Routes:", adminRoutes);
+//console.log("User Routes:", userRoutes);
 
 
 interface NavLinkProps {
@@ -129,7 +129,7 @@ const Header = memo(function Header() {
         console.log("Token Parts:", parts); // Verifique as partes do token
         if (parts.length === 3) {
           const payload = JSON.parse(atob(parts[1]));
-          console.log("Payload do Token:", payload); // Verifique o conteúdo do payload
+          //console.log("Payload do Token:", payload); // Verifique o conteúdo do payload
           setRole(payload.role); // Atribua o role
         } else {
           console.error("Token JWT mal formatado.");
@@ -151,7 +151,7 @@ const Header = memo(function Header() {
     return false;
   });
 
-  console.log("Filtered Nav Items:", filteredNavItems);
+  //console.log("Filtered Nav Items:", filteredNavItems);
 
   return (
     <header>
