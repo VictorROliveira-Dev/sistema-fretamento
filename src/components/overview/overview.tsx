@@ -18,6 +18,7 @@ export function Overview() {
     async function fetchData() {
       try {
         const response = await api.get("/liquido"); 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const formattedData = response.data.data.map((item: any) => ({
           name: item.month,
           revenue: item.receitas,
