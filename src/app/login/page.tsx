@@ -14,7 +14,6 @@ import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
-import { jwtDecode } from "jwt-decode";
 
 export default function Login() {
   const [email, setEmail] = useState<string>("");
