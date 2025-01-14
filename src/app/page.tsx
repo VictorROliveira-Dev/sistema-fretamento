@@ -8,16 +8,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { api } from "@/lib/axios";
-import { IDocumentos, ReceitasMensais, Viagem } from "@/lib/types";
+import { IDocumentos, ReceitasMensais } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import loading from "./assets/loading-dark.svg";
 import { parseISO } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
-
 import {
-  CalendarIcon,
   CarIcon,
   DollarSignIcon,
   TrendingUpIcon,
@@ -30,7 +28,7 @@ export default function Home() {
   const [despesa, setDespesa] = useState<number>(0);
   const [receita, setReceita] = useState<number>(0);
   const [viagens, setViagens] = useState<number>(0);
-  const [receitasMensais, setReceitasMensais] = useState<ReceitasMensais[]>([]);
+  const [, setReceitasMensais] = useState<ReceitasMensais[]>([]);
   const [carregando, setCarregando] = useState(false);
 
   const fetchData = async () => {
@@ -79,12 +77,12 @@ export default function Home() {
 
     return "text-black font-medium";
   }
-  const stats = {
+  /*const stats = {
     trips: 24,
     expenses: 15000,
     revenue: 45000,
     netIncome: 30000,
-  };
+  };*/
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6 bg-[#070180]">

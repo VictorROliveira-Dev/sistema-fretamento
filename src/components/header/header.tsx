@@ -72,7 +72,7 @@ const adminRoutes = [
   "/motoristas",
   "/clientes",
   "/fornecedores",
-  "/colaboradores",
+  "/colaborador",
   "/ferias",
   "/veiculos",
   "/viagens-servicos",
@@ -84,6 +84,9 @@ const adminRoutes = [
   "/estoque",
 ];
 const userRoutes = ["/viagem-programada", "/viagens-servicos", "/estoque"];
+console.log("Admin Routes:", adminRoutes);
+console.log("User Routes:", userRoutes);
+
 
 interface NavLinkProps {
   href: string;
@@ -119,23 +122,36 @@ const Header = memo(function Header() {
   const closeSheet = () => setIsOpen(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
+    const token = localStorage.getItem("token");
     if (token) {
       try {
-        const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica o payload do JWT
-        setRole(payload.role);
+        const parts = token.split(".");
+        console.log("Token Parts:", parts); // Verifique as partes do token
+        if (parts.length === 3) {
+          const payload = JSON.parse(atob(parts[1]));
+          console.log("Payload do Token:", payload); // Verifique o conteúdo do payload
+          setRole(payload.role); // Atribua o role
+        } else {
+          console.error("Token JWT mal formatado.");
+        }
       } catch (error) {
         console.error("Erro ao decodificar o token:", error);
       }
+    } else {
+      console.warn("Token não encontrado no localStorage.");
     }
   }, []);
+  
 
   // Filtra os itens de navegação com base na role
   const filteredNavItems = navItems.filter(({ href }) => {
+    console.log("Role atual:", role); 
     if (role === "admin") return adminRoutes.includes(href);
-    if (role === "user") return userRoutes.includes(href);
+    if (role === "passagem") return userRoutes.includes(href);
     return false;
   });
+
+  console.log("Filtered Nav Items:", filteredNavItems);
 
   return (
     <header>
@@ -148,7 +164,7 @@ const Header = memo(function Header() {
       {/* Menu para telas maiores */}
       <nav className="sm:h-28 bg-white sm:flex items-center justify-center mx-10 hidden">
         <div className="flex items-center gap-4">
-          {navItems.map(({ href, label, icon }) => (
+          {filteredNavItems.map(({ href, label, icon }) => (
             <NavLink
               key={href}
               href={href}
