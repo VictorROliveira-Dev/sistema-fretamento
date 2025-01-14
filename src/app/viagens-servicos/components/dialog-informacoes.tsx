@@ -518,26 +518,13 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               >
                 <div className="grid gap-2">
                   <Label htmlFor="tipoVerba">Origem</Label>
-                  <Select
-                    value={adiantamento!.tipoVerba}
-                    onValueChange={(e) =>
-                      setAdiantamento({ ...adiantamento!, tipoVerba: e })
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Origem"></SelectValue>
-                    </SelectTrigger>
-                    <SelectContent className="">
-                      <SelectGroup>
-                        <SelectItem value="Almoço">Almoço</SelectItem>
-                        <SelectItem value="Hospedagem">Hospedagem</SelectItem>
-                        <SelectItem value="Estacionamento">
-                          Estacionamento
-                        </SelectItem>
-                        <SelectItem value="Pedagio">Pedagio</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <input
+                    type="text"
+                    id="tipoVerba"
+                    value="Motorista"
+                    readOnly
+                    className="border border-gray-300 w-[120px] px-2 py-1 rounded"
+                  />
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="verba">Valor</Label>

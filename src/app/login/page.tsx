@@ -31,7 +31,11 @@ export default function Login() {
       });
 
       if (response.status === 200) {
-        localStorage.setItem("token", response.data.data);
+        const token = response.data.data;
+
+        localStorage.setItem("token", token);
+        document.cookie = `authToken=${token}; path=/`;
+        
         toast.success("Login bem-sucedido!");
         router.replace("/");
       }

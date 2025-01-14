@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FC, memo, useState } from "react";
+import { FC, memo, useEffect, useState } from "react";
 import menuIcon from "../../app/assets/menu.svg";
 import painel from "@/app/assets/painel-de-controle.png";
 import motorista from "@/app/assets/motorista.png";
@@ -67,6 +67,24 @@ const navItems: NavItem[] = [
   { href: "/estoque", label: "Estoque", icon: icons.estoque },
 ];
 
+const adminRoutes = [
+  "/",
+  "/motoristas",
+  "/clientes",
+  "/fornecedores",
+  "/colaboradores",
+  "/ferias",
+  "/veiculos",
+  "/viagens-servicos",
+  "/viagem-programada",
+  "/manutencoes",
+  "/servicos",
+  "/documentos",
+  "/financeiro",
+  "/estoque",
+];
+const userRoutes = ["/viagem-programada", "/viagens-servicos", "/estoque"];
+
 interface NavLinkProps {
   href: string;
   icon: string;
@@ -75,27 +93,49 @@ interface NavLinkProps {
   onClick?: () => void;
 }
 
-const NavLink: FC<NavLinkProps> = memo(({ href, icon, label, isActive, onClick }) => {
-  console.log(`Renderizando NavLink: ${label}`); // Para verificar as re-renderizações
-  return (
-    <Link
-      href={href}
-      onClick={onClick}
-      className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${
-        isActive ? "bg-blue-900 border-blue-900 text-white" : ""
-      }`}
-    >
-      <Image src={icon} alt={label} width={45} height={45} />
-      <p className="font-bold text-xs text-center">{label}</p>
-    </Link>
-  );
-});
+const NavLink: FC<NavLinkProps> = memo(
+  ({ href, icon, label, isActive, onClick }) => {
+    console.log(`Renderizando NavLink: ${label}`); // Para verificar as re-renderizações
+    return (
+      <Link
+        href={href}
+        onClick={onClick}
+        className={`flex flex-col items-center gap-2 p-4 border-2 rounded-md cursor-pointer w-[90px] h-[90px] hover:bg-blue-900 hover:border-blue-900 hover:text-white transition-all ${
+          isActive ? "bg-blue-900 border-blue-900 text-white" : ""
+        }`}
+      >
+        <Image src={icon} alt={label} width={45} height={45} />
+        <p className="font-bold text-xs text-center">{label}</p>
+      </Link>
+    );
+  }
+);
 
 const Header = memo(function Header() {
   const pathname = usePathname() || "";
-  const [isOpen, setIsOpen] = useState(false); // Estado para controlar o menu lateral
-  // Função para fechar o Sheet
+  const [isOpen, setIsOpen] = useState(false);
+  const [role, setRole] = useState<string | null>(null);
+
   const closeSheet = () => setIsOpen(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica o payload do JWT
+        setRole(payload.role);
+      } catch (error) {
+        console.error("Erro ao decodificar o token:", error);
+      }
+    }
+  }, []);
+
+  // Filtra os itens de navegação com base na role
+  const filteredNavItems = navItems.filter(({ href }) => {
+    if (role === "admin") return adminRoutes.includes(href);
+    if (role === "user") return userRoutes.includes(href);
+    return false;
+  });
 
   return (
     <header>
@@ -146,7 +186,7 @@ const Header = memo(function Header() {
                   icon={icon}
                   label={label}
                   isActive={pathname === href}
-                  onClick={closeSheet} // Fecha o Sheet ao clicar no link
+                  onClick={closeSheet}
                 />
               ))}
             </div>

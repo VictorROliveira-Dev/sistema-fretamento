@@ -44,15 +44,20 @@ export function DialogAdicionar() {
     e.preventDefault();
     setCarregando(true);
     console.log(viagem);
-    const response = await api.post("/viagemprogramada", viagem);
+    try {
+      const response = await api.post("/viagemprogramada", viagem);
 
-    if (!response.data.isSucces) {
-      toast(response.data.message);
-      return;
+      if (!response.data.isSucces) {
+        toast(response.data.message);
+        return;
+      }
+
+      toast("adicionado com sucesso");
+    } catch {
+      toast("erro ao tentar adicionar");
+    } finally {
+      setCarregando(false);
     }
-
-    toast("adicionado com sucesso");
-    setCarregando(false);
   }
 
   async function fetchVeiculos() {
@@ -149,7 +154,7 @@ export function DialogAdicionar() {
                     }
                   >
                     <SelectTrigger className="w-auto">
-                      <SelectValue placeholder="Pagamento" />
+                      <SelectValue placeholder="Veículo" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
@@ -158,7 +163,7 @@ export function DialogAdicionar() {
                             key={veiculo.id}
                             value={veiculo.id.toString()}
                           >
-                            {veiculo.modelo} - {veiculo.placa}
+                            {veiculo.prefixo} - {veiculo.placa}
                           </SelectItem>
                         ))}
                       </SelectGroup>

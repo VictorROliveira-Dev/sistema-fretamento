@@ -16,6 +16,14 @@ import loading from "../assets/loading-dark.svg";
 export default function ViagemProgramada() {
   const [viagens, setViagens] = useState<ViagemProgramda[]>([]);
   const [carregando, setCarregando] = useState(false);
+  const [pesquisarViagem, setPesquisarViagem] = useState("");
+
+  const filtroViagens = viagens.filter((viagem) => {
+    if (!viagem.titulo) {
+      return false;
+    }
+    return viagem.titulo.toLowerCase().includes(pesquisarViagem.toLowerCase());
+  });
 
   async function fetchViagens() {
     setCarregando(true);
@@ -66,8 +74,10 @@ export default function ViagemProgramada() {
                 <label htmlFor="pacote">Localizar Viagem:</label>
                 <Input
                   name="pacote"
-                  className="border-2 font-medium text-white w-[250px]"
+                  className="border-2 font-medium w-[250px]"
                   placeholder="Nome Pacote..."
+                  value={pesquisarViagem}
+                  onChange={(e) => setPesquisarViagem(e.target.value)}
                 />
               </div>
             </form>
@@ -84,7 +94,7 @@ export default function ViagemProgramada() {
             </div>
           ) : (
             <div className="flex justify-center md:justify-start gap-2 p-4">
-              {viagens.map((viagem) => (
+              {filtroViagens.map((viagem) => (
                 <Card className="p-4 w-[300px]" key={viagem.id}>
                   <CardTitle className="text-center font-bold text-xl mb-2">
                     {viagem.titulo}
