@@ -8,7 +8,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
-import removeIcon from "@/app/assets/remove.svg";
 import { api } from "@/lib/axios";
 import { ViagemProgramda } from "@/lib/types";
 import { toast } from "sonner";
@@ -46,7 +45,7 @@ export default function DialogRemover({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="bg-red-600 text-white rounded-md shadow-none px-2 hover:scale-110 cursor-pointer transition-all">
+        <span className="bg-red-600 hover:bg-red-500 text-white rounded-md shadow-none px-2 py-1 text-center cursor-pointer transition-all">
          Remover
         </span>
       </DialogTrigger>
