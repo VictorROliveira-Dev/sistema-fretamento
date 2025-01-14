@@ -83,7 +83,7 @@ const adminRoutes = [
   "/financeiro",
   "/estoque",
 ];
-const userRoutes = ["/viagem-programada", "/viagens-servicos", "/estoque"];
+const userRoutes = ["/viagem-programada", "/passagem", "/estoque"];
 console.log("Admin Routes:", adminRoutes);
 console.log("User Routes:", userRoutes);
 
@@ -194,8 +194,8 @@ const Header = memo(function Header() {
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
 
-            <div className="grid grid-cols-2 gap-4 p-2">
-              {navItems.map(({ href, label, icon }) => (
+            <div className="grid  place-items-center gap-4 p-2">
+              {filteredNavItems.map(({ href, label, icon }) => (
                 <NavLink
                   key={href}
                   href={href}

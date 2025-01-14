@@ -14,6 +14,7 @@ import { LoaderCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import { jwtDecode } from "jwt-decode";
 
 export default function Login() {
   const [email, setEmail] = useState<string>("");
@@ -35,13 +36,27 @@ export default function Login() {
 
         localStorage.setItem("token", token);
         document.cookie = `authToken=${token}; path=/`;
-        
+
+        // Decodifica o token usando atob e JSON.parse
+        const base64Url = token.split(".")[1]; // Pega a parte do payload
+        const decodedPayload = atob(base64Url); // Decodifica a parte em Base64
+        const parsedPayload = JSON.parse(decodedPayload); // Converte para objeto JSON
+
+        const role = parsedPayload.role; // Extraí a role do token decodificado
+
+        // Se o usuário for admin, redireciona para a página principal, caso contrário para viagens
+        if (role === "admin") {
+          router.replace("/"); // Redireciona para a página principal do admin
+        } else if (role === "passagem") {
+          router.replace("/viagens-servicos"); // Redireciona para a página de viagens para usuários
+        } else {
+          toast.error("Role não reconhecida.");
+        }
+
         toast.success("Login bem-sucedido!");
-        router.replace("/");
       }
-    } 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    catch (error: any) {
+    } catch (error: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const errorMessage =
         error.response?.data?.message || "Credenciais Inválidas.";
       toast.error(errorMessage);
@@ -55,13 +70,17 @@ export default function Login() {
       <Card className="md:w-[500px] w-[80%] bg-slate-50 border-none rounded-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Login</CardTitle>
-          <CardDescription className="font-medium">Entre com sua conta.</CardDescription>
+          <CardDescription className="font-medium">
+            Entre com sua conta.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin}>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="email" className="font-semibold">Nome de Usuário</Label>
+                <Label htmlFor="email" className="font-semibold">
+                  Nome de Usuário
+                </Label>
                 <Input
                   id="email"
                   type="text"
@@ -71,7 +90,9 @@ export default function Login() {
                 />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="password" className="font-semibold">Senha</Label>
+                <Label htmlFor="password" className="font-semibold">
+                  Senha
+                </Label>
                 <Input
                   id="password"
                   type="password"

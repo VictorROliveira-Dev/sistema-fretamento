@@ -47,7 +47,7 @@ export function middleware(req: NextRequest) {
   }
 
   // Redireciona para a página de "não autorizado" se o acesso não for permitido
-  return NextResponse.redirect(new URL("/unauthorized", req.url));
+  return NextResponse.redirect(new URL("/unauthorized", req.url), 403);
 }
 
 export const config = {
@@ -64,7 +64,6 @@ export const config = {
     "/manutencoes/:path*",
     "/servicos/:path*",
     "/documentos/:path*",
-    "/viagens-programadas/:path*",
     "/financeiro/:path*",
     "/passagens/:path*",
     "/estoque/:path*",
