@@ -12,12 +12,17 @@ import { DialogInfo } from "./components/dialog-informacao";
 import Link from "next/link";
 import Image from "next/image";
 import loading from "../assets/loading-dark.svg";
+import { parseISO } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import DialogRemover from "./components/dialog-remover";
 
 export default function ViagemProgramada() {
   const [viagens, setViagens] = useState<ViagemProgramda[]>([]);
   const [carregando, setCarregando] = useState(false);
   const [pesquisarViagem, setPesquisarViagem] = useState("");
-
+  const router = useRouter();
   const filtroViagens = viagens.filter((viagem) => {
     if (!viagem.titulo) {
       return false;
@@ -26,37 +31,33 @@ export default function ViagemProgramada() {
   });
 
   async function fetchViagens() {
-    setCarregando(true);
-    const response = await api.get("viagemprogramada");
-
-    if (!response.data.isSucces) {
+    try { setCarregando(true);
+      const response = await api.get("viagemprogramada");
+  
+      if (!response.data.isSucces) {
+        toast("Erro ao tentar buscar viagens, recarregue a pagina");
+        return;
+      }
+  
+      setViagens(response.data.data);
+  
+      setCarregando(false);
+    } catch (error) {
+   if(axios.isAxiosError(error)){
+    if (error.status === 401) {
+      localStorage.removeItem("token");
+      router.replace("/login");
+    } else {
       toast("Erro ao tentar buscar viagens, recarregue a pagina");
-      return;
     }
-
-    setViagens(response.data.data);
-
+   }
+  }finally{
     setCarregando(false);
+  }
   }
   useEffect(() => {
     fetchViagens();
   }, []);
-
-  function formatarDataParaDiaMes(data: string): string {
-    // Converte a string para uma data
-    const partes = data.split("-"); // Divide a string no formato MM-dd-yyyy
-    const ano = parseInt(partes[0], 10) - 1; // Mês em JavaScript é baseado em zero
-    const mes = parseInt(partes[1], 10);
-    const dia = parseInt(partes[2], 10);
-
-    const dataObj = new Date(ano, mes, dia);
-
-    // Formata para o formato dd/MM
-    const diaFormatado = dataObj.getDate().toString().padStart(2, "0");
-    const mesFormatado = (dataObj.getMonth() + 1).toString().padStart(2, "0");
-
-    return `${diaFormatado}/${mesFormatado}`;
-  }
 
   return (
     <>
@@ -104,15 +105,23 @@ export default function ViagemProgramada() {
                       <Bus className="text-blue-800" />
                       <span>{viagem.itinerario.substring(0, 18)}</span>
                     </div>
-                    <div className="flex gap-2 justify-start">
+                    <div className="flex flex-col gap-2 justify-start">
                       <div className="flex gap-1 items-center">
                         <CalendarDays className="text-green-600" />
-                        <span>{formatarDataParaDiaMes(viagem.saida.data)}</span>
+                        <span>
+                          {format(
+                            toZonedTime(parseISO(viagem.saida.data), "UTC"),
+                            "dd/MM/yyyy"
+                          )}
+                        </span>
                       </div>
                       <div className="flex gap-1 items-center">
                         <CalendarDays className="text-red-600" />
                         <span>
-                         {formatarDataParaDiaMes(viagem.retorno.data)} 
+                          {format(
+                            toZonedTime(parseISO(viagem.retorno.data), "UTC"),
+                            "dd/MM/yyyy"
+                          )}
                         </span>
                       </div>
                     </div>
@@ -126,9 +135,11 @@ export default function ViagemProgramada() {
                         viagens={viagens}
                         viagemEditavel={viagem}
                       />
-                      <DialogInfo viagem={viagem} />
+                      <DialogRemover setViagens={setViagens} viagemId={viagem.id} />
+                      
                     </div>
-                    <CardFooter className="p-0">
+                    <CardFooter className="p-0 flex flex-col">
+                    <DialogInfo viagem={viagem} />
                       <Link
                         className="bg-slate-800 w-[170px] text-center text-sm text-white p-2 rounded-sm"
                         href="/passagens"

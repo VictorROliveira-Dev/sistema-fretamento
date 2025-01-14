@@ -51,7 +51,7 @@ export function DialogInfo({ viagem }: TripDetailsDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent hover:bg-slate-100 border-2 border-gray-300 shadow-none text-black">Detalhes</Button>
+        <Button className="bg-transparent hover:bg-slate-100 border-2 w-full mb-1 border-gray-300 shadow-none text-black">Detalhes</Button>
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>

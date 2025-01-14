@@ -1,5 +1,7 @@
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { parseISO } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 
 interface HorarioLocal {
   data: string;
@@ -24,7 +26,8 @@ export function LocationTimeInfo({ title, info, icon }: LocationTimeInfoProps) {
           </div>
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground">
-              Data: {new Date(info.data).toLocaleDateString("pt-BR")}
+              Data:{" "}
+              {format(toZonedTime(parseISO(info.data), "UTC"), "dd/MM/yyyy")}
             </p>
             <p className="text-sm text-muted-foreground">Hora: {info.hora}</p>
             <p className="text-sm text-muted-foreground">Local: {info.local}</p>
