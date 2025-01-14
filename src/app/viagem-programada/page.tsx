@@ -45,9 +45,9 @@ export default function ViagemProgramada() {
   function formatarDataParaDiaMes(data: string): string {
     // Converte a string para uma data
     const partes = data.split("-"); // Divide a string no formato MM-dd-yyyy
-    const mes = parseInt(partes[0], 10) - 1; // Mês em JavaScript é baseado em zero
-    const dia = parseInt(partes[1], 10);
-    const ano = parseInt(partes[2], 10);
+    const ano = parseInt(partes[0], 10) - 1; // Mês em JavaScript é baseado em zero
+    const mes = parseInt(partes[1], 10);
+    const dia = parseInt(partes[2], 10);
 
     const dataObj = new Date(ano, mes, dia);
 
@@ -112,7 +112,7 @@ export default function ViagemProgramada() {
                       <div className="flex gap-1 items-center">
                         <CalendarDays className="text-red-600" />
                         <span>
-                          {formatarDataParaDiaMes(viagem.retorno.data)}
+                         {formatarDataParaDiaMes(viagem.retorno.data)} 
                         </span>
                       </div>
                     </div>

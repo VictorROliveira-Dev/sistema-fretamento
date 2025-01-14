@@ -47,7 +47,7 @@ export default function Login() {
         if (role === "admin") {
           router.replace("/"); // Redireciona para a página principal do admin
         } else if (role === "passagem") {
-          router.replace("/viagens-servicos"); // Redireciona para a página de viagens para usuários
+          router.replace("/viagem-programada"); // Redireciona para a página de viagens para usuários
         } else {
           toast.error("Role não reconhecida.");
         }

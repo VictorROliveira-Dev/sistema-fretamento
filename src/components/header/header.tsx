@@ -126,7 +126,7 @@ const Header = memo(function Header() {
     if (token) {
       try {
         const parts = token.split(".");
-        console.log("Token Parts:", parts); // Verifique as partes do token
+        //console.log("Token Parts:", parts); // Verifique as partes do token
         if (parts.length === 3) {
           const payload = JSON.parse(atob(parts[1]));
           //console.log("Payload do Token:", payload); // Verifique o conteúdo do payload
@@ -194,7 +194,7 @@ const Header = memo(function Header() {
               <SheetTitle>Menu</SheetTitle>
             </SheetHeader>
 
-            <div className="grid  place-items-center gap-4 p-2">
+            <div className="grid place-items-center grid-cols-2 gap-4 p-2">
               {filteredNavItems.map(({ href, label, icon }) => (
                 <NavLink
                   key={href}
