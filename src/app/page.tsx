@@ -147,8 +147,8 @@ export default function Home() {
             <Overview />
           </CardContent>
         </Card>
-        <Card className="col-span-3">
-          <CardContent>
+        <Card className="col-span-4 md:col-span-3">
+          <CardContent className="">
             <div className="w-full flex h-full flex-col pt-4 items-center gap-4">
               <p className="font-bold">Vencimento Doc/Certificados</p>
               <div className="h-[200px] overflow-y-scroll scrollbar-hide">

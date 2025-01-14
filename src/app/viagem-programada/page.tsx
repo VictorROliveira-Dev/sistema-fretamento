@@ -61,7 +61,7 @@ export default function ViagemProgramada() {
   return (
     <>
       <section className="bg-[#070180] pt-12 h-[1100px] md:h-[800px]">
-        <div className="md:w-[1400px] w-[95%] h-[900px] md:h-[700px] mx-auto rounded-md bg-white flex flex-col overflow-y-scroll">
+        <div className="md:w-[1400px] w-[95%] h-[900px] md:h-[700px] mx-auto rounded-md bg-white flex flex-col overflow-y-scroll md:overflow-y-auto">
           <div className=" bg-black w-full">
             <p className="font-bold text-white text-center">
               Visualizar Viagens/Serviços
