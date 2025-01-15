@@ -76,7 +76,10 @@ export default function Passagens() {
                   <SelectContent>
                     <SelectGroup>
                       {viagens.map((viagem) => (
-                        <SelectItem key={viagem.id} value={viagem.id.toString()}>
+                        <SelectItem
+                          key={viagem.id}
+                          value={viagem.id.toString()}
+                        >
                           {viagem.titulo}
                         </SelectItem>
                       ))}
@@ -133,9 +136,15 @@ export default function Passagens() {
                           "dd/MM/yyyy"
                         )}
                       </TableCell>
-                      <TableCell className="hidden sm:table-cell">{passagem.formaPagamento}</TableCell>
-                      <TableCell className="hidden sm:table-cell">{passagem.poltrona}</TableCell>
-                      <TableCell className="hidden sm:table-cell">{passagem.situacao}</TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        {passagem.formaPagamento}
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        {passagem.poltrona}
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        {passagem.situacao}
+                      </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
                           <DialogEditar
@@ -149,7 +158,10 @@ export default function Passagens() {
                             setViagem={setViagemSeleciona}
                             passagem={passagem}
                           />
-                          <DialogInformacoes trip={viagemSelecionada} />
+                          <DialogInformacoes
+                            trip={viagemSelecionada}
+                            passagem={passagem}
+                          />
                         </div>
                       </TableCell>
                     </TableRow>

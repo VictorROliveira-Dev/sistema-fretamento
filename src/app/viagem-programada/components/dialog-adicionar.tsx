@@ -37,6 +37,7 @@ export function DialogAdicionar() {
     itinerario: "",
     observacoes: "",
     veiculoId: 0,
+    valorPassagemIdaVolta: 0,
   });
 
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
@@ -137,6 +138,20 @@ export function DialogAdicionar() {
                   />
                 </div>
                 <div>
+                  <Label htmlFor="valorPassagem">Valor Ida e Volta</Label>
+                  <Input
+                    name="valorPassagem"
+                    type="number"
+                    placeholder="00,00R$"
+                    onChange={(e) =>
+                      setViagem({
+                        ...viagem,
+                        valorPassagemIdaVolta: parseFloat(e.target.value) || 0,
+                      })
+                    }
+                  />
+                </div>
+                <div>
                   <Label>Forma de pagamento</Label>
                   <Select
                     onValueChange={(value) =>
@@ -183,8 +198,8 @@ export function DialogAdicionar() {
 
               <div className="flex flex-col md:flex-row gap-2">
                 <fieldset className="border border-green-800 rounded-md p-4">
-                  <legend>Saída</legend>
-                  <div className="flex flex-col md:flex-row gap-2">
+                  <legend>Origem</legend>
+                  <div className="flex flex-col md:items-end md:h-full md:flex-row gap-2">
                     <div>
                       <Label htmlFor="dataSaida">Data de Saída</Label>
                       <Input
@@ -225,10 +240,10 @@ export function DialogAdicionar() {
                 </fieldset>
 
                 <fieldset className="border border-green-800 rounded-md p-4">
-                  <legend>Retorno</legend>
-                  <div className="flex flex-col md:flex-row gap-2">
+                  <legend>Destino</legend>
+                  <div className="flex flex-col md:items-end md:flex-row gap-2">
                     <div>
-                      <Label htmlFor="dataRetorno">Data de Retorno</Label>
+                      <Label htmlFor="dataRetorno">Data de Chegada</Label>
                       <Input
                         type="date"
                         onChange={(e) =>
@@ -258,7 +273,7 @@ export function DialogAdicionar() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="localRetorno">Local de Retorno</Label>
+                      <Label htmlFor="localRetorno">Local de Chegada</Label>
                       <Input
                         placeholder="Local de retorno"
                         onChange={(e) =>
@@ -276,10 +291,10 @@ export function DialogAdicionar() {
                 </fieldset>
 
                 <fieldset className="border border-green-800 rounded-md p-4">
-                  <legend>Chegada</legend>
-                  <div className="flex flex-col md:flex-row gap-2">
+                  <legend>Volta</legend>
+                  <div className="flex flex-col md:items-end md:flex-row gap-2">
                     <div>
-                      <Label htmlFor="dataChegada">Data de Chegada</Label>
+                      <Label htmlFor="dataChegada">Data de retorno</Label>
                       <Input
                         type="date"
                         onChange={(e) =>

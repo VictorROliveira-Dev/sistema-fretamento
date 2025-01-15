@@ -31,29 +31,30 @@ export default function ViagemProgramada() {
   });
 
   async function fetchViagens() {
-    try { setCarregando(true);
+    try {
+      setCarregando(true);
       const response = await api.get("viagemprogramada");
-  
+
       if (!response.data.isSucces) {
         toast("Erro ao tentar buscar viagens, recarregue a pagina");
         return;
       }
-  
+
       setViagens(response.data.data);
-  
+
       setCarregando(false);
     } catch (error) {
-   if(axios.isAxiosError(error)){
-    if (error.status === 401) {
-      localStorage.removeItem("token");
-      router.replace("/login");
-    } else {
-      toast("Erro ao tentar buscar viagens, recarregue a pagina");
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        } else {
+          toast("Erro ao tentar buscar viagens, recarregue a pagina");
+        }
+      }
+    } finally {
+      setCarregando(false);
     }
-   }
-  }finally{
-    setCarregando(false);
-  }
   }
   useEffect(() => {
     fetchViagens();
@@ -95,61 +96,69 @@ export default function ViagemProgramada() {
             </div>
           ) : (
             <div className="flex flex-col items-center md:flex-row justify-center md:justify-start gap-2 p-4">
-              {filtroViagens.map((viagem) => (
-                <Card className="p-4 w-[300px]" key={viagem.id}>
-                  <CardTitle className="text-center font-bold text-xl mb-2">
-                    {viagem.titulo}
-                  </CardTitle>
-                  <CardContent className="flex flex-col items-center w-full p-0 gap-2">
-                    <div className="flex gap-1 items-center">
-                      <Bus className="text-blue-800" />
-                      <span>{viagem.itinerario.substring(0, 18)}</span>
-                    </div>
-                    <div className="flex flex-col gap-2 justify-start">
+              {filtroViagens.length > 0 ? (
+                filtroViagens.map((viagem) => (
+                  <Card className="p-4 w-[300px]" key={viagem.id}>
+                    <CardTitle className="text-center font-bold text-xl mb-2">
+                      {viagem.titulo}
+                    </CardTitle>
+                    <CardContent className="flex flex-col items-center w-full p-0 gap-2">
                       <div className="flex gap-1 items-center">
-                        <CalendarDays className="text-green-600" />
-                        <span>
-                          {format(
-                            toZonedTime(parseISO(viagem.saida.data), "UTC"),
-                            "dd/MM/yyyy"
-                          )}
-                        </span>
+                        <Bus className="text-blue-800" />
+                        <span>{viagem.itinerario.substring(0, 18)}</span>
+                      </div>
+                      <div className="flex flex-col gap-2 justify-start">
+                        <div className="flex gap-1 items-center">
+                          <CalendarDays className="text-green-600" />
+                          <span>
+                            {format(
+                              toZonedTime(parseISO(viagem.saida.data), "UTC"),
+                              "dd/MM/yyyy"
+                            )}
+                          </span>
+                        </div>
+                        <div className="flex gap-1 items-center">
+                          <CalendarDays className="text-red-600" />
+                          <span>
+                            {format(
+                              toZonedTime(parseISO(viagem.retorno.data), "UTC"),
+                              "dd/MM/yyyy"
+                            )}
+                          </span>
+                        </div>
                       </div>
                       <div className="flex gap-1 items-center">
-                        <CalendarDays className="text-red-600" />
-                        <span>
-                          {format(
-                            toZonedTime(parseISO(viagem.retorno.data), "UTC"),
-                            "dd/MM/yyyy"
-                          )}
-                        </span>
+                        <TicketPercent className="text-yellow-600" />
+                        <span>R$ {viagem.valorPassagem}</span>
                       </div>
-                    </div>
-                    <div className="flex gap-1 items-center">
-                      <TicketPercent className="text-yellow-600" />
-                      <span>R$ {viagem.valorPassagem}</span>
-                    </div>
-                    <div className="flex gap-2">
-                      <DialogEditar
-                        setViagens={setViagens}
-                        viagens={viagens}
-                        viagemEditavel={viagem}
-                      />
-                      <DialogRemover setViagens={setViagens} viagemId={viagem.id} />
-                      
-                    </div>
-                    <CardFooter className="p-0 flex flex-col">
-                    <DialogInfo viagem={viagem} />
-                      <Link
-                        className="bg-slate-800 w-[170px] text-center text-sm text-white p-2 rounded-sm"
-                        href="/passagens"
-                      >
-                        Registrar Passagem
-                      </Link>
-                    </CardFooter>
-                  </CardContent>
-                </Card>
-              ))}
+                      <div className="flex gap-2">
+                        <DialogEditar
+                          setViagens={setViagens}
+                          viagens={viagens}
+                          viagemEditavel={viagem}
+                        />
+                        <DialogRemover
+                          setViagens={setViagens}
+                          viagemId={viagem.id}
+                        />
+                      </div>
+                      <CardFooter className="p-0 flex flex-col">
+                        <DialogInfo viagem={viagem} />
+                        <Link
+                          className="bg-slate-800 w-[170px] text-center text-sm text-white p-2 rounded-sm"
+                          href="/passagens"
+                        >
+                          Registrar Passagem
+                        </Link>
+                      </CardFooter>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <span className="text-black font-semibold m-auto">
+                  Nenhum Pacote De viagem Registrado
+                </span>
+              )}
             </div>
           )}
         </div>

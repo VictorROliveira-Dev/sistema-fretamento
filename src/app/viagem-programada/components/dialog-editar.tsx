@@ -45,15 +45,15 @@ export function DialogEditar({
     try {
       const response = await api.put(`/viagemprogramada/${viagem.id}`, viagem);
 
-    if (!response.data.isSucces) {
-      toast(response.data.message);
-      return;
-    }
+      if (!response.data.isSucces) {
+        toast(response.data.message);
+        return;
+      }
 
-    viagens = viagens.filter((v) => v.id !== viagem.id);
-    setViagens([...viagens, viagem]);
+      viagens = viagens.filter((v) => v.id !== viagem.id);
+      setViagens([...viagens, viagem]);
 
-    toast("Viagem atualizada com sucesso");
+      toast("Viagem atualizada com sucesso");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.status === 401) {
@@ -103,6 +103,7 @@ export function DialogEditar({
                   <Input
                     name="titulo"
                     placeholder="Identificador da viagem"
+                    defaultValue={viagem.titulo}
                     onChange={(e) =>
                       setViagemEditavel({ ...viagem, titulo: e.target.value })
                     }
@@ -114,6 +115,7 @@ export function DialogEditar({
                   <Input
                     name="responsavel"
                     placeholder="Responsável"
+                    defaultValue={viagem.responsavel}
                     onChange={(e) =>
                       setViagemEditavel({
                         ...viagem,
@@ -124,9 +126,10 @@ export function DialogEditar({
                 </div>
 
                 <div>
-                  <Label htmlFor="valorPassagem">Valor</Label>
+                  <Label htmlFor="valorPassagem">Valor Ida</Label>
                   <Input
                     name="valorPassagem"
+                    defaultValue={viagem.valorPassagem}
                     type="number"
                     placeholder="00,00R$"
                     onChange={(e) =>
@@ -137,10 +140,26 @@ export function DialogEditar({
                     }
                   />
                 </div>
+                <div>
+                  <Label htmlFor="valorPassagem">Valor Ida e Volta</Label>
+                  <Input
+                    name="valorPassagem"
+                    defaultValue={viagem.valorPassagemIdaVolta}
+                    type="number"
+                    placeholder="00,00R$"
+                    onChange={(e) =>
+                      setViagemEditavel({
+                        ...viagem,
+                        valorPassagemIdaVolta: parseFloat(e.target.value) || 0,
+                      })
+                    }
+                  />
+                </div>
 
                 <div>
                   <Label>Forma de pagamento</Label>
                   <Select
+                    defaultValue={viagem.formaPagto}
                     onValueChange={(value) =>
                       setViagemEditavel({ ...viagem, formaPagto: value })
                     }
@@ -160,6 +179,7 @@ export function DialogEditar({
                 <div>
                   <Label>Veiculo</Label>
                   <Select
+                    defaultValue={viagem.veiculoId.toString()}
                     onValueChange={(value) =>
                       setViagemEditavel({ ...viagem, veiculoId: Number(value) })
                     }
@@ -191,6 +211,7 @@ export function DialogEditar({
                       <Label htmlFor="dataSaida">Data de Saída</Label>
                       <Input
                         type="date"
+                        defaultValue={viagem.saida.data}
                         onChange={(e) =>
                           setViagemEditavel({
                             ...viagem,
@@ -202,6 +223,7 @@ export function DialogEditar({
                     <div>
                       <Label htmlFor="horaSaida">Horário</Label>
                       <Input
+                        defaultValue={viagem.saida.hora}
                         type="time"
                         onChange={(e) =>
                           setViagemEditavel({
@@ -214,6 +236,7 @@ export function DialogEditar({
                     <div>
                       <Label htmlFor="localSaida">Local de Saída</Label>
                       <Input
+                        defaultValue={viagem.saida.local}
                         placeholder="Local de saída"
                         onChange={(e) =>
                           setViagemEditavel({
@@ -227,11 +250,12 @@ export function DialogEditar({
                 </fieldset>
 
                 <fieldset className="border border-green-800 rounded-md p-4">
-                  <legend>Retorno</legend>
+                  <legend>Destino</legend>
                   <div className="flex flex-col md:flex-row gap-2">
                     <div>
-                      <Label htmlFor="dataRetorno">Data de Retorno</Label>
+                      <Label htmlFor="dataRetorno">Data de chegada</Label>
                       <Input
+                        defaultValue={viagem.retorno.data}
                         type="date"
                         onChange={(e) =>
                           setViagemEditavel({
@@ -247,6 +271,7 @@ export function DialogEditar({
                     <div>
                       <Label htmlFor="horaRetorno">Horário</Label>
                       <Input
+                        defaultValue={viagem.retorno.hora}
                         type="time"
                         onChange={(e) =>
                           setViagemEditavel({
@@ -260,9 +285,10 @@ export function DialogEditar({
                       />
                     </div>
                     <div>
-                      <Label htmlFor="localRetorno">Local de Retorno</Label>
+                      <Label htmlFor="localRetorno">Local do Destino</Label>
                       <Input
-                        placeholder="Local de retorno"
+                        placeholder="Local do destino"
+                        defaultValue={viagem.retorno.local}
                         onChange={(e) =>
                           setViagemEditavel({
                             ...viagem,
@@ -282,7 +308,9 @@ export function DialogEditar({
                   <div className="flex flex-col md:flex-row gap-2">
                     <div>
                       <Label htmlFor="dataChegada">Data de Chegada</Label>
+
                       <Input
+                        defaultValue={viagem.chegada.data}
                         type="date"
                         onChange={(e) =>
                           setViagemEditavel({
@@ -298,6 +326,7 @@ export function DialogEditar({
                     <div>
                       <Label htmlFor="horaChegada">Horário</Label>
                       <Input
+                        defaultValue={viagem.chegada.hora}
                         type="time"
                         onChange={(e) =>
                           setViagemEditavel({
@@ -313,6 +342,7 @@ export function DialogEditar({
                     <div>
                       <Label htmlFor="localChegada">Local de Chegada</Label>
                       <Input
+                        defaultValue={viagem.chegada.local}
                         placeholder="Local de chegada"
                         onChange={(e) =>
                           setViagemEditavel({
@@ -334,6 +364,7 @@ export function DialogEditar({
                   <Label htmlFor="itinerario">Itinerário</Label>
                   <Textarea
                     name="itinerario"
+                    defaultValue={viagem.itinerario}
                     placeholder="Itinerário da viagem"
                     onChange={(e) =>
                       setViagemEditavel({
@@ -347,6 +378,7 @@ export function DialogEditar({
                   <Label htmlFor="descricao">Descrição</Label>
                   <Textarea
                     name="descricao"
+                    defaultValue={viagem.descricao}
                     placeholder="Descrição da viagem"
                     onChange={(e) =>
                       setViagemEditavel({
@@ -361,6 +393,7 @@ export function DialogEditar({
                   <Label htmlFor="observacao">Observacoes</Label>
                   <Textarea
                     name="observacao"
+                    defaultValue={viagem.observacoes}
                     id="observacao"
                     placeholder="observacao da viagem"
                     onChange={(e) =>

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -24,7 +25,9 @@ import { toast } from "sonner";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { Passagem, ViagemProgramda } from "@/lib/types";
-
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import loadingIcon from "@/app/assets/loading.svg";
 interface AtualizarProps {
   viagem: ViagemProgramda;
   setViagem: React.Dispatch<React.SetStateAction<ViagemProgramda | null>>;
@@ -38,7 +41,8 @@ export default function DialogEditar({
   passagemSelecionada,
 }: AtualizarProps) {
   const [passagem, setPassagem] = useState<Passagem>(passagemSelecionada);
-
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     console.log(passagem);
     setPassagem((prevPassagem) => ({
@@ -48,21 +52,34 @@ export default function DialogEditar({
   }, [viagem]);
 
   async function registrarPassagem() {
-    console.log(passagem);
-    const response = await api.put(`/passagem/${passagem.id}`, passagem);
+    try {
+      setLoading(true);
+      const response = await api.put(`/passagem/${passagem.id}`, passagem);
 
-    if (!response.data.isSucces) {
-      toast("erro ao tentar registrar passagem");
-      return;
+      if (!response.data.isSucces) {
+        toast("erro ao tentar registrar passagem");
+        return;
+      }
+
+      const passagensAtualizadas = passagens?.filter(
+        (p) => p.id != passagem.id
+      );
+
+      setViagem({
+        ...viagem,
+        passagens: [...passagensAtualizadas!, response.data.data],
+      });
+      toast("registrada com sucesso");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
+    } finally {
+      setLoading(false);
     }
-
-    const passagensAtualizadas = passagens?.filter((p) => p.id != passagem.id);
-    console.log(response.data.data);
-    setViagem({
-      ...viagem,
-      passagens: [...passagensAtualizadas!, passagem],
-    });
-    toast("registrada com sucesso");
   }
   return (
     <Dialog>
@@ -79,7 +96,7 @@ export default function DialogEditar({
           <DialogTitle className="font-black">Edição de Passagem</DialogTitle>
         </DialogHeader>
         <div className="flex gap-4">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col md:grid md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="viagem">Viagem:</label>
               <Input
@@ -90,6 +107,50 @@ export default function DialogEditar({
                 disabled={true}
               />
             </div>
+
+            <div>
+              <label htmlFor="viagem">Passageiro:</label>
+              <Input
+                onChange={(e) =>
+                  setPassagem({ ...passagem, nomePassageiro: e.target.value })
+                }
+                value={passagem.nomePassageiro}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="viagem">Email:</label>
+              <Input
+                onChange={(e) =>
+                  setPassagem({ ...passagem, emailPassageiro: e.target.value })
+                }
+                value={passagem.emailPassageiro}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="viagem">Cpf:</label>
+              <Input
+                onChange={(e) =>
+                  setPassagem({ ...passagem, cpfPassageiro: e.target.value })
+                }
+                value={passagem.cpfPassageiro}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="viagem">telefonePassageiro:</label>
+              <Input
+                onChange={(e) =>
+                  setPassagem({
+                    ...passagem,
+                    telefonePassageiro: e.target.value,
+                  })
+                }
+                value={passagem.telefonePassageiro}
+              />
+            </div>
+
             <div>
               <label htmlFor="pagamento">Tipo Pagamento:</label>
               <Select
@@ -114,6 +175,25 @@ export default function DialogEditar({
               </Select>
             </div>
             <div>
+              <label htmlFor="pagamento">Tipo da Passagem:</label>
+              <Select
+                onValueChange={(e) => setPassagem({ ...passagem, tipo: e })}
+                name="pagamento"
+                value={passagem.tipo}
+              >
+                <SelectTrigger className="w-[250px]">
+                  <SelectValue placeholder="Selecione o tipo..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Pagamentos</SelectLabel>
+                    <SelectItem value="IDA">Somente Ida</SelectItem>
+                    <SelectItem value="IDA-VOLTA">Ida e volta</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
               <label htmlFor="situacao">Situação:</label>
               <Select
                 onValueChange={(e) => setPassagem({ ...passagem, situacao: e })}
@@ -131,21 +211,35 @@ export default function DialogEditar({
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              <div>
-                <Label htmlFor="date">Data de Emissão</Label>
-                <Input
-                  name="date"
-                  type="date"
-                  onChange={(e) =>
-                    setPassagem({ ...passagem, dataEmissao: e.target.value })
-                  }
-                  value={passagem.dataEmissao}
-                />
-              </div>
             </div>
-            <Button onClick={() => registrarPassagem()}>Registrar</Button>
+            <div>
+              <Label htmlFor="date">Data de Emissão</Label>
+              <Input
+                name="date"
+                type="date"
+                onChange={(e) =>
+                  setPassagem({ ...passagem, dataEmissao: e.target.value })
+                }
+                value={passagem.dataEmissao}
+              />
+            </div>
           </div>
         </div>
+        <DialogFooter>
+          <Button onClick={() => registrarPassagem()}>
+            {loading ? (
+              <Image
+                src={loadingIcon}
+                alt="loading"
+                className="text-center animate-spin"
+                width={50}
+                height={50}
+              />
+            ) : (
+              "Atualizar"
+            )}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

@@ -20,38 +20,19 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { LocationTimeInfo } from "./LocationTimeInfo";
-
-interface HorarioLocal {
-  data: string;
-  hora: string;
-  local: string;
-}
-
-interface ViagemProgramada {
-  id: number;
-  titulo: string;
-  descricao: string;
-  saida: HorarioLocal;
-  retorno: HorarioLocal;
-  chegada: HorarioLocal;
-  valorPassagem: number;
-  formaPagto: string;
-  responsavel: string;
-  guia: string;
-  itinerario: string;
-  observacoes: string;
-  veiculoId: number;
-}
+import { ViagemProgramda } from "@/lib/types";
 
 interface TripDetailsDialogProps {
-  viagem: ViagemProgramada;
+  viagem: ViagemProgramda;
 }
 
 export function DialogInfo({ viagem }: TripDetailsDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="bg-transparent hover:bg-slate-100 border-2 w-full mb-1 border-gray-300 shadow-none text-black">Detalhes</Button>
+        <Button className="bg-transparent hover:bg-slate-100 border-2 w-full mb-1 border-gray-300 shadow-none text-black">
+          Detalhes
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -69,14 +50,14 @@ export function DialogInfo({ viagem }: TripDetailsDialogProps) {
               icon={<MapPin className="h-5 w-5 text-primary" />}
             />
             <LocationTimeInfo
-              title="Chegada"
-              info={viagem.chegada}
-              icon={<Clock className="h-5 w-5 text-primary" />}
-            />
-            <LocationTimeInfo
               title="Retorno"
               info={viagem.retorno}
               icon={<CalendarDays className="h-5 w-5 text-primary" />}
+            />
+            <LocationTimeInfo
+              title="Chegada"
+              info={viagem.chegada}
+              icon={<Clock className="h-5 w-5 text-primary" />}
             />
           </div>
 
@@ -88,9 +69,18 @@ export function DialogInfo({ viagem }: TripDetailsDialogProps) {
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-5 w-5 text-primary" />
                   <div>
-                    <p className="font-medium">Valor da Passagem</p>
+                    <p className="font-medium">Valor da Passagem Ida</p>
                     <p className="text-muted-foreground">
                       R$ {viagem.valorPassagem.toFixed(2)}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="font-medium">Valor da Passagem Ida e Volta</p>
+                    <p className="text-muted-foreground">
+                      R$ {viagem.valorPassagemIdaVolta.toFixed(2)}
                     </p>
                   </div>
                 </div>

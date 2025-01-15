@@ -17,15 +17,16 @@ import {
   User2,
   ClipboardList,
 } from "lucide-react";
-import { ViagemProgramda } from "@/lib/types";
+import { Passagem, ViagemProgramda } from "@/lib/types";
 import { parseISO } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
 
 interface TripDialogProps {
   trip: ViagemProgramda;
+  passagem: Passagem;
 }
 
-export default function DialogInformacoes({ trip }: TripDialogProps) {
+export default function DialogInformacoes({ trip, passagem }: TripDialogProps) {
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -51,6 +52,38 @@ export default function DialogInformacoes({ trip }: TripDialogProps) {
         </DialogHeader>
 
         <ScrollArea className="h-[60vh] pr-4">
+          {/* Responsáveis */}
+          <div className="space-y-4 mb-3">
+            <div className="flex items-center gap-2 text-primary">
+              <User2 className="h-5 w-5" />
+              <h3 className="font-semibold">Passageiro</h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 bg-muted rounded-lg">
+                <p>
+                  Nome: <strong>{passagem.nomePassageiro}</strong>
+                </p>
+                <p>
+                  email: <strong>{passagem.emailPassageiro}</strong>
+                </p>
+                <p>
+                  telefone: <strong>{passagem.telefonePassageiro}</strong>
+                </p>
+                <p>
+                  Cidade: <strong>{passagem.cidadePassageiro}</strong>
+                </p>
+                <p>
+                  Cpf: <strong>{passagem.cpfPassageiro}</strong>
+                </p>
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <p className="font-semibold">Responsavel e Guia</p>
+                <p>Responsavel: {trip.responsavel}</p>
+                <p>Guia: {trip.guia}</p>
+              </div>
+            </div>
+          </div>
+
           <div className="space-y-6">
             {/* Horários e Locais */}
             <div className="space-y-4">
@@ -70,17 +103,7 @@ export default function DialogInformacoes({ trip }: TripDialogProps) {
                   <p className="text-muted-foreground">{trip.saida.local}</p>
                 </div>
                 <div className="p-4 bg-muted rounded-lg">
-                  <p className="font-semibold">Chegada</p>
-                  <p>
-                    {format(
-                      toZonedTime(parseISO(trip.chegada.data), "UTC"),
-                      "dd/MM/yyyy"
-                    )}
-                  </p>
-                  <p className="text-muted-foreground">{trip.chegada.local}</p>
-                </div>
-                <div className="p-4 bg-muted rounded-lg">
-                  <p className="font-semibold">Retorno</p>
+                  <p className="font-semibold">Destino</p>
                   <p>
                     {format(
                       toZonedTime(parseISO(trip.retorno.data), "UTC"),
@@ -89,6 +112,37 @@ export default function DialogInformacoes({ trip }: TripDialogProps) {
                   </p>
                   <p className="text-muted-foreground">{trip.retorno.local}</p>
                 </div>
+                <div className="p-4 bg-muted rounded-lg">
+                  <p className="font-semibold">Volta</p>
+                  <p>
+                    {format(
+                      toZonedTime(parseISO(trip.chegada.data), "UTC"),
+                      "dd/MM/yyyy"
+                    )}
+                  </p>
+                  <p className="text-muted-foreground">{trip.chegada.local}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 text-primary">
+                <CreditCard className="h-5 w-5" />
+                <h3 className="font-semibold">Valor e Pagamento</h3>
+              </div>
+              <div className="p-4 bg-muted rounded-lg">
+                <p>
+                  <span className="font-semibold">Tipo da Passagem:</span>{" "}
+                  {passagem.tipo === "IDA" ? "Somente Ida" : "Ida e volta"}
+                </p>
+                <p>
+                  <span className="font-semibold">Valor da Passagem:</span>{" "}
+                  {formatCurrency(passagem.valorTotal)}
+                </p>
+                <p>
+                  <span className="font-semibold">Forma de Pagamento:</span>{" "}
+                  {trip.formaPagto}
+                </p>
               </div>
             </div>
             <Separator />
@@ -110,40 +164,6 @@ export default function DialogInformacoes({ trip }: TripDialogProps) {
                 </div>
               </div>
             )}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-primary">
-                <CreditCard className="h-5 w-5" />
-                <h3 className="font-semibold">Valor e Pagamento</h3>
-              </div>
-              <div className="p-4 bg-muted rounded-lg">
-                <p>
-                  <span className="font-semibold">Valor da Passagem:</span>{" "}
-                  {formatCurrency(trip.valorPassagem)}
-                </p>
-                <p>
-                  <span className="font-semibold">Forma de Pagamento:</span>{" "}
-                  {trip.formaPagto}
-                </p>
-              </div>
-            </div>
-
-            {/* Responsáveis */}
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 text-primary">
-                <User2 className="h-5 w-5" />
-                <h3 className="font-semibold">Responsáveis</h3>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-muted rounded-lg">
-                  <p className="font-semibold">Responsável</p>
-                  <p>{trip.responsavel}</p>
-                </div>
-                <div className="p-4 bg-muted rounded-lg">
-                  <p className="font-semibold">Guia</p>
-                  <p>{trip.guia}</p>
-                </div>
-              </div>
-            </div>
 
             {/* Itinerário */}
             <div className="space-y-4">
@@ -155,49 +175,6 @@ export default function DialogInformacoes({ trip }: TripDialogProps) {
                 {trip.itinerario}
               </div>
             </div>
-
-            {/* Passageiros */}
-            {trip.passagens && trip.passagens.length > 0 && (
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-primary">
-                  <Users className="h-5 w-5" />
-                  <h3 className="font-semibold">Lista de Passageiros</h3>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="text-left bg-muted">
-                        <th className="p-2">Nome</th>
-                        <th className="p-2">Poltrona</th>
-                        <th className="p-2">Situação</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {trip.passagens.map((passagem) => (
-                        <tr key={passagem.id} className="border-b">
-                          <td className="p-2">{passagem.nomePassageiro}</td>
-                          <td className="p-2">{passagem.poltrona}</td>
-                          <td className="p-2">{passagem.situacao}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
-            {/* Observações */}
-            {trip.observacoes && (
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 text-primary">
-                  <ClipboardList className="h-5 w-5" />
-                  <h3 className="font-semibold">Observações</h3>
-                </div>
-                <div className="p-4 bg-muted rounded-lg whitespace-pre-line">
-                  {trip.observacoes}
-                </div>
-              </div>
-            )}
           </div>
         </ScrollArea>
       </DialogContent>

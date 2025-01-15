@@ -33,7 +33,7 @@ interface AdicionarProps {
 export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
   const [passagem, setPassagem] = useState<Passagem>({
     viagemId: 0,
-    passageiroEmail: "",
+    emailPassageiro: "",
     telefonePassageiro: "",
     cpfPassageiro: "",
     nomePassageiro: "",
@@ -41,6 +41,9 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
     formaPagamento: "",
     poltrona: 0,
     situacao: "",
+    cidadePassageiro: "",
+    tipo: "",
+    valorTotal: 0,
   });
   const [carregando, setCarregando] = useState(false);
 
@@ -83,7 +86,7 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Cadastro de Passagem</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex flex-col  md:flex-row gap-4">
           <div className="flex flex-col gap-2">
             <div>
               <label htmlFor="passageiro">Passageiro:</label>
@@ -99,9 +102,9 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
               <label htmlFor="passageiro">Email:</label>
               <Input
                 onChange={(e) =>
-                  setPassagem({ ...passagem, passageiroEmail: e.target.value })
+                  setPassagem({ ...passagem, emailPassageiro: e.target.value })
                 }
-                value={passagem.passageiroEmail}
+                value={passagem.emailPassageiro}
                 type="text"
               />
             </div>
@@ -129,6 +132,16 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
               />
             </div>
             <div>
+              <label htmlFor="passageiro">Cidade:</label>
+              <Input
+                onChange={(e) =>
+                  setPassagem({ ...passagem, cidadePassageiro: e.target.value })
+                }
+                value={passagem.cidadePassageiro}
+                type="text"
+              />
+            </div>
+            <div>
               <label htmlFor="viagem">Viagem:</label>
               <Input
                 onChange={() =>
@@ -137,6 +150,24 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
                 value={viagem?.titulo || ""}
                 disabled={true}
               />
+            </div>
+            <div>
+              <label htmlFor="pagamento">Tipo Da Passagem:</label>
+              <Select
+                onValueChange={(e) => setPassagem({ ...passagem, tipo: e })}
+                name="pagamento"
+              >
+                <SelectTrigger className="w-[250px]">
+                  <SelectValue placeholder="Selecione o tipo..." />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Tipo Passagem</SelectLabel>
+                    <SelectItem value="IDA">Ida</SelectItem>
+                    <SelectItem value="IDA-VOLTA">Ida e Volta</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <label htmlFor="pagamento">Tipo Pagamento:</label>
