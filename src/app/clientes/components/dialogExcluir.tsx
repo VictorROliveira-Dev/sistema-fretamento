@@ -17,6 +17,8 @@ import { api } from "@/lib/axios";
 import { Cliente } from "@/lib/types";
 import { toast } from "sonner";
 import loading from "../../assets/loading.svg";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 interface ExcluirProps {
   clienteName: string;
@@ -29,6 +31,8 @@ export default function DialogExcluir({
   setClientes,
 }: ExcluirProps) {
   const [removendo, setRemovendo] = useState(false);
+  const router = useRouter();
+
   const handleRemoverCliente = async (id: number) => {
     setRemovendo(true);
     try {
@@ -36,6 +40,12 @@ export default function DialogExcluir({
       setClientes((prevClientes) => prevClientes.filter((c) => c.id !== id));
       toast.success("Cliente removida.");
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar remover cliente.");
       console.error("Erro ao remover cliente:", error);
     } finally {

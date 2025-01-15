@@ -15,6 +15,8 @@ import { api } from "@/lib/axios";
 import { useState } from "react";
 import { toast } from "sonner";
 import loading from "../../assets/loading.svg";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface ExcluirProps {
   setViagens: React.Dispatch<React.SetStateAction<Viagem[]>>;
@@ -24,6 +26,7 @@ interface ExcluirProps {
 
 export function DialogExcluir({ setViagens, viagens, id }: ExcluirProps) {
   const [removendo, setRemovendo] = useState(false);
+  const router = useRouter();
   async function excluirViagem() {
     setRemovendo(true);
     try {
@@ -31,6 +34,12 @@ export function DialogExcluir({ setViagens, viagens, id }: ExcluirProps) {
       setViagens(viagens.filter((v) => v.id !== id));
       toast.success("Viagem removida.");
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar remover viagem.");
       console.log(error);
     } finally {

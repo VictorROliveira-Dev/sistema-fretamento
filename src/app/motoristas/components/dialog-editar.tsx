@@ -18,6 +18,7 @@ import axios from "axios";
 import { Cidade, Motorista, Uf } from "@/lib/types";
 import loading from "../../assets/loading.svg";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface MotoristaProps {
   motoristas: Motorista[];
@@ -35,6 +36,7 @@ export default function DialogEditar({
   const [motoristaAtualizar, setMotoristasAtualizar] =
     useState<Motorista>(motorista);
   const [editando, setEditando] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     axios
@@ -90,6 +92,12 @@ export default function DialogEditar({
       setMotoristas([...motoristasAtualizados, motoristaAtualizado]);
       toast.success("Motorista atualizado.");
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar atualizar motorista.");
       console.log("Erro ao tentar editar motorista.", error);
     } finally {
@@ -187,7 +195,7 @@ export default function DialogEditar({
                   }
                 />
               </div>
-            
+
               <div>
                 <Label htmlFor="documento">Documento</Label>
                 <Input

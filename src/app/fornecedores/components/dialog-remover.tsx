@@ -14,6 +14,8 @@ import loading from "../../assets/loading.svg";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Fornecedor } from "@/lib/types";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 interface FornecedoresProps {
   fornecedor: Fornecedor;
@@ -25,6 +27,7 @@ export default function DialogRemover({
   setFornecedores,
 }: FornecedoresProps) {
   const [removendo, setRemovendo] = useState(false);
+  const router = useRouter();
   const handleRemoverFornecedor = async (id: number) => {
     setRemovendo(true);
     try {
@@ -34,6 +37,12 @@ export default function DialogRemover({
       );
       toast.success("Fornecedor removido.");
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar remover fornecedor.");
       console.error("Erro ao remover motorista:", error);
     } finally {

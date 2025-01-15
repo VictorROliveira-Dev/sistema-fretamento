@@ -18,6 +18,7 @@ import axios from "axios";
 import { Cidade, Fornecedor, Uf } from "@/lib/types";
 import loading from "../../assets/loading.svg";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface FornecedorProps {
   fornecedores: Fornecedor[];
@@ -35,6 +36,7 @@ export default function DialogEditar({
   const [fornecedorAtualizar, setFornecedorAtualizar] =
     useState<Fornecedor>(fornecedor);
   const [editando, setEditando] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     axios
@@ -90,6 +92,12 @@ export default function DialogEditar({
       setFornecedores([...fornecedoresAtualizados, fornecedorAtualizado]);
       toast.success("Fornecedor atualizado.");
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar atualizar fornecedor.");
       console.log("Erro ao tentar editar fornecedor.", error);
     } finally {

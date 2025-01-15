@@ -16,6 +16,7 @@ import Image from "next/image";
 import loading from "../../assets/loading.svg";
 import { toast } from "sonner";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface FornecedorProps {
   setFornecedor: React.Dispatch<React.SetStateAction<Fornecedor[]>>;
@@ -45,6 +46,7 @@ export default function DialogAdicionar({
     numero: "",
   });
   const [adicionando, setAdicionando] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     axios
@@ -94,7 +96,13 @@ export default function DialogAdicionar({
       setFornecedor([...fornecedores, response.data.data]);
       toast.success("Fornecedor adicionado.");
       console.log("Fornecedor adicionado:", response.data.data);
-    } catch {
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar adicionar fornecedor.");
     } finally {
       setNome("");

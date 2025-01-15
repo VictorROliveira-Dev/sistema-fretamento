@@ -27,6 +27,7 @@ import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import loading from "../../assets/loading.svg";
+import { useRouter } from "next/navigation";
 
 interface EditarProps {
   setViagens: React.Dispatch<React.SetStateAction<Viagem[]>>;
@@ -48,6 +49,7 @@ export default function DialogEditar({
   const [motoristas, setMotoristas] = useState<Motorista[]>([]);
   const [motorista1, setMotorista1] = useState<number>(viagemprop.motoristaViagens.length > 0 ? viagemprop.motoristaViagens[0].motoristaId : 0);
   const [motorista2, setMotorista2] = useState<number>(viagemprop.motoristaViagens.length > 1 ? viagemprop.motoristaViagens[1].motoristaId : 0);
+  const router = useRouter();
   async function fetchMotoristas() {
     try {
       const response = await api.get("/motorista");
@@ -127,7 +129,13 @@ export default function DialogEditar({
       console.log(viagemCriada);
       setViagens([...viagensAtualizada, {...viagemCriada}]);
       toast.success("Viagem atualizada.");
-    } catch {
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar atualizar viagem.");
     } finally {
       setEditando(false);

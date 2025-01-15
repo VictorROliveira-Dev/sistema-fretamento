@@ -27,6 +27,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import loading from "../../assets/loading.svg";
+import { useRouter } from "next/navigation";
 
 interface AdicionarProps {
   setViagens: React.Dispatch<React.SetStateAction<Viagem[]>>;
@@ -94,6 +95,7 @@ export default function DialogAdicionar({
     valorLiquidoViagem: 0,
   });
   const [adicionando, setAdicionando] = useState(false);
+  const router = useRouter();
 
   async function fetchClientes() {
     const response = await api.get("/cliente");
@@ -172,9 +174,15 @@ export default function DialogAdicionar({
       setViagens([...viagens, viagemCriada]);
       toast.success("Viagem adicionada.");
       setAdicionando(false);
-    } catch {
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar adicionar viagem.");
-
+    } finally {
       setAdicionando(false);
     }
   }

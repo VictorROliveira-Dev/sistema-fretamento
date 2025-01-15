@@ -13,6 +13,8 @@ import { ViagemProgramda } from "@/lib/types";
 import { toast } from "sonner";
 import { useState } from "react";
 import loading from "../../assets/loading.svg";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 interface RemoverProps {
   viagemId: number;
@@ -24,6 +26,7 @@ export default function DialogRemover({
   setViagens,
 }: RemoverProps) {
   const [removendo, setRemovendo] = useState(false);
+  const router = useRouter();
 
   const handleRemoverMotorista = async (id: number) => {
     setRemovendo(true);
@@ -34,7 +37,12 @@ export default function DialogRemover({
       );
       toast.success("Viagem removida com sucesso.");
     } catch (error) {
-
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar remover viagem.");
       console.error("Erro ao remover viagem:", error);
     } finally {

@@ -18,6 +18,7 @@ import axios from "axios";
 import { Cidade, Cliente, Uf } from "@/lib/types";
 import loading from "../../assets/loading.svg";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface ClienteEditProps {
   clientes: Cliente[];
@@ -34,6 +35,7 @@ export default function DialogEditar({
   const [cidades, setCidades] = useState<Cidade[]>([]);
   const [client, setCliente] = useState<Cliente>(cliente);
   const [editando, setEditando] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     axios
@@ -83,6 +85,12 @@ export default function DialogEditar({
       setClientes([...clientesAtualizados, clienteAtualizado]);
       toast.success("Cliente atualizado.");
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar atualizar cliente.");
       console.log("Erro ao tentar editar cliente.", error);
     } finally {

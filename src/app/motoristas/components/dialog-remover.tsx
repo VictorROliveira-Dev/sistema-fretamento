@@ -14,6 +14,8 @@ import { Motorista } from "@/lib/types";
 import { toast } from "sonner";
 import { useState } from "react";
 import loading from "../../assets/loading.svg";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface MotoristasProps {
   motorista: Motorista;
@@ -25,6 +27,7 @@ export default function DialogRemover({
   setMotoristas,
 }: MotoristasProps) {
   const [removendo, setRemovendo] = useState(false);
+  const router = useRouter();
 
   const handleRemoverMotorista = async (id: number) => {
     setRemovendo(true);
@@ -35,6 +38,12 @@ export default function DialogRemover({
       );
       toast.success("Motorista removido com sucesso.");
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar remover motorista.");
       console.error("Erro ao remover motorista:", error);
     } finally {

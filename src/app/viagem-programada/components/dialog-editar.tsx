@@ -19,6 +19,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import loading from "../../assets/loading.svg";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface EditProps {
   setViagens: React.Dispatch<React.SetStateAction<ViagemProgramda[]>>;
@@ -34,12 +36,14 @@ export function DialogEditar({
   const [viagem, setViagemEditavel] = useState<ViagemProgramda>(viagemEditavel);
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const [carregando, setCarregando] = useState(false);
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setCarregando(true);
     console.log(viagem);
-    const response = await api.put(`/viagemprogramada/${viagem.id}`, viagem);
+    try {
+      const response = await api.put(`/viagemprogramada/${viagem.id}`, viagem);
 
     if (!response.data.isSucces) {
       toast(response.data.message);
@@ -48,8 +52,19 @@ export function DialogEditar({
 
     viagens = viagens.filter((v) => v.id !== viagem.id);
     setViagens([...viagens, viagem]);
+
     toast("Viagem atualizada com sucesso");
-    setCarregando(false);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
+      toast.error("Erro ao tentar editar viagem");
+    } finally {
+      setCarregando(false);
+    }
   }
 
   async function fetchVeiculos() {
@@ -73,7 +88,7 @@ export function DialogEditar({
         <DialogTrigger>
           <Button className="bg-blue-800 hover:bg-blue-600">Editar</Button>
         </DialogTrigger>
-        <DialogContent className="w-[90%]">
+        <DialogContent className="w-[90%] h-[600px] md:h-auto overflow-y-scroll md:overflow-auto">
           <DialogHeader>
             <DialogTitle className="text-center font-semibold">
               Editar Pacote de Viagem
@@ -82,7 +97,7 @@ export function DialogEditar({
           <form onSubmit={handleSubmit} className="w-full">
             <fieldset className="border border-blue-800 rounded-md p-4 w-full">
               <legend>Informações da viagem</legend>
-              <div className="flex gap-2">
+              <div className="flex flex-col md:flex-row gap-2">
                 <div>
                   <Label htmlFor="titulo">Identificador</Label>
                   <Input
@@ -171,7 +186,7 @@ export function DialogEditar({
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                 <fieldset className="border border-green-800 rounded-md p-4">
                   <legend>Saída</legend>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col md:flex-row gap-2">
                     <div>
                       <Label htmlFor="dataSaida">Data de Saída</Label>
                       <Input
@@ -213,7 +228,7 @@ export function DialogEditar({
 
                 <fieldset className="border border-green-800 rounded-md p-4">
                   <legend>Retorno</legend>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col md:flex-row gap-2">
                     <div>
                       <Label htmlFor="dataRetorno">Data de Retorno</Label>
                       <Input
@@ -264,7 +279,7 @@ export function DialogEditar({
 
                 <fieldset className="border border-green-800 rounded-md p-4">
                   <legend>Chegada</legend>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col md:flex-row gap-2">
                     <div>
                       <Label htmlFor="dataChegada">Data de Chegada</Label>
                       <Input
@@ -314,7 +329,7 @@ export function DialogEditar({
                 </fieldset>
               </div>
 
-              <div className="flex gap-2 w-full">
+              <div className="flex flex-col md:flex-row gap-2 w-full">
                 <div>
                   <Label htmlFor="itinerario">Itinerário</Label>
                   <Textarea
@@ -339,7 +354,7 @@ export function DialogEditar({
                         descricao: e.target.value,
                       })
                     }
-                    className="w-auto"
+                    className="w-full"
                   />
                 </div>
                 <div>
@@ -354,7 +369,7 @@ export function DialogEditar({
                         observacoes: e.target.value,
                       })
                     }
-                    className="w-auto"
+                    className="w-full"
                   />
                 </div>
 

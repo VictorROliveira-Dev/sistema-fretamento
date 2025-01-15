@@ -18,6 +18,7 @@ import loading from "../../assets/loading.svg";
 import axios from "axios";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Label } from "@radix-ui/react-label";
+import { useRouter } from "next/navigation";
 
 interface VeiculosProps {
   setVeiculos: React.Dispatch<React.SetStateAction<Veiculo[]>>;
@@ -44,6 +45,7 @@ export default function DialogAdicionar({
   const [quantidadePoltronas, setQuantidadePoltronas] = useState<number>();
   const [adicionando, setAdicionando] = useState(false);
   const [acessoriosVeiculo, setAcessoriosVeiculo] = useState<string[]>([]); 
+  const router = useRouter();
 
   useEffect(() => {
     axios
@@ -101,6 +103,12 @@ export default function DialogAdicionar({
       setVeiculos([...veiculos, response.data.data]);
       toast.success("Veículo adicionado.");
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar adicionar veículo.");
       console.log("erro ao tentar adicionar veículo", error);
     } finally {

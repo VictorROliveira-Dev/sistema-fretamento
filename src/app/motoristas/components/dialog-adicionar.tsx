@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import loading from "../../assets/loading.svg";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface MotoristasProps {
   setMotoristas: React.Dispatch<React.SetStateAction<Motorista[]>>;
@@ -41,7 +42,7 @@ export default function DialogAdicionar({
   const [ufs, setUfs] = useState<Uf[]>([]);
   const [cidades, setCidades] = useState<Cidade[]>([]);
   const [ufHabilitacao, setUfHabilitacao] = useState<Uf[]>([]);
-  const [cidadeHabilitacao, setCidadeHabilitacao] = useState<Cidade[]>([]); 
+  const [cidadeHabilitacao, setCidadeHabilitacao] = useState<Cidade[]>([]);
   const [dataAdmissao, setDataAdmissao] = useState<string>("");
   const [documento, setDocumento] = useState<Documento>({
     documento: "",
@@ -65,6 +66,7 @@ export default function DialogAdicionar({
   });
 
   const [adicionando, setAdicionando] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     axios
@@ -74,7 +76,7 @@ export default function DialogAdicionar({
           a.nome.localeCompare(b.nome)
         );
         setUfs(sortedUfs);
-        setUfHabilitacao(sortedUfs)
+        setUfHabilitacao(sortedUfs);
       })
       .catch((error) => {
         console.error("Error fetching UFs:", error);
@@ -99,7 +101,7 @@ export default function DialogAdicionar({
   };
 
   const handleUfHabilitacaoChange = (uf: string) => {
-    setHabilitacao({...habilitacao, uf: uf});
+    setHabilitacao({ ...habilitacao, uf: uf });
     axios
       .get<Cidade[]>(
         `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
@@ -126,15 +128,20 @@ export default function DialogAdicionar({
       endereco: endereco,
       cpf: cpf,
       habilitacao: habilitacao,
-      dataAdmissao: dataAdmissao
+      dataAdmissao: dataAdmissao,
     } as Motorista;
 
     try {
       const response = await api.post("/motorista", motorista);
       setMotoristas([...motoristas, response.data.data]);
       toast.success("Motorista adicionado.");
-     
-    } catch {
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar adicionar motorista.");
     } finally {
       setNome("");
@@ -159,8 +166,6 @@ export default function DialogAdicionar({
       setAdicionando(false);
     }
   };
-
-
 
   return (
     <Dialog>
@@ -214,7 +219,7 @@ export default function DialogAdicionar({
                 <label htmlFor="cpf">CPF</label>
                 <Input id="cpf" onChange={(e) => setCpf(e.target.value)} />
               </div>
-              
+
               <div>
                 <label htmlFor="documento">Documento</label>
                 <Input
@@ -346,9 +351,7 @@ export default function DialogAdicionar({
                   value={habilitacao.uf}
                   onChange={(e) => {
                     handleUfHabilitacaoChange(e.target.value);
-                  }
-                   
-                  }
+                  }}
                   className="w-full border border-gray-300 rounded px-3 py-2"
                 >
                   <option value="">Selecione a UF</option>

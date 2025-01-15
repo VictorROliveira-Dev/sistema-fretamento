@@ -18,6 +18,7 @@ import loading from "../../assets/loading.svg";
 import { toast } from "sonner";
 import axios from "axios";
 import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
 
 interface VeiculoProps {
   veiculo: Veiculo;
@@ -34,6 +35,7 @@ export default function DialogEditar({
   const [cidades, setCidades] = useState<Cidade[]>([]);
   const [veiculoState, setVeiculoState] = useState<Veiculo>(veiculo);
   const [editando, setEditando] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     axios
@@ -83,6 +85,12 @@ export default function DialogEditar({
       setVeiculos(veiculosAtualizados);
       toast.success("Veículo atualizado.");
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar atualizar veículo.");
       console.log("erro ao atualizar veículo", error);
     } finally {

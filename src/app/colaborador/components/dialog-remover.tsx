@@ -14,6 +14,8 @@ import { Colaborador } from "@/lib/types";
 import { toast } from "sonner";
 import { useState } from "react";
 import loading from "../../assets/loading.svg";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 interface ColaboradorProps {
   colaborador: Colaborador;
@@ -25,6 +27,7 @@ export default function DialogRemover({
   setColaboradores,
 }: ColaboradorProps) {
   const [removendo, setRemovendo] = useState(false);
+  const router = useRouter();
 
   const handleRemoverMotorista = async (id: number) => {
     setRemovendo(true);
@@ -35,6 +38,12 @@ export default function DialogRemover({
       );
       toast.success("Colaborador removido com sucesso.");
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar remover colaborador.");
       console.error("Erro ao remover colaborador:", error);
     } finally {

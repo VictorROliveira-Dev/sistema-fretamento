@@ -94,7 +94,7 @@ export default function ViagemProgramada() {
               />
             </div>
           ) : (
-            <div className="flex justify-center md:justify-start gap-2 p-4">
+            <div className="flex flex-col items-center md:flex-row justify-center md:justify-start gap-2 p-4">
               {filtroViagens.map((viagem) => (
                 <Card className="p-4 w-[300px]" key={viagem.id}>
                   <CardTitle className="text-center font-bold text-xl mb-2">

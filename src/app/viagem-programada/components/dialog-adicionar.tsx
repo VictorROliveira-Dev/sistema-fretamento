@@ -19,6 +19,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import loading from "../../assets/loading.svg";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 export function DialogAdicionar() {
   const [viagem, setViagem] = useState<ViagemProgramda>({
@@ -39,6 +41,7 @@ export function DialogAdicionar() {
 
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const [carregando, setCarregando] = useState(false);
+  const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -53,7 +56,13 @@ export function DialogAdicionar() {
       }
 
       toast("adicionado com sucesso");
-    } catch {
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast("erro ao tentar adicionar");
     } finally {
       setCarregando(false);

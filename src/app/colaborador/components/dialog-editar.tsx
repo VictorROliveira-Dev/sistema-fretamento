@@ -18,6 +18,7 @@ import {
   import { Cidade, Colaborador, Uf } from "@/lib/types";
   import loading from "../../assets/loading.svg";
   import { toast } from "sonner";
+import { useRouter } from "next/navigation";
   
   interface ColaboradorProps {
     colaboradores: Colaborador[];
@@ -35,6 +36,7 @@ import {
     const [colaboradorAtualizar, setColaboradorAtualizar  ] =
       useState<Colaborador>(colaborador);
     const [editando, setEditando] = useState(false);
+    const router = useRouter();
   
     useEffect(() => {
       axios
@@ -90,6 +92,12 @@ import {
         setColaboradores([...motoristasAtualizados, motoristaAtualizado]);
         toast.success("Colaborador atualizado.");
       } catch (error) {
+        if (axios.isAxiosError(error)) {
+          if (error.status === 401) {
+            localStorage.removeItem("token");
+            router.replace("/login");
+          }
+        }
         toast.error("Erro ao tentar atualizar colaborador.");
         console.log("Erro ao tentar editar colaborador.", error);
       } finally {

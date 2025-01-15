@@ -18,6 +18,7 @@ import { Cidade, Cliente, Endereco, Uf } from "@/lib/types";
 import { toast } from "sonner";
 import Image from "next/image";
 import loading from "../../assets/loading.svg";
+import { useRouter } from "next/navigation";
 
 interface ClienteProps {
   clientes: Cliente[];
@@ -43,6 +44,7 @@ export default function DialogAdicionar({
     documento: { documento: "", tipo: "" },
     endereco: { uf: "", cidade: "", rua: "", bairro: "", numero: "" },
   });
+  const router = useRouter();
 
   // Carrega as UFs ao montar o componente
   useEffect(() => {
@@ -86,6 +88,12 @@ export default function DialogAdicionar({
       setClientes([...clientes, response.data.data]);
       toast.success("Cliente adicionado.");
     } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar adicionar cliente.");
       console.log(error);
     } finally {
@@ -112,7 +120,7 @@ export default function DialogAdicionar({
           Adicionar Cliente
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-auto h-[550px] md:h-[90%] overflow-y-scroll md:overflow-auto mx-auto">
+      <DialogContent className="md:w-auto h-[550px] md:h-[95%] overflow-y-scroll md:overflow-auto mx-auto">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold">
             Cadastro Cliente

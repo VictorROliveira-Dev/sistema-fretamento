@@ -89,7 +89,7 @@ export default function Passagens() {
                   <p className="text-center">
                     <strong>ORIGEM: {viagemSelecionada?.saida.local}</strong> -{" "}
                     <strong>
-                      DESTINO: {viagemSelecionada?.chegada.local}{" "}
+                      DESTINO: {viagemSelecionada?.retorno.local}{" "}
                     </strong>{" "}
                   </p>
                 </div>

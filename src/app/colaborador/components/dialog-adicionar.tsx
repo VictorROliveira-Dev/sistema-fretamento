@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import Image from "next/image";
 import loading from "../../assets/loading.svg";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 interface ColaboradorProps {
   setColaboradores: React.Dispatch<React.SetStateAction<Colaborador[]>>;
@@ -40,6 +41,7 @@ export default function DialogAdicionar({
   const [tipo, setTipo] = useState<string>("");
   const [ufs, setUfs] = useState<Uf[]>([]);
   const [cidades, setCidades] = useState<Cidade[]>([]);
+  const router = useRouter();
 
   const [documento, setDocumento] = useState<Documento>({
     documento: "",
@@ -107,7 +109,13 @@ export default function DialogAdicionar({
       setColaboradores([...colaboradores, response.data.data]);
       toast.success("Colaborador adicionado.");
       console.log("Colaborador adicionado:", response.data.data);
-    } catch {
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
       toast.error("Erro ao tentar adicionar colaborador.");
     } finally {
       setNome("");
