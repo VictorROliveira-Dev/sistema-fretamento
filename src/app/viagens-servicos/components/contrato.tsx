@@ -4,7 +4,6 @@ import "jspdf-autotable";
 import { Button } from "@/components/ui/button";
 import { Viagem } from "@/lib/types";
 
-
 interface GeneratePDFProps {
   viagem: Viagem;
 }
@@ -26,13 +25,14 @@ const GeneratePDF = ({ viagem }: GeneratePDFProps) => {
     const frontContent = frontRef.current;
     const backContent = backRef.current;
 
-    if (
-      frontContent instanceof HTMLElement &&
-      backContent instanceof HTMLElement
-    ) {
+    if (frontContent && backContent) {
       try {
         // Exibe o conteúdo da frente
         frontContent.style.display = "block";
+        backContent.style.display = "block";
+
+        await new Promise((resolve) => setTimeout(resolve, 300));
+
         await doc.html(frontContent, {
           autoPaging: "text",
           x: 10,
@@ -57,6 +57,16 @@ const GeneratePDF = ({ viagem }: GeneratePDFProps) => {
             scale: 0.8,
           },
         });
+
+        // Garante que o download funcione em todos os dispositivos
+        const pdfBlob = doc.output("blob");
+        const blobUrl = URL.createObjectURL(pdfBlob);
+        const link = document.createElement("a");
+        link.href = blobUrl;
+        link.download = "Contrato_de_Fretamento.pdf";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
 
         // Finaliza o processo e salva o PDF
         doc.save("Contrato_de_Fretamento.pdf");

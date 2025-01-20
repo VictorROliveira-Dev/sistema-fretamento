@@ -19,7 +19,6 @@ import DialogEditarReceita from "./components/receitas/dialog-editar";
 import DialogRemoverDespesa from "./components/despesas/dialog-remover";
 import { Input } from "@/components/ui/input";
 import DialogAdicionarDespesa from "./components/despesas/dialog-adicionar";
-import DialogAdicionarReceita from "./components/receitas/dialog-adicionar";
 import DialogRemoverReceita from "./components/receitas/dialog-remover";
 import { DialogInfo } from "./components/despesas/dialog-informacoes";
 import DespesaPDF from "./components/despesas/dialog-document";
@@ -345,10 +344,6 @@ export default function Financeiro() {
                       />
                     </div>
                   </form>
-                  <DialogAdicionarReceita
-                    receitas={receitas}
-                    setReceitas={setReceitas}
-                  />
                 </div>
                 {carregando ? (
                   <div className="flex items-center justify-center">
