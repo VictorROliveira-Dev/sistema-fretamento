@@ -52,7 +52,7 @@ const BusSelectorVolta: React.FC<BusSeatSelectorProps> = ({
 
   const isSeatPaid = (seatNumber: number) => {
     const seat = ocupados.find(
-      (passagem) => passagem.poltronaIda === seatNumber
+      (passagem) => passagem.poltronaVolta === seatNumber
     );
     return seat?.situacao === "PAGO";
   };
