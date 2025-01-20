@@ -172,7 +172,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
             src={dadosViagemIcon}
             alt="documento"
             width={25}
-            className="w-10 md:w-6"
+            className="w-6"
           />
         </span>
       </DialogTrigger>
