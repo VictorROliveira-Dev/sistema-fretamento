@@ -180,7 +180,7 @@ const GeneratePDF = ({ receita }: GeneratePdfProps) => {
                   {receita.pagamentos.length > 0 ? (
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     receita.pagamentos.map((pagamento) => (
-                      <tr>
+                      <tr key={pagamento.id}>
                         <td>{pagamento.dataPagamento}</td>
                         <td>
                           {pagamento.valorPago.toLocaleString("pt-BR", {
@@ -344,7 +344,7 @@ const GeneratePDF = ({ receita }: GeneratePdfProps) => {
                   {receita.pagamentos.length > 0 ? (
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     receita.pagamentos.map((pagamento) => (
-                      <tr>
+                      <tr key={pagamento.id}>
                         <td>{pagamento.dataPagamento}</td>
                         <td>
                           {pagamento.valorPago.toLocaleString("pt-BR", {
