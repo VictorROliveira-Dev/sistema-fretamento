@@ -14,7 +14,7 @@ interface BusSeatSelectorProps {
   passagem: Passagem;
 }
 
-const BusSelector: React.FC<BusSeatSelectorProps> = ({
+const BusSelectorVolta: React.FC<BusSeatSelectorProps> = ({
   totalSeats,
   onSeatsSelected,
   ocupados,
@@ -45,7 +45,7 @@ const BusSelector: React.FC<BusSeatSelectorProps> = ({
 
   const isSeatReserved = (seatNumber: number) => {
     const seat = ocupados.find(
-      (passagem) => passagem.poltronaIda === seatNumber
+      (passagem) => passagem.poltronaVolta === seatNumber
     );
     return seat?.situacao === "RESERVADO";
   };
@@ -63,7 +63,7 @@ const BusSelector: React.FC<BusSeatSelectorProps> = ({
     const newSelectedSeat = selectedSeat === seatNumber ? null : seatNumber;
     setSelectedSeat(newSelectedSeat);
     onSeatsSelected?.(newSelectedSeat ? [newSelectedSeat] : []);
-    setPassagem({ ...passagem, poltronaIda: Number(newSelectedSeat) });
+    setPassagem({ ...passagem, poltronaVolta: Number(newSelectedSeat) });
   };
 
   const getSeatStyle = (seatNumber: number) => {
@@ -161,4 +161,4 @@ const BusSelector: React.FC<BusSeatSelectorProps> = ({
   );
 };
 
-export default BusSelector;
+export default BusSelectorVolta;

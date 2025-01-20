@@ -1,5 +1,4 @@
 "use client";
-import { format, toZonedTime } from "date-fns-tz";
 import {
   Table,
   TableBody,
@@ -19,6 +18,7 @@ import DialogRemover from "./components/dialog-remover";
 import loading from "../assets/loading-dark.svg";
 import DialogInformacoes from "./components/dialog-informacoes";
 import { parseISO } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 

@@ -127,7 +127,7 @@ export default function Passagens() {
                   viagemSelecionada.passagens!.map((passagem) => (
                     <TableRow
                       className="hover:bg-gray-200"
-                      key={passagem.poltrona}
+                      key={passagem.poltronaIda}
                     >
                       <TableCell>{passagem.nomePassageiro}</TableCell>
                       <TableCell className="hidden sm:table-cell">
@@ -140,7 +140,7 @@ export default function Passagens() {
                         {passagem.formaPagamento}
                       </TableCell>
                       <TableCell className="hidden sm:table-cell">
-                        {passagem.poltrona}
+                        {passagem.poltronaIda}
                       </TableCell>
                       <TableCell className="hidden sm:table-cell">
                         {passagem.situacao}

@@ -175,25 +175,6 @@ export default function DialogEditar({
               </Select>
             </div>
             <div>
-              <label htmlFor="pagamento">Tipo da Passagem:</label>
-              <Select
-                onValueChange={(e) => setPassagem({ ...passagem, tipo: e })}
-                name="pagamento"
-                value={passagem.tipo}
-              >
-                <SelectTrigger className="w-[250px]">
-                  <SelectValue placeholder="Selecione o tipo..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectLabel>Pagamentos</SelectLabel>
-                    <SelectItem value="IDA">Somente Ida</SelectItem>
-                    <SelectItem value="IDA-VOLTA">Ida e volta</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
               <label htmlFor="situacao">Situação:</label>
               <Select
                 onValueChange={(e) => setPassagem({ ...passagem, situacao: e })}

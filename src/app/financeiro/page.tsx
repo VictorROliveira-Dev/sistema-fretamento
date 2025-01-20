@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
-import documentoIcon from "@/app/assets/documentos.svg";
 import { useEffect, useState } from "react";
 import { IDespesas, IReceitas } from "@/lib/types";
 import { api } from "@/lib/axios";
@@ -29,6 +28,9 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { DialogInformacoesReceitas } from "./components/receitas/dialog-informacoes";
+import GeneratePDF from "./components/receitas/recibo-receita";
+import { parseISO } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 
 export default function Financeiro() {
   const [despesas, setDespesas] = useState<IDespesas[]>([]);
@@ -258,8 +260,12 @@ export default function Financeiro() {
                             className="hover:bg-gray-200"
                           >
                             <TableCell>
-                              {new Date(despesa.vencimento).toLocaleDateString(
-                                "pt-BR"
+                              {format(
+                                toZonedTime(
+                                  parseISO(despesa.vencimento),
+                                  "UTC"
+                                ),
+                                "dd/MM/yyyy"
                               )}
                             </TableCell>
                             <TableCell className="hidden sm:table-cell">
@@ -384,16 +390,17 @@ export default function Financeiro() {
                           className="hover:bg-gray-200"
                         >
                           <TableCell>
-                            {new Date(receita.vencimento).toLocaleDateString(
-                              "pt-BR"
+                            {format(
+                              toZonedTime(parseISO(receita.vencimento), "UTC"),
+                              "dd/MM/yyyy"
                             )}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
                             {receita.origemPagamento}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
-                            {receita.responsavel
-                              ? receita.responsavel.nome
+                            {receita.viagem
+                              ? receita.viagem.cliente?.nome
                               : "N/a"}
                           </TableCell>
 
@@ -403,7 +410,7 @@ export default function Financeiro() {
                               : "não".toUpperCase()}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
-                            {receita.valorParcial}
+                            {receita.valorPago}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
                             {receita.valorTotal}
@@ -419,14 +426,7 @@ export default function Financeiro() {
                                 receita={receita}
                                 setReceitas={setReceitas}
                               />
-                              <Button className="bg-transparent shadow-none p-0 hover:bg-transparent">
-                                <Image
-                                  src={documentoIcon}
-                                  alt="documento"
-                                  width={25}
-                                  className="hover:scale-110"
-                                />
-                              </Button>
+                              <GeneratePDF receita={receita} />
                               <DialogInformacoesReceitas receita={receita} />
                             </div>
                           </TableCell>

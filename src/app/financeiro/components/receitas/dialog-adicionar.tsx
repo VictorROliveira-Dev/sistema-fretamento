@@ -103,21 +103,21 @@ export default function DialogAdicionarReceita({
       dataPagamento: dataPagamento,
       dataCompra: dataCompra,
       origemPagamento: origemPagamento,
-      responsavelId: Number(responsavelId),
       viagemId: Number(viagemId),
       vencimento: vencimento,
       numeroDocumento: numeroDocumento,
       valorTotal: valorTotal,
-      valorParcial: valorParcial,
       formaPagamento: formaPagamento,
       centroCusto: centroCusto,
-      responsavel: responsavel,
-      viagem: viagem,
-    } as IReceitas;
+    };
 
     try {
-      await api.post("api/receita", receitaData);
-      setReceitas([...receitas, receitaData]);
+      const response = await api.post("api/receita", receitaData);
+      if (!response.data.isSucces) {
+        toast("Erro ao tentar adicionar receita");
+      }
+
+      setReceitas([...receitas, response.data.data]);
       toast.success("Receita adicionada.", {
         className: "text-white font-semibold border-none shadow-lg",
         style: {

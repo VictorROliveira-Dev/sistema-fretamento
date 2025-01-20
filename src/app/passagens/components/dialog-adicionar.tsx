@@ -24,6 +24,8 @@ import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import loading from "../../assets/loading.svg";
 import Image from "next/image";
+import BusSelectorVolta from "@/components/bus-selector-volta";
+import axios from "axios";
 
 interface AdicionarProps {
   viagem: ViagemProgramda;
@@ -39,7 +41,8 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
     nomePassageiro: "",
     dataEmissao: "",
     formaPagamento: "",
-    poltrona: 0,
+    poltronaIda: undefined,
+    poltronaVolta: undefined,
     situacao: "",
     cidadePassageiro: "",
     tipo: "",
@@ -55,26 +58,59 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
   }, [viagem]);
 
   async function registrarPassagem() {
-    setCarregando(true);
-    const response = await api.post("/passagem", passagem);
+    try {
+      setCarregando(true);
+      if (
+        (passagem.tipo === "IDA" && passagem.poltronaVolta) ||
+        passagem.poltronaIda == undefined
+      ) {
+        toast(
+          "selecione somente a passagem de ida ou altere o tipo da passagem para ida e volta"
+        );
+      } else if (
+        (passagem.tipo === "VOLTA" && passagem.poltronaIda) ||
+        passagem.poltronaVolta === undefined
+      ) {
+        toast(
+          "selecione somente a passagem de volta ou altere o tipo da passagem para ida e volta"
+        );
+      } else if (
+        (passagem.tipo === "IDA-VOLTA" && passagem.poltronaIda === undefined) ||
+        passagem.poltronaVolta === undefined
+      ) {
+        toast(
+          "selecione as poltronas de ida e volta corretamente, ou altere o tipo da viagem"
+        );
+      }
+      const response = await api.post("/passagem", passagem);
 
-    if (!response.data.isSucces) {
-      toast("erro ao tentar registrar passagem");
-      return;
+      if (!response.data.isSucces) {
+        toast(response.data.message + "entre em contato com o sistema");
+        return;
+      }
+
+      const passagensAtualizadas = [
+        ...(viagem?.passagens || []),
+        response.data.data,
+      ];
+      console.log(response.data.data);
+      setViagem({
+        ...viagem,
+        passagens: passagensAtualizadas,
+      });
+      toast("registrada com sucesso");
+      setCarregando(false);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          toast("erro ao tentar registrar passagem");
+        }
+      }
+    } finally {
+      setCarregando(false);
     }
-
-    const passagensAtualizadas = [
-      ...(viagem?.passagens || []),
-      response.data.data,
-    ];
-    console.log(response.data.data);
-    setViagem({
-      ...viagem,
-      passagens: passagensAtualizadas,
-    });
-    toast("registrada com sucesso");
-    setCarregando(false);
   }
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -86,7 +122,7 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Cadastro de Passagem</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col  md:flex-row gap-4">
+        <div className="flex flex-col md:flex-row gap-4">
           <div className="flex flex-col gap-2">
             <div>
               <label htmlFor="passageiro">Passageiro:</label>
@@ -165,6 +201,7 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
                     <SelectLabel>Tipo Passagem</SelectLabel>
                     <SelectItem value="IDA">Ida</SelectItem>
                     <SelectItem value="IDA-VOLTA">Ida e Volta</SelectItem>
+                    <SelectItem value="VOLTA">Somente volta</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
@@ -231,12 +268,24 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
               )}
             </Button>
           </div>
-          <BusSelector
-            totalSeats={viagem?.veiculo?.quantidadePoltronas || 0}
-            ocupados={viagem?.passagens?.map((passagem) => passagem) || []}
-            setPassagem={setPassagem}
-            passagem={passagem}
-          />
+          <div className="flex flex-col">
+            <span className="text-lg font-bold text-center">Ida</span>
+            <BusSelector
+              totalSeats={viagem?.veiculo?.quantidadePoltronas || 0}
+              ocupados={viagem?.passagens?.map((passagem) => passagem) || []}
+              setPassagem={setPassagem}
+              passagem={passagem}
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-lg font-bold text-center">Volta</span>
+            <BusSelectorVolta
+              totalSeats={viagem?.veiculo?.quantidadePoltronas || 0}
+              ocupados={viagem?.passagens?.map((passagem) => passagem) || []}
+              setPassagem={setPassagem}
+              passagem={passagem}
+            />
+          </div>
         </div>
       </DialogContent>
     </Dialog>

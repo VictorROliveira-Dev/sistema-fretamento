@@ -5,6 +5,8 @@ import { Viagem } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import documentIcon from "../../assets/documentos.svg";
+import { parseISO } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 
 // Caminho da imagem
 const logoUrl = "/Logo.png"; // Caminho relativo da imagem no diretório public
@@ -31,6 +33,9 @@ const ViagemPDF: React.FC<ViagemPDFProps> = ({ dadosViagens }) => {
       doc.text("Relatório de Viagem", pageWidth / 2, imgHeight + 20, {
         align: "center",
       });
+      const dataHoraSaida = `${dadosViagens.dataHorarioSaida.data}T${dadosViagens.dataHorarioSaida.hora}`;
+      const dataHoraChegada = `${dadosViagens.dataHorarioChegada.data}T${dadosViagens.dataHorarioChegada.hora}`;
+      const dataHoraRetorno = `${dadosViagens.dataHorarioRetorno.data}T${dadosViagens.dataHorarioRetorno.hora}`;
 
       // Adicionar os dados da despesa
       const columns = ["Campo", "Valor"];
@@ -52,20 +57,19 @@ const ViagemPDF: React.FC<ViagemPDFProps> = ({ dadosViagens }) => {
             : "",
         ],
         [
-          "Data Saída",
-          new Date(dadosViagens.dataHorarioSaida.data).toLocaleDateString(),
+          "Data e Hora Saída",
+          format(toZonedTime(parseISO(dataHoraSaida), "UTC"), "dd/MM/yyyy HH:mm")
         ],
-        ["Hora Saída", dadosViagens.dataHorarioSaida.hora],
         [
-          "Data Chegada",
-          new Date(dadosViagens.dataHorarioChegada.data).toLocaleDateString(),
+          "Data e Hora Chegada",
+          format(toZonedTime(parseISO(dataHoraChegada), "UTC"), "dd/MM/yyyy HH:mm")
+          ,
         ],
-        ["Hora Chegada", dadosViagens.dataHorarioChegada.hora],
         [
-          "Data Retorno",
-          new Date(dadosViagens.dataHorarioRetorno.data).toLocaleDateString(),
+          "Data e Hora Retorno",
+          format(toZonedTime(parseISO(dataHoraRetorno), "UTC"), "dd/MM/yyyy HH:mm")
+          ,
         ],
-        ["Hora Retorno", dadosViagens.dataHorarioRetorno.hora],
         ["Cidade Saída", dadosViagens.rota.saida.cidadeSaida],
         ["UF Saída", dadosViagens.rota.saida.ufSaida],
         ["Cidade Retorno", dadosViagens.rota.retorno.cidadeSaida],

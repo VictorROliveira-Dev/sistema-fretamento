@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { parseISO } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
 import loading from "../../assets/loading.svg";
+import GeneratePDF from "./contrato";
 
 interface TravelDialogProps {
   viagem: Viagem;
@@ -248,6 +249,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 <Label>Status</Label>
                 <p className="text-sm text-muted-foreground">{viagem.status}</p>
               </div>
+              <GeneratePDF viagem={viagemCompleta} />
             </CardContent>
           </Card>
           <Card className="w-full">

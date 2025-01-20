@@ -17,14 +17,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React, { FormEvent, useEffect, useState } from "react";
-import {
-  Cliente,
-  Fornecedor,
-  IReceitas,
-  Motorista,
-  Viagem,
-} from "@/lib/types";
+import React, { FormEvent, useState } from "react";
+import { IReceitas } from "@/lib/types";
 import { api } from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
@@ -45,57 +39,21 @@ export default function DialogEditarReceita({
   receita,
 }: DespesasProps) {
   const [receitaEditada, setReceitaEditada] = useState<IReceitas>(receita);
-  const [motoristas, setMotoristas] = useState<Motorista[]>([]);
-  const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
-  //const [formaPagamento, setFormaPagamento] = useState<string | "">("");
-  const [viagems, setViagems] = useState<Viagem[]>([]);
-  const [tipoResponsavel, setTipoResponsavel] = useState<string | "">("");
   const [editando, setEditando] = useState(false);
   const router = useRouter();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [
-          motoristaResponse,
-          clienteResponse,
-          fornecedorResponse,
-          viagemResponse,
-        ] = await Promise.all([
-          api.get("/motorista"),
-          api.get("/cliente"),
-          api.get("/api/fornecedor"),
-          api.get("/viagem"),
-        ]);
 
-        setMotoristas(motoristaResponse.data.data);
-        setClientes(clienteResponse.data.data);
-        setFornecedores(fornecedorResponse.data.data);
-        setViagems(viagemResponse.data.data);
-      } catch (error) {
-        console.log("Erro ao tentar recuperar os dados", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-  const getClienteNome = (clientId: number) => {
-    if (!clientes) return "Carregando clientes...";
-    const cliente = clientes.find((cliente) => cliente.id === clientId);
-    return cliente ? cliente.nome : "Cliente não encontrado";
-  };
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setEditando(true);
 
     try {
-      const response = await api.put(`/despesa/${receita.id}`, receitaEditada);
+      const response = await api.put(`/receita/${receita.id}`, receitaEditada);
       if (!response.data.isSucces) {
         toast(response.data.message);
       }
       const receitasAtualizadas = receitas.filter((d) => d.id !== receita.id);
       setReceitas([...receitasAtualizadas, receitaEditada]);
-      toast.success("despesa atualizada com sucesso");
+      toast.success("receita atualizada com sucesso");
       setEditando(false);
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -103,24 +61,11 @@ export default function DialogEditarReceita({
           localStorage.removeItem("token");
           router.replace("/login");
         } else {
-          toast.error("Erro ao tentar atualizar despesa.");
+          toast.error("Erro ao tentar atualizar receita.");
         }
       }
     } finally {
       setEditando(false);
-    }
-  };
-
-  const getResponsaveis = () => {
-    switch (tipoResponsavel) {
-      case "motorista":
-        return motoristas;
-      case "cliente":
-        return clientes;
-      case "fornecedor":
-        return fornecedores;
-      default:
-        return [];
     }
   };
 
@@ -170,97 +115,6 @@ export default function DialogEditarReceita({
                         Estacionamento
                       </SelectItem>
                       <SelectItem value="outros">Outros</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="origemPagamento">Tipo Responsável:</label>
-                <select
-                  required
-                  name="origemPagamento"
-                  value={receitaEditada.origemPagamento}
-                  onChange={(e) => {
-                    const selectedType = e.target.value;
-                    setTipoResponsavel(selectedType);
-                    setReceitaEditada({
-                      ...receitaEditada,
-                      responsavelId: 0,
-                      origemPagamento: selectedType,
-                    });
-                  }}
-                  className="w-[250px] border rounded-md p-2"
-                >
-                  <option value="" disabled>
-                    Selecione o tipo...
-                  </option>
-                  <option value="motorista">Motorista</option>
-                  <option value="cliente">Cliente</option>
-                  <option value="fornecedor">Fornecedor</option>
-                </select>
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="responsavel">Responsável:</label>
-                <select
-                  required
-                  name="responsavel"
-                  value={receitaEditada.responsavelId}
-                  onChange={(e) => {
-                    const responsavelSelecionado = getResponsaveis().find(
-                      (r) => r.id === Number(e.target.value)
-                    );
-                    setReceitaEditada({
-                      ...receitaEditada,
-                      responsavelId: responsavelSelecionado
-                        ? responsavelSelecionado.id
-                        : 0,
-                      responsavel: responsavelSelecionado || undefined,
-                    });
-                  }}
-                  className="w-[250px] border rounded-md p-2"
-                  disabled={!tipoResponsavel}
-                >
-                  <option value="">{receitaEditada.responsavel?.nome}</option>
-                  {getResponsaveis().map((responsavel) => (
-                    <option key={responsavel.id} value={responsavel.id}>
-                      {responsavel.nome}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="viagem">Viagem:</label>
-                <Select
-                  required
-                  name="viagem"
-                  value={receitaEditada.viagemId.toString()}
-                  onValueChange={(e) => {
-                    const viagemSelecionada = viagems.find(
-                      (r) => r.id === Number(e)
-                    );
-                    setReceitaEditada({
-                      ...receitaEditada,
-                      viagemId: viagemSelecionada ? viagemSelecionada.id : 0,
-                      viagem: viagemSelecionada || undefined,
-                    });
-                  }}
-                >
-                  <SelectTrigger className="w-[250px]">
-                    <SelectValue placeholder="Selecione..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {viagems.map((viagem) => (
-                        <SelectItem
-                          key={viagem.id}
-                          value={viagem.id.toString()}
-                        >
-                          {new Date(
-                            viagem.dataHorarioSaida.data
-                          ).toLocaleDateString("pt-BR")}{" "}
-                          | {getClienteNome(viagem.clienteId)}
-                        </SelectItem>
-                      ))}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -316,26 +170,6 @@ export default function DialogEditarReceita({
                     })
                   }
                   required
-                />
-              </div>
-              <div className="flex flex-col">
-                <label htmlFor="valorParcial">Valor Pago:</label>
-                <Input
-                  type="number"
-                  name="valorParcial"
-                  placeholder="Digite o valor..."
-                  className="border-2 font-medium w-[250px]"
-                  value={
-                    receitaEditada.valorParcial === 0
-                      ? ""
-                      : receitaEditada.valorParcial
-                  }
-                  onChange={(e) =>
-                    setReceitaEditada({
-                      ...receitaEditada,
-                      valorParcial: Number(e.target.value),
-                    })
-                  }
                 />
               </div>
               <div>
