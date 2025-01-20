@@ -11,11 +11,9 @@ import { Separator } from "@/components/ui/separator";
 import {
   CalendarDays,
   MapPin,
-  Users,
   Bus,
   CreditCard,
   User2,
-  ClipboardList,
 } from "lucide-react";
 import { Passagem, ViagemProgramda } from "@/lib/types";
 import { parseISO } from "date-fns";

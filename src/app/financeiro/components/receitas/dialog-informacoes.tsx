@@ -56,7 +56,6 @@ export function DialogInformacoesReceitas({ receita }: DespesasDialogProps) {
     id: 0,
     dataPagamento: "",
   });
-  const formatDate = (date: string) => new Date(date).toLocaleDateString();
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -253,7 +252,7 @@ export function DialogInformacoesReceitas({ receita }: DespesasDialogProps) {
                   <TableBody>
                     {receitaInfo.pagamentos.length > 0 ? (
                       receitaInfo.pagamentos.map((pagamento) => (
-                        <TableRow>
+                        <TableRow key={pagamento.id}>
                           <TableCell>
                             {format(
                               toZonedTime(

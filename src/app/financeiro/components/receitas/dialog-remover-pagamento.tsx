@@ -29,7 +29,7 @@ export default function DialogRemoverPagamento({
   setReceita,
   receita,
 }: ReceitaProps) {
-  const [removendo, setRemovendo] = useState(false);
+  const [removendo, ] = useState(false);
   const router = useRouter();
   async function removerPagamento() {
     try {

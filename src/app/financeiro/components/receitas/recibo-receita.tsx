@@ -178,6 +178,7 @@ const GeneratePDF = ({ receita }: GeneratePdfProps) => {
                 </thead>
                 <tbody>
                   {receita.pagamentos.length > 0 ? (
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     receita.pagamentos.map((pagamento) => (
                       <tr>
                         <td>{pagamento.dataPagamento}</td>
@@ -341,6 +342,7 @@ const GeneratePDF = ({ receita }: GeneratePdfProps) => {
                 </thead>
                 <tbody>
                   {receita.pagamentos.length > 0 ? (
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     receita.pagamentos.map((pagamento) => (
                       <tr>
                         <td>{pagamento.dataPagamento}</td>

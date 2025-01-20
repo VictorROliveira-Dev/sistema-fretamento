@@ -47,7 +47,7 @@ export default function DialogAdicionarReceita({
   const [dataPagamento, setDataPagamento] = useState<string | "">("");
   const [origemPagamento, setOrigemPagamento] = useState<string | "">("");
   const [responsavelId, setResponsavelId] = useState<number | "">();
-  const [responsavel, setResponsavel] = useState<Responsavel>();
+  const [, setResponsavel] = useState<Responsavel>();
   const [vencimento, setVencimento] = useState<string | undefined>("");
   //const [pago, setPago] = useState(false);
   const [valorTotal, setValorTotal] = useState<number>(0);
@@ -62,7 +62,7 @@ export default function DialogAdicionarReceita({
   const [numeroDocumento, setNumeroDocumento] = useState<string>("");
   const [viagemId, setViagemId] = useState<number>(0);
   const [editando, setEditando] = useState(false);
-  const [viagem, setViagem] = useState<Viagem>();
+  const [, setViagem] = useState<Viagem>();
   const router = useRouter();
   useEffect(() => {
     const fetchData = async () => {
