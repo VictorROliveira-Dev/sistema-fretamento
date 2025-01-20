@@ -15,49 +15,42 @@ const GeneratePDF = ({ viagem }: GeneratePDFProps) => {
 
   const handleDownload = async () => {
     setLoading(true);
-
+  
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "px",
       format: "a4",
     });
-
+  
     const frontContent = frontRef.current;
     const backContent = backRef.current;
-
+  
     if (frontContent && backContent) {
       try {
-        // Exibe o conteúdo da frente
+        // Temporariamente torna os elementos visíveis
         frontContent.style.display = "block";
         backContent.style.display = "block";
-
-        await new Promise((resolve) => setTimeout(resolve, 300));
-
+  
+        await new Promise((resolve) => setTimeout(resolve, 100)); // Pequeno delay para renderização
+  
         await doc.html(frontContent, {
           autoPaging: "text",
           x: 10,
           y: 10,
           width: 200,
-          html2canvas: {
-            scale: 0.8,
-          },
+          html2canvas: { scale: 0.8 },
         });
-
-        // Adiciona uma nova página no PDF
+  
         doc.addPage();
-
-        // Exibe o conteúdo do verso
-        backContent.style.display = "block";
+  
         await doc.html(backContent, {
           autoPaging: "text",
           x: 10,
           y: 700,
           width: 200,
-          html2canvas: {
-            scale: 0.8,
-          },
+          html2canvas: { scale: 0.8 },
         });
-
+  
         // Garante que o download funcione em todos os dispositivos
         const pdfBlob = doc.output("blob");
         const blobUrl = URL.createObjectURL(pdfBlob);
@@ -67,11 +60,8 @@ const GeneratePDF = ({ viagem }: GeneratePDFProps) => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-
-        // Finaliza o processo e salva o PDF
-        doc.save("Contrato_de_Fretamento.pdf");
-
-        // Oculta novamente os conteúdos
+  
+        // Oculta os elementos novamente
         frontContent.style.display = "none";
         backContent.style.display = "none";
       } catch (error) {
@@ -84,6 +74,7 @@ const GeneratePDF = ({ viagem }: GeneratePDFProps) => {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className={loading ? "absolute w-[525px] " : ""}>
