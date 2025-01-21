@@ -19,6 +19,7 @@ import { toast } from "sonner";
 import axios from "axios";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 interface VeiculoProps {
   veiculo: Veiculo;
@@ -35,7 +36,23 @@ export default function DialogEditar({
   const [cidades, setCidades] = useState<Cidade[]>([]);
   const [veiculoState, setVeiculoState] = useState<Veiculo>(veiculo);
   const [editando, setEditando] = useState(false);
+  const [acessoriosEscolhidos, setAcessoriosEscolhidos] = useState<string[]>(
+    veiculo.acessorios.split(",")
+  );
   const router = useRouter();
+
+  const adicionarRemoverAcessorio = (acessorio: string) => {
+    if (acessoriosEscolhidos.includes(acessorio)) {
+      setAcessoriosEscolhidos(
+        acessoriosEscolhidos.filter(
+          (a) => a.toLocaleLowerCase() !== acessorio.toLocaleLowerCase()
+        )
+      );
+      console.log(acessoriosEscolhidos);
+      return;
+    }
+    setAcessoriosEscolhidos([...acessoriosEscolhidos, acessorio]);
+  };
 
   useEffect(() => {
     axios
@@ -76,7 +93,17 @@ export default function DialogEditar({
     setEditando(true);
 
     try {
-      const response = await api.put(`/veiculo/${veiculo.id}`, veiculoState);
+      const updatedVeiculoState = {
+        ...veiculoState,
+        acessorios: acessoriosEscolhidos.join(","), // Use join() para garantir que a string esteja formatada corretamente
+      };
+
+      console.log(veiculoState);
+
+      const response = await api.put(
+        `/veiculo/${veiculo.id}`,
+        updatedVeiculoState
+      );
       const veiculoAtualizado = response.data.data;
 
       const veiculosAtualizados = veiculos.map((v) => {
@@ -98,6 +125,28 @@ export default function DialogEditar({
     }
   };
 
+  const acessorios = [
+    "Ar condicionado",
+    "Tvs",
+    "Radio",
+    "1 Wc",
+    "2 Wc",
+    "bebedouro",
+    "Geladeira",
+    "Cafeteira",
+    "USB",
+    "Wi-Fi",
+    "dvd",
+    "som",
+    "microfone",
+    "apoio de pernas",
+    "suporte para celular",
+    "sala vip",
+    "Mantas",
+    "elevador",
+    "acessibilidade",
+  ];
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -110,7 +159,7 @@ export default function DialogEditar({
           />
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-[1100px] h-[550px] md:h-auto flex flex-col items-center overflow-y-scroll md:overflow-auto">
+      <DialogContent className="md:w-[1100px] h-[550px] md:h-[90%] flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Edição de Veículo</DialogTitle>
         </DialogHeader>
@@ -234,7 +283,11 @@ export default function DialogEditar({
                     type="number"
                     className="border-2 font-medium text-black w-[250px]"
                     placeholder="Digite a capacidade..."
-                    value={veiculoState.capacidadeTank ? veiculoState.capacidadeTank : ""}
+                    value={
+                      veiculoState.capacidadeTank
+                        ? veiculoState.capacidadeTank
+                        : ""
+                    }
                     onChange={(e) =>
                       setVeiculoState({
                         ...veiculoState,
@@ -302,7 +355,11 @@ export default function DialogEditar({
                     name="quantidadePoltronas"
                     className="border-2 font-medium text-black w-[250px]"
                     placeholder="Digite a quantidade..."
-                    value={veiculoState.quantidadePoltronas ? veiculoState.quantidadePoltronas : ""}
+                    value={
+                      veiculoState.quantidadePoltronas
+                        ? veiculoState.quantidadePoltronas
+                        : ""
+                    }
                     onChange={(e) =>
                       setVeiculoState({
                         ...veiculoState,
@@ -312,6 +369,28 @@ export default function DialogEditar({
                   />
                 </div>
               </div>
+            </div>
+            <div className="flex flex-col mt-2 p-4 space-y-4">
+              <span className="text-center font-semibold text-md">
+                {" "}
+                Acessórios
+              </span>
+              <ToggleGroup
+                type="multiple"
+                className="grid grid-cols-4"
+                value={acessoriosEscolhidos}
+              >
+                {acessorios.map((nome) => (
+                  <ToggleGroupItem
+                    className="bg-slate-300 data-[state=on]:bg-blue-600"
+                    key={nome}
+                    value={nome}
+                    onClick={() => adicionarRemoverAcessorio(nome)}
+                  >
+                    {nome}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
             </div>
           </fieldset>
 

@@ -17,7 +17,6 @@ import { toast } from "sonner";
 import loading from "../../assets/loading.svg";
 import axios from "axios";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Label } from "@radix-ui/react-label";
 import { useRouter } from "next/navigation";
 
 interface VeiculosProps {
@@ -44,7 +43,7 @@ export default function DialogAdicionar({
   const [modelo, setModelo] = useState("");
   const [quantidadePoltronas, setQuantidadePoltronas] = useState<number>();
   const [adicionando, setAdicionando] = useState(false);
-  const [acessoriosVeiculo, setAcessoriosVeiculo] = useState<string[]>([]); 
+  const [acessoriosVeiculo, setAcessoriosVeiculo] = useState<string[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -76,6 +75,19 @@ export default function DialogAdicionar({
       .catch((error) => {
         console.error("Error fetching cidades:", error);
       });
+  };
+
+  const adicionarRemoverAcessorio = (acessorio: string) => {
+    if (acessoriosVeiculo.includes(acessorio)) {
+      setAcessoriosVeiculo(
+        acessoriosVeiculo.filter(
+          (a) => a.toLocaleLowerCase() !== acessorio.toLocaleLowerCase()
+        )
+      );
+
+      return;
+    }
+    setAcessoriosVeiculo([...acessoriosVeiculo, acessorio]);
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -129,11 +141,26 @@ export default function DialogAdicionar({
   };
 
   const acessorios = [
-    "ar condicionado",
-   "tv",
-   "radio",
-   "banheiro",
-   ]
+    "Ar condicionado",
+    "Tvs",
+    "Radio",
+    "1 Wc",
+    "2 Wc",
+    "bebedouro",
+    "Geladeira",
+    "Cafeteira",
+    "USB",
+    "Wi-Fi",
+    "dvd",
+    "som",
+    "microfone",
+    "apoio de pernas",
+    "suporte para celular",
+    "sala vip",
+    "Mantas",
+    "elevador",
+    "acessibilidade",
+  ];
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -141,10 +168,11 @@ export default function DialogAdicionar({
           Adicionar Veículo
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-[1100px] h-[550px] md:h-auto flex flex-col items-center overflow-y-scroll md:overflow-auto">
+      <DialogContent className="md:w-[1100px] h-[550px] md:h-[80%] flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Cadastro de Veículo</DialogTitle>
         </DialogHeader>
+
         <form
           className="w-full flex flex-col items-center"
           onSubmit={handleSubmit}
@@ -309,13 +337,27 @@ export default function DialogAdicionar({
                 </div>
               </div>
             </div>
-            <div className="mt-2">
-              <Label>Acessorios</Label>
-            <ToggleGroup type="multiple">
-              {acessorios.map((nome) => (
-                 <ToggleGroupItem key={nome} onClick={() => setAcessoriosVeiculo([...acessoriosVeiculo, nome]) } value={nome }>{nome}</ToggleGroupItem>
-              ))}
-            </ToggleGroup>
+            <div className="flex flex-col mt-2 p-4 space-y-4">
+              <span className="text-center font-semibold text-md">
+                {" "}
+                Acessórios
+              </span>
+              <ToggleGroup
+                type="multiple"
+                className="grid grid-cols-4"
+                value={acessoriosVeiculo}
+              >
+                {acessorios.map((nome) => (
+                  <ToggleGroupItem
+                    className="bg-slate-300 data-[state=on]:bg-blue-600"
+                    key={nome}
+                    value={nome}
+                    onClick={() => adicionarRemoverAcessorio(nome)}
+                  >
+                    {nome}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
             </div>
           </fieldset>
           <DialogFooter className="flex items-center gap-2 mt-10">

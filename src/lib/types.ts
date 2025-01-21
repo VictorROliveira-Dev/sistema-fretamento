@@ -164,7 +164,7 @@ export type Veiculo = {
   tipo: string;
   modelo: string;
   quantidadePoltronas: number;
-  acessorios: string[];
+  acessorios: string;
 };
 
 export interface Uf {
