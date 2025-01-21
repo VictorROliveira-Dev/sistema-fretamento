@@ -2,7 +2,6 @@ import { jsPDF } from "jspdf";
 import { Viagem } from "@/lib/types";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-
 interface GeneratePDFProps {
   viagem: Viagem;
 }
@@ -210,7 +209,7 @@ const GeneratePDF = ({ viagem }: GeneratePDFProps) => {
       }
 
       doc.save("Contrato_de_Fretamento.pdf");
-    } catch (error) {
+    } catch {
       toast("Erro ao gerar o PDF:");
     }
   };
