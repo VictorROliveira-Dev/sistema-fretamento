@@ -157,7 +157,7 @@ const GeneratePDF = ({ viagem }: GeneratePDFProps) => {
       doc.text("Veículo/Tipo:", 10, 225);
       doc.text(
         viagem.veiculo
-          ? `${viagem.veiculo.tipo} - ${viagem.veiculo.acessorios}`
+          ? `${viagem.veiculo.tipo} - Acessórios: ${viagem.veiculo.acessorios}`
           : "",
         30,
         225

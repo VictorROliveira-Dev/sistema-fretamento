@@ -138,30 +138,48 @@ export default function Financeiro() {
                           <TableHead>Peça</TableHead>
                           <TableHead>Preço</TableHead>
                           <TableHead>Quantidade</TableHead>
+                          <TableHead>Valor Total</TableHead> 
                           <TableHead>Ações</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {pecas.map((peca) => (
-                          <TableRow key={peca.id}>
-                            <TableCell>{peca.nome}</TableCell>
-                            <TableCell>R${peca.preco}</TableCell>
-                            <TableCell>{peca.quantidade}</TableCell>
-                            <TableCell className="flex gap-2">
-                              <DialogEditarPeca
-                                peca={peca}
-                                setPecas={setPecas}
-                                pecas={pecas}
-                              />
-                              <DialogRemoverPeca
-                                peca={peca}
-                                setPecas={setPecas}
-                              />
-                            </TableCell>
-                          </TableRow>
-                        ))}
+                        {pecas.map((peca) => {
+                          const valorTotalPeca = peca.preco * peca.quantidade;
+                          return (
+                            <TableRow key={peca.id}>
+                              <TableCell>{peca.nome}</TableCell>
+                              <TableCell>R${peca.preco.toFixed(2)}</TableCell>
+                              <TableCell>{peca.quantidade}</TableCell>
+                              <TableCell>
+                                R${valorTotalPeca.toFixed(2)}
+                              </TableCell>{" "}
+                              <TableCell className="flex gap-2">
+                                <DialogEditarPeca
+                                  peca={peca}
+                                  setPecas={setPecas}
+                                  pecas={pecas}
+                                />
+                                <DialogRemoverPeca
+                                  peca={peca}
+                                  setPecas={setPecas}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
                       </TableBody>
                     </Table>
+                    <div className="mt-4 text-left font-bold text-lg">
+                      <p>
+                        Valor total das peças: R$
+                        {pecas
+                          .reduce(
+                            (acc, peca) => acc + peca.preco * peca.quantidade,
+                            0
+                          )
+                          .toFixed(2)}
+                      </p>
+                    </div>
                   </div>
                 )}
               </TabsContent>

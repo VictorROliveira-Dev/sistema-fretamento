@@ -140,6 +140,12 @@ export default function ViagensServicos() {
                 <Table>
                   <TableHeader className="border-b-2">
                     <TableRow>
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                        Data Saída
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                        Data Chegada
+                      </TableHead>
                       <TableHead className="text-black font-bold text-center">
                         Motorista
                       </TableHead>
@@ -153,13 +159,7 @@ export default function ViagensServicos() {
                         Cidade Saída
                       </TableHead>
                       <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                        Data Saída
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Cidade Destino
-                      </TableHead>
-                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                        Data Chegada
                       </TableHead>
                       <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         Valor Contratado
@@ -172,6 +172,24 @@ export default function ViagensServicos() {
                   <TableBody className="text-center">
                     {viagens.map((viagem) => (
                       <TableRow className="hover:bg-gray-200" key={viagem.id}>
+                        <TableCell className="hidden sm:table-cell">
+                          {format(
+                            toZonedTime(
+                              parseISO(viagem.dataHorarioSaida.data),
+                              "UTC"
+                            ),
+                            "dd/MM/yyyy"
+                          )}
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell">
+                          {format(
+                            toZonedTime(
+                              parseISO(viagem.dataHorarioRetorno.data),
+                              "UTC"
+                            ),
+                            "dd/MM/yyyy"
+                          )}
+                        </TableCell>
                         <TableCell>
                           {viagem.motoristaViagens &&
                           viagem.motoristaViagens.length > 0 &&
@@ -189,25 +207,7 @@ export default function ViagensServicos() {
                           {viagem.rota.saida.cidadeSaida}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
-                          {format(
-                            toZonedTime(
-                              parseISO(viagem.dataHorarioSaida.data),
-                              "UTC"
-                            ),
-                            "dd/MM/yyyy"
-                          )}
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
                           {viagem.rota.retorno.cidadeSaida}
-                        </TableCell>
-                        <TableCell className="hidden sm:table-cell">
-                          {format(
-                            toZonedTime(
-                              parseISO(viagem.dataHorarioRetorno.data),
-                              "UTC"
-                            ),
-                            "dd/MM/yyyy"
-                          )}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
                           {viagem.valorContratado}

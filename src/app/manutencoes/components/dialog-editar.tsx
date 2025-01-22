@@ -254,7 +254,7 @@ export default function DialogEditar({
                   type="number"
                   className="border-2 font-medium  w-[250px]"
                   placeholder="Digite a quilometragem..."
-                  value={kmPrevista}
+                  value={kmPrevista ? kmPrevista : ""}
                   onChange={(e) => setKmPrevista(Number(e.target.value))}
                 />
               </div>
@@ -265,7 +265,7 @@ export default function DialogEditar({
                   name="kmAtual"
                   className="border-2 font-medium w-[250px]"
                   placeholder="Digite a quilometragem..."
-                  value={kmAtual}
+                  value={kmAtual ? kmAtual : ""}
                   onChange={(e) => setKmAtual(Number(e.target.value))}
                 />
               </div>
@@ -276,7 +276,7 @@ export default function DialogEditar({
                   name="kmRealizada"
                   className="border-2 font-medium  w-[250px]"
                   placeholder="Digite a quilometragem..."
-                  value={kmRealizada}
+                  value={kmRealizada ? kmRealizada : ""}
                   onChange={(e) => setKmRealizada(Number(e.target.value))}
                 />
               </div>
@@ -287,7 +287,7 @@ export default function DialogEditar({
                   name="custo"
                   className="border-2 font-medium  w-[250px]"
                   placeholder="Digite o valor..."
-                  value={custo}
+                  value={custo ? custo : ""}
                   onChange={(e) => setCusto(Number(e.target.value))}
                 />
               </div>

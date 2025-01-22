@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import documentIcon from "../../assets/documentos.svg";
 import { parseISO } from "date-fns";
-import { format, toZonedTime } from "date-fns-tz";
+import { format } from "date-fns-tz";
 
 // Caminho da imagem
 const logoUrl = "/Logo.png"; // Caminho relativo da imagem no diretório public
@@ -27,6 +27,12 @@ const ViagemPDF: React.FC<ViagemPDFProps> = ({ dadosViagens }) => {
 
       // Adicionar a imagem ao PDF
       doc.addImage(logoUrl, "PNG", x, 10, imgWidth, imgHeight);
+      // Obter a data atual
+      const dataAtual = format(new Date(), "dd/MM/yyyy HH:mm");
+
+      // Adicionar a data de emissão no topo do documento
+      doc.setFontSize(10);
+      doc.text(`Data de emissão: ${dataAtual}`, pageWidth - 60, imgHeight + 15);
 
       // Adicionar o título
       doc.setFontSize(14);
@@ -34,16 +40,20 @@ const ViagemPDF: React.FC<ViagemPDFProps> = ({ dadosViagens }) => {
         align: "center",
       });
       const dataHoraSaida = `${dadosViagens.dataHorarioSaida.data}T${dadosViagens.dataHorarioSaida.hora}`;
-      const dataHoraChegada = `${dadosViagens.dataHorarioChegada.data}T${dadosViagens.dataHorarioChegada.hora}`;
       const dataHoraRetorno = `${dadosViagens.dataHorarioRetorno.data}T${dadosViagens.dataHorarioRetorno.hora}`;
 
       // Adicionar os dados da despesa
       const columns = ["Campo", "Valor"];
       const tableData = [
         ["Cliente", dadosViagens.cliente?.nome],
-        ["Veículo Prefixo", dadosViagens.veiculo?.prefixo],
-        ["Veículo Placa", dadosViagens.veiculo?.placa],
-        ["Veículo Modelo", dadosViagens.veiculo?.modelo],
+        [
+          "Veículo Prefixo | Placa | Modelo",
+          dadosViagens.veiculo?.prefixo +
+            " | " +
+            dadosViagens.veiculo?.placa +
+            " | " +
+            dadosViagens.veiculo?.modelo,
+        ],
         [
           "Motorista 1",
           dadosViagens.motoristaViagens[0]
@@ -58,17 +68,11 @@ const ViagemPDF: React.FC<ViagemPDFProps> = ({ dadosViagens }) => {
         ],
         [
           "Data e Hora Saída",
-          format(toZonedTime(parseISO(dataHoraSaida), "UTC"), "dd/MM/yyyy HH:mm")
-        ],
-        [
-          "Data e Hora Chegada",
-          format(toZonedTime(parseISO(dataHoraChegada), "UTC"), "dd/MM/yyyy HH:mm")
-          ,
+          format(parseISO(dataHoraSaida), "dd/MM/yyyy HH:mm"),
         ],
         [
           "Data e Hora Retorno",
-          format(toZonedTime(parseISO(dataHoraRetorno), "UTC"), "dd/MM/yyyy HH:mm")
-          ,
+          format(parseISO(dataHoraRetorno), "dd/MM/yyyy HH:mm"),
         ],
         ["Cidade Saída", dadosViagens.rota.saida.cidadeSaida],
         ["UF Saída", dadosViagens.rota.saida.ufSaida],
