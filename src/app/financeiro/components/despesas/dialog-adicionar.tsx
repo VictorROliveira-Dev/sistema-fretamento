@@ -23,7 +23,7 @@ import {
   Fornecedor,
   IDespesas,
   Motorista,
-  Responsavel,
+  //Responsavel,
   Viagem,
 } from "@/lib/types";
 import { api } from "@/lib/axios";
@@ -45,7 +45,7 @@ export default function DialogAdicionarDespesa({
 }: DespesasProps) {
   const [dataCompra, setDataCompra] = useState<string | "">("");
   const [dataPagamento, setDataPagamento] = useState<string | "">("");
-  const [origemPagamento, setOrigemPagamento] = useState<string | "">("");
+  const [origemPagamento] = useState<string | "">("");
   //const [responsavelId, setResponsavelId] = useState<number | "">();
   //const [responsavel, setResponsavel] = useState<Responsavel>();
   const [vencimento, setVencimento] = useState<string | undefined>("");
@@ -58,7 +58,7 @@ export default function DialogAdicionarDespesa({
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [fornecedor, setFornecedor] = useState<Fornecedor[]>([]);
   const [viagems, setViagems] = useState<Viagem[]>([]);
-  const [tipoResponsavel, setTipoResponsavel] = useState<string | "">("");
+  const [tipoResponsavel] = useState<string | "">("");
   //const [descricao, setDescricao] = useState<string | "">("");
   const [viagemId, setViagemId] = useState<number>(0);
   const [editando, setEditando] = useState(false);
@@ -140,7 +140,7 @@ export default function DialogAdicionarDespesa({
     }
   };
 
-  const getResponsaveis = () => {
+  /*const getResponsaveis = () => {
     switch (tipoResponsavel) {
       case "motorista":
         return motorista;
@@ -151,7 +151,7 @@ export default function DialogAdicionarDespesa({
       default:
         return [];
     }
-  };
+  };*/
 
   return (
     <Dialog>
