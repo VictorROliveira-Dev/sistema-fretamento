@@ -28,7 +28,14 @@ export default function ViagensServicos() {
   const [maxDate, setMaxDate] = useState<string>("");
   const [veiculo, setVeiculo] = useState<string>("");
   const [viagens, setViagens] = useState<Viagem[]>([]);
+
+  const [statusFiltro, setStatusFiltro] = useState<string>("todos");
   const [carregando, setCarregando] = useState(false);
+
+  const filteredViagens = viagens.filter((viagem) => {
+    if (statusFiltro === "todos") return true;
+    return viagem.status.toLocaleLowerCase() === statusFiltro;
+  });
 
   async function fetchViagens() {
     setCarregando(true);
@@ -118,6 +125,19 @@ export default function ViagensServicos() {
                 <Button type="submit" className="bg-blue-600">
                   <Search className="text-white" />
                 </Button>
+                <div className="flex flex-col">
+                  <label htmlFor="status">Status:</label>
+                  <select
+                    name="status"
+                    className="border-2 font-medium w-[250px] p-2 rounded-md"
+                    value={statusFiltro}
+                    onChange={(e) => setStatusFiltro(e.target.value)}
+                  >
+                    <option value="todos">Todos</option>
+                    <option value="pendente">Pendentes</option>
+                    <option value="confirmado">Confirmados</option>
+                  </select>
+                </div>
               </form>
 
               <div className="flex items-center gap-2">
@@ -170,9 +190,16 @@ export default function ViagensServicos() {
                     </TableRow>
                   </TableHeader>
                   <TableBody className="text-center">
-                    {viagens.map((viagem) => (
+                    {filteredViagens.map((viagem) => (
                       <TableRow className="hover:bg-gray-200" key={viagem.id}>
-                        <TableCell className="hidden sm:table-cell">
+                        <TableCell
+                          className={`hidden sm:table-cell ${
+                            viagem.status !== "CONFIRMADO" &&
+                            new Date(viagem.dataHorarioSaida.data) < new Date()
+                              ? "text-red-500 font-bold"
+                              : "text-black"
+                          }`}
+                        >
                           {format(
                             toZonedTime(
                               parseISO(viagem.dataHorarioSaida.data),
@@ -212,7 +239,13 @@ export default function ViagensServicos() {
                         <TableCell className="hidden sm:table-cell">
                           {viagem.valorContratado}
                         </TableCell>
-                        <TableCell className="hidden sm:table-cell">
+                        <TableCell
+                          className={`hidden sm:table-cell ${
+                            viagem.status !== "CONFIRMADO"
+                              ? "text-red-500 font-bold"
+                              : "text-black"
+                          }`}
+                        >
                           {viagem.status}
                         </TableCell>
                         <TableCell>

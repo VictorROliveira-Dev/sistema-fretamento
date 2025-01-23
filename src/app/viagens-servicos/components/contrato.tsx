@@ -2,6 +2,8 @@ import { jsPDF } from "jspdf";
 import { Viagem } from "@/lib/types";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { parseISO } from "date-fns";
+import { format } from "date-fns-tz";
 interface GeneratePDFProps {
   viagem: Viagem;
 }
@@ -46,7 +48,7 @@ const GeneratePDF = ({ viagem }: GeneratePDFProps) => {
 
     try {
       const pageWidth = doc.internal.pageSize.getWidth();
-      const imgWidth = 40;
+      const imgWidth = 100;
       const imgHeight = 20;
 
       // Logo e informações do contrato
@@ -127,19 +129,14 @@ const GeneratePDF = ({ viagem }: GeneratePDFProps) => {
 
       doc.text("VIAGEM / ITINERÁRIO", 10, 205);
 
+      const dataHoraSaida = `${viagem.dataHorarioSaida.data}T${viagem.dataHorarioSaida.hora}`;
+      const dataHoraRetorno = `${viagem.dataHorarioRetorno.data}T${viagem.dataHorarioRetorno.hora}`;
+
       // Primeira linha: Saída e Retorno
       doc.text("Saída:", 10, 210);
-      doc.text(
-        `${viagem.dataHorarioSaida.data} às ${viagem.dataHorarioSaida.hora}`,
-        30,
-        210
-      );
+      doc.text(format(parseISO(dataHoraSaida), "dd/MM/yyyy HH:mm"), 30, 210);
       doc.text("Retorno:", 110, 210);
-      doc.text(
-        `${viagem.dataHorarioRetorno.data} às ${viagem.dataHorarioRetorno.hora}`,
-        130,
-        210
-      );
+      doc.text(format(parseISO(dataHoraRetorno), "dd/MM/yyyy HH:mm"), 130, 210);
 
       // Segunda linha: Origem e Destino
       doc.text("Origem:", 10, 215);
@@ -148,20 +145,28 @@ const GeneratePDF = ({ viagem }: GeneratePDFProps) => {
       doc.text(viagem.rota.retorno.cidadeSaida, 130, 215);
 
       // Terceira linha: Local de Saída e Local de Retorno
-      doc.text("Local de Saída:", 10, 220);
+      doc.text("Loc. Saída:", 10, 220);
       doc.text(viagem.rota.saida.localDeSaida, 30, 220);
-      doc.text("Local de Retorno:", 110, 220);
+      doc.text("Loc. Retorno: ", 110, 220);
       doc.text(viagem.rota.retorno.localDeSaida, 130, 220);
 
       // Quarta linha: Veículo/Tipo
       doc.text("Veículo/Tipo:", 10, 225);
-      doc.text(
-        viagem.veiculo
-          ? `${viagem.veiculo.tipo} - Acessórios: ${viagem.veiculo.acessorios}`
-          : "",
-        30,
-        225
-      );
+      if (viagem.veiculo) {
+        const vehicleInfo = `${viagem.veiculo.tipo}\nAcessórios: ${viagem.veiculo.acessorios}`;
+        const splitText = doc.splitTextToSize(vehicleInfo, pageWidth - 40);
+        doc.text(splitText, 30, 225);
+      }
+
+      doc.text("Descrição:", 10, 235);
+      const descriptionLineStartY = 245;
+      const descriptionLineHeight = 10;
+      const descriptionNumberOfLines = 5;
+
+      for (let i = 0; i < descriptionNumberOfLines; i++) {
+        const currentY = descriptionLineStartY + i * descriptionLineHeight;
+        doc.line(15, currentY, pageWidth - 15, currentY);
+      }
       // Restante do conteúdo (Cláusulas, Assinaturas)
       doc.addPage(); // Nova página para cláusulas
       doc.text("Cláusulas", 10, 20);

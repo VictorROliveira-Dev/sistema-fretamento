@@ -46,8 +46,8 @@ export default function DialogAdicionarDespesa({
   const [dataCompra, setDataCompra] = useState<string | "">("");
   const [dataPagamento, setDataPagamento] = useState<string | "">("");
   const [origemPagamento, setOrigemPagamento] = useState<string | "">("");
-  const [responsavelId, setResponsavelId] = useState<number | "">();
-  const [responsavel, setResponsavel] = useState<Responsavel>();
+  //const [responsavelId, setResponsavelId] = useState<number | "">();
+  //const [responsavel, setResponsavel] = useState<Responsavel>();
   const [vencimento, setVencimento] = useState<string | undefined>("");
   //const [pago, setPago] = useState(false);
   const [valorTotal, setValorTotal] = useState<number>(0);
@@ -103,7 +103,7 @@ export default function DialogAdicionarDespesa({
       dataPagamento: dataPagamento,
       dataCompra: dataCompra,
       origemPagamento: origemPagamento,
-      responsavelId: Number(responsavelId),
+      //responsavelId: Number(responsavelId),
       viagemId: Number(viagemId),
       vencimento: vencimento,
       //pago,
@@ -111,7 +111,7 @@ export default function DialogAdicionarDespesa({
       valorParcial: valorParcial,
       formaPagamento: formaPagamento,
       centroCusto: centroCusto,
-      responsavel: responsavel,
+      //responsavel: responsavel,
       viagem: viagem,
     } as IDespesas;
 
@@ -185,18 +185,18 @@ export default function DialogAdicionarDespesa({
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>Centro de Custo</SelectLabel>
-                      <SelectItem value="terceiros">Terceiros</SelectItem>
-                      <SelectItem value="multas">Multas</SelectItem>
-                      <SelectItem value="viagens">Viagens</SelectItem>
+                      <SelectItem value="alimentacao">Alimentação</SelectItem>
                       <SelectItem value="estacionamento">
                         Estacionamento
                       </SelectItem>
+                      <SelectItem value="pedagio">Pedágio</SelectItem>
+                      <SelectItem value="limpeza">Limpeza</SelectItem>
                       <SelectItem value="outros">Outros</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
               </div>
-              <div className="flex flex-col">
+              {/*<div className="flex flex-col">
                 <label htmlFor="origemPagamento">Tipo Responsável:</label>
                 <select
                   required
@@ -245,7 +245,7 @@ export default function DialogAdicionarDespesa({
                     </option>
                   ))}
                 </select>
-              </div>
+              </div>*/}
               <div className="flex flex-col">
                 <label htmlFor="viagem">Viagem:</label>
                 <Select
