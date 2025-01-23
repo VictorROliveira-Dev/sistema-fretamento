@@ -54,11 +54,11 @@ export default function DialogAdicionarDespesa({
   const [valorParcial, setValorParcial] = useState<number>(0);
   const [formaPagamento, setFormaPagamento] = useState<string | "">("");
   const [centroCusto, setCentroCusto] = useState<string | "">("");
-  const [motorista, setMotorista] = useState<Motorista[]>([]);
+  const [, setMotorista] = useState<Motorista[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
-  const [fornecedor, setFornecedor] = useState<Fornecedor[]>([]);
+  const [, setFornecedor] = useState<Fornecedor[]>([]);
   const [viagems, setViagems] = useState<Viagem[]>([]);
-  const [tipoResponsavel] = useState<string | "">("");
+  //const [tipoResponsavel] = useState<string | "">("");
   //const [descricao, setDescricao] = useState<string | "">("");
   const [viagemId, setViagemId] = useState<number>(0);
   const [editando, setEditando] = useState(false);
