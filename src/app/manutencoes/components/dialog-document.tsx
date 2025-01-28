@@ -82,7 +82,7 @@ const ManutencaoPDF: React.FC<ManutencaoPDFProps> = ({ manutencaoData }) => {
       const columns = ["Campo", "Valor"];
       const tableData = [
         ["Data Lançamento", new Date(manutencaoData.dataLancamento).toLocaleDateString()],
-        ["Data Vencimento", new Date(manutencaoData.dataVencimento).toLocaleDateString()],
+        ["Data Prevista", new Date(manutencaoData.dataPrevista).toLocaleDateString()],
         ["Data realizada", new Date(manutencaoData.dataRealizada).toLocaleDateString()],
         ["KM Atual", manutencaoData.kmAtual],
         ["Km Prevista", manutencaoData.kmPrevista],
