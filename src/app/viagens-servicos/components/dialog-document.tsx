@@ -50,7 +50,7 @@ const ViagemPDF: React.FC<ViagemPDFProps> = ({ dadosViagens }) => {
           "Veículo Prefixo | Placa | Modelo",
           dadosViagens.veiculo?.prefixo +
             " | " +
-            dadosViagens.veiculo?.placa +
+            dadosViagens.veiculo?.placa.toUpperCase() +
             " | " +
             dadosViagens.veiculo?.modelo,
         ],
@@ -82,9 +82,7 @@ const ViagemPDF: React.FC<ViagemPDFProps> = ({ dadosViagens }) => {
         ["Km Final", dadosViagens.kmFinalVeiculo],
         [
           "Valor Adiantamento",
-          dadosViagens.adiantamento?.verba
-            ? `R$ ${dadosViagens.adiantamento.verba.toFixed(2)}`
-            : "R$ 0,00",
+          "R$ 1000,00"
         ],
       ];
 

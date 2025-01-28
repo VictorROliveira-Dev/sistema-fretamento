@@ -12,7 +12,7 @@ export interface Motorista extends Responsavel {
   habilitacao: Habilitacao;
   ferias?: Ferias[];
   dataAdmissao: string;
-};
+}
 
 export interface Cliente extends Responsavel {
   tipo: string;
@@ -23,9 +23,9 @@ export interface Cliente extends Responsavel {
 export interface Fornecedor extends Responsavel {
   tipo: string;
   nomeFantasia: string;
-};
+}
 
-export interface  Colaborador   {
+export interface Colaborador {
   id: number;
   nome: string;
   dataNascimento: string;
@@ -37,7 +37,6 @@ export interface  Colaborador   {
   matricula: string;
   ferias: Ferias[];
 }
-
 
 export interface Viagem {
   id: number;
@@ -56,21 +55,20 @@ export interface Viagem {
   veiculoId: number;
   motoristasId: number[];
   veiculo?: Veiculo;
-  motoristaViagens: MotoristaViagem[];	
+  motoristaViagens: MotoristaViagem[];
   cliente?: Cliente;
   kmInicialVeiculo: number;
   kmFinalVeiculo: number;
-  abastecimento?: Abastecimento;
+  abastecimentos: Abastecimento[];
   adiantamento?: Adiantamento;
   totalDespesa: number;
   valorLiquidoViagem: number;
-  despesas?: IDespesas[];
-  receitas?: IReceitas;
+  receita?: IReceitas;
 }
 
 export interface MotoristaViagem {
   viagemId: number;
-  viagem?: Viagem;  
+  viagem?: Viagem;
   motoristaId: number;
   motorista?: Motorista;
 }
@@ -82,7 +80,6 @@ export type Endereco = {
   bairro: string;
   numero: string;
 };
-
 
 export type Habilitacao = {
   protocolo: string;
@@ -96,7 +93,6 @@ export type Documento = {
   documento: string;
   tipo: string;
 };
-
 
 export type FormField = {
   label: string;
@@ -126,9 +122,10 @@ export interface IDocumentos {
 export interface Manutencao {
   id: string;
   dataLancamento: string;
-  dataVencimento: string;
+  dataPrevista: string;
   dataRealizada: string;
   tipo: string;
+  tipoPagamento: string;
   servicoId: number;
   veiculoId: number;
   kmPrevista: number;
@@ -137,6 +134,7 @@ export interface Manutencao {
   custo: number;
   veiculo?: Veiculo;
   servico?: Servico;
+  realizada: boolean;
 }
 
 export type FormDataFornecedor = {
@@ -148,7 +146,6 @@ export type FormDataFornecedor = {
   cpf: string;
   tipo: string;
 };
-
 
 export type Veiculo = {
   id: string;
@@ -178,8 +175,6 @@ export interface Cidade {
   nome: string;
 }
 
-
-
 export interface Rota {
   saida: {
     ufSaida: string;
@@ -197,7 +192,6 @@ export interface DataHorario {
   data: string;
   hora: string;
 }
-
 
 interface HorarioLocal {
   data: string;
@@ -221,13 +215,10 @@ export interface ViagemProgramda {
   observacoes: string;
   veiculoId: number;
   veiculo?: Veiculo;
-  passagens?: Passagem[];
+  passagens: Passagem[];
 }
 
-
-
-
-export interface Ferias{
+export interface Ferias {
   id: number;
   responsavelId: number;
   responsavel?: Responsavel;
@@ -235,14 +226,14 @@ export interface Ferias{
   fimFerias: string;
 }
 
-export interface Peca{
+export interface Peca {
   id: number;
   quantidade: number;
   nome: string;
   preco: number;
 }
 
-export interface RetiradaPeca{
+export interface RetiradaPeca {
   id: number;
   pecaId: number;
   peca?: Peca;
@@ -250,16 +241,16 @@ export interface RetiradaPeca{
   veiculo?: Veiculo;
   quantidade: number;
   precoTotal: number;
-  dataDeRetirada: string; 
+  dataDeRetirada: string;
 }
 
-export interface AdicionarPeca{
+export interface AdicionarPeca {
   id: number;
   pecaId: number;
   peca?: Peca;
   quantidade: number;
   precoTotal: number;
-  dataDeEntrada: string; 
+  dataDeEntrada: string;
 }
 
 export interface Servico {
@@ -274,37 +265,62 @@ export interface Passagem {
   telefonePassageiro: string;
   cidadePassageiro: string;
   valorTotal: number;
+  valorPersonalizado: number;
+  paradaPassageir: string;
   cpfPassageiro: string;
   nomePassageiro: string;
   dataEmissao: string; // ou Date, dependendo do uso no projeto
   formaPagamento: string;
   poltronaIda?: number;
-  poltronaVolta?:number;
+  poltronaVolta?: number;
   situacao: string;
   tipo: string;
 }
 
-export interface IDespesas {
-  id: string;
+export interface PagamentoDespesa {
+  id: number;
+  valorPago: number;
+  despesaId: number;
+  despesa: Despesa;
   dataPagamento: string;
-  dataCompra: string;
-  origemPagamento: string;
-  responsavelId: number;
-  responsavel?: Responsavel;
-  viagemId: number;
-  viagem?: Viagem;
-  vencimento: string;
+}
+
+// Interface para Boleto
+export interface Boleto {
+  id: number;
+  referencia: string;
+  dataEmissao: string;
+  valor: number;
+  juros: number;
+  despesaId: number;
+  despesa: Despesa;
   pago: boolean;
+  vencimento: string;
+}
+
+// Interface para Despesa
+export interface Despesa {
+  id: number;
+  dataPagamento?: string;
+  dataCompra: string;
+  entidadeOrigem: string;
+  entidadeId: number;
+  vencimento?: string;
   valorTotal: number;
-  valorParcial: number;
   formaPagamento: string;
+  pagamentos: PagamentoDespesa[];
+  parcelas: number;
+  boletos: Boleto[];
   centroCusto: string;
-  descricao: string;  
+  descricao: string;
+  valorParcial: number;
+  pago: boolean;
+  parcelasPagas: number;
+  boletosPagos: boolean;
 }
 
 export interface IReceitas {
   id: string;
-  dataPagamento: string;
   dataCompra: string;
   origemPagamento: string;
   numeroDocumento: string;
@@ -319,7 +335,7 @@ export interface IReceitas {
   centroCusto: string;
 }
 
-export interface Pagamento{
+export interface Pagamento {
   id: number;
   valorPago: number;
   receitaId: number;
@@ -346,7 +362,6 @@ export interface Adiantamento {
   viagem?: Viagem; // Referência ao objeto Viagem
 }
 
-
 export interface Ferias {
   id: number;
   responsavelId: number;
@@ -355,9 +370,9 @@ export interface Ferias {
   fimFerias: string;
 }
 
-export interface ReceitasMensais{
+export interface ReceitasMensais {
   month: string;
   depesas: number;
   receitas: number;
-  valorLiquido: number
+  valorLiquido: number;
 }

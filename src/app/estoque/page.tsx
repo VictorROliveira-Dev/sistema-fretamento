@@ -300,7 +300,7 @@ export default function Financeiro() {
                         onChange={(e) => setDataFinal(e.target.value)}
                       />
                     </div>
-                    <Button type="submit" className="bg-blue-600 mt-6">
+                    <Button type="submit" className="bg-blue-600 mt-2">
                       <Search className="text-white" />
                     </Button>
                   </form>

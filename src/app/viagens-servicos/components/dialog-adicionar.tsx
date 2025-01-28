@@ -45,8 +45,8 @@ export default function DialogAdicionar({
   const [cidadesSaida, setCidadesSaida] = useState<Cidade[]>([]);
   const [ufsRetorno, setUfsRetorno] = useState<Uf[]>([]);
   const [cidadesRetorno, setCidadesRetorno] = useState<Cidade[]>([]);
-  const [motorista1, setMotorista1] = useState<number >(0);
-  const [motorista2, setMotorista2] = useState<number >(0);
+  const [motorista1, setMotorista1] = useState<number>(0);
+  const [motorista2, setMotorista2] = useState<number>(0);
   const [viagem, setViagem] = useState<Viagem>({
     id: 0,
     rota: {
@@ -86,11 +86,11 @@ export default function DialogAdicionar({
     itinerario: "",
     veiculoId: 0,
     motoristaViagens: [],
-    motoristasId : [],
+    motoristasId: [],
+    abastecimentos: [],
     kmInicialVeiculo: 0,
     kmFinalVeiculo: 0,
-    despesas: [],
-    receitas: undefined,
+    receita: undefined,
     totalDespesa: 0,
     valorLiquidoViagem: 0,
   });
@@ -115,7 +115,6 @@ export default function DialogAdicionar({
     }
 
     setMotoristas(response.data.data);
-
   }
 
   async function fetchVeiculos() {
@@ -162,13 +161,14 @@ export default function DialogAdicionar({
       let viagemCriada = response.data.data as Viagem;
       viagemCriada = {
         ...viagemCriada,
-        despesas: [],
         veiculo: viagem.veiculo,
         motoristasId: viagem.motoristasId,
         cliente: viagem.cliente,
         motoristaViagens: viagemCriada.motoristaViagens.map((m) => ({
           ...m,
-          motorista: motoristas.find((motorista) => motorista.id === m.motoristaId),
+          motorista: motoristas.find(
+            (motorista) => motorista.id === m.motoristaId
+          ),
         })),
       };
       setViagens([...viagens, viagemCriada]);
@@ -217,7 +217,7 @@ export default function DialogAdicionar({
     });
     axios
       .get<Cidade[]>(
-       `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
       )
       .then((response) => {
         const sortedCidades = response.data.sort((a, b) =>
@@ -257,15 +257,16 @@ export default function DialogAdicionar({
         ...prevViagem,
         motoristasId: [
           motorista1, // Garante que motorista1 permaneça na lista
-          ...prevViagem.motoristasId.filter((m) => m !== motorista2 && m !== motorista1), // Remove apenas o antigo motorista2
+          ...prevViagem.motoristasId.filter(
+            (m) => m !== motorista2 && m !== motorista1
+          ), // Remove apenas o antigo motorista2
           id, // Adiciona o novo motorista2
         ],
       }));
     }
-  
-    console.log(motorista1, motorista2);  
+
+    console.log(motorista1, motorista2);
   }
-  
 
   function selecionarCliente(id: number) {
     const clienteSelecionado = clientes.find((c) => Number(c.id) === id);
@@ -791,8 +792,7 @@ export default function DialogAdicionar({
                 <div>
                   <Label htmlFor="motorista1">Motorista 1</Label>
                   <Select
-                    
-                    onValueChange={(e) =>   selecionarMotorista(Number(e),1) }
+                    onValueChange={(e) => selecionarMotorista(Number(e), 1)}
                     name="motorista1"
                     required
                   >
@@ -815,10 +815,9 @@ export default function DialogAdicionar({
 
                   <Label htmlFor="motorista2">Motorista 2</Label>
                   <Select
-                    onValueChange={(e) => selecionarMotorista(Number(e),2)}
+                    onValueChange={(e) => selecionarMotorista(Number(e), 2)}
                     name="motorista2"
                     disabled={motorista1 === 0}
-                    
                   >
                     <SelectTrigger className="w-auto">
                       <SelectValue placeholder="Selecionar Motorista" />
@@ -826,14 +825,16 @@ export default function DialogAdicionar({
                     <SelectContent>
                       <SelectGroup>
                         <SelectItem value="0">Nenhum</SelectItem>
-                        {motoristas.filter(m => m.id !== motorista1).map((motorista) => (
-                          <SelectItem
-                            key={motorista.id}
-                            value={motorista.id.toString()}
-                          >
-                            {motorista.nome}
-                          </SelectItem>
-                        ))}
+                        {motoristas
+                          .filter((m) => m.id !== motorista1)
+                          .map((motorista) => (
+                            <SelectItem
+                              key={motorista.id}
+                              value={motorista.id.toString()}
+                            >
+                              {motorista.nome}
+                            </SelectItem>
+                          ))}
                       </SelectGroup>
                     </SelectContent>
                   </Select>

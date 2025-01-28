@@ -73,7 +73,8 @@ export default function Documentos() {
     }
   }
 
-  function getDateVencimento(dataVencimento: string) {
+  function getDateVencimento(dataVencimento: string, isPendente: boolean) {
+    if (!isPendente) return "text-black font-medium";
     const today = new Date();
     const vencimento = parseISO(dataVencimento); // Converte a data para objeto Date
     const diferenca = Math.ceil(
@@ -155,7 +156,8 @@ export default function Documentos() {
                         </TableCell>
                         <TableCell
                           className={`hidden sm:table-cell ${getDateVencimento(
-                            documento.vencimento
+                            documento.vencimento,
+                            documento.pendente
                           )}`}
                         >
                           {format(

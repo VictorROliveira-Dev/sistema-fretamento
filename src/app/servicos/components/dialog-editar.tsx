@@ -74,7 +74,7 @@ export default function DialogEditar({
       </DialogTrigger>
       <DialogContent className="md:w-[400px] md:h-[300px] flex flex-col items-center rounded-md">
         <DialogHeader className="mb-5">
-          <DialogTitle className="font-black">Cadastro de Serviço</DialogTitle>
+          <DialogTitle className="font-black">Edição de Serviço</DialogTitle>
         </DialogHeader>
         <form
           className="w-full flex flex-col items-center"

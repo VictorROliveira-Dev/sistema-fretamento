@@ -1,5 +1,7 @@
+"use client";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
@@ -7,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Manutencao } from "@/lib/types";
+import { Despesa, Manutencao } from "@/lib/types";
 import {
   Wrench,
   Calendar,
@@ -19,12 +21,22 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import documentoIcon from "@/app/assets/dadosviagem.svg";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/axios";
+import { toast } from "sonner";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
-interface ManutencaoDialogProps {
+interface Info {
   manutencao: Manutencao;
+  onClose: () => void;
 }
 
-export function DialogInfo({ manutencao }: ManutencaoDialogProps) {
+export function DialogInfo({ manutencao, onClose }: Info) {
+  const [despesa, setDespesa] = useState<Despesa | null>();
+  const router = useRouter();
   const formatDate = (date: string) => new Date(date).toLocaleDateString();
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", {
@@ -32,20 +44,38 @@ export function DialogInfo({ manutencao }: ManutencaoDialogProps) {
       currency: "BRL",
     }).format(value);
 
+  async function fetch() {
+    try {
+      const response = await api.get(`despesa/${manutencao.id}/manutencao`);
+      if (!response.data.isSucces) {
+        toast("erro ao buscar dados");
+      }
+
+      setDespesa(response.data.data);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
+    }
+  }
+
+  useEffect(() => {});
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
-          <Image
-            src={documentoIcon}
-            alt="documento"
-            width={25}
-            className="w-6 md:w-6"
-          />
-        </span>
-      </DialogTrigger>
+    <Dialog open={true}>
       <DialogContent className="max-w-[90vw] md:max-w-[600px] max-h-[90vh]">
         <DialogHeader>
+          <DialogClose>
+            <Button
+              className="absolute right-2 bg-white text-black z-20 top-2"
+              onClick={() => onClose()}
+            >
+              X
+            </Button>
+          </DialogClose>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Wrench className="h-5 w-5" />
             Manutenção #{manutencao ? manutencao.id : ""}
@@ -57,6 +87,12 @@ export function DialogInfo({ manutencao }: ManutencaoDialogProps) {
               <h3 className="text-lg font-semibold mb-3">
                 Informações Principais
               </h3>
+              {manutencao.kmRealizada ? (
+                <Badge className="bg-green-600">Realizada</Badge>
+              ) : (
+                <Badge className="bg-blue-600">Prevista</Badge>
+              )}
+
               <div className="grid gap-3">
                 <div className="flex items-center gap-2">
                   <Tag className="h-4 w-4 text-muted-foreground" />
@@ -68,6 +104,11 @@ export function DialogInfo({ manutencao }: ManutencaoDialogProps) {
                     Custo: {manutencao ? formatCurrency(manutencao.custo) : ""}
                   </span>
                 </div>
+                {despesa && (
+                  <Button className="bg-blue-600 text-white">
+                    Ver Despesa
+                  </Button>
+                )}
               </div>
             </section>
             <Separator />
@@ -84,8 +125,8 @@ export function DialogInfo({ manutencao }: ManutencaoDialogProps) {
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    Vencimento:{" "}
-                    {manutencao ? formatDate(manutencao.dataVencimento) : ""}
+                    Data Prevista:{" "}
+                    {manutencao ? formatDate(manutencao.dataPrevista) : ""}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">

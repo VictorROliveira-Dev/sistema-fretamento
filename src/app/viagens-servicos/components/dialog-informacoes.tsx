@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "@/lib/axios";
-import { Abastecimento, Adiantamento, Viagem } from "@/lib/types";
+import { Abastecimento, Adiantamento, Despesa, Viagem } from "@/lib/types";
 import dadosViagemIcon from "@/app/assets/dadosviagem.svg";
 import { DollarSign, Fuel, HandCoins, ReceiptText } from "lucide-react";
 import Image from "next/image";
@@ -30,13 +30,30 @@ import { parseISO } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
 import loading from "../../assets/loading.svg";
 import GeneratePDF from "./contrato";
+import { AdicionarDespesa } from "../components/dialog-adicionar-despesa";
+import Link from "next/link";
 
 interface TravelDialogProps {
   viagem: Viagem;
 }
 
+interface ViagemResponse {
+  viagem: Viagem;
+  despesas: Despesa[];
+  totalDespesa: number;
+  valorPago: number;
+  valorLiquidoViagem: number;
+}
+
 export function TravelDialog({ viagem }: TravelDialogProps) {
   const [viagemCompleta, setViagemCompleta] = useState<Viagem>(viagem);
+  const [viagemResponse, setViagemResponse] = useState<ViagemResponse>({
+    viagem: viagem,
+    despesas: [],
+    totalDespesa: 0,
+    valorLiquidoViagem: 0,
+    valorPago: 0,
+  });
   const [adiantamento, setAdiantamento] = useState<Adiantamento>(
     viagemCompleta.adiantamento ?? {
       id: 0,
@@ -48,15 +65,13 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
       viagemId: 0,
     }
   );
-  const [abastecimento, setAbastecimento] = useState<Abastecimento>(
-    viagemCompleta.abastecimento ?? {
-      id: 0,
-      valorTotal: 0,
-      litros: 0,
-      codigoNfe: "",
-      viagemId: 0,
-    }
-  );
+  const [abastecimento, setAbastecimento] = useState<Abastecimento>({
+    id: 0,
+    valorTotal: 0,
+    viagemId: viagem.id,
+    litros: 0,
+    codigoNfe: "",
+  });
   const [addAbastecimento, setAddAbastecimento] = useState(false);
   const [addAdiantamento, setAddAdiantamento] = useState(false);
   const formatCurrency = (value: number) =>
@@ -73,22 +88,11 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
     }
 
     const viagemResponse = response.data.data;
-    setViagemCompleta(viagemResponse);
-    setAbastecimento(
-      viagemResponse.abastecimento
-        ? viagemResponse.abastecimento
-        : {
-            id: 0,
-            valorTotal: 0,
-            litros: 0,
-            codigoNfe: "",
-            viagemId: viagem.id,
-          }
-    );
+    setViagemResponse(viagemResponse);
 
     setAdiantamento(
-      viagemResponse.adiantamento
-        ? viagemResponse.adiantamento
+      response.data.data.viagem.adiantamento
+        ? response.data.data.viagem.adiantamento
         : {
             id: 0,
             tipoVerba: "",
@@ -99,12 +103,11 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
             viagemId: viagem.id,
           }
     );
-
-    console.log("Viagem completa:", viagemCompleta);
   }
+
   useEffect(() => {
     fetchViagem();
-  }, [viagem.abastecimento, viagem.adiantamento]);
+  }, [viagem.adiantamento]);
 
   async function enviarAbastecimento(e: React.FormEvent) {
     e.preventDefault();
@@ -190,13 +193,13 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 <div>
                   <Label>Origem</Label>
                   <p className="text-sm text-muted-foreground">
-                    {viagem.rota.saida.cidadeSaida}
+                    {viagemResponse.viagem.rota.saida.cidadeSaida}
                   </p>
                 </div>
                 <div>
                   <Label>Destino</Label>
                   <p className="text-sm text-muted-foreground">
-                    {viagem.rota.retorno.cidadeSaida}
+                    {viagemResponse.viagem.rota.retorno.cidadeSaida}
                   </p>
                 </div>
               </div>
@@ -206,7 +209,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   <p className="text-sm text-muted-foreground">
                     {format(
                       toZonedTime(
-                        parseISO(viagem.dataHorarioSaida.data),
+                        parseISO(viagemResponse.viagem.dataHorarioSaida.data),
                         "UTC"
                       ),
                       "dd/MM/yyyy"
@@ -218,7 +221,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   <p className="text-sm text-muted-foreground">
                     {format(
                       toZonedTime(
-                        parseISO(viagem.dataHorarioRetorno.data),
+                        parseISO(viagemResponse.viagem.dataHorarioRetorno.data),
                         "UTC"
                       ),
                       "dd/MM/yyyy"
@@ -229,7 +232,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <Label>Motoristas</Label>
-                  {viagem.motoristaViagens?.map((motorista) => (
+                  {viagemResponse.viagem.motoristaViagens?.map((motorista) => (
                     <p
                       key={motorista.motoristaId}
                       className="text-sm text-muted-foreground"
@@ -241,13 +244,16 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 <div>
                   <Label>Vehicle</Label>
                   <p className="text-sm text-muted-foreground">
-                    {viagem.veiculo?.prefixo} - {viagem.veiculo?.placa}
+                    {viagemResponse.viagem.veiculo?.prefixo} -{" "}
+                    {viagemResponse.viagem.veiculo?.placa}
                   </p>
                 </div>
               </div>
               <div>
                 <Label>Status</Label>
-                <p className="text-sm text-muted-foreground">{viagem.status}</p>
+                <p className="text-sm text-muted-foreground">
+                  {viagemResponse.viagem.status}
+                </p>
               </div>
               <GeneratePDF viagem={viagemCompleta} />
             </CardContent>
@@ -257,9 +263,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               <CardTitle>
                 Valor Líquido:{" "}
                 <strong className="text-green-600">
-                  {formatCurrency(
-                    viagemCompleta ? viagemCompleta.valorLiquidoViagem : 0
-                  )}
+                  {formatCurrency(viagemResponse.valorLiquidoViagem)}
                 </strong>
               </CardTitle>
             </CardHeader>
@@ -269,9 +273,13 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 <div className="flex gap-2">
                   <Fuel className="text-yellow-500" />
                   <span>
-                    {abastecimento
-                      ? formatCurrency(abastecimento?.valorTotal)
-                      : "0,00 R$"}
+                    {formatCurrency(
+                      viagemResponse.viagem.abastecimentos.reduce(
+                        (total, abastecimento) =>
+                          total + (abastecimento.valorTotal || 0),
+                        0
+                      )
+                    )}
                   </span>
                 </div>
               </Card>
@@ -281,8 +289,10 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 <div className="flex gap-2">
                   <DollarSign className="text-blue-600" />
                   <span>
-                    {adiantamento
-                      ? formatCurrency(adiantamento?.diferenca)
+                    {viagemResponse.viagem.adiantamento
+                      ? formatCurrency(
+                          viagemResponse.viagem.adiantamento.diferenca
+                        )
                       : "0,00 R$"}
                   </span>
                 </div>
@@ -292,7 +302,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 <CardTitle>Despesas</CardTitle>
                 <div className="flex gap-2">
                   <HandCoins className="text-red-600" />
-                  <span>{formatCurrency(viagemCompleta?.totalDespesa)}</span>
+                  <span>{formatCurrency(viagemResponse.totalDespesa)}</span>
                 </div>
               </Card>
 
@@ -301,18 +311,21 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 <div className="flex gap-2">
                   <ReceiptText className="text-green-500" />
                   <span>
-                    {abastecimento
-                      ? formatCurrency(viagemCompleta.valorContratado)
-                      : "0,00 R$"}
+                    {formatCurrency(viagemResponse.viagem.valorContratado)}
                   </span>
                 </div>
               </Card>
             </CardContent>
           </Card>
 
-          <Card className="w-full">
+          <Card className="w-full relative">
             <CardHeader>
               <CardTitle>Despesas</CardTitle>
+              <AdicionarDespesa
+                viagemId={viagem.id}
+                viagemResponse={viagemResponse}
+                setViagemResponse={setViagemResponse}
+              />
             </CardHeader>
             <CardContent>
               <Table>
@@ -324,13 +337,13 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {viagemCompleta.despesas != undefined ? (
-                    viagemCompleta.despesas.map((despesa) => (
+                  {viagemResponse.despesas.length > 0 ? (
+                    viagemResponse.despesas.map((despesa) => (
                       <TableRow key={despesa.id}>
                         <TableCell>
                           {formatCurrency(despesa.valorTotal)}
                         </TableCell>
-                        <TableCell>{despesa.origemPagamento}</TableCell>
+                        <TableCell>{despesa.centroCusto}</TableCell>
                         <TableCell>
                           {despesa.pago ? (
                             <Badge variant="secondary" className="text-white">
@@ -339,6 +352,14 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                           ) : (
                             <Badge variant="destructive">Pendente</Badge>
                           )}
+                        </TableCell>
+                        <TableCell>
+                          <Link
+                            className="text-blue-500 font-bold"
+                            href={`/financeiro?despesaCode=${despesa.id}`}
+                          >
+                            Ver Mais
+                          </Link>
                         </TableCell>
                       </TableRow>
                     ))
@@ -358,22 +379,34 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableCell>Data Pagamento</TableCell>
                     <TableHead>Valor Total</TableHead>
                     <TableHead>Origem do Pagamento</TableHead>
                     <TableHead>Pago</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {viagemCompleta.receitas ? (
+                  {viagemResponse.viagem.receita ? (
                     <TableRow>
                       <TableCell>
-                        {formatCurrency(viagemCompleta.receitas.valorTotal)}
+                      {format(
+                      toZonedTime(
+                        parseISO(viagemResponse.viagem.receita.dataCompra),
+                        "UTC"
+                      ),
+                      "dd/MM/yyyy"
+                    )}
                       </TableCell>
                       <TableCell>
-                        {viagemCompleta.receitas.origemPagamento}
+                        {formatCurrency(
+                          viagemResponse.viagem.receita.valorTotal
+                        )}
                       </TableCell>
                       <TableCell>
-                        {viagemCompleta.receitas.pago ? (
+                        {viagemResponse.viagem.receita.origemPagamento}
+                      </TableCell>
+                      <TableCell>
+                        {viagemResponse.viagem.receita.pago ? (
                           <Badge variant="secondary" className="text-white">
                             Pago
                           </Badge>
@@ -389,6 +422,35 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
               </Table>
             </CardContent>
           </Card>
+          <Card className="w-full">
+            <CardHeader>
+              <CardTitle>Abastecimentos</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Litros</TableHead>
+                    <TableHead>Valor/Litro</TableHead>
+                    <TableHead>Valor Total</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {viagemResponse.viagem.abastecimentos.map((abastecimento) => (
+                    <TableRow>
+                      <TableCell>{abastecimento.litros}</TableCell>
+                      <TableCell>
+                        {formatCurrency(
+                          abastecimento.valorTotal / abastecimento.litros
+                        )}
+                      </TableCell>
+                      <TableCell>{abastecimento.valorTotal}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+          </Card>
           <Card>
             <CardHeader>
               <CardTitle>Abastecimento da viagem</CardTitle>
@@ -398,13 +460,13 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 onSubmit={enviarAbastecimento}
                 className="flex flex-col w-full"
               >
-                <div className="w-full flex gap-2 items-start justify-evenly">
+                <div className="w-full flex gap-2 items-start ">
                   <div className="grid gap-2">
                     <Label htmlFor="valorTotal">Total Value (R$)</Label>
                     <Input
                       id="valorTotal"
                       name="valorTotal"
-                      defaultValue={abastecimento?.valorTotal}
+                      defaultValue={abastecimento?.valorTotal ? abastecimento.valorTotal : ""}
                       onChange={(e) =>
                         setAbastecimento({
                           ...abastecimento!,
@@ -422,7 +484,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                       name="litros"
                       type="number"
                       step="0.01"
-                      defaultValue={abastecimento?.litros}
+                      defaultValue={abastecimento?.litros ? abastecimento.litros : ""}
                       required
                       onChange={(e) =>
                         setAbastecimento({
@@ -432,59 +494,22 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                       }
                     />
                   </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="codigoNfe">NFe de pagamento</Label>
-                    <Input
-                      id="codigoNfe"
-                      name="codigoNfe"
-                      defaultValue={abastecimento?.codigoNfe}
-                      required
-                      onChange={(e) =>
-                        setAbastecimento({
-                          ...abastecimento!,
-                          codigoNfe: e.target.value,
-                        })
-                      }
-                    />
-                    <p className="text-gray-500 text-xs">
-                      Informe quando efetuar o pagamento
-                    </p>
-                  </div>
                 </div>
 
                 <div className="flex gap-2">
-                  <span>Km Inicial: {viagem.kmInicialVeiculo} | </span>
-                  <span>Km Final: {viagem.kmFinalVeiculo} | </span>
-                  {viagem.kmFinalVeiculo > 0 ? (
-                    <span>
-                      Total: {viagem.kmFinalVeiculo - viagem.kmInicialVeiculo}{" "}
-                    </span>
-                  ) : (
-                    <span>Total: 0</span>
-                  )}
-                </div>
-                <div className="space-x-2 mb-2">
-                  {viagem.kmFinalVeiculo > 0 ? (
-                    <span>
-                      Km/L:{" "}
-                      {(viagem.kmFinalVeiculo - viagem.kmInicialVeiculo) /
-                        abastecimento!.litros}
-                    </span>
-                  ) : (
-                    <span>Km/L: 0 |</span>
-                  )}
-
-                  {abastecimento!.valorTotal > 0 ? (
-                    <span>
-                      Valor Litro: R${" "}
-                      {calcularValorTotal(
-                        abastecimento!.valorTotal,
-                        abastecimento!.litros
-                      )}
-                    </span>
-                  ) : (
-                    <span>Valor Litro: 0</span>
-                  )}
+                  <div className="space-x-2 mb-2">
+                    {abastecimento!.valorTotal > 0 ? (
+                      <span>
+                        Valor Litro: R${" "}
+                        {calcularValorTotal(
+                          abastecimento!.valorTotal,
+                          abastecimento!.litros
+                        )}
+                      </span>
+                    ) : (
+                      <span>Valor Litro: 0</span>
+                    )}
+                  </div>
                 </div>
 
                 <Button type="submit" className="w-full">
@@ -525,7 +550,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   <Input
                     id="verba"
                     name="verba"
-                    value={adiantamento!.verba}
+                    value={adiantamento ? adiantamento.verba : 0}
                     onChange={(e) =>
                       setAdiantamento({
                         ...adiantamento!,
@@ -541,7 +566,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   <Input
                     id="valorDeAcerto"
                     name="valorDeAcerto"
-                    value={adiantamento!.valorDeAcerto}
+                    value={adiantamento ? adiantamento.valorDeAcerto : 0}
                     onChange={(e) =>
                       setAdiantamento({
                         ...adiantamento!,

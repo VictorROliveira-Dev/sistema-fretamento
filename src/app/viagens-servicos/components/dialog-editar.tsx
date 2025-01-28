@@ -47,8 +47,16 @@ export default function DialogEditar({
   const [editando, setEditando] = useState(false);
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const [motoristas, setMotoristas] = useState<Motorista[]>([]);
-  const [motorista1, setMotorista1] = useState<number>(viagemprop.motoristaViagens.length > 0 ? viagemprop.motoristaViagens[0].motoristaId : 0);
-  const [motorista2, setMotorista2] = useState<number>(viagemprop.motoristaViagens.length > 1 ? viagemprop.motoristaViagens[1].motoristaId : 0);
+  const [motorista1, setMotorista1] = useState<number>(
+    viagemprop.motoristaViagens.length > 0
+      ? viagemprop.motoristaViagens[0].motoristaId
+      : 0
+  );
+  const [motorista2, setMotorista2] = useState<number>(
+    viagemprop.motoristaViagens.length > 1
+      ? viagemprop.motoristaViagens[1].motoristaId
+      : 0
+  );
   const router = useRouter();
   async function fetchMotoristas() {
     try {
@@ -102,12 +110,12 @@ export default function DialogEditar({
     setEditando(true);
 
     try {
-      if(motorista1 === 0 ){
-        toast("Selecione um motorista novamente");	
-        return
+      if (motorista1 === 0) {
+        toast("Selecione um motorista novamente");
+        return;
       }
       const motoristasId = [motorista1, motorista2].filter((m) => m !== 0);
-      setViagem({...viagem, motoristasId: motoristasId});
+      setViagem({ ...viagem, motoristasId: motoristasId });
       const response = await api.put(`viagem/${viagem.id}`, viagem);
       if (!response.data.isSucces) {
         toast.error("Erro ao tentar atualizar viagem.");
@@ -117,17 +125,18 @@ export default function DialogEditar({
       let viagemCriada = response.data.data as Viagem;
       viagemCriada = {
         ...viagemCriada,
-        despesas: [],
         veiculo: viagem.veiculo,
         motoristasId: viagem.motoristasId,
         cliente: viagem.cliente,
         motoristaViagens: viagemCriada.motoristaViagens.map((m) => ({
           ...m,
-          motorista: motoristas.find((motorista) => motorista.id === m.motoristaId),
+          motorista: motoristas.find(
+            (motorista) => motorista.id === m.motoristaId
+          ),
         })),
-      } ;
+      };
       console.log(viagemCriada);
-      setViagens([...viagensAtualizada, {...viagemCriada}]);
+      setViagens([...viagensAtualizada, { ...viagemCriada }]);
       toast.success("Viagem atualizada.");
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -720,14 +729,22 @@ export default function DialogEditar({
                   </Select>
                 </div>
                 <div className="flex gap-2 ">
-                <div className="w-full">
-                  <Label>Km Inicial</Label>
-                  <Input disabled value={viagem.kmInicialVeiculo} />
-                </div>
-                <div className="w-full">
-                  <Label>Km Final</Label>
-                  <Input onChange={(e) => setViagem({ ...viagem, kmFinalVeiculo: Number(e.target.value) })} value={viagem.kmFinalVeiculo} />
-                </div>
+                  <div className="w-full">
+                    <Label>Km Inicial</Label>
+                    <Input disabled value={viagem.kmInicialVeiculo} />
+                  </div>
+                  <div className="w-full">
+                    <Label>Km Final</Label>
+                    <Input
+                      onChange={(e) =>
+                        setViagem({
+                          ...viagem,
+                          kmFinalVeiculo: Number(e.target.value),
+                        })
+                      }
+                      value={viagem.kmFinalVeiculo}
+                    />
+                  </div>
                 </div>
               </fieldset>
               <fieldset className="rounded border border-blue-500 p-4">
@@ -735,7 +752,11 @@ export default function DialogEditar({
                 <div>
                   <Label htmlFor="motorista1">Motorista 1</Label>
                   <Select
-                    defaultValue={viagemprop.motoristaViagens.length >0 ? viagem.motoristaViagens[0].motoristaId.toString() : "0"}
+                    defaultValue={
+                      viagemprop.motoristaViagens.length > 0
+                        ? viagem.motoristaViagens[0].motoristaId.toString()
+                        : "0"
+                    }
                     onValueChange={(e) => selecionarMotorista(Number(e), 1)}
                     name="motorista1"
                     required
@@ -761,7 +782,11 @@ export default function DialogEditar({
                   <Select
                     onValueChange={(e) => selecionarMotorista(Number(e), 2)}
                     name="motorista2"
-                    defaultValue={viagemprop.motoristaViagens.length >1 ? viagem.motoristaViagens[1].motoristaId.toString() : "0"}
+                    defaultValue={
+                      viagemprop.motoristaViagens.length > 1
+                        ? viagem.motoristaViagens[1].motoristaId.toString()
+                        : "0"
+                    }
                     required
                   >
                     <SelectTrigger className="w-auto">

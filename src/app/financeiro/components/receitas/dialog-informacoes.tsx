@@ -166,17 +166,7 @@ export function DialogInformacoesReceitas({ receita }: DespesasDialogProps) {
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    Emissão:{" "}
-                    {format(
-                      toZonedTime(parseISO(receita.dataPagamento), "UTC"),
-                      "dd/MM/yyyy"
-                    )}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span>
-                    Compra:{" "}
+                    Emissao:{" "}
                     {format(
                       toZonedTime(parseISO(receita.dataCompra), "UTC"),
                       "dd/MM/yyyy"

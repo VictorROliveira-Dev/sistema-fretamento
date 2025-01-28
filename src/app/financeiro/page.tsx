@@ -11,70 +11,63 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { IDespesas, IReceitas } from "@/lib/types";
+import { Despesa, IReceitas } from "@/lib/types";
 import { api } from "@/lib/axios";
 import loading from "../assets/loading-dark.svg";
-import DialogEditarDespesa from "./components/despesas/dialog-editar";
-import DialogEditarReceita from "./components/receitas/dialog-editar";
-import DialogRemoverDespesa from "./components/despesas/dialog-remover";
 import { Input } from "@/components/ui/input";
-import DialogAdicionarDespesa from "./components/despesas/dialog-adicionar";
 import DialogRemoverReceita from "./components/receitas/dialog-remover";
 import { DialogInfo } from "./components/despesas/dialog-informacoes";
 import DespesaPDF from "./components/despesas/dialog-document";
 import { toast } from "sonner";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { DialogInformacoesReceitas } from "./components/receitas/dialog-informacoes";
 import GeneratePDF from "./components/receitas/recibo-receita";
 import { parseISO } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
+import { Badge } from "@/components/ui/badge";
 
 export default function Financeiro() {
-  const [despesas, setDespesas] = useState<IDespesas[]>([]);
+  const [despesas, setDespesas] = useState<Despesa[]>([]);
   const [receitas, setReceitas] = useState<IReceitas[]>([]);
   const [dataInicio, setDataInicio] = useState<string>("");
   const [dataFinal, setDataFinal] = useState<string>("");
-  const [veiculo, setVeiculo] = useState<string>("");
+  const [despesaCode, setDespesaCode] = useState<number | null>(null);
   const [carregando, setCarregando] = useState(false);
-  const router = useRouter();
   const [statusFiltro, setStatusFiltro] = useState("todas");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setCarregando(true);
-      try {
-        const [despesasResponse, receitasResponse] = await Promise.all([
-          api.get("/despesa"),
-          api.get("/api/receita"),
-        ]);
-        const despesasData = despesasResponse.data.data || [];
-        const receitasData = receitasResponse.data.data || [];
-        // Atualiza o estado com as despesas e receitas
-        setDespesas(despesasData);
-        setReceitas(receitasData);
-        console.log("Despesas:", despesasData);
-      } catch (error) {
-        console.log("Erro ao tentar recuperar os dados", error);
-      } finally {
-        setCarregando(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  function getStatusPagamento(
-    pago: boolean,
-    valorParcial: number,
-    valorTotal: number
-  ) {
-    if (valorParcial != valorTotal) {
-      return (pago = false);
+  const fetchData = async (searchParam: string | null) => {
+    setCarregando(true);
+    try {
+      const urlDespesa = searchParam
+        ? `/despesa?despesaCode=${searchParam}`
+        : "/despesa";
+      const [despesasResponse, receitasResponse] = await Promise.all([
+        api.get(urlDespesa),
+        api.get("/api/receita"),
+      ]);
+      const despesasData = despesasResponse.data.data || [];
+      const receitasData = receitasResponse.data.data || [];
+      // Atualiza o estado com as despesas e receitas
+      setDespesas(despesasData);
+      setReceitas(receitasData);
+      console.log("Despesas:", despesasData);
+    } catch (error) {
+      console.log("Erro ao tentar recuperar os dados", error);
+    } finally {
+      setCarregando(false);
     }
-    return (pago = true);
-  }
+  };
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const codigo = searchParams.get("despesaCode");
+    if (codigo) {
+      setDespesaCode(Number(codigo));
+    }
+
+    fetchData(codigo);
+  }, []);
 
   async function getByFilters(e: React.FormEvent) {
     e.preventDefault();
@@ -85,7 +78,6 @@ export default function Financeiro() {
 
       if (dataInicio) params["startDate"] = dataFinal;
       if (dataFinal) params["endDate"] = dataFinal;
-      if (veiculo) params["prefixo"] = veiculo;
 
       // Constrói a query string com os parâmetros
       const queryString = new URLSearchParams(params).toString();
@@ -104,7 +96,6 @@ export default function Financeiro() {
       if (axios.isAxiosError(error)) {
         if (error.status === 401) {
           localStorage.removeItem("token");
-          router.replace("/login");
         } else {
           toast.error("Erro ao tentar remover peca.");
         }
@@ -116,14 +107,26 @@ export default function Financeiro() {
   }
 
   const despesasFiltradas = despesas.filter((despesa) => {
-    if (statusFiltro === "sim") {
-      return despesa.pago; // Retorna apenas despesas pagas
-    }
-    if (statusFiltro === "nao") {
-      return !despesa.pago; // Retorna apenas despesas não pagas
-    }
     return true; // Retorna todas as despesas
   });
+
+  async function buscarPendentes(status: string) {
+    try {
+      if (status === "todas") {
+        fetchData(null);
+        return;
+      }
+      const response = await api.get(`/despesa/despesastatus?status=${status}`);
+      if (!response.data.isSucces) {
+        toast("Erro ao tentar filtrar despesas");
+        return;
+      }
+
+      setDespesas(response.data.data);
+    } catch (error) {
+      toast("Erro ao tentar filtrar ");
+    }
+  }
 
   return (
     <section className="bg-[#070180] px-4 py-6 md:pt-12 md:h-[800px]">
@@ -173,17 +176,6 @@ export default function Financeiro() {
                       </div>
                     </div>
                     <div className="flex gap-2">
-                      <div>
-                        <label htmlFor="prefixo">Prefixo Veiculo:</label>
-                        <Input
-                          type="text"
-                          name="prefixo"
-                          value={veiculo}
-                          placeholder="Prefixo..."
-                          onChange={(e) => setVeiculo(e.target.value)}
-                          className="w-[180px]"
-                        />
-                      </div>
                       <div className="flex items-end h-full">
                         <Button type="submit" className="bg-blue-600">
                           <Search className="text-white" />
@@ -195,21 +187,18 @@ export default function Financeiro() {
                       <select
                         name="status"
                         value={statusFiltro}
-                        onChange={(e) => setStatusFiltro(e.target.value)}
+                        onChange={(e) => {
+                          setStatusFiltro(e.target.value);
+                          buscarPendentes(e.target.value);
+                        }}
                         className="w-[180px] md:w-[160px] border rounded-md px-2 py-2"
                       >
                         <option value="todas">Todas</option>
-                        <option value="sim">Pagas</option>
-                        <option value="nao">Não Pagas</option>
+                        <option value="paga">Pagas</option>
+                        <option value="pendente">Não Pagas</option>
                       </select>
                     </div>
                   </form>
-                  <div className="flex items-center gap-2">
-                    <DialogAdicionarDespesa
-                      despesas={despesas}
-                      setDespesas={setDespesas}
-                    />
-                  </div>
                 </div>
 
                 {carregando ? (
@@ -222,21 +211,18 @@ export default function Financeiro() {
                     />
                   </div>
                 ) : (
-                  <div className="h-[200px] overflow-y-scroll scrollbar-hide">
+                  <div className="h-[200px] md:h-[100%] overflow-y-scroll scrollbar-hide">
                     <Table>
                       <TableHeader className="border-b-2">
                         <TableRow>
                           <TableHead className="text-black font-bold text-center">
+                            Data Compra
+                          </TableHead>
+                          <TableHead className="text-black font-bold text-center">
                             Vencimento
                           </TableHead>
                           <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                            Origem
-                          </TableHead>
-                          <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                            Responsável
-                          </TableHead>
-                          <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                            Veiculo
+                            Forma Pagamento
                           </TableHead>
                           <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                             Pago
@@ -261,33 +247,32 @@ export default function Financeiro() {
                             <TableCell>
                               {format(
                                 toZonedTime(
-                                  parseISO(despesa.vencimento),
+                                  parseISO(despesa.dataCompra),
                                   "UTC"
                                 ),
                                 "dd/MM/yyyy"
                               )}
                             </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              {despesa.origemPagamento}
+                            <TableCell>
+                              {despesa.vencimento
+                                ? format(
+                                    toZonedTime(
+                                      parseISO(despesa.vencimento),
+                                      "UTC"
+                                    ),
+                                    "dd/MM/yyyy"
+                                  )
+                                : ""}
                             </TableCell>
                             <TableCell className="hidden sm:table-cell">
-                              {despesa.responsavel
-                                ? despesa.responsavel.nome
-                                : "N/A"}
+                              {despesa.formaPagamento}
                             </TableCell>
                             <TableCell className="hidden sm:table-cell">
-                              {despesa.viagem
-                                ? despesa.viagem.veiculo!.prefixo
-                                : "N/A"}
-                            </TableCell>
-                            <TableCell className="hidden sm:table-cell">
-                              {getStatusPagamento(
-                                despesa.pago,
-                                despesa.valorParcial,
-                                despesa.valorTotal
-                              )
-                                ? "sim"
-                                : "nao"}
+                              {despesa.pago ? (
+                                <Badge className="bg-green-600">Paga</Badge>
+                              ) : (
+                                <Badge className="bg-red-600">Pendente</Badge>
+                              )}
                             </TableCell>
                             <TableCell className="hidden sm:table-cell">
                               {despesa.centroCusto}
@@ -298,17 +283,9 @@ export default function Financeiro() {
                             <TableCell className="hidden sm:table-cell">
                               {despesa.valorTotal}
                             </TableCell>
+
                             <TableCell>
                               <div className="flex items-center gap-2">
-                                <DialogEditarDespesa
-                                  despesa={despesa}
-                                  setDespesas={setDespesas}
-                                  despesas={despesas}
-                                />
-                                <DialogRemoverDespesa
-                                  despesa={despesa}
-                                  setDespesas={setDespesas}
-                                />
                                 <DespesaPDF despesa={despesa} />
                                 <DialogInfo despesa={despesa} />
                               </div>
@@ -412,11 +389,6 @@ export default function Financeiro() {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
-                              <DialogEditarReceita
-                                receita={receita}
-                                setReceitas={setReceitas}
-                                receitas={receitas}
-                              />
                               <DialogRemoverReceita
                                 receita={receita}
                                 setReceitas={setReceitas}

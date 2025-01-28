@@ -42,7 +42,7 @@ export default function DialogEditar({ setPecas, pecas, peca }: PecasProps) {
 
       const pecasAtualizadas = pecas.filter((p) => p.id !== peca.id);
       setPecas([...pecasAtualizadas, pecaAtualizada]);
-      toast("Peca atualizada com sucesso");
+      toast("Peça atualizada com sucesso");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.status === 401) {

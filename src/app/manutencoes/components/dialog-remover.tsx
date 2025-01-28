@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -18,11 +19,13 @@ import { toast } from "sonner";
 interface ManutencoesProps {
   manutencao: Manutencao;
   setManutencoes: React.Dispatch<React.SetStateAction<Manutencao[]>>;
+  onClose: () => void;
 }
 
 export default function DialogRemover({
   manutencao,
   setManutencoes,
+  onClose,
 }: ManutencoesProps) {
   const [removendo, setRemovendo] = useState(false);
   const handleRemoverManutencao = async (id: string) => {
@@ -33,6 +36,7 @@ export default function DialogRemover({
         prevManutencao.filter((m) => m.id !== id)
       );
       toast.success("Manutenção removida.");
+      onClose();
     } catch (error) {
       toast.error("Erro ao tentar remover manutenção.");
       console.error("Erro ao remover manutenção:", error);
@@ -42,14 +46,17 @@ export default function DialogRemover({
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <span className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110 cursor-pointer transition-all">
-          <Image src={removeIcon} alt="Remover" className="w-6 md:w-6" />
-        </span>
-      </DialogTrigger>
+    <Dialog open={true}>
       <DialogContent className="md:w-[350px] md:h-[150px] flex flex-col items-center rounded-md">
         <DialogHeader className="mb-5">
+          <DialogClose>
+            <Button
+              className="absolute right-2 bg-white text-black z-20 top-2"
+              onClick={() => onClose()}
+            >
+              X
+            </Button>
+          </DialogClose>
           <DialogTitle className="font-black">
             Deseja remover a manutenção?
           </DialogTitle>

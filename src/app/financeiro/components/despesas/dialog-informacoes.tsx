@@ -11,20 +11,45 @@ import { Badge } from "@/components/ui/badge";
 import {
   Receipt,
   Calendar,
-  User,
   CreditCard,
   Building2,
   DollarSign,
-  Car,
 } from "lucide-react";
-import { IDespesas } from "@/lib/types";
+import { Despesa, PagamentoDespesa } from "@/lib/types";
 import Image from "next/image";
 import DocumentIcon from "@/app/assets/dadosviagem.svg";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { format, parseISO } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
+import { useState } from "react";
+import DialogRemoverPagamento from "./dialog-remover-pagamento";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { api } from "@/lib/axios";
+
 interface DespesasDialogProps {
-  despesa: IDespesas;
+  despesa: Despesa;
 }
 
 export function DialogInfo({ despesa }: DespesasDialogProps) {
+  const [despesaInfo, setDespesaInfo] = useState<Despesa>(despesa);
+  const [pagamentoDespesa, setPagamentoDespesa] = useState<PagamentoDespesa>({
+    despesaId: Number(despesa.id),
+    valorPago: 0,
+    id: 0,
+    dataPagamento: "",
+    despesa,
+  });
   const formatDate = (date: string) => new Date(date).toLocaleDateString();
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", {
@@ -32,17 +57,53 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
       currency: "BRL",
     }).format(value);
 
-  function getStatusPagamento(
-    pago: boolean,
-    valorParcial: number,
-    valorTotal: number
-  ) {
-    if (valorParcial != valorTotal) {
-      return (pago = false);
+  async function gerarPagamento(e: React.FormEvent) {
+    try {
+      e.preventDefault();
+      if (pagamentoDespesa.valorPago <= 0) {
+        toast("digite um valor valido para o pagamento");
+      }
+
+      const response = await api.post(
+        "/despesa/pagamentoDespesa",
+        pagamentoDespesa
+      );
+
+      if (!response.data.isSucces) {
+        toast("erro ao tentar gerar pagamento");
+      }
+
+      setDespesaInfo({
+        ...despesaInfo,
+        pagamentos: [...despesaInfo.pagamentos, response.data.data],
+      });
+      toast("pagamento adicionado com sucesso");
+    } catch (error) {
+      toast("erro ao tentar gerar pagamento");
     }
-    return (pago = true);
   }
 
+  async function pagarBoleto(boletoId: number) {
+    try {
+      const response = await api.post(`despesa/pagamentoboleto/${boletoId}`);
+      if (!response.data.isSucces) {
+        toast("erro ao tenta pagar boleto");
+        return;
+      }
+
+      const boletosAtualizados = despesaInfo.boletos.filter(
+        (b) => b.id !== boletoId
+      );
+
+      setDespesaInfo({
+        ...despesaInfo,
+        boletos: [...boletosAtualizados, response.data.data],
+      });
+      toast("boleto pago com sucesso");
+    } catch (error) {
+      toast("erro ao tentar pagar boleto");
+    }
+  }
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -59,9 +120,9 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Receipt className="h-5 w-5" />
-            Despesa # {despesa.id}
+            Despesa # {despesaInfo.id}
           </DialogTitle>
-          <span>{despesa.descricao}</span>
+          <span>{despesaInfo.descricao}</span>
         </DialogHeader>
         <ScrollArea className="h-[70vh] pr-4">
           <div className="space-y-6">
@@ -70,36 +131,29 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
               <div className="grid gap-3">
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground">Status:</span>
-                 
-                  <Badge
-                    variant={
-                      getStatusPagamento(
-                        despesa.pago,
-                        despesa.valorParcial,
-                        despesa.valorTotal
-                      )
-                        ? "default"
-                        : "destructive"
-                    }
-                  >
-                    {getStatusPagamento(
-                      despesa.pago,
-                      despesa.valorParcial,
-                      despesa.valorTotal
-                    )
-                      ? "Pago"
-                      : "Pendente"}
+
+                  <Badge variant={despesaInfo.pago ? "default" : "destructive"}>
+                    {despesaInfo.pago ? "Pago" : "Pendente"}
                   </Badge>
                 </div>
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  <span>Valor Total: {formatCurrency(despesa.valorTotal)}</span>
+                  <span>
+                    Valor Total: {formatCurrency(despesaInfo.valorTotal)}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  <span>
-                    Valor Parcial: {formatCurrency(despesa.valorParcial)}
-                  </span>
+                  {despesaInfo.formaPagamento === "Boleto" ? (
+                    <div className="space-x-2">
+                      <span>Parcelas Pagas: {despesaInfo.parcelasPagas}</span>
+                      <span>Total de Parcelas: {despesaInfo.parcelas}</span>
+                    </div>
+                  ) : (
+                    <span>
+                      Valor Parcial: {formatCurrency(despesaInfo.valorParcial)}
+                    </span>
+                  )}
                 </div>
               </div>
             </section>
@@ -109,15 +163,28 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
               <div className="grid gap-3">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span>Emissão: {formatDate(despesa.dataPagamento)}</span>
+                  <span>
+                    Compra:{" "}
+                    {format(
+                      toZonedTime(parseISO(despesaInfo.dataCompra), "UTC"),
+                      "dd/MM/yyyy"
+                    )}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span>Compra: {formatDate(despesa.dataCompra)}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span>Vencimento: {formatDate(despesa.vencimento)}</span>
+                  <span>
+                    Vencimento:{" "}
+                    {format(
+                      toZonedTime(
+                        parseISO(
+                          despesaInfo.vencimento ? despesaInfo.vencimento : ""
+                        ),
+                        "UTC"
+                      ),
+                      "dd/MM/yyyy"
+                    )}
+                  </span>
                 </div>
               </div>
             </section>
@@ -129,36 +196,134 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
               <div className="grid gap-3">
                 <div className="flex items-center gap-2">
                   <CreditCard className="h-4 w-4 text-muted-foreground" />
-                  <span>Forma de Pagamento: {despesa.formaPagamento}</span>
+                  <span>Forma de Pagamento: {despesaInfo.formaPagamento}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Building2 className="h-4 w-4 text-muted-foreground" />
-                  <span>Origem: {despesa.origemPagamento}</span>
+                  <span>Origem: {despesaInfo.centroCusto}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Building2 className="h-4 w-4 text-muted-foreground" />
-                  <span>Centro de Custo: {despesa.centroCusto}</span>
+                  <span>Centro de Custo: {despesaInfo.centroCusto}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Building2 className="h-4 w-4 text-muted-foreground" />
+                  <span>Descricao: {despesaInfo.descricao}</span>
                 </div>
               </div>
             </section>
             <Separator />
             <section>
-              <h3 className="text-lg font-semibold mb-3">
-                Responsável e Viagem
-              </h3>
-              <div className="grid gap-3">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-muted-foreground" />
-                  <span>
-                    Responsável:{" "}
-                    {despesa.responsavel ? despesa.responsavel.nome : "n/a"}
-                  </span>
+              <h3 className="text-lg font-semibold mb-3">Pagamentos</h3>
+              {despesaInfo.formaPagamento === "Boleto" ? (
+                <Card>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Valor</TableHead>
+                        <TableHead>Vencimento</TableHead>
+                        <TableHead>Pago</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {despesaInfo.boletos.map((boleto) => (
+                        <TableRow>
+                          <TableCell>{formatCurrency(boleto.valor)}</TableCell>
+                          <TableCell>
+                            {format(
+                              toZonedTime(parseISO(boleto.vencimento), "UTC"),
+                              "dd/MM/yyyy"
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {boleto.pago ? (
+                              <Badge className="bg-green-600">Pago</Badge>
+                            ) : (
+                              <Badge className="bg-red-600">Pendente</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {!boleto.pago && (
+                              <Button
+                                onClick={() => pagarBoleto(boleto.id)}
+                                className="bg-blue-600"
+                              >
+                                Pagar
+                              </Button>
+                            )}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </Card>
+              ) : (
+                <div className="w-full flex flex-col">
+                  <Card>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Data</TableHead>
+                          <TableHead>Valor Pago</TableHead>
+                          <Table>doc</Table>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {despesaInfo.pagamentos.length > 0 ? (
+                          despesaInfo.pagamentos.map((pagamento) => (
+                            <TableRow key={pagamento.id}>
+                              <TableCell>
+                                {format(
+                                  toZonedTime(
+                                    parseISO(pagamento.dataPagamento),
+                                    "UTC"
+                                  ),
+                                  "dd/MM/yyyy"
+                                )}
+                              </TableCell>
+                              <TableCell>{pagamento.valorPago}</TableCell>
+                              <TableCell className="flex gap-2">
+                                <DialogRemoverPagamento
+                                  despesa={despesaInfo}
+                                  setDespesa={setDespesaInfo}
+                                  pagamentoId={pagamento.id}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <span>Sem registro de pagamentos</span>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </Card>
+
+                  <h3 className="text-lg font-semibold mb-3">
+                    Adicionar Pagamento
+                  </h3>
+                  <form
+                    onSubmit={(e) => gerarPagamento(e)}
+                    className="p-2 flex gap-2 items-end w-full"
+                  >
+                    <div className="flex-1">
+                      <Label>Valor Pago</Label>
+                      <Input
+                        type="number"
+                        value={pagamentoDespesa?.valorPago}
+                        onChange={(e) =>
+                          setPagamentoDespesa({
+                            ...pagamentoDespesa,
+                            valorPago: Number(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+                    <Button type="submit" className="bg-green-600">
+                      Gerar pagamento
+                    </Button>
+                  </form>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Car className="h-4 w-4 text-muted-foreground" />
-                  <span>Viagem ID: {despesa.viagemId}</span>
-                </div>
-              </div>
+              )}
             </section>
           </div>
         </ScrollArea>

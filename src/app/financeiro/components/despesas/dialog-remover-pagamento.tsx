@@ -15,43 +15,50 @@ import { api } from "@/lib/axios";
 import { toast } from "sonner";
 import removeIcon from "../../../assets/remove.svg";
 import loading from "../../../assets/loading.svg";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
-interface DespesaProps {
+interface ReceitaProps {
+  pagamentoId: number;
   despesa: Despesa;
-  setDespesas: React.Dispatch<React.SetStateAction<Despesa[]>>;
+  setDespesa: React.Dispatch<React.SetStateAction<Despesa>>;
 }
 
-export default function DialogRemoverDespesa({
+export default function DialogRemoverPagamento({
+  pagamentoId,
+  setDespesa,
   despesa,
-  setDespesas,
-}: DespesaProps) {
-  const [removendo, setRemovendo] = useState(false);
-
-  const handleRemoverDocumento = async (id: string) => {
-    setRemovendo(true);
+}: ReceitaProps) {
+  const [removendo] = useState(false);
+  const router = useRouter();
+  async function removerPagamento() {
     try {
-      await api.delete(`/despesa/${id}`);
-      setDespesas((prevDespesa) => prevDespesa.filter((d) => d.id !== id));
-      toast.success("Despesa removida.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
+      const response = await api.delete(
+        `/despesa/pagamentodespesa/${pagamentoId}`
+      );
+
+      if (!response.data.isSucces) {
+        toast("erro ao tentar remover pagamento");
+      }
+
+      const pagamentosAtualizados = despesa.pagamentos.filter(
+        (p) => p.id !== pagamentoId
+      );
+      setDespesa({
+        ...despesa,
+        pagamentos: pagamentosAtualizados,
       });
+      toast("Removido com sucesso");
     } catch (error) {
-      toast.error("Erro ao tentar remover despesa.", {
-        className: "text-white font-semibold border-none shadow-lg",
-        style: {
-          borderRadius: "10px",
-          padding: "16px",
-        },
-      });
-      console.error("Erro ao remover despesa:", error);
-    } finally {
-      setRemovendo(false);
+      if (axios.isAxiosError(error)) {
+        if (error.status === 401) {
+          localStorage.removeItem("token");
+          router.replace("/login");
+        }
+      }
+      toast("erro ao tentar remover pagamento");
     }
-  };
+  }
 
   return (
     <Dialog>
@@ -63,17 +70,14 @@ export default function DialogRemoverDespesa({
       <DialogContent className="md:w-[350px] md:h-[150px] flex flex-col items-center rounded-md">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
-            Deseja remover a despesa?
+            Deseja remover o pagamento?
           </DialogTitle>
           <p className="text-sm text-gray-500 font-medium text-center">
             Essa ação não poderá ser desfeita
           </p>
         </DialogHeader>
         <DialogFooter className="flex items-center">
-          <Button
-            className="bg-red-500"
-            onClick={() => handleRemoverDocumento(despesa.id)}
-          >
+          <Button className="bg-red-500" onClick={() => removerPagamento()}>
             {removendo ? (
               <Image
                 src={loading}

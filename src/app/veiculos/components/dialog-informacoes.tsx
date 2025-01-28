@@ -98,7 +98,7 @@ export default function DialogInformacoes({ veiculo }: VeiculoProps) {
               <div className="grid gap-3">
                 <div className="flex items-center gap-2">
                   <Tag className="h-4 w-4 text-muted-foreground" />
-                  <span>Placa: {veiculo.placa}</span>
+                  <span>Placa: {veiculo.placa.toUpperCase()}</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <MapPin className="h-4 w-4 text-muted-foreground mt-1" />

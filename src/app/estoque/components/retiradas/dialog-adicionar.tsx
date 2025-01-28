@@ -101,7 +101,7 @@ export default function DialogAdicionar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="bg-green-600 hover:bg-green-500 w-[340px] md:w-[200px] p-1 text-center rounded-md text-white cursor-pointer transition-all">
+        <span className="bg-green-600 hover:bg-green-500 w-[410px] md:w-[200px] p-1 text-center rounded-md text-white cursor-pointer transition-all">
           Adicionar Retirada
         </span>
       </DialogTrigger>

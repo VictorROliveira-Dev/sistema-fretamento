@@ -61,7 +61,7 @@ export default function DialogAdicionar({ setPecas, pecas }: PecasProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="bg-green-600 hover:bg-green-500 w-[320px] md:w-[200px] p-1 text-center rounded-md text-white cursor-pointer transition-all">
+        <span className="bg-green-600 hover:bg-green-500 w-[380px] md:w-[200px] p-1 text-center rounded-md text-white cursor-pointer transition-all">
           Adicionar Peça
         </span>
       </DialogTrigger>
