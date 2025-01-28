@@ -61,7 +61,9 @@ export function DialogInfo({ manutencao, onClose }: Info) {
   }
   /* eslint-disable @typescript-eslint/no-explicit-any */
 
-  useEffect(() => {});
+  useEffect(() => {
+    fetch();
+  });
  
 
   return (
