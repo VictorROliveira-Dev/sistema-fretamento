@@ -18,6 +18,8 @@ import {
   User,
   Route,
   AlertCircle,
+  Armchair,
+  PiggyBank,
 } from "lucide-react";
 import { LocationTimeInfo } from "./LocationTimeInfo";
 import { ViagemProgramda } from "@/lib/types";
@@ -105,6 +107,34 @@ export function DialogInfo({ viagem }: TripDetailsDialogProps) {
                   <div>
                     <p className="font-medium">Guia</p>
                     <p className="text-muted-foreground">{viagem.guia}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Armchair className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="font-medium">Poltronas Oculpadas</p>
+                    <p className="text-muted-foreground">
+                      {viagem.passagens.length}/{" "}
+                      {viagem.veiculo
+                        ? viagem.veiculo.quantidadePoltronas
+                        : "..."}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <PiggyBank className="h-5 w-5 text-primary" />
+                  <div>
+                    <p className="font-medium">Total Arrecadado</p>
+                    <p className="text-muted-foreground">
+                      {viagem.passagens
+                        ? `R$ ${viagem.passagens
+                            .reduce(
+                              (total, passagem) => total + passagem.valorTotal,
+                              0
+                            )
+                            .toFixed(2)}`
+                        : "R$ 0.00"}
+                    </p>
                   </div>
                 </div>
               </div>

@@ -51,7 +51,12 @@ export default function Passagens() {
     setViagens(response.data.data);
   }
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const viagem = searchParams.get("viagem");
     fetchViagens();
+    if (viagem) {
+      handleViagemChange(Number(viagem));
+    }
   }, []);
   return (
     <section className="bg-[#070180] pt-12 h-[800px]">
@@ -67,6 +72,9 @@ export default function Passagens() {
                   Busque a Viagem:
                 </label>
                 <Select
+                  value={
+                    viagemSelecionada ? viagemSelecionada.id.toString() : ""
+                  }
                   onValueChange={(e) => handleViagemChange(Number(e))}
                   name="tipo"
                 >

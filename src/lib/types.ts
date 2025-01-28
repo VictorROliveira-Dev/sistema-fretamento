@@ -266,7 +266,7 @@ export interface Passagem {
   cidadePassageiro: string;
   valorTotal: number;
   valorPersonalizado: number;
-  paradaPassageir: string;
+  paradaPassageiro: string;
   cpfPassageiro: string;
   nomePassageiro: string;
   dataEmissao: string; // ou Date, dependendo do uso no projeto

@@ -43,6 +43,8 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
     formaPagamento: "",
     poltronaIda: undefined,
     poltronaVolta: undefined,
+    paradaPassageiro: "",
+    valorPersonalizado: 0,
     situacao: "",
     cidadePassageiro: "",
     tipo: "",
@@ -58,8 +60,13 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
   }, [viagem]);
 
   async function registrarPassagem() {
+    console.log(passagem);
     try {
       setCarregando(true);
+      if (!passagem.poltronaIda && !passagem.poltronaVolta) {
+        toast("Selecione um acento");
+        return;
+      }
       if (
         (passagem.tipo === "IDA" && passagem.poltronaVolta) ||
         passagem.poltronaIda == undefined
@@ -67,20 +74,23 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
         toast(
           "selecione somente a passagem de ida ou altere o tipo da passagem para ida e volta"
         );
+        return;
       } else if (
         (passagem.tipo === "VOLTA" && passagem.poltronaIda) ||
-        passagem.poltronaVolta === undefined
+        (passagem.tipo === "VOLTA" && passagem.poltronaVolta === undefined)
       ) {
         toast(
           "selecione somente a passagem de volta ou altere o tipo da passagem para ida e volta"
         );
+        return;
       } else if (
-        (passagem.tipo === "IDA-VOLTA" && passagem.poltronaIda === undefined) ||
-        passagem.poltronaVolta === undefined
+        passagem.tipo === "IDA-VOLTA" &&
+        passagem.poltronaIda === undefined
       ) {
         toast(
           "selecione as poltronas de ida e volta corretamente, ou altere o tipo da viagem"
         );
+        return;
       }
       const response = await api.post("/passagem", passagem);
 
@@ -132,6 +142,7 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
                 }
                 value={passagem.nomePassageiro}
                 type="text"
+                required
               />
             </div>
             <div>
@@ -178,6 +189,16 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
               />
             </div>
             <div>
+              <label htmlFor="passageiro">Parada Passageiro:</label>
+              <Input
+                onChange={(e) =>
+                  setPassagem({ ...passagem, cidadePassageiro: e.target.value })
+                }
+                value={passagem.cidadePassageiro}
+                type="text"
+              />
+            </div>
+            <div>
               <label htmlFor="viagem">Viagem:</label>
               <Input
                 onChange={() =>
@@ -205,6 +226,21 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
                   </SelectGroup>
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <label htmlFor="passageiro">Valor Personalizado:</label>
+              <Input
+                onChange={(e) =>
+                  setPassagem({
+                    ...passagem,
+                    valorPersonalizado: Number(e.target.value),
+                  })
+                }
+                value={
+                  passagem.valorPersonalizado ? passagem.valorPersonalizado : ""
+                }
+                type="number"
+              />
             </div>
             <div>
               <label htmlFor="pagamento">Tipo Pagamento:</label>

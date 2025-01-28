@@ -146,7 +146,7 @@ export default function ViagemProgramada() {
                         <DialogInfo viagem={viagem} />
                         <Link
                           className="bg-slate-800 w-[170px] text-center text-sm text-white p-2 rounded-sm"
-                          href="/passagens"
+                          href={`/passagens?viagem=${viagem.id}`}
                         >
                           Registrar Passagem
                         </Link>

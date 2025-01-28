@@ -38,6 +38,7 @@ export function DialogAdicionar() {
     observacoes: "",
     veiculoId: 0,
     valorPassagemIdaVolta: 0,
+    passagens: [],
   });
 
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
