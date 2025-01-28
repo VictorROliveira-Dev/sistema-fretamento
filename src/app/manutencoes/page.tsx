@@ -81,7 +81,7 @@ export default function Manutencoes() {
   useEffect(() => {
     fetchData();
   }, []);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   async function getManutencoes(
     params: ManutencaoParams,
     setManutencoes: (data: any) => void
@@ -116,6 +116,7 @@ export default function Manutencoes() {
       console.error("Erro ao buscar manutenções:", error);
     }
   }
+  /* eslint-disable @typescript-eslint/no-explicit-any */
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

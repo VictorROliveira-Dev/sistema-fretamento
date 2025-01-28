@@ -41,7 +41,7 @@ export function DialogInfo({ manutencao, onClose }: Info) {
       currency: "BRL",
     }).format(value);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   async function fetch() {
     try {
       const response = await api.get(`despesa/${manutencao.id}/manutencao`);
@@ -61,6 +61,7 @@ export function DialogInfo({ manutencao, onClose }: Info) {
   }
 
   useEffect(() => {});
+  /* eslint-disable @typescript-eslint/no-explicit-any */
 
   return (
     <Dialog open={true}>
