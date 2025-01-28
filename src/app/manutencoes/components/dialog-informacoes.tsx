@@ -59,9 +59,10 @@ export function DialogInfo({ manutencao, onClose }: Info) {
       }
     }
   }
+  /* eslint-disable @typescript-eslint/no-explicit-any */
 
   useEffect(() => {});
-  /* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 
   return (
     <Dialog open={true}>
