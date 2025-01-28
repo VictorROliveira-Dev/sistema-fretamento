@@ -7,7 +7,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Select,
@@ -21,9 +20,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
-import { Despesa, Manutencao, Servico, Veiculo } from "@/lib/types";
+import { Manutencao } from "@/lib/types";
 import Image from "next/image";
-import editIcon from "@/app/assets/edit.svg";
 import loading from "../../assets/loading.svg";
 import loadingDark from "../../assets/loading-dark.svg";
 import { toast } from "sonner";
@@ -69,7 +67,7 @@ export default function DialogEditar({
       }
 
       setManutencaoEditar(response.data.data.manutencao);
-    } catch (error) {
+    } catch {
       toast("nao foi possivel consultar os dados");
       onClose();
       return;

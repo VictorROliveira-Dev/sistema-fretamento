@@ -50,7 +50,7 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
     dataPagamento: "",
     despesa,
   });
-  const formatDate = (date: string) => new Date(date).toLocaleDateString();
+  //const formatDate = (date: string) => new Date(date).toLocaleDateString();
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -78,7 +78,7 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
         pagamentos: [...despesaInfo.pagamentos, response.data.data],
       });
       toast("pagamento adicionado com sucesso");
-    } catch (error) {
+    } catch {
       toast("erro ao tentar gerar pagamento");
     }
   }
@@ -100,7 +100,7 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
         boletos: [...boletosAtualizados, response.data.data],
       });
       toast("boleto pago com sucesso");
-    } catch (error) {
+    } catch {
       toast("erro ao tentar pagar boleto");
     }
   }
@@ -227,7 +227,7 @@ export function DialogInfo({ despesa }: DespesasDialogProps) {
                     </TableHeader>
                     <TableBody>
                       {despesaInfo.boletos.map((boleto) => (
-                        <TableRow>
+                        <TableRow key={boleto.id}>
                           <TableCell>{formatCurrency(boleto.valor)}</TableCell>
                           <TableCell>
                             {format(

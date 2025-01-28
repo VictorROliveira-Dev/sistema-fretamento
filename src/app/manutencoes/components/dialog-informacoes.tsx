@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -19,8 +18,6 @@ import {
   DollarSign,
   Car,
 } from "lucide-react";
-import Image from "next/image";
-import documentoIcon from "@/app/assets/dadosviagem.svg";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import { toast } from "sonner";
@@ -44,6 +41,7 @@ export function DialogInfo({ manutencao, onClose }: Info) {
       currency: "BRL",
     }).format(value);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function fetch() {
     try {
       const response = await api.get(`despesa/${manutencao.id}/manutencao`);

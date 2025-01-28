@@ -8,15 +8,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Image from "next/image";
-import FormInput from "@/components/form-input";
 import DialogAdicionar from "./components/dialog-adicionar";
 import DialogEditar from "./components/dialog-editar";
-import { Manutencao, Servico, Veiculo } from "@/lib/types";
+import { Manutencao } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import DialogRemover from "./components/dialog-remover";
 import loading from "../assets/loading-dark.svg";
-import ManutencaoPDF from "./components/dialog-document";
 import { DialogInfo } from "./components/dialog-informacoes";
 import { Button } from "@/components/ui/button";
 import editIcon from "@/app/assets/edit.svg";
@@ -64,7 +62,7 @@ export default function Manutencoes() {
     setCarregando(true);
     try {
       // Busca todas as informações de uma vez
-      const [manutencoesResponse, veiculosResponse, servicosResponse] =
+      const [manutencoesResponse, veiculosResponse] =
         await Promise.all([
           api.get("/manutencao"),
           api.get("/veiculo"),
@@ -83,7 +81,7 @@ export default function Manutencoes() {
   useEffect(() => {
     fetchData();
   }, []);
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async function getManutencoes(
     params: ManutencaoParams,
     setManutencoes: (data: any) => void

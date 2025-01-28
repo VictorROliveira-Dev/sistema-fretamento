@@ -74,7 +74,7 @@ export function AdicionarDespesa({
         ...viagemResponse,
         despesas: [...viagemResponse.despesas, response.data.data],
       });
-    } catch (error) {
+    } catch {
       toast("erro ao tentar registrar nova despesa");
     } finally {
       setCarregando(false);

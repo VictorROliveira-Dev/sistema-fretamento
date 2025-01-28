@@ -6,10 +6,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import Image from "next/image";
-import removeIcon from "@/app/assets/remove.svg";
 import { api } from "@/lib/axios";
 import { Manutencao } from "@/lib/types";
 import loading from "../../assets/loading.svg";
