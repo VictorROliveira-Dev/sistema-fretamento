@@ -27,7 +27,7 @@ export default function DialogRemoverDespesa({
 }: DespesaProps) {
   const [removendo, setRemovendo] = useState(false);
 
-  const handleRemoverDocumento = async (id: string) => {
+  const handleRemoverDocumento = async (id: number) => {
     setRemovendo(true);
     try {
       await api.delete(`/despesa/${id}`);
