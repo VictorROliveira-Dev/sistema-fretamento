@@ -17,7 +17,6 @@ import { format, toZonedTime } from "date-fns-tz";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import DialogRemover from "./components/dialog-remover";
-import { DialogDocumento } from "./components/dialog-document-ida";
 
 export default function ViagemProgramada() {
   const [viagens, setViagens] = useState<ViagemProgramda[]>([]);

@@ -2,15 +2,13 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { Button } from "@/components/ui/button";
-import { FileText, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { api } from "@/lib/axios";
 import { toast } from "sonner";
 import { format, toZonedTime } from "date-fns-tz";
 import { parseISO } from "date-fns";
 import { Passagem } from "@/lib/types";
 import { useState } from "react";
-import Image from "next/image";
-import loading from "../../assets/loading.svg";
 
 interface DialogDocumentoProps {
   viagemId: number;
@@ -162,7 +160,7 @@ export function DialogDocumento({
             fillColor: [240, 240, 240] as [number, number, number],
           },
         });
-
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         currentY = (doc as any).lastAutoTable.finalY + 15;
       }
 
@@ -240,6 +238,7 @@ export function DialogDocumento({
       const totalPassengers = passengers.length;
       doc.setFontSize(10);
       doc.setTextColor(0);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       doc.text(
         `Total de Passageiros: ${totalPassengers}`,
         14,

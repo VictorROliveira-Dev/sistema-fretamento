@@ -46,7 +46,7 @@ interface ViagemResponse {
 }
 
 export function TravelDialog({ viagem }: TravelDialogProps) {
-  const [viagemCompleta, setViagemCompleta] = useState<Viagem>(viagem);
+  const [viagemCompleta, ] = useState<Viagem>(viagem);
   const [viagemResponse, setViagemResponse] = useState<ViagemResponse>({
     viagem: viagem,
     despesas: [],
@@ -431,7 +431,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 </TableHeader>
                 <TableBody>
                   {viagemResponse.viagem.abastecimentos.map((abastecimento) => (
-                    <TableRow>
+                    <TableRow key={abastecimento.id}>
                       <TableCell>{abastecimento.litros}</TableCell>
                       <TableCell>
                         {formatCurrency(
