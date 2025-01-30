@@ -337,10 +337,11 @@ export default function Financeiro() {
                         <TableCell className="hidden sm:table-cell">
                           {reestoque.quantidade}
                         </TableCell>
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         <TableCell>
-                          {/*// eslint-disable-next-line @typescript-eslint/no-explicit-any*/}
                           {reestoque.precoTotal / reestoque.peca?.quantidade!}
                         </TableCell>
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                         <TableCell className="hidden sm:table-cell">
                           R${reestoque.precoTotal}
                         </TableCell>
