@@ -37,7 +37,7 @@ export function RemoverSalario({ setSalarios, salarios, id }: RemoverSalario) {
 
       const salariosAtualizados = salarios.filter((s) => s.id !== id);
       setSalarios(salariosAtualizados);
-    } catch (error) {
+    } catch {
       toast(
         "Erro ao tentar remover, tente novamente ou entre em contato com a manutenção"
       );

@@ -238,13 +238,13 @@ export function DialogDocumento({
       const totalPassengers = passengers.length;
       doc.setFontSize(10);
       doc.setTextColor(0);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       doc.text(
         `Total de Passageiros: ${totalPassengers}`,
         14,
         (doc as any).lastAutoTable.finalY + 10
       );
-
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       // Salvar o PDF
       doc.save(
         `lista_passageiros_${titulo.toLowerCase().replace(/\s+/g, "_")}.pdf`

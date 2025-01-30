@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import removeIcon from "@/app/assets/remove.svg";
 import Image from "next/image";
-import { DespesaMensal, Salario } from "@/lib/types";
+import { DespesaMensal } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import loadingIcon from "@/app/assets/loading.svg";
@@ -37,7 +37,7 @@ export function RemoverDialog({ setDespesas, despesas, id }: RemoverSalario) {
 
       const despesasAtualizadas = despesas.filter((s) => s.id !== id);
       setDespesas(despesasAtualizadas);
-    } catch (error) {
+    } catch {
       toast(
         "Erro ao tentar remover, tente novamente ou entre em contato com a manutenção"
       );

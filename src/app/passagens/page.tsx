@@ -115,13 +115,14 @@ export default function Passagens() {
                 </div>
               </div>
               <div className="mt-5 flex gap-2">
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 <DialogDocumento
                   viagemId={viagemSelecionada?.id!}
                   titulo={viagemSelecionada?.titulo!}
                   saida={viagemSelecionada?.saida ?? { data: "" }} // Evita undefined
                   retorno={viagemSelecionada?.retorno ?? { data: "" }} // Evita undefined
                 />
-
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                 <DialogAdicionar
                   viagem={viagemSelecionada!}
                   setViagem={setViagemSeleciona}

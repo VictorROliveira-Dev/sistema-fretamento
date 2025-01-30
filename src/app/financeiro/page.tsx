@@ -39,7 +39,7 @@ export default function Financeiro() {
   const [despesasMensais, setDespesasMensais] = useState<DespesaMensal[]>([]);
   const [dataInicio, setDataInicio] = useState<string>("");
   const [dataFinal, setDataFinal] = useState<string>("");
-  const [despesaCode, setDespesaCode] = useState<number | null>(null);
+  const [, setDespesaCode] = useState<number | null>(null);
   const [carregando, setCarregando] = useState(false);
   const [statusFiltro, setStatusFiltro] = useState("todas");
 
@@ -124,7 +124,7 @@ export default function Financeiro() {
     }
   }
 
-  const despesasFiltradas = despesas.filter((despesa) => {
+  const despesasFiltradas = despesas.filter(() => {
     return true; // Retorna todas as despesas
   });
 
@@ -141,7 +141,7 @@ export default function Financeiro() {
       }
 
       setDespesas(response.data.data);
-    } catch (error) {
+    } catch {
       toast("Erro ao tentar filtrar ");
     }
   }

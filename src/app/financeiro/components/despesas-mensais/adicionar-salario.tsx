@@ -58,7 +58,7 @@ export function FinancialDialogs({
         (colaboradoresResponse.data.data as Responsavel[]) || [];
 
       setResponsaveis([...motoristas, ...colaboradores]);
-    } catch (error) {
+    } catch {
       toast("Erro ao tentar buscar dados");
     } finally {
       setLoading(false);
@@ -69,6 +69,7 @@ export function FinancialDialogs({
     fetchResponsaveis();
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onExpenseSubmit = async (data: any) => {
     try {
       setLoading(true);
@@ -79,13 +80,14 @@ export function FinancialDialogs({
       }
 
       setDespesas([...despesas, response.data.data]);
-    } catch (error) {
+    } catch {
       toast("Erro ao tentar registrar despesa");
     } finally {
       setLoading(false);
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSalarySubmit = async (data: any) => {
     try {
       setLoading(true);
@@ -96,7 +98,7 @@ export function FinancialDialogs({
       }
 
       setSalarios([...salarios, response.data.data]);
-    } catch (error) {
+    } catch {
       toast("Erro ao tentar registrar despesa");
     } finally {
       setLoading(false);
@@ -228,7 +230,7 @@ export function FinancialDialogs({
                 </SelectTrigger>
                 <SelectContent>
                   {responsaveis.map((responsavel) => (
-                    <SelectItem value={responsavel.id.toString()}>
+                    <SelectItem key={responsavel.id} value={responsavel.id.toString()}>
                       {responsavel.nome}
                     </SelectItem>
                   ))}

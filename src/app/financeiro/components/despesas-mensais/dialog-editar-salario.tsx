@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { DespesaMensal, Salario } from "@/lib/types";
+import { Salario } from "@/lib/types";
 import { useState } from "react";
 import loadingIcon from "@/app/assets/loading.svg";
 import editIcon from "@/app/assets/edit.svg";
@@ -46,7 +46,7 @@ export function EditarSalario({
       const salariosAtualizados = salarios.filter((d) => d.id !== salario.id);
       setSalarios([...salariosAtualizados, salarioAtualizado]);
       toast("Atualizado com sucesso");
-    } catch (error) {
+    } catch {
       toast("Erro ao tentar atualizar, tente novamente");
     } finally {
       setLoading(false);

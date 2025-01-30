@@ -32,6 +32,7 @@ export default function VoucherPassagem({ passagem }: VoucherPassagemProps) {
     ];
 
     // Criando a tabela
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (doc as any).autoTable({
       head: [["Campo", "Valor"]],
       body: dados,

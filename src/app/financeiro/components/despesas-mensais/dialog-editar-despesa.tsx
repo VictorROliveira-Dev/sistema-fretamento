@@ -47,7 +47,7 @@ export function EditarDespesa({
       const despesasAtualizadas = despesas.filter((d) => d.id !== despesa.id);
       setDespesas([...despesasAtualizadas, despesaAtualizada]);
       toast("atualizado com sucesso");
-    } catch (error) {
+    } catch {
       toast("Erro ao tentar atualizar, tente novamente");
     } finally {
       setLoading(false);
