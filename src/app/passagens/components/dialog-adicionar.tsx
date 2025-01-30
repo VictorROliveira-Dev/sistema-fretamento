@@ -109,6 +109,23 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
         passagens: passagensAtualizadas,
       });
       toast("registrada com sucesso");
+      setPassagem({
+        viagemId: 0,
+        emailPassageiro: "",
+        telefonePassageiro: "",
+        cpfPassageiro: "",
+        nomePassageiro: "",
+        dataEmissao: "",
+        formaPagamento: "",
+        poltronaIda: undefined,
+        poltronaVolta: undefined,
+        paradaPassageiro: "",
+        valorPersonalizado: 0,
+        situacao: "",
+        cidadePassageiro: "",
+        tipo: "",
+        valorTotal: 0,
+      });
       setCarregando(false);
     } catch (error) {
       if (axios.isAxiosError(error)) {
