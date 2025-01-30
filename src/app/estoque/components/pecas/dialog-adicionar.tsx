@@ -61,11 +61,11 @@ export default function DialogAdicionar({ setPecas, pecas }: PecasProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="bg-green-600 hover:bg-green-500 w-[380px] md:w-[200px] p-1 text-center rounded-md text-white cursor-pointer transition-all">
+        <span className="bg-green-600 hover:bg-green-500 w-[420px] md:w-[200px] p-1 text-center rounded-md text-white cursor-pointer transition-all">
           Adicionar Peça
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-[850px] h-auto md:h-auto flex flex-col items-center overflow-y-scroll md:overflow-auto">
+      <DialogContent className="w-[80%] md:w-[850px] h-auto md:h-auto flex flex-col items-center rounded-md">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Cadastro de peça</DialogTitle>
         </DialogHeader>
@@ -99,7 +99,6 @@ export default function DialogAdicionar({ setPecas, pecas }: PecasProps) {
                 <Label>Quantidade</Label>
                 <Input
                   type="number"
-                  min={1}
                   onChange={(e) =>
                     setPeca({ ...peca, quantidade: Number(e.target.value) })
                   }

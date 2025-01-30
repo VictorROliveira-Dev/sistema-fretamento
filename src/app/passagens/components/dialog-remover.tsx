@@ -39,7 +39,7 @@ export default function DialogRemover({
         }
       setViagem({...viagem, passagens: viagem.passagens?.filter((p) => p.id !== id)} as ViagemProgramda
       );
-      toast.success("passagem removido com sucesso.");
+      toast.success("passagem removida com sucesso.");
     } catch (error) {
         if(axios.isAxiosError(error)){
             if(error.status === 401){
@@ -61,7 +61,7 @@ export default function DialogRemover({
           <Image src={removeIcon} alt="Remover" className="w-6 md:w-6" />
         </span>
       </DialogTrigger>
-      <DialogContent className="w-[350px] h-[150px] rounded-md flex flex-col items-center">
+      <DialogContent className="w-[350px] h-auto rounded-md flex flex-col items-center">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Deseja remover o passageiro {passagem.nomePassageiro} ?

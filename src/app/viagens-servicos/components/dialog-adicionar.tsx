@@ -47,6 +47,7 @@ export default function DialogAdicionar({
   const [cidadesRetorno, setCidadesRetorno] = useState<Cidade[]>([]);
   const [motorista1, setMotorista1] = useState<number>(0);
   const [motorista2, setMotorista2] = useState<number>(0);
+  const [valorParcial, setValorParcial] = useState<number>(0);
   const [viagem, setViagem] = useState<Viagem>({
     id: 0,
     rota: {
@@ -148,9 +149,27 @@ export default function DialogAdicionar({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setAdicionando(true);
+    const request = {
+      rota: viagem.rota,
+      dataHorarioSaida: viagem.dataHorarioSaida,
+      dataHorarioChegada: viagem.dataHorarioChegada,
+      dataHorarioRetorno: viagem.dataHorarioRetorno,
+      dataHorarioSaidaGaragem: viagem.dataHorarioSaidaGaragem,
+      clienteId: viagem.clienteId,
+      tipoServico: viagem.tipoServico,
+      status: viagem.status,
+      tipoPagamento: viagem.tipoPagamento,
+      valorContrado: viagem.valorContratado,
+      itinerario: viagem.itinerario,
+      kmInicialVeiculo: viagem.kmInicialVeiculo,
+      kmFinalVeiculo: viagem.kmFinalVeiculo,
+      veiculoId: viagem.veiculoId,
+      motoristasId: viagem.motoristasId,
+      valorParcial: valorParcial,
+    };
 
     try {
-      const response = await api.post("/viagem", viagem);
+      const response = await api.post("/viagem", request);
       if (!response.data.isSucces) {
         toast(
           "erro ao tentar criar viagem, recarregue a pagina e tente novamente"
@@ -170,6 +189,7 @@ export default function DialogAdicionar({
             (motorista) => motorista.id === m.motoristaId
           ),
         })),
+        abastecimentos: [],
       };
       setViagens([...viagens, viagemCriada]);
       toast.success("Viagem adicionada.");
@@ -863,6 +883,15 @@ export default function DialogAdicionar({
                     </SelectGroup>
                   </SelectContent>
                 </Select>
+              </div>
+              <div>
+                <Label>Valor Parcial</Label>
+                <Input
+                  type="number"
+                  value={valorParcial}
+                  onChange={(e) => setValorParcial(Number(e.target.value))}
+                  disabled={viagem.status !== "CONFIRMADO"}
+                ></Input>
               </div>
             </div>
           </div>

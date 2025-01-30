@@ -138,7 +138,7 @@ export default function Financeiro() {
                           <TableHead>Peça</TableHead>
                           <TableHead>Preço</TableHead>
                           <TableHead>Quantidade</TableHead>
-                          <TableHead>Valor Total</TableHead> 
+                          <TableHead>Valor Total</TableHead>
                           <TableHead>Ações</TableHead>
                         </TableRow>
                       </TableHeader>
@@ -300,7 +300,7 @@ export default function Financeiro() {
                         onChange={(e) => setDataFinal(e.target.value)}
                       />
                     </div>
-                    <Button type="submit" className="bg-blue-600 mt-2">
+                    <Button type="submit" className="bg-blue-600 md:mt-6">
                       <Search className="text-white" />
                     </Button>
                   </form>
@@ -317,6 +317,7 @@ export default function Financeiro() {
                       <TableHead className="hidden sm:table-cell">
                         Quantidade
                       </TableHead>
+                      <TableHead>Valor Por Peça</TableHead>
                       <TableHead className="hidden sm:table-cell">
                         Preco Total
                       </TableHead>
@@ -326,13 +327,18 @@ export default function Financeiro() {
                     {reestoques.map((reestoque) => (
                       <TableRow key={reestoque.id}>
                         <TableCell>
-                          {new Date(reestoque.dataDeEntrada).toLocaleDateString(
-                            "pt-BR"
-                          )}
+                          {reestoque.dataDeEntrada
+                            ? new Date(
+                                reestoque.dataDeEntrada
+                              ).toLocaleDateString("pt-BR")
+                            : "Data não disponível"}
                         </TableCell>
                         <TableCell>{reestoque.peca?.nome || "peca"}</TableCell>
                         <TableCell className="hidden sm:table-cell">
                           {reestoque.quantidade}
+                        </TableCell>
+                        <TableCell>
+                          {reestoque.precoTotal / reestoque.peca?.quantidade!}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
                           R${reestoque.precoTotal}

@@ -11,7 +11,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Despesa, IReceitas } from "@/lib/types";
+import { Despesa, DespesaMensal, IReceitas, Salario } from "@/lib/types";
 import { api } from "@/lib/axios";
 import loading from "../assets/loading-dark.svg";
 import { Input } from "@/components/ui/input";
@@ -26,13 +26,20 @@ import GeneratePDF from "./components/receitas/recibo-receita";
 import { parseISO } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
 import { Badge } from "@/components/ui/badge";
+import { FinancialDialogs } from "./components/despesas-mensais/adicionar-salario";
+import { RemoverDialog } from "./components/despesas-mensais/remover-despesa";
+import { EditarDespesa } from "./components/despesas-mensais/dialog-editar-despesa";
+import { EditarSalario } from "./components/despesas-mensais/dialog-editar-salario";
+import { RemoverSalario } from "./components/despesas-mensais/remover-salario";
 
 export default function Financeiro() {
   const [despesas, setDespesas] = useState<Despesa[]>([]);
   const [receitas, setReceitas] = useState<IReceitas[]>([]);
+  const [salarios, setSalarios] = useState<Salario[]>([]);
+  const [despesasMensais, setDespesasMensais] = useState<DespesaMensal[]>([]);
   const [dataInicio, setDataInicio] = useState<string>("");
   const [dataFinal, setDataFinal] = useState<string>("");
-  const [, setDespesaCode] = useState<number | null>(null);
+  const [despesaCode, setDespesaCode] = useState<number | null>(null);
   const [carregando, setCarregando] = useState(false);
   const [statusFiltro, setStatusFiltro] = useState("todas");
 
@@ -42,15 +49,26 @@ export default function Financeiro() {
       const urlDespesa = searchParam
         ? `/despesa?despesaCode=${searchParam}`
         : "/despesa";
-      const [despesasResponse, receitasResponse] = await Promise.all([
+      const [
+        despesasResponse,
+        receitasResponse,
+        salariosResponse,
+        despesasMensaisResponse,
+      ] = await Promise.all([
         api.get(urlDespesa),
         api.get("/api/receita"),
+        api.get("/despesaMensal"),
+        api.get("/despesaMensal/despesamensal"),
       ]);
       const despesasData = despesasResponse.data.data || [];
       const receitasData = receitasResponse.data.data || [];
+      const despesasMensais = despesasMensaisResponse.data.data || [];
+      const salarios = salariosResponse.data.data;
       // Atualiza o estado com as despesas e receitas
       setDespesas(despesasData);
       setReceitas(receitasData);
+      setDespesasMensais(despesasMensais);
+      setSalarios(salarios);
       console.log("Despesas:", despesasData);
     } catch (error) {
       console.log("Erro ao tentar recuperar os dados", error);
@@ -106,7 +124,7 @@ export default function Financeiro() {
     }
   }
 
-  const despesasFiltradas = despesas.filter(() => {
+  const despesasFiltradas = despesas.filter((despesa) => {
     return true; // Retorna todas as despesas
   });
 
@@ -123,7 +141,7 @@ export default function Financeiro() {
       }
 
       setDespesas(response.data.data);
-    } catch {
+    } catch (error) {
       toast("Erro ao tentar filtrar ");
     }
   }
@@ -136,12 +154,15 @@ export default function Financeiro() {
             Visualizar Finanças
           </p>
         </div>
-        <div className="flex md:h-screen p-10">
+        <div className="flex md:h-screen p-10 overflow-y-scroll">
           <div className="mx-auto md:w-full">
             <Tabs defaultValue="despesas" className="flex flex-col">
               <TabsList className="gap-4">
                 <TabsTrigger value="despesas" className="font-bold">
                   Despesas
+                </TabsTrigger>
+                <TabsTrigger value="mensais" className="font-bold">
+                  Gastos Mensais
                 </TabsTrigger>
                 <TabsTrigger value="receitas" className="font-bold">
                   Receitas
@@ -402,6 +423,111 @@ export default function Financeiro() {
                     </TableBody>
                   </Table>
                 )}
+              </TabsContent>
+              <TabsContent value="mensais">
+                <div className="flex justify-end w-full">
+                  <FinancialDialogs
+                    setDespesas={setDespesasMensais}
+                    despesas={despesasMensais}
+                    salarios={salarios}
+                    setSalarios={setSalarios}
+                  />
+                </div>
+                <div className="flex flex-col md:flex-row md:justify-evenly w-full gap-4">
+                  {/* Salaries Table */}
+                  <div className="flex-1">
+                    <h2 className="text-lg font-semibold prose prose-lg">
+                      Salários
+                    </h2>
+                    <div className="rounded-md border shadow-sm">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Data do Vale</TableHead>
+                            <TableHead>Data do Salário</TableHead>
+                            <TableHead>Valor Total</TableHead>
+                            <TableHead>Responsável</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {salarios.map((salario) => (
+                            <TableRow key={salario.id}>
+                              <TableCell>{salario.diaVale}</TableCell>
+                              <TableCell>{salario.diaSalario}</TableCell>
+                              <TableCell>
+                                {salario.valorTotal.toLocaleString("pt-BR", {
+                                  style: "currency",
+                                  currency: "BRL",
+                                })}
+                              </TableCell>
+                              <TableCell>
+                                {salario.responsavel
+                                  ? salario.responsavel.nome
+                                  : ""}
+                              </TableCell>
+                              <TableCell className="flex gap-2">
+                                <RemoverSalario
+                                  salarios={salarios}
+                                  setSalarios={setSalarios}
+                                  id={salario.id}
+                                />
+                                <EditarSalario
+                                  salarios={salarios}
+                                  setSalarios={setSalarios}
+                                  salario={salario}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+
+                  {/* Monthly Expenses Table */}
+                  <div className="flex-1">
+                    <h2 className="text-lg font-semibold prose prose-lg">
+                      Despesas Mensais
+                    </h2>
+                    <div className="rounded-md border shadow-sm">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Data de Pagamento</TableHead>
+                            <TableHead>Valor Total</TableHead>
+                            <TableHead>Centro de Custo</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {despesasMensais.map((despesa) => (
+                            <TableRow key={despesa.id}>
+                              <TableCell>{despesa.diaPagamento}</TableCell>
+                              <TableCell>
+                                {despesa.valorTotal.toLocaleString("pt-BR", {
+                                  style: "currency",
+                                  currency: "BRL",
+                                })}
+                              </TableCell>
+                              <TableCell>{despesa.centroDeCusto}</TableCell>
+                              <TableCell className="flex gap-2">
+                                <RemoverDialog
+                                  despesas={despesasMensais}
+                                  setDespesas={setDespesasMensais}
+                                  id={despesa.id}
+                                />
+                                <EditarDespesa
+                                  setDespesas={setDespesasMensais}
+                                  despesas={despesasMensais}
+                                  despesa={despesa}
+                                />
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </div>
+                </div>
               </TabsContent>
             </Tabs>
           </div>

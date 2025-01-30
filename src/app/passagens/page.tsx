@@ -25,6 +25,8 @@ import { ViagemProgramda } from "@/lib/types";
 import DialogRemover from "./components/dialog-remover";
 import { parseISO } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
+import { DialogDocumento } from "../viagem-programada/components/dialog-document-ida";
+import VoucherPassagem from "./components/voucher-passagem";
 
 export default function Passagens() {
   const [viagens, setViagens] = useState<ViagemProgramda[]>([]);
@@ -58,16 +60,23 @@ export default function Passagens() {
       handleViagemChange(Number(viagem));
     }
   }, []);
+
+  const totalValorPassagens = viagemSelecionada?.passagens
+    ? viagemSelecionada.passagens.reduce((total, passagem) => {
+        return total + (passagem.valorTotal || 0);
+      }, 0)
+    : 0;
+
   return (
     <section className="bg-[#070180] pt-12 h-[800px]">
-      <div className="h-[700px] w-[90%] md:w-[1400px] mx-auto rounded-md bg-white flex flex-col">
+      <div className="h-[700px] w-[95%] md:w-[1400px] mx-auto rounded-md bg-white flex flex-col">
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">Lista Passagens</p>
         </div>
         <div className="flex pt-10 md:h-screen h-[800px]">
-          <div className="mx-auto md:w-[1000px] ">
-            <div className="flex flex-col md:flex-row gap-4 md:gap-0 items-center justify-between">
-              <form className="flex flex-col gap-2">
+          <div className="mx-auto md:w-[1100px] ">
+            <div className="flex flex-col md:flex-row items-center justify-between">
+              <form className="flex flex-col">
                 <label htmlFor="name" className="font-bold">
                   Busque a Viagem:
                 </label>
@@ -78,7 +87,7 @@ export default function Passagens() {
                   onValueChange={(e) => handleViagemChange(Number(e))}
                   name="tipo"
                 >
-                  <SelectTrigger className="md:w-[200px] w-[255px]">
+                  <SelectTrigger className="md:w-[200px] w-[290px]">
                     <SelectValue placeholder="Selecione a viagem..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -95,7 +104,7 @@ export default function Passagens() {
                   </SelectContent>
                 </Select>
               </form>
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between mt-5">
                 <div className="md:w-[500px] h-[40px] border p-2 rounded-md">
                   <p className="text-center">
                     <strong>ORIGEM: {viagemSelecionada?.saida.local}</strong> -{" "}
@@ -105,10 +114,19 @@ export default function Passagens() {
                   </p>
                 </div>
               </div>
-              <DialogAdicionar
-                viagem={viagemSelecionada!}
-                setViagem={setViagemSeleciona}
-              />
+              <div className="mt-5 flex gap-2">
+                <DialogDocumento
+                  viagemId={viagemSelecionada?.id!}
+                  titulo={viagemSelecionada?.titulo!}
+                  saida={viagemSelecionada?.saida ?? { data: "" }} // Evita undefined
+                  retorno={viagemSelecionada?.retorno ?? { data: "" }} // Evita undefined
+                />
+
+                <DialogAdicionar
+                  viagem={viagemSelecionada!}
+                  setViagem={setViagemSeleciona}
+                />
+              </div>
             </div>
             <Table>
               <TableHeader className="border-b-2">
@@ -123,7 +141,10 @@ export default function Passagens() {
                     Valor Pago
                   </TableHead>
                   <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                    Poltrona
+                    Poltrona IDA
+                  </TableHead>
+                  <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                    Poltrona VOLTA
                   </TableHead>
                   <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                     Situação
@@ -137,7 +158,11 @@ export default function Passagens() {
                       className="hover:bg-gray-200"
                       key={passagem.poltronaIda}
                     >
-                      <TableCell>{passagem.nomePassageiro}</TableCell>
+                      <TableCell>
+                        {passagem.nomePassageiro
+                          ? passagem.nomePassageiro
+                          : "Sem passageiro"}
+                      </TableCell>
                       <TableCell className="hidden sm:table-cell">
                         {format(
                           toZonedTime(parseISO(passagem.dataEmissao), "UTC"),
@@ -148,7 +173,14 @@ export default function Passagens() {
                         {passagem.formaPagamento}
                       </TableCell>
                       <TableCell className="hidden sm:table-cell">
-                        {passagem.poltronaIda}
+                        {passagem.poltronaIda
+                          ? passagem.poltronaIda
+                          : "Apenas volta"}
+                      </TableCell>
+                      <TableCell className="hidden sm:table-cell">
+                        {passagem.poltronaVolta
+                          ? passagem.poltronaVolta
+                          : "Apenas ida"}
                       </TableCell>
                       <TableCell className="hidden sm:table-cell">
                         {passagem.situacao}
@@ -170,6 +202,7 @@ export default function Passagens() {
                             trip={viagemSelecionada}
                             passagem={passagem}
                           />
+                          <VoucherPassagem passagem={passagem} />
                         </div>
                       </TableCell>
                     </TableRow>
@@ -183,6 +216,11 @@ export default function Passagens() {
                 )}
               </TableBody>
             </Table>
+
+            <div className="mt-10">
+              Valor Total em Passagens:{" "}
+              <strong>R$ {totalValorPassagens.toFixed(2)}</strong>
+            </div>
           </div>
         </div>
       </div>

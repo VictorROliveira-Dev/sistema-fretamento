@@ -86,7 +86,7 @@ export function DialogEditar({
     <>
       <Dialog>
         <DialogTrigger>
-          <Button className="bg-blue-800 hover:bg-blue-600">Editar</Button>
+          <span className="bg-blue-800 hover:bg-blue-600 px-5 py-2 text-white text-center rounded-md transition-all">Editar</span>
         </DialogTrigger>
         <DialogContent className="w-[90%] h-[600px] md:h-auto overflow-y-scroll md:overflow-auto">
           <DialogHeader>

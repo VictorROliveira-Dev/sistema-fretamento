@@ -44,6 +44,7 @@ export default function DialogEditar({
   const [cidadesSaida, setCidadesSaida] = useState<Cidade[]>([]);
   const [cidadesVolta, setCidadesVolta] = useState<Cidade[]>([]);
   const [viagem, setViagem] = useState<Viagem>(viagemprop);
+  const [valorParcial, setValorParcial] = useState<number>(0);
   const [editando, setEditando] = useState(false);
   const [veiculos, setVeiculos] = useState<Veiculo[]>([]);
   const [motoristas, setMotoristas] = useState<Motorista[]>([]);
@@ -115,8 +116,26 @@ export default function DialogEditar({
         return;
       }
       const motoristasId = [motorista1, motorista2].filter((m) => m !== 0);
-      setViagem({ ...viagem, motoristasId: motoristasId });
-      const response = await api.put(`viagem/${viagem.id}`, viagem);
+      const request = {
+        rota: viagem.rota,
+        dataHorarioSaida: viagem.dataHorarioSaida,
+        dataHorarioChegada: viagem.dataHorarioChegada,
+        dataHorarioRetorno: viagem.dataHorarioRetorno,
+        dataHorarioSaidaGaragem: viagem.dataHorarioSaidaGaragem,
+        clienteId: viagem.clienteId,
+        tipoServico: viagem.tipoServico,
+        status: viagem.status,
+        tipoPagamento: viagem.tipoPagamento,
+        valorContrado: viagem.valorContratado,
+        itinerario: viagem.itinerario,
+        kmInicialVeiculo: viagem.kmInicialVeiculo,
+        kmFinalVeiculo: viagem.kmFinalVeiculo,
+        veiculoId: viagem.veiculoId,
+        motoristasId: motoristasId,
+        valorParcial: valorParcial,
+      };
+      
+      const response = await api.put(`viagem/${viagem.id}`, request);
       if (!response.data.isSucces) {
         toast.error("Erro ao tentar atualizar viagem.");
         return;
@@ -158,8 +177,7 @@ export default function DialogEditar({
     });
     axios
       .get<Cidade[]>(
-        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
-      )
+`https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`      )
       .then((response) => {
         const sortedCidades = response.data.sort((a, b) =>
           a.nome.localeCompare(b.nome)
@@ -457,7 +475,7 @@ export default function DialogEditar({
                           }
                           name="localsaida"
                           type="text"
-                          placeholder="digite o local de saída"
+                          placeholder="digite o local de saída"
                         />
                       </div>
                       <div>
@@ -609,7 +627,7 @@ export default function DialogEditar({
                           }
                           name="localsaida"
                           type="text"
-                          placeholder="digite o local de saída"
+                          placeholder="digite o local de saída"
                         />
                       </div>
                       <div>
@@ -833,6 +851,15 @@ export default function DialogEditar({
                     </SelectGroup>
                   </SelectContent>
                 </Select>
+              </div>
+              <div>
+                <Label>Valor Parcial</Label>
+                <Input
+                  type="number"
+                  value={valorParcial}
+                  onChange={(e) => setValorParcial(Number(e.target.value))}
+                  disabled={viagem.status !== "CONFIRMADO"}
+                ></Input>
               </div>
             </div>
           </div>

@@ -21,10 +21,7 @@ interface RemoverProps {
   setViagens: React.Dispatch<React.SetStateAction<ViagemProgramda[]>>;
 }
 
-export default function DialogRemover({
-  viagemId,
-  setViagens,
-}: RemoverProps) {
+export default function DialogRemover({ viagemId, setViagens }: RemoverProps) {
   const [removendo, setRemovendo] = useState(false);
   const router = useRouter();
 
@@ -32,9 +29,7 @@ export default function DialogRemover({
     setRemovendo(true);
     try {
       await api.delete(`/viagemprogramada/${id}`);
-      setViagens((prevMotoristas) =>
-        prevMotoristas.filter((m) => m.id !== id)
-      );
+      setViagens((prevMotoristas) => prevMotoristas.filter((m) => m.id !== id));
       toast.success("Viagem removida com sucesso.");
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -53,11 +48,11 @@ export default function DialogRemover({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="bg-red-600 hover:bg-red-500 text-white rounded-md shadow-none px-2 py-1 text-center cursor-pointer transition-all">
-         Remover
+        <span className="bg-red-600 hover:bg-red-500 text-white rounded-md shadow-none px-2 py-1.5 text-center cursor-pointer transition-all">
+          Remover
         </span>
       </DialogTrigger>
-      <DialogContent className="w-[350px] h-[150px] rounded-md flex flex-col items-center">
+      <DialogContent className="w-auto md:w-[450px] h-auto rounded-md flex flex-col items-center">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Deseja remover o pacote de viagem?

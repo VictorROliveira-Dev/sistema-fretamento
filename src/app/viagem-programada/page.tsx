@@ -17,6 +17,7 @@ import { format, toZonedTime } from "date-fns-tz";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import DialogRemover from "./components/dialog-remover";
+import { DialogDocumento } from "./components/dialog-document-ida";
 
 export default function ViagemProgramada() {
   const [viagens, setViagens] = useState<ViagemProgramda[]>([]);
@@ -129,7 +130,8 @@ export default function ViagemProgramada() {
                       </div>
                       <div className="flex gap-1 items-center">
                         <TicketPercent className="text-yellow-600" />
-                        <span>R$ {viagem.valorPassagem}</span>
+                        <span>IDA - R$ {viagem.valorPassagem}</span>
+                        <span>Ida&Volta - R$ {viagem.valorPassagemIdaVolta}</span>
                       </div>
                       <div className="flex gap-2">
                         <DialogEditar

@@ -11,27 +11,27 @@ const logoUrl = "/Logo.png";
 const GeneratePDF = ({ viagem }: GeneratePDFProps) => {
   function dataAtualPorExtenso() {
     const diasDaSemana = [
-      "domingo",
-      "segunda-feira",
-      "terça-feira",
-      "quarta-feira",
-      "quinta-feira",
-      "sexta-feira",
-      "sábado",
+      "Domingo",
+      "Segunda-feira",
+      "Terça-feira",
+      "Quarta-feira",
+      "Quinta-feira",
+      "Sexta-feira",
+      "Sábado",
     ];
     const meses = [
-      "janeiro",
-      "fevereiro",
-      "março",
-      "abril",
-      "maio",
-      "junho",
-      "julho",
-      "agosto",
-      "setembro",
-      "outubro",
-      "novembro",
-      "dezembro",
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
     ];
 
     const hoje = new Date();
@@ -65,7 +65,12 @@ const GeneratePDF = ({ viagem }: GeneratePDFProps) => {
         pageWidth - 60,
         30
       );
-      doc.text(dataAtualPorExtenso(), 140, 38);
+      doc.setFont("Arial", "bold");
+      doc.setFontSize(14);
+      doc.text("CONTRATO", pageWidth / 2, 38, { align: "center" });
+
+
+      doc.text(dataAtualPorExtenso(), 128, 38);
 
       // Contratante com borda e grid
       doc.setLineWidth(0.5);

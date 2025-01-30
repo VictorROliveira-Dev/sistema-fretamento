@@ -8,13 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import {
-  CalendarDays,
-  MapPin,
-  Bus,
-  CreditCard,
-  User2,
-} from "lucide-react";
+import { CalendarDays, MapPin, Bus, CreditCard, User2 } from "lucide-react";
 import { Passagem, ViagemProgramda } from "@/lib/types";
 import { parseISO } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
@@ -35,8 +29,8 @@ export default function DialogInformacoes({ trip, passagem }: TripDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="bg-transparent hover:bg-white font-medium transition-all px-4 py-1 border-2 border-gray-300 rounded-md cursor-pointer">
-          Ver Detalhes da Viagem
+        <span className="bg-transparent hover:bg-white font-medium transition-all px-4 py-1.5 border-2 border-gray-300 rounded-md cursor-pointer">
+          Detalhes
         </span>
       </DialogTrigger>
       <DialogContent className="max-w-3xl max-h-[90vh]">
@@ -131,12 +125,22 @@ export default function DialogInformacoes({ trip, passagem }: TripDialogProps) {
               <div className="p-4 bg-muted rounded-lg">
                 <p>
                   <span className="font-semibold">Tipo da Passagem:</span>{" "}
-                  {passagem.tipo === "IDA" ? "Somente Ida" : "Ida e volta"}
+                  {passagem.tipo === "IDA"
+                    ? "Somente Ida"
+                    : passagem.tipo === "IDA-VOLTA"
+                    ? "Ida e Volta"
+                    : "Somente Volta"}
                 </p>
                 <p>
                   <span className="font-semibold">Valor da Passagem:</span>{" "}
-                  {formatCurrency(passagem.valorTotal)}
+                  {formatCurrency(
+                    passagem.valorPersonalizado &&
+                      passagem.valorPersonalizado > 0
+                      ? passagem.valorPersonalizado
+                      : passagem.valorTotal
+                  )}
                 </p>
+
                 <p>
                   <span className="font-semibold">Forma de Pagamento:</span>{" "}
                   {trip.formaPagto}
@@ -157,7 +161,7 @@ export default function DialogInformacoes({ trip, passagem }: TripDialogProps) {
                   </p>
                   <p>
                     <span className="font-semibold">Placa:</span>{" "}
-                    {trip.veiculo.placa}
+                    {trip.veiculo.placa.toUpperCase()}
                   </p>
                 </div>
               </div>

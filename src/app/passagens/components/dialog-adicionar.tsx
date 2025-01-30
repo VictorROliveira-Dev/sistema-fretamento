@@ -69,7 +69,7 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
       }
       if (
         (passagem.tipo === "IDA" && passagem.poltronaVolta) ||
-        passagem.poltronaIda == undefined
+        (passagem.tipo === "IDA" && passagem.poltronaIda == undefined)
       ) {
         toast(
           "selecione somente a passagem de ida ou altere o tipo da passagem para ida e volta"
@@ -124,11 +124,11 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="bg-green-600 hover:bg-green-500 w-[255px] text-center px-4 py-1 rounded-md text-white transition-all cursor-pointer">
+        <span className="bg-green-600 hover:bg-green-500 w-[200px] text-center px-4 py-2 rounded-md text-white transition-all cursor-pointer">
           Adicionar Passagem
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-[1200px] h-[600px] flex flex-col items-center overflow-scroll">
+      <DialogContent className="md:w-[1200px] h-[600px] md:h-[700px] flex flex-col items-center overflow-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Cadastro de Passagem</DialogTitle>
         </DialogHeader>
@@ -192,9 +192,9 @@ export default function DialogAdicionar({ viagem, setViagem }: AdicionarProps) {
               <label htmlFor="passageiro">Parada Passageiro:</label>
               <Input
                 onChange={(e) =>
-                  setPassagem({ ...passagem, cidadePassageiro: e.target.value })
+                  setPassagem({ ...passagem, paradaPassageiro: e.target.value })
                 }
-                value={passagem.cidadePassageiro}
+                value={passagem.paradaPassageiro}
                 type="text"
               />
             </div>

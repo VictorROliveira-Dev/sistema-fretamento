@@ -25,16 +25,7 @@ export interface Fornecedor extends Responsavel {
   nomeFantasia: string;
 }
 
-export interface Colaborador {
-  id: number;
-  nome: string;
-  dataNascimento: string;
-  telefone: string;
-  documento: Documento;
-  endereco: Endereco;
-  cpf: string;
-  cartao: string;
-  matricula: string;
+export interface Colaborador extends Responsavel {
   ferias: Ferias[];
 }
 
@@ -275,6 +266,22 @@ export interface Passagem {
   poltronaVolta?: number;
   situacao: string;
   tipo: string;
+}
+
+export interface DespesaMensal {
+  id: number;
+  diaPagamento: number;
+  valorTotal: number;
+  centroDeCusto: string;
+}
+
+export interface Salario {
+  id: number;
+  diaVale: number;
+  diaSalario: number;
+  valorTotal: number;
+  responsavelId: number;
+  responsavel?: Responsavel;
 }
 
 export interface PagamentoDespesa {

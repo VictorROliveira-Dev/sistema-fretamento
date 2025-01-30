@@ -47,7 +47,7 @@ export default function DialogEditar({
     console.log(passagem);
     setPassagem((prevPassagem) => ({
       ...prevPassagem,
-      viagemId: viagem.id, // Certifique-se de que viagem.id é correto
+      viagemId: viagem.id, 
     }));
   }, [viagem]);
 
@@ -55,9 +55,9 @@ export default function DialogEditar({
     try {
       setLoading(true);
       const response = await api.put(`/passagem/${passagem.id}`, passagem);
-
+      console.log(response.data.data);
       if (!response.data.isSucces) {
-        toast("erro ao tentar registrar passagem");
+        toast("Erro ao tentar atualizar passagem");
         return;
       }
 
@@ -69,7 +69,7 @@ export default function DialogEditar({
         ...viagem,
         passagens: [...passagensAtualizadas!, response.data.data],
       });
-      toast("registrada com sucesso");
+      toast("Atualizado com sucesso");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.status === 401) {
@@ -139,7 +139,7 @@ export default function DialogEditar({
             </div>
 
             <div>
-              <label htmlFor="viagem">telefonePassageiro:</label>
+              <label htmlFor="viagem">Telefone Passageiro:</label>
               <Input
                 onChange={(e) =>
                   setPassagem({
@@ -148,6 +148,32 @@ export default function DialogEditar({
                   })
                 }
                 value={passagem.telefonePassageiro}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="viagem">Cidade:</label>
+              <Input
+                onChange={(e) =>
+                  setPassagem({
+                    ...passagem,
+                    cidadePassageiro: e.target.value,
+                  })
+                }
+                value={passagem.cidadePassageiro}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="viagem">Parada Passageiro:</label>
+              <Input
+                onChange={(e) =>
+                  setPassagem({
+                    ...passagem,
+                    paradaPassageiro: e.target.value,
+                  })
+                }
+                value={passagem.paradaPassageiro}
               />
             </div>
 
@@ -213,8 +239,8 @@ export default function DialogEditar({
                 src={loadingIcon}
                 alt="loading"
                 className="text-center animate-spin"
-                width={50}
-                height={50}
+                width={30}
+                height={30}
               />
             ) : (
               "Atualizar"

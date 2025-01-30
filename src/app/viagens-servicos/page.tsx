@@ -228,7 +228,7 @@ export default function ViagensServicos() {
                           {viagem.veiculo?.prefixo}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
-                          {viagem.cliente?.nome}
+                          {viagem.cliente?.nome.substring(0,15)}...
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
                           {viagem.rota.saida.cidadeSaida}

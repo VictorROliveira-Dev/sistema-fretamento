@@ -30,7 +30,7 @@ import { parseISO } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
 import loading from "../../assets/loading.svg";
 import GeneratePDF from "./contrato";
-import { AdicionarDespesa } from "../components/dialog-adicionar-despesa";
+import { AdicionarDespesa } from "./dialog-adicionar-despesa";
 import Link from "next/link";
 
 interface TravelDialogProps {
@@ -46,7 +46,7 @@ interface ViagemResponse {
 }
 
 export function TravelDialog({ viagem }: TravelDialogProps) {
-  const [viagemCompleta, ] = useState<Viagem>(viagem);
+  const [viagemCompleta, setViagemCompleta] = useState<Viagem>(viagem);
   const [viagemResponse, setViagemResponse] = useState<ViagemResponse>({
     viagem: viagem,
     despesas: [],
@@ -242,7 +242,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   ))}
                 </div>
                 <div>
-                  <Label>Vehicle</Label>
+                  <Label>Veículo</Label>
                   <p className="text-sm text-muted-foreground">
                     {viagemResponse.viagem.veiculo?.prefixo} -{" "}
                     {viagemResponse.viagem.veiculo?.placa}
@@ -291,7 +291,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   <span>
                     {viagemResponse.viagem.adiantamento
                       ? formatCurrency(
-                          viagemResponse.viagem.adiantamento.diferenca
+                          viagemResponse.viagem.adiantamento.valorDeAcerto
                         )
                       : "0,00 R$"}
                   </span>
@@ -389,13 +389,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   {viagemResponse.viagem.receita ? (
                     <TableRow>
                       <TableCell>
-                      {format(
-                      toZonedTime(
-                        parseISO(viagemResponse.viagem.receita.dataCompra),
-                        "UTC"
-                      ),
-                      "dd/MM/yyyy"
-                    )}
+                        {viagemResponse.viagem.receita.dataCompra}
                       </TableCell>
                       <TableCell>
                         {formatCurrency(
@@ -437,7 +431,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                 </TableHeader>
                 <TableBody>
                   {viagemResponse.viagem.abastecimentos.map((abastecimento) => (
-                    <TableRow key={abastecimento.id}>
+                    <TableRow>
                       <TableCell>{abastecimento.litros}</TableCell>
                       <TableCell>
                         {formatCurrency(
@@ -466,7 +460,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                     <Input
                       id="valorTotal"
                       name="valorTotal"
-                      defaultValue={abastecimento?.valorTotal ? abastecimento.valorTotal : ""}
+                      defaultValue={abastecimento?.valorTotal}
                       onChange={(e) =>
                         setAbastecimento({
                           ...abastecimento!,
@@ -484,7 +478,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                       name="litros"
                       type="number"
                       step="0.01"
-                      defaultValue={abastecimento?.litros ? abastecimento.litros : ""}
+                      defaultValue={abastecimento?.litros}
                       required
                       onChange={(e) =>
                         setAbastecimento({

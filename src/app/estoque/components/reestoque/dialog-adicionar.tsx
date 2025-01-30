@@ -98,6 +98,7 @@ export default function DialogAdicionar({
       }
 
       setReestoques([...reestoques, response.data.data]);
+      console.log(response.data.data);  
       toast("Registrado com sucesso");
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -115,11 +116,11 @@ export default function DialogAdicionar({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <span className="bg-green-600 hover:bg-green-500 w-[160px] md:w-[200px] p-1 text-center rounded-md text-white cursor-pointer transition-all">
+        <span className="bg-green-600 hover:bg-green-500 w-[160px] md:w-[200px] p-1 text-sm md:text-base text-center rounded-md text-white cursor-pointer transition-all">
           Registrar Reestoque
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-max h-[90%] md:h-[80%] flex flex-col items-center overflow-y-scroll md:overflow-auto">
+      <DialogContent className="md:w-max h-[90%] md:h-auto flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">Reestoque de Peça</DialogTitle>
         </DialogHeader>

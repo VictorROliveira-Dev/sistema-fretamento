@@ -94,7 +94,7 @@ export function DialogAdicionar() {
             Adicionar Novo Pacote
           </span>
         </DialogTrigger>
-        <DialogContent className="md:w-[90%] h-auto overflow-y-scroll md:overflow-auto">
+        <DialogContent className="md:w-[90%] h-[600px] md:h-auto overflow-y-scroll md:overflow-auto">
           <DialogHeader>
             <DialogTitle className="text-center font-semibold">
               Novo Pacote de Viagem
