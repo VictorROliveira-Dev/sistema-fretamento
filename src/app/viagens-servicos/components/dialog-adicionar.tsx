@@ -159,7 +159,7 @@ export default function DialogAdicionar({
       tipoServico: viagem.tipoServico,
       status: viagem.status,
       tipoPagamento: viagem.tipoPagamento,
-      valorContrado: viagem.valorContratado,
+      valorContratado: viagem.valorContratado,
       itinerario: viagem.itinerario,
       kmInicialVeiculo: viagem.kmInicialVeiculo,
       kmFinalVeiculo: viagem.kmFinalVeiculo,
