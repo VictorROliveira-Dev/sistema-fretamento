@@ -73,7 +73,7 @@ export default function Passagens() {
         <div className="bg-black w-full">
           <p className="font-bold text-white text-center">Lista Passagens</p>
         </div>
-        <div className="flex pt-10 md:h-screen h-[800px]">
+        <div className="flex pt-10 md:h-screen h-[800px] overflow-y-scroll">
           <div className="mx-auto md:w-[1100px] ">
             <div className="flex flex-col md:flex-row items-center justify-between">
               <form className="flex flex-col">
