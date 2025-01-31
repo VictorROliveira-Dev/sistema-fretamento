@@ -265,11 +265,7 @@ export function DialogDocumento({
       doc.setFontSize(10);
       doc.setTextColor(0);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      doc.text(
-        `Total de Passageiros: ${totalPassengers}`,
-        14,
-        (doc as any).lastAutoTable.finalY + 10
-      );
+      doc.text(`Total de Passageiros: ${totalPassengers}`, 14, (doc as any).lastAutoTable.finalY + 10);
 
       // Salvar o PDF
       doc.save(

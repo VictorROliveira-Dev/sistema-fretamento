@@ -395,7 +395,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
                   {viagemResponse.viagem.receita ? (
                     viagemResponse.viagem.receita.pagamentos.map(
                       (pagamento) => (
-                        <TableRow>
+                        <TableRow key={pagamento.id}>
                           <TableCell>
                             {" "}
                             {format(
