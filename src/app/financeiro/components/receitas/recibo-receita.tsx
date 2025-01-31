@@ -124,8 +124,7 @@ const GeneratePDF = ({ receita }: GeneratePdfProps) => {
           formatCurrency(pagamento.valorPago),
         ]);
 
-        // @ts-ignore - jspdf-autotable types
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // @ts-expect-error - jspdf-autotable types
         doc.autoTable({
           startY: yPosition,
           head: headers,
