@@ -125,6 +125,7 @@ const GeneratePDF = ({ receita }: GeneratePdfProps) => {
         ]);
 
         // @ts-ignore - jspdf-autotable types
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         doc.autoTable({
           startY: yPosition,
           head: headers,
@@ -133,10 +134,12 @@ const GeneratePDF = ({ receita }: GeneratePdfProps) => {
           styles: { fontSize: 10 },
           columnStyles: { 1: { halign: "right", cellWidth: 60 } },
           tableWidth: "wrap",
+          /* eslint-disable @typescript-eslint/no-explicit-any */
           didDrawPage: (data: any) => {
             yPosition = data.cursor.y;
           },
         });
+        /* eslint-enable @typescript-eslint/no-explicit-any */
 
         // Total after table
         doc

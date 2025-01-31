@@ -13,7 +13,7 @@ interface GeneratePdfProps {
 }
 
 const GeneratePDF = ({ receita, pagamento }: GeneratePdfProps) => {
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
 
   function dataAtualPorExtenso() {
     const diasDaSemana = [
