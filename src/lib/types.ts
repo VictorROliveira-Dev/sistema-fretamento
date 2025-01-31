@@ -280,6 +280,7 @@ export interface Salario {
   diaVale: number;
   diaSalario: number;
   valorTotal: number;
+  valorVale: number;
   responsavelId: number;
   responsavel?: Responsavel;
 }

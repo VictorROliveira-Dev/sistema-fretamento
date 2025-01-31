@@ -95,7 +95,7 @@ export default function ViagemProgramada() {
               />
             </div>
           ) : (
-            <div className="flex flex-col items-center md:flex-row justify-center md:justify-start gap-2 p-4">
+            <div className="flex flex-col items-center md:flex-wrap md:flex-row justify-center gap-2 p-4">
               {filtroViagens.length > 0 ? (
                 filtroViagens.map((viagem) => (
                   <Card className="p-4 w-[300px]" key={viagem.id}>

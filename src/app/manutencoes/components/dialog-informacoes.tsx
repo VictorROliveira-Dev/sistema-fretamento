@@ -25,6 +25,8 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { parseISO } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 
 interface Info {
   manutencao: Manutencao;
@@ -34,7 +36,6 @@ interface Info {
 export function DialogInfo({ manutencao, onClose }: Info) {
   const [despesa, setDespesa] = useState<Despesa | null>();
   const router = useRouter();
-  const formatDate = (date: string) => new Date(date).toLocaleDateString();
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat("pt-BR", {
       style: "currency",
@@ -64,7 +65,6 @@ export function DialogInfo({ manutencao, onClose }: Info) {
   useEffect(() => {
     fetch();
   });
- 
 
   return (
     <Dialog open={true}>
@@ -90,12 +90,12 @@ export function DialogInfo({ manutencao, onClose }: Info) {
                 Informações Principais
               </h3>
               {manutencao.kmRealizada ? (
-                <Badge className="bg-green-600">Realizada</Badge>
+                <Badge className="bg-green-600 select-none">Realizada</Badge>
               ) : (
                 <Badge className="bg-blue-600">Prevista</Badge>
               )}
 
-              <div className="grid gap-3">
+              <div className="grid gap-3 mt-3">
                 <div className="flex items-center gap-2">
                   <Tag className="h-4 w-4 text-muted-foreground" />
                   <span>Tipo: {manutencao ? manutencao.tipo : " "}</span>
@@ -121,21 +121,42 @@ export function DialogInfo({ manutencao, onClose }: Info) {
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <span>
                     Lançamento:{" "}
-                    {manutencao ? formatDate(manutencao.dataLancamento) : " "}
+                    {manutencao
+                      ? format(
+                          toZonedTime(
+                            parseISO(manutencao.dataLancamento),
+                            "UTC"
+                          ),
+                          "dd/MM/yyyy"
+                        )
+                      : " "}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span>
                     Data Prevista:{" "}
-                    {manutencao ? formatDate(manutencao.dataPrevista) : ""}
+                    {manutencao
+                      ? format(
+                          toZonedTime(parseISO(manutencao.dataPrevista), "UTC"),
+                          "dd/MM/yyyy"
+                        )
+                      : ""}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span>
                     Realizada:{" "}
-                    {manutencao ? formatDate(manutencao.dataRealizada) : ""}
+                    {manutencao
+                      ? format(
+                          toZonedTime(
+                            parseISO(manutencao.dataRealizada),
+                            "UTC"
+                          ),
+                          "dd/MM/yyyy"
+                        )
+                      : ""}
                   </span>
                 </div>
               </div>
@@ -185,7 +206,7 @@ export function DialogInfo({ manutencao, onClose }: Info) {
                   <span>
                     Veículo:{" "}
                     {manutencao.veiculo ? manutencao.veiculo.prefixo : ""} -{" "}
-                    {manutencao.veiculo ? manutencao.veiculo.placa : ""}
+                    {manutencao.veiculo ? manutencao.veiculo.placa.toUpperCase() : ""}
                   </span>
                 </div>
               </div>

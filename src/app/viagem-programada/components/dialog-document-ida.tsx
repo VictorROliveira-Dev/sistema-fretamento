@@ -43,6 +43,8 @@ export function DialogDocumento({
         ? passenger.poltronaVolta?.toString() || "Sem poltrona"
         : "",
       "", // Aqui estamos garantindo que o campo "Fardo/Meio" sempre será vazio
+      "",
+      passenger.situacao || "Não informado",
     ];
 
     if (includeReturnSeat) {
@@ -70,27 +72,27 @@ export function DialogDocumento({
 
       console.log(passengers);
 
-      // Separar passageiros por tipo de viagem
-      const oneWayPassengers = passengers.filter((p) => p.tipo === "IDA");
-      const roundTripPassengers = passengers.filter(
-        (p) => p.tipo === "IDA-VOLTA"
-      );
-      const returnOnOnlyPassengers = passengers.filter(
-        (p) => p.tipo === "VOLTA"
-      );
+      // Separar passageiros por tipo de viagem e ordenar
+      const oneWayPassengers = passengers
+        .filter((p) => p.tipo === "IDA")
+        .sort(
+          (a, b) => (a.poltronaIda ?? Infinity) - (b.poltronaIda ?? Infinity)
+        );
+      const roundTripPassengers = passengers
+        .filter((p) => p.tipo === "IDA-VOLTA")
+        .sort(
+          (a, b) => (a.poltronaIda ?? Infinity) - (b.poltronaIda ?? Infinity)
+        );
+      const returnOnOnlyPassengers = passengers
+        .filter((p) => p.tipo === "VOLTA")
+        .sort(
+          (a, b) =>
+            (a.poltronaVolta ?? Infinity) - (b.poltronaVolta ?? Infinity)
+        );
 
       const doc = new jsPDF();
 
-      // Configurar estilos comuns
-      const oneWayColumns = [
-        "Nome",
-        "Cidade",
-        "CPF",
-        "Parada",
-        "Poltrona (IDA)",
-        "Fardo/Meio",
-      ];
-
+      // Configurar estilos Poltrona IDA - VOLTA
       const roundTripColumns = [
         "Nome",
         "Cidade",
@@ -98,7 +100,9 @@ export function DialogDocumento({
         "Parada",
         "Poltrona (IDA)",
         "Poltrona (VOLTA)",
-        "Fardo/Meio",
+        "Fardo",
+        "Meio",
+        "Situação",
       ];
 
       const commonStyles = {
@@ -134,6 +138,27 @@ export function DialogDocumento({
       doc.text(`Data de Retorno: ${formatDate(retorno?.data)}`, 14, 30);
 
       // Seção de passageiros somente IDA
+      const returnOnlyWayColumns = [
+        "Nome",
+        "Cidade",
+        "CPF",
+        "Parada",
+        "Poltrona (IDA)",
+        "Fardo",
+        "Meio",
+        "Situação",
+      ];
+
+      const returnOnlyWayRows = oneWayPassengers.map((passengers) => [
+        passengers.nomePassageiro || "Não informado",
+        passengers.cidadePassageiro || "Não informado",
+        passengers.cpfPassageiro.toString() || "Não informado",
+        passengers.paradaPassageiro || "Não informado",
+        passengers.poltronaIda?.toString() || "Não informado",
+        "",
+        "",
+        passengers.situacao || "Não informado",
+      ]);
       let currentY = 40;
 
       if (oneWayPassengers.length > 0) {
@@ -145,13 +170,9 @@ export function DialogDocumento({
           currentY
         );
 
-        const oneWayRows = oneWayPassengers.map((passenger) =>
-          formatPassengerRow(passenger, false)
-        );
-
         autoTable(doc, {
-          head: [oneWayColumns],
-          body: oneWayRows,
+          head: [returnOnlyWayColumns],
+          body: returnOnlyWayRows,
           startY: currentY + 5,
           theme: "grid",
           styles: commonStyles,
@@ -197,7 +218,9 @@ export function DialogDocumento({
         "CPF",
         "Parada",
         "Poltrona (VOLTA)",
-        "Fardo/Meio",
+        "Fardo",
+        "Meio",
+        "Situação",
       ];
 
       // SEÇÃO DE APENAS VOLTA
@@ -216,6 +239,9 @@ export function DialogDocumento({
           passengers.cpfPassageiro.toString() || "Não informado",
           passengers.paradaPassageiro || "Não informado",
           passengers.poltronaVolta?.toString() || "Não informado",
+          "",
+          "",
+          passengers.situacao || "Não informado",
         ]);
 
         autoTable(doc, {
@@ -238,9 +264,13 @@ export function DialogDocumento({
       const totalPassengers = passengers.length;
       doc.setFontSize(10);
       doc.setTextColor(0);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-      doc.text(`Total de Passageiros: ${totalPassengers}`, 14, (doc as any).lastAutoTable.finalY + 10);
-      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      doc.text(
+        `Total de Passageiros: ${totalPassengers}`,
+        14,
+        (doc as any).lastAutoTable.finalY + 10
+      );
+
       // Salvar o PDF
       doc.save(
         `lista_passageiros_${titulo.toLowerCase().replace(/\s+/g, "_")}.pdf`

@@ -1,10 +1,11 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { jsPDF } from "jspdf";
-import "jspdf-autotable";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import documentIcon from "@/app/assets/documentos.svg";
 import { IReceitas, Pagamento } from "@/lib/types";
+import { format, parseISO } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 interface GeneratePdfProps {
   receita: IReceitas;
@@ -12,32 +13,31 @@ interface GeneratePdfProps {
 }
 
 const GeneratePDF = ({ receita, pagamento }: GeneratePdfProps) => {
-  const frontRef = useRef<HTMLDivElement | null>(null);
   const [loading, setLoading] = useState(false);
 
   function dataAtualPorExtenso() {
     const diasDaSemana = [
-      "domingo",
-      "segunda-feira",
-      "terça-feira",
-      "quarta-feira",
-      "quinta-feira",
-      "sexta-feira",
-      "sábado",
+      "Domingo",
+      "Segunda-feira",
+      "Terça-feira",
+      "Quarta-feira",
+      "Quinta-feira",
+      "Sexta-feira",
+      "Sábado",
     ];
     const meses = [
-      "janeiro",
-      "fevereiro",
-      "março",
-      "abril",
-      "maio",
-      "junho",
-      "julho",
-      "agosto",
-      "setembro",
-      "outubro",
-      "novembro",
-      "dezembro",
+      "Janeiro",
+      "Fevereiro",
+      "Março",
+      "Abril",
+      "Maio",
+      "Junho",
+      "Julho",
+      "Agosto",
+      "Setembro",
+      "Outubro",
+      "Novembro",
+      "Dezembro",
     ];
 
     const hoje = new Date();
@@ -49,427 +49,305 @@ const GeneratePDF = ({ receita, pagamento }: GeneratePdfProps) => {
     return `${diaSemana}, ${dia} de ${mes} de ${ano}`;
   }
 
+  const formatCurrency = (value: number) =>
+    value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
   const handleDownload = async () => {
     setLoading(true);
-
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "px",
       format: "a4",
     });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let yPosition = 20;
 
-    const frontContent = frontRef.current;
+    try {
+      // Add logo
+      const logoUrl = "/logo.png";
+      doc.addImage(logoUrl, "PNG", 20, yPosition, 100, 20);
 
-    if (frontContent instanceof HTMLElement) {
-      try {
-        // Exibe o conteúdo da frente
-        frontContent.style.display = "block";
-        await doc.html(frontContent, {
-          autoPaging: "text",
-          x: 10,
-          y: 10,
-          width: 200,
-          html2canvas: {
-            scale: 0.8,
-          },
-        });
+      // Client Info
+      doc.setFont("Arial", "normal");
+      doc.setFontSize(10);
+      doc.text(
+        `Nome: ${receita.viagem?.cliente?.nome || "sem nome"}`,
+        200,
+        yPosition + 10
+      );
+      doc.text(
+        `CPF/CNPJ: ${receita.viagem?.cliente?.cpf || "sem cpf"}`,
+        200,
+        yPosition + 20
+      );
+      doc.text(
+        `Endereço: ${receita.viagem?.cliente?.endereco.cidade || ""}`,
+        200,
+        yPosition + 30
+      );
 
-        // Adiciona uma nova página no PDF
-        doc.addPage();
+      // Contract Info
+      doc.text(
+        `Número: ${receita.viagem?.id || "0"}`,
+        pageWidth - 80,
+        yPosition + 10
+      );
+      doc.text(
+        `Valor: ${formatCurrency(pagamento.valorPago)}`,
+        pageWidth - 80,
+        yPosition + 20
+      );
 
-        // Finaliza o processo e salva o PDF
-        doc.save("Contrato_de_Fretamento.pdf");
+      yPosition += 50;
 
-        // Oculta novamente os conteúdos
-        frontContent.style.display = "none";
-      } catch (error) {
-        console.error("Erro ao gerar o PDF:", error);
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      console.error("Content is not an HTML element.");
+      // Itinerary Section
+      doc.setFontSize(12);
+      doc.text("VIAGEM / ITINERÁRIO", 20, yPosition);
+      yPosition += 10;
+
+      // Border
+      doc.rect(20, yPosition, pageWidth - 40, 100);
+
+      // Itinerary Content
+      const formatDate = (date: string, time: string) =>
+        `${format(
+          toZonedTime(parseISO(date), "UTC"),
+          "dd/MM/yyyy"
+        )} às ${time}`;
+
+      // First Row
+      doc.text("Saída:", 25, yPosition + 15);
+      doc.text(
+        receita.viagem?.dataHorarioSaida.data
+          ? formatDate(
+              receita.viagem.dataHorarioSaida.data,
+              receita.viagem.dataHorarioSaida.hora
+            )
+          : "/ /  às :",
+        60,
+        yPosition + 15
+      );
+
+      doc.text("Retorno:", 300, yPosition + 15);
+      doc.text(
+        receita.viagem?.dataHorarioRetorno.data
+          ? formatDate(
+              receita.viagem.dataHorarioRetorno.data,
+              receita.viagem.dataHorarioRetorno.hora
+            )
+          : "/ /  às :",
+        340,
+        yPosition + 15
+      );
+
+      // Second Row
+      doc.text("Origem:", 25, yPosition + 30);
+      doc.text(
+        receita.viagem?.rota.saida.cidadeSaida || "",
+        60,
+        yPosition + 30
+      );
+      doc.text("Destino:", 300, yPosition + 30);
+      doc.text(
+        receita.viagem?.rota.retorno.cidadeSaida || "",
+        330,
+        yPosition + 30
+      );
+
+      // Third Row
+      doc.text("Local Saída:", 25, yPosition + 45);
+      doc.text(
+        receita.viagem?.rota.saida.localDeSaida || "",
+        85,
+        yPosition + 45
+      );
+      doc.text("Local Retorno:", 300, yPosition + 45);
+      doc.text(
+        receita.viagem?.rota.retorno.localDeSaida || "",
+        360,
+        yPosition + 45
+      );
+
+      // Vehicle Info
+      doc.text("Veículo/Tipo:", 25, yPosition + 60);
+      doc.text(receita.viagem?.veiculo?.tipo || "", 80, yPosition + 60);
+
+      yPosition += 110;
+
+      // Payment Info
+      doc.setFontSize(10);
+      const paymentText = [
+        `Recebemos a quantia de ${formatCurrency(pagamento.valorPago)}`,
+        `referente ao contrato ${
+          receita.viagemId
+        } com valor de ${formatCurrency(receita.valorTotal)}`,
+      ];
+      paymentText.forEach((line, index) => {
+        doc.text(line, 20, yPosition + index * 10);
+      });
+
+      yPosition += 40;
+
+      // Signature Section
+      doc.text("Irecê-Ba", 20, yPosition);
+      doc.text(dataAtualPorExtenso(), 20, yPosition + 10);
+      doc.line(pageWidth - 100, yPosition, pageWidth - 20, yPosition);
+      doc.text("Contratada", pageWidth - 100, yPosition + 10);
+
+      // Add separator line
+      yPosition += 40;
+      doc.setLineWidth(0.5);
+      doc.setDrawColor(0);
+      doc.line(20, yPosition, pageWidth - 20, yPosition);
+
+      // Duplicate Section (Segunda Via)
+      yPosition += 20;
+      doc.setFontSize(8);
+      doc.text("SEGUNDA VIA", pageWidth - 50, yPosition);
+
+      doc.addImage(logoUrl, "PNG", 20, yPosition, 100, 20);
+
+      // Client Info
+      doc.setFont("Arial", "normal");
+      doc.setFontSize(10);
+      doc.text(
+        `Nome: ${receita.viagem?.cliente?.nome || "sem nome"}`,
+        200,
+        yPosition + 10
+      );
+      doc.text(
+        `CPF/CNPJ: ${receita.viagem?.cliente?.cpf || "sem cpf"}`,
+        200,
+        yPosition + 20
+      );
+      doc.text(
+        `Endereço: ${receita.viagem?.cliente?.endereco.cidade || ""}`,
+        200,
+        yPosition + 30
+      );
+
+      // Contract Info
+      doc.text(
+        `Número: ${receita.viagem?.id || "0"}`,
+        pageWidth - 80,
+        yPosition + 10
+      );
+      doc.text(
+        `Valor: ${formatCurrency(pagamento.valorPago)}`,
+        pageWidth - 80,
+        yPosition + 20
+      );
+
+      yPosition += 50;
+
+      // Itinerary Section
+      doc.setFontSize(12);
+      doc.text("VIAGEM / ITINERÁRIO", 20, yPosition);
+      yPosition += 10;
+
+      // Border
+      doc.rect(20, yPosition, pageWidth - 40, 100);
+
+      // Itinerary Content
+
+      // First Row
+      doc.text("Saída:", 25, yPosition + 15);
+      doc.text(
+        receita.viagem?.dataHorarioSaida.data
+          ? formatDate(
+              receita.viagem.dataHorarioSaida.data,
+              receita.viagem.dataHorarioSaida.hora
+            )
+          : "/ /  às :",
+        60,
+        yPosition + 15
+      );
+
+      doc.text("Retorno:", 300, yPosition + 15);
+      doc.text(
+        receita.viagem?.dataHorarioRetorno.data
+          ? formatDate(
+              receita.viagem.dataHorarioRetorno.data,
+              receita.viagem.dataHorarioRetorno.hora
+            )
+          : "/ /  às :",
+        340,
+        yPosition + 15
+      );
+
+      // Second Row
+      doc.text("Origem:", 25, yPosition + 30);
+      doc.text(
+        receita.viagem?.rota.saida.cidadeSaida || "",
+        60,
+        yPosition + 30
+      );
+      doc.text("Destino:", 300, yPosition + 30);
+      doc.text(
+        receita.viagem?.rota.retorno.cidadeSaida || "",
+        330,
+        yPosition + 30
+      );
+
+      // Third Row
+      doc.text("Local Saída:", 25, yPosition + 45);
+      doc.text(
+        receita.viagem?.rota.saida.localDeSaida || "",
+        85,
+        yPosition + 45
+      );
+      doc.text("Local Retorno:", 300, yPosition + 45);
+      doc.text(
+        receita.viagem?.rota.retorno.localDeSaida || "",
+        360,
+        yPosition + 45
+      );
+
+      // Vehicle Info
+      doc.text("Veículo/Tipo:", 25, yPosition + 60);
+      doc.text(receita.viagem?.veiculo?.tipo || "", 80, yPosition + 60);
+
+      yPosition += 110;
+
+      // Payment Info
+      doc.setFontSize(10);
+      paymentText.forEach((line, index) => {
+        doc.text(line, 20, yPosition + index * 10);
+      });
+
+      yPosition += 40;
+
+      // Signature Section
+      doc.text("Irecê-Ba", 20, yPosition);
+      doc.text(dataAtualPorExtenso(), 20, yPosition + 10);
+      doc.line(pageWidth - 100, yPosition, pageWidth - 20, yPosition);
+      doc.text("Cliente", pageWidth - 100, yPosition + 10);
+
+      // Add separator line
+      yPosition += 40;
+      doc.setLineWidth(0.5);
+      doc.setDrawColor(0);
+      doc.line(20, yPosition, pageWidth - 20, yPosition);
+
+      // Duplicate Section (Segunda Via)
+      yPosition += 20;
+      doc.setFontSize(8);
+
+      doc.save("Contrato_de_Fretamento.pdf");
+    } catch (error) {
+      console.error("Erro ao gerar o PDF:", error);
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className={loading ? "absolute w-[525px] " : ""}>
-      {/* Front Content */}
-      <div ref={frontRef} style={{ display: "none" }}>
-        {/* Conteúdo da Frente */}
-        <div
-          style={{
-            fontFamily: "Arial, sans-serif",
-            fontSize: "10px",
-            padding: "20px",
-            border: "1px solid #000",
-            maxWidth: "525px",
-            height: "auto",
-          }}
-        >
-          {/* Cabeçalho */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "20px",
-              height: "auto",
-            }}
-          >
-            <img
-              src="/logo.png"
-              alt="Marcelo Turismo"
-              style={{ width: "200px" }}
-            />
-            <div>
-              <p>
-                Nome:{" "}
-                <strong>
-                  {receita.viagem ? receita.viagem.cliente?.nome : "sem nome"}
-                </strong>
-              </p>
-              <p>
-                cpf/cnpj:{" "}
-                <strong>
-                  {receita.viagem ? receita.viagem.cliente?.cpf : "sem cpf"}
-                </strong>
-              </p>
-              <p>
-                endereco:{" "}
-                <strong>
-                  {receita.viagem
-                    ? receita.viagem.cliente?.endereco.cidade
-                    : "sem cpf"}
-                </strong>
-              </p>
-            </div>
-            <div>
-              <p>
-                Número:{" "}
-                <strong>{receita.viagem ? receita.viagem.id : "0"}</strong>
-              </p>
-              <p>
-                Valor:{" "}
-                <strong>
-                  {pagamento.valorPago.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
-                </strong>
-              </p>
-            </div>
-          </div>
-
-          {/* Itinerário */}
-          <div>
-            <h3 style={{ fontSize: "12px", marginBottom: "5px" }}>
-              VIAGEM / ITINERÁRIO
-            </h3>
-            <div
-              style={{
-                border: "1px solid #000",
-                padding: "10px",
-                marginBottom: "5px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "10px",
-                }}
-              >
-                <p>
-                  <strong>Saída:</strong>{" "}
-                  {receita.viagem
-                    ? receita.viagem.dataHorarioSaida.data
-                    : "/ / "}{" "}
-                  às{" "}
-                  {receita.viagem ? receita.viagem.dataHorarioSaida.hora : ":"}
-                </p>
-                <p>
-                  <strong>Retorno:</strong>{" "}
-                  {receita.viagem
-                    ? receita.viagem.dataHorarioRetorno.data
-                    : "/ / "}{" "}
-                  às{" "}
-                  {receita.viagem
-                    ? receita.viagem.dataHorarioRetorno.hora
-                    : ":"}
-                </p>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "10px",
-                }}
-              >
-                <p>
-                  <strong>Origem:</strong>{" "}
-                  {receita.viagem ? receita.viagem.rota.saida.cidadeSaida : ""}
-                </p>
-                <p>
-                  <strong>Destino:</strong>
-                  {receita.viagem
-                    ? receita.viagem.rota.retorno.cidadeSaida
-                    : ""}
-                </p>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "10px",
-                }}
-              >
-                <p>
-                  <strong>Local de Saída:</strong>{" "}
-                  {receita.viagem ? receita.viagem.rota.saida.localDeSaida : ""}
-                </p>
-                <p>
-                  <strong>Local de Retorno:</strong>{" "}
-                  {receita.viagem
-                    ? receita.viagem.rota.retorno.localDeSaida
-                    : ""}
-                </p>
-              </div>
-              <div>
-                <p>
-                  <strong>Veículo/Tipo:</strong>{" "}
-                  {receita.viagem ? receita.viagem.veiculo?.tipo : ""}
-                </p>
-              </div>
-            </div>
-            <p>
-              Recebemos a quantia de{" "}
-              {pagamento.valorPago.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-              <br /> referente ao contrato{" "}
-              {receita.viagem ? receita.viagemId : "0"} com valor de R${" "}
-              {receita.valorTotal.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-            </p>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginBottom: "10px",
-              }}
-            >
-              <div>
-                <p>Irecê-Ba</p>
-                <p>{dataAtualPorExtenso()}</p>
-              </div>
-              <div>
-                <p>__________________________________</p>
-                <p>Contratada</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          style={{
-            marginTop: "10px",
-            marginBottom: "10px",
-            border: "1px solid black",
-            borderStyle: "dotted",
-            height: "1px",
-            width: "525px",
-          }}
-        ></div>
-        <div
-          style={{
-            fontFamily: "Arial, sans-serif",
-            fontSize: "10px",
-            padding: "20px",
-            border: "1px solid #000",
-            maxWidth: "525px",
-            height: "auto",
-          }}
-        >
-          {/* Cabeçalho */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginBottom: "20px",
-              height: "auto",
-            }}
-          >
-            <img
-              src="/logo.png"
-              alt="Marcelo Turismo"
-              style={{ width: "200px" }}
-            />
-            <div>
-              <p>
-                Nome:{" "}
-                <strong>
-                  {receita.viagem ? receita.viagem.cliente?.nome : "sem nome"}
-                </strong>
-              </p>
-              <p>
-                cpf/cnpj:{" "}
-                <strong>
-                  {receita.viagem ? receita.viagem.cliente?.cpf : "sem cpf"}
-                </strong>
-              </p>
-              <p>
-                endereco:{" "}
-                <strong>
-                  {receita.viagem
-                    ? receita.viagem.cliente?.endereco.cidade
-                    : "sem cpf"}
-                </strong>
-              </p>
-            </div>
-            <div>
-              <p>
-                <strong>Segunda Via</strong>
-              </p>
-              <p>
-                Número:{" "}
-                <strong>{receita.viagem ? receita.viagem.id : "0"}</strong>
-              </p>
-              <p>
-                Valor:{" "}
-                <strong>
-                  {pagamento.valorPago.toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}
-                </strong>
-              </p>
-            </div>
-          </div>
-
-          {/* Itinerário */}
-          <div>
-            <h3 style={{ fontSize: "12px", marginBottom: "5px" }}>
-              VIAGEM / ITINERÁRIO
-            </h3>
-            <div
-              style={{
-                border: "1px solid #000",
-                padding: "10px",
-                marginBottom: "5px",
-              }}
-            >
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "10px",
-                }}
-              >
-                <p>
-                  <strong>Saída:</strong>{" "}
-                  {receita.viagem
-                    ? receita.viagem.dataHorarioSaida.data
-                    : "/ / "}{" "}
-                  às{" "}
-                  {receita.viagem ? receita.viagem.dataHorarioSaida.hora : ":"}
-                </p>
-                <p>
-                  <strong>Retorno:</strong>{" "}
-                  {receita.viagem
-                    ? receita.viagem.dataHorarioRetorno.data
-                    : "/ / "}{" "}
-                  às{" "}
-                  {receita.viagem
-                    ? receita.viagem.dataHorarioRetorno.hora
-                    : ":"}
-                </p>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "10px",
-                }}
-              >
-                <p>
-                  <strong>Origem:</strong>{" "}
-                  {receita.viagem ? receita.viagem.rota.saida.cidadeSaida : ""}
-                </p>
-                <p>
-                  <strong>Destino:</strong>
-                  {receita.viagem
-                    ? receita.viagem.rota.retorno.cidadeSaida
-                    : ""}
-                </p>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  marginBottom: "10px",
-                }}
-              >
-                <p>
-                  <strong>Local de Saída:</strong>{" "}
-                  {receita.viagem ? receita.viagem.rota.saida.localDeSaida : ""}
-                </p>
-                <p>
-                  <strong>Local de Retorno:</strong>{" "}
-                  {receita.viagem
-                    ? receita.viagem.rota.retorno.localDeSaida
-                    : ""}
-                </p>
-              </div>
-              <div>
-                <p>
-                  <strong>Veículo/Tipo:</strong>{" "}
-                  {receita.viagem ? receita.viagem.veiculo?.tipo : ""}
-                </p>
-              </div>
-            </div>
-            <p>
-              Recebemos a quantia de{" "}
-              {pagamento.valorPago.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-              <br /> referente ao contrato {receita.viagemId} com valor de R${" "}
-              {receita.valorTotal.toLocaleString("pt-BR", {
-                style: "currency",
-                currency: "BRL",
-              })}
-            </p>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                marginBottom: "10px",
-              }}
-            >
-              <div>
-                <p>Irecê-Ba</p>
-                <p>{dataAtualPorExtenso()}</p>
-              </div>
-              <div>
-                <p>__________________________________</p>
-                <p>Cliente</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <Button
-        className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110"
-        onClick={handleDownload}
-      >
-        <Image src={documentIcon} alt="documento" className="w-6" />
-      </Button>
-    </div>
+    <Button
+      className="bg-transparent shadow-none p-0 hover:bg-transparent hover:scale-110"
+      onClick={handleDownload}
+    >
+      <Image src={documentIcon} alt="documento" className="w-6" />
+    </Button>
   );
 };
 

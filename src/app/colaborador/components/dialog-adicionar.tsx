@@ -12,13 +12,7 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/lib/axios";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Cidade,
-  Colaborador,
-  Documento,
-  Endereco,
-  Uf,
-} from "@/lib/types";
+import { Cidade, Colaborador, Documento, Endereco, Uf } from "@/lib/types";
 import { toast } from "sonner";
 import Image from "next/image";
 import loading from "../../assets/loading.svg";
@@ -36,6 +30,7 @@ export default function DialogAdicionar({
 }: ColaboradorProps) {
   const [nome, setNome] = useState<string>("");
   const [dataNascimento, setDataNascimento] = useState<string>("");
+  const [dataAdmissao, setDataAdmissao] = useState<string>("");
   const [telefone, setTelefone] = useState<string>("");
   const [cpf, setCpf] = useState<string>("");
   const [tipo, setTipo] = useState<string>("");
@@ -55,7 +50,6 @@ export default function DialogAdicionar({
     bairro: "",
     numero: "",
   });
-
 
   const [adicionando, setAdicionando] = useState(false);
 
@@ -97,6 +91,7 @@ export default function DialogAdicionar({
     const colaborador = {
       nome: nome,
       dataNascimento: dataNascimento,
+      dataAdmissao: dataAdmissao,
       telefone: telefone,
       documento: documento,
       endereco: endereco,
@@ -109,6 +104,7 @@ export default function DialogAdicionar({
       setColaboradores([...colaboradores, response.data.data]);
       toast.success("Colaborador adicionado.");
       console.log("Colaborador adicionado:", response.data.data);
+      console.log("Colaborador:", colaborador);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.status === 401) {
@@ -120,6 +116,7 @@ export default function DialogAdicionar({
     } finally {
       setNome("");
       setDataNascimento("");
+      setDataAdmissao("");
       setTelefone("");
       setCpf("");
       setTipo("");
@@ -142,7 +139,7 @@ export default function DialogAdicionar({
           Adicionar Colaborador
         </span>
       </DialogTrigger>
-      <DialogContent className="md:w-auto h-[550px] md:h-[650px] flex flex-col items-center overflow-y-scroll md:overflow-auto">
+      <DialogContent className="md:w-auto h-[700px] md:h-auto flex flex-col items-center overflow-y-scroll md:overflow-auto">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
             Cadastro de Colaborador
@@ -158,7 +155,11 @@ export default function DialogAdicionar({
               <legend className="font-semibold">Colaborador</legend>
               <div>
                 <label htmlFor="nome">Nome</label>
-                <Input id="nome" value={nome} onChange={(e) => setNome(e.target.value)} />
+                <Input
+                  id="nome"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                />
               </div>
               <div>
                 <label htmlFor="dataNascimento">Data de Nascimento</label>
@@ -167,6 +168,15 @@ export default function DialogAdicionar({
                   id="dataNascimento"
                   value={dataNascimento}
                   onChange={(e) => setDataNascimento(e.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="dataAdmissao">Data de Admissão</label>
+                <Input
+                  type="date"
+                  id="dataAdmissao"
+                  value={dataAdmissao}
+                  onChange={(e) => setDataAdmissao(e.target.value)}
                 />
               </div>
               <div>
@@ -179,7 +189,11 @@ export default function DialogAdicionar({
               </div>
               <div>
                 <label htmlFor="cpf">CPF</label>
-                <Input id="cpf" value={cpf} onChange={(e) => setCpf(e.target.value)} />
+                <Input
+                  id="cpf"
+                  value={cpf}
+                  onChange={(e) => setCpf(e.target.value)}
+                />
               </div>
               <div>
                 <label htmlFor="tipocliente">Tipo do cliente</label>
@@ -282,7 +296,6 @@ export default function DialogAdicionar({
                 </div>
               ))}
             </fieldset>
-           
           </div>
           <DialogFooter>
             <Button type="submit" className="w-[300px] mt-8">

@@ -58,10 +58,10 @@ export default function DialogRemover({
           <Image src={removeIcon} alt="Remover" className="w-10 md:w-6" />
         </span>
       </DialogTrigger>
-      <DialogContent className="w-[350px] h-[150px] rounded-md flex flex-col items-center">
+      <DialogContent className="w-[400px] h-[150px] rounded-md flex flex-col items-center">
         <DialogHeader className="mb-5">
           <DialogTitle className="font-black">
-            Deseja remover o motorista?
+            Deseja remover o colaborador?
           </DialogTitle>
           <p className="text-sm text-gray-500 font-medium text-center">
             Essa ação não poderá ser desfeita

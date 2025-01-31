@@ -32,6 +32,7 @@ import loading from "../../assets/loading.svg";
 import GeneratePDF from "./contrato";
 import { AdicionarDespesa } from "./dialog-adicionar-despesa";
 import Link from "next/link";
+import { AdicionarPagamento } from "./dialog-pagamento";
 
 interface TravelDialogProps {
   viagem: Viagem;
@@ -46,7 +47,7 @@ interface ViagemResponse {
 }
 
 export function TravelDialog({ viagem }: TravelDialogProps) {
-  const [viagemCompleta, ] = useState<Viagem>(viagem);
+  const [viagemCompleta] = useState<Viagem>(viagem);
   const [viagemResponse, setViagemResponse] = useState<ViagemResponse>({
     viagem: viagem,
     despesas: [],
@@ -320,7 +321,7 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
 
           <Card className="w-full relative">
             <CardHeader>
-              <CardTitle>Despesas</CardTitle>
+              <CardTitle className="text-red-600">Despesas</CardTitle>
               <AdicionarDespesa
                 viagemId={viagem.id}
                 viagemResponse={viagemResponse}
@@ -371,49 +372,82 @@ export function TravelDialog({ viagem }: TravelDialogProps) {
             </CardContent>
           </Card>
 
-          <Card className="w-full">
+          <Card className="w-full relative">
+            {viagemResponse.viagem.receita && (
+              <AdicionarPagamento
+                receitaId={Number(viagemResponse.viagem.receita!.id)}
+                viagemResponse={viagemResponse}
+                setViagemResponse={setViagemResponse}
+              />
+            )}
             <CardHeader>
-              <CardTitle>Receitas</CardTitle>
+              <CardTitle className="text-green-600">Receitas</CardTitle>
             </CardHeader>
             <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableCell>Data Pagamento</TableCell>
-                    <TableHead>Valor Total</TableHead>
-                    <TableHead>Origem do Pagamento</TableHead>
-                    <TableHead>Pago</TableHead>
+                    <TableHead>Valor Pagamento</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {viagemResponse.viagem.receita ? (
-                    <TableRow>
-                      <TableCell>
-                        {viagemResponse.viagem.receita.dataCompra}
-                      </TableCell>
-                      <TableCell>
-                        {formatCurrency(
-                          viagemResponse.viagem.receita.valorTotal
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {viagemResponse.viagem.receita.origemPagamento}
-                      </TableCell>
-                      <TableCell>
-                        {viagemResponse.viagem.receita.pago ? (
-                          <Badge variant="secondary" className="text-white">
-                            Pago
-                          </Badge>
-                        ) : (
-                          <Badge variant="destructive">Pendente</Badge>
-                        )}
-                      </TableCell>
-                    </TableRow>
+                    viagemResponse.viagem.receita.pagamentos.map(
+                      (pagamento) => (
+                        <TableRow>
+                          <TableCell>
+                            {" "}
+                            {format(
+                              toZonedTime(
+                                parseISO(pagamento.dataPagamento),
+                                "UTC"
+                              ),
+                              "dd/MM/yyyy"
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {formatCurrency(pagamento.valorPago)}
+                          </TableCell>
+                          <TableCell>
+                            {
+                              <Link
+                                className="text-blue-500 font-bold"
+                                href={`/financeiro?receita=${
+                                  viagemResponse.viagem.receita!.id
+                                }`}
+                              >
+                                Ver Mais
+                              </Link>
+                            }
+                          </TableCell>
+                        </TableRow>
+                      )
+                    )
                   ) : (
                     <TableRow>Sem receitas</TableRow>
                   )}
                 </TableBody>
               </Table>
+              <div className="flex justify-between mt-6">
+                <span>
+                  Valor Total:{" "}
+                  <strong>{viagemResponse.viagem.valorContratado}</strong>{" "}
+                </span>
+                <span>
+                  Valor Pago: <strong>{viagemResponse.valorPago}</strong>
+                </span>
+                <span>
+                  Valor Pendente:{" "}
+                  <strong className="text-red-600">
+                    {" "}
+                    {viagemResponse.viagem.valorContratado -
+                      (viagemResponse.viagem.receita
+                        ? viagemResponse.valorPago
+                        : 0)}
+                  </strong>
+                </span>
+              </div>
             </CardContent>
           </Card>
           <Card className="w-full">

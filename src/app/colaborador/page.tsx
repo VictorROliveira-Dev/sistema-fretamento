@@ -17,6 +17,8 @@ import { Colaborador } from "@/lib/types";
 import DialogRemover from "./components/dialog-remover";
 import loading from "../assets/loading-dark.svg";
 import Image from "next/image";
+import { parseISO } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 
 export default function Motoristas() {
   const [colaboradores, setColaboradores] = useState<Colaborador[]>([]);
@@ -27,9 +29,9 @@ export default function Motoristas() {
     const fetchColaboradores = async () => {
       setCarregando(true);
       try {
-        const response = await api.get("/colaborador"); 
+        const response = await api.get("/colaborador");
         setColaboradores(response.data.data);
-        console.log("Motoristas:", response.data.data);
+        console.log("Colaboradores:", response.data.data);
       } catch (error) {
         console.error("Erro ao buscar colaborador:", error);
       } finally {
@@ -43,7 +45,9 @@ export default function Motoristas() {
     if (!colaborador.nome) {
       return false;
     }
-    return colaborador.nome.toLowerCase().includes(buscarColaborador.toLowerCase());
+    return colaborador.nome
+      .toLowerCase()
+      .includes(buscarColaborador.toLowerCase());
   });
 
   return (
@@ -89,7 +93,13 @@ export default function Motoristas() {
                       <TableHead className="text-black font-bold text-center">
                         Nome
                       </TableHead>
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                        Data Nascimento
+                      </TableHead>
                       <TableHead className="text-black font-bold text-center">
+                        Data Admissão
+                      </TableHead>
+                      <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                         CPF
                       </TableHead>
                       <TableHead className="text-black font-bold text-center hidden sm:table-cell">
@@ -110,6 +120,25 @@ export default function Motoristas() {
                         className="hover:bg-gray-200"
                       >
                         <TableCell>{colaborador.nome}</TableCell>
+                        <TableCell>
+                          {format(
+                            toZonedTime(
+                              parseISO(colaborador.dataNascimento),
+                              "UTC"
+                            ),
+                            "dd/MM/yyyy"
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {colaborador?.dataAdmissao &&
+                            format(
+                              toZonedTime(
+                                parseISO(colaborador.dataAdmissao),
+                                "UTC"
+                              ),
+                              "dd/MM/yyyy"
+                            )}
+                        </TableCell>
                         <TableCell>{colaborador.cpf}</TableCell>
                         <TableCell className="hidden sm:table-cell">
                           {colaborador.endereco.cidade}

@@ -209,13 +209,24 @@ export function FinancialDialogs({
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="ValorTotal">Valor Total</Label>
+              <Label htmlFor="ValorVale">Valor Salario</Label>
+              <Input
+                type="number"
+                step="0.01"
+                id="ValorVale"
+                required
+                {...registerSalary("ValorTotal")}
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="ValorTotal">Valor Vale</Label>
               <Input
                 type="number"
                 step="0.01"
                 id="ValorTotal"
                 required
-                {...registerSalary("ValorTotal")}
+                {...registerSalary("ValorVale")}
               />
             </div>
 
@@ -230,7 +241,10 @@ export function FinancialDialogs({
                 </SelectTrigger>
                 <SelectContent>
                   {responsaveis.map((responsavel) => (
-                    <SelectItem key={responsavel.id} value={responsavel.id.toString()}>
+                    <SelectItem
+                      key={responsavel.id}
+                      value={responsavel.id.toString()}
+                    >
                       {responsavel.nome}
                     </SelectItem>
                   ))}

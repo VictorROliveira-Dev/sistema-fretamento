@@ -179,7 +179,7 @@ export default function DialogAdicionar({
                     value={tipo}
                     onValueChange={(value) => setTipo(value)}
                   >
-                    <SelectTrigger className="md:w-[250px]">
+                    <SelectTrigger className="w-auto">
                       <SelectValue placeholder="Selecione o tipo..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -201,7 +201,7 @@ export default function DialogAdicionar({
                     name="servico"
                     value={servicoId}
                     onChange={(e) => setServico(Number(e.target.value))}
-                    className="md:w-[250px] border rounded-md p-2"
+                    className="w-auto border rounded-md p-2"
                   >
                     <option value="">Selecione o serviço...</option>
                     {servicos.map((servico) => (
@@ -222,7 +222,7 @@ export default function DialogAdicionar({
                       setVeiculo(Number(e.target.value));
                       selecionarVeiculo(Number(e.target.value));
                     }}
-                    className="md:w-[250px] border rounded-md p-2"
+                    className="w-auto border rounded-md p-2"
                   >
                     <option value="0">Selecione o veículo...</option>
                     {veiculos.map((veiculo) => (
@@ -237,7 +237,7 @@ export default function DialogAdicionar({
                   <Input
                     type="number"
                     name="kmAtual"
-                    className="border-2 font-medium md:w-[250px]"
+                    className="border-2 font-medium w-auto"
                     placeholder="Digite a quilometragem..."
                     value={veiculoSelecionado ? veiculoSelecionado.kmAtual : 0}
                     onChange={(e) => setKmAtual(Number(e.target.value))}
@@ -249,7 +249,7 @@ export default function DialogAdicionar({
                   <Input
                     type="date"
                     name="dataPrevista"
-                    className="border-2 font-medium  md:w-[250px]"
+                    className="border-2 font-medium w-auto"
                     placeholder="Digite o valor..."
                     value={dataPrevista}
                     onChange={(e) => setDataPrevista(e.target.value)}
@@ -261,7 +261,7 @@ export default function DialogAdicionar({
                   <Input
                     name="kmPrevista"
                     type="number"
-                    className="border-2 font-medium  md:w-[250px]"
+                    className="border-2 font-medium w-auto"
                     placeholder="Digite a quilometragem..."
                     value={kmPrevista ? kmPrevista : ""}
                     onChange={(e) => setKmPrevista(Number(e.target.value))}
@@ -281,7 +281,7 @@ export default function DialogAdicionar({
                     }}
                     required
                   >
-                    <SelectTrigger className="md:w-[250px]">
+                    <SelectTrigger className="w-auto">
                       <SelectValue placeholder="Selecione o tipo..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -299,7 +299,7 @@ export default function DialogAdicionar({
                   <Input
                     type="date"
                     name="dataRealizada"
-                    className="border-2 font-medium md:w-[250px]"
+                    className="border-2 font-medium w-auto"
                     value={dataRealizada ?? ""}
                     onChange={(e) =>
                       setDataRealizada(e.target.value.toString())
@@ -314,7 +314,7 @@ export default function DialogAdicionar({
                   <Input
                     type="number"
                     name="kmRealizada"
-                    className="border-2 font-medium  md:w-[250px]"
+                    className="border-2 font-medium w-auto"
                     placeholder="Digite a quilometragem..."
                     value={kmRealizada ? kmRealizada : ""}
                     onChange={(e) => setKmRealizada(Number(e.target.value))}
@@ -327,7 +327,7 @@ export default function DialogAdicionar({
                   <Input
                     type="number"
                     name="custo"
-                    className="border-2 font-medium  md:w-[250px]"
+                    className="border-2 font-medium w-auto"
                     placeholder="Digite o valor..."
                     value={custo ? custo : ""}
                     onChange={(e) => setCusto(Number(e.target.value))}
@@ -355,7 +355,7 @@ export default function DialogAdicionar({
                     }}
                     disabled={realizada == 0}
                   >
-                    <SelectTrigger className="w-[250px]">
+                    <SelectTrigger className="w-auto">
                       <SelectValue placeholder="Selecione o tipo..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -376,7 +376,7 @@ export default function DialogAdicionar({
                       <Input
                         type="number"
                         name="parcelas"
-                        className="border-2 font-medium w-[250px]"
+                        className="border-2 font-medium w-auto"
                         max={12}
                         value={parcelas}
                         onChange={(e) => {
@@ -407,7 +407,7 @@ export default function DialogAdicionar({
                             <Input
                               type="date"
                               name={`vencimento${index + 1}`}
-                              className="border-2 font-medium w-[250px]"
+                              className="border-2 font-medium w-auto"
                               value={vencimentos[index] || ""}
                               onChange={(e) =>
                                 setVencimentos((prevVencimentos) => {
@@ -432,7 +432,7 @@ export default function DialogAdicionar({
                     <Input
                       type="date"
                       name="dataRealizada"
-                      className="border-2 font-medium w-[250px]"
+                      className="border-2 font-medium w-auto"
                       value={vencimentoPagamento ?? ""}
                       onChange={(e) => setVencimentoPagamento(e.target.value)}
                       disabled={realizada == 0}

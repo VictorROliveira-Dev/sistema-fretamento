@@ -39,16 +39,23 @@ export default function Financeiro() {
   const [despesasMensais, setDespesasMensais] = useState<DespesaMensal[]>([]);
   const [dataInicio, setDataInicio] = useState<string>("");
   const [dataFinal, setDataFinal] = useState<string>("");
-  const [, setDespesaCode] = useState<number | null>(null);
   const [carregando, setCarregando] = useState(false);
   const [statusFiltro, setStatusFiltro] = useState("todas");
+  const [defaultValue, setDefaultValue] = useState("despesas");
 
-  const fetchData = async (searchParam: string | null) => {
+  const fetchData = async (
+    searchParam: string | null,
+    receita: string | null
+  ) => {
     setCarregando(true);
     try {
       const urlDespesa = searchParam
         ? `/despesa?despesaCode=${searchParam}`
         : "/despesa";
+
+      const urlReceita = receita
+        ? `/api/receita?receitaId=${receita}`
+        : "/api/receita";
       const [
         despesasResponse,
         receitasResponse,
@@ -56,7 +63,7 @@ export default function Financeiro() {
         despesasMensaisResponse,
       ] = await Promise.all([
         api.get(urlDespesa),
-        api.get("/api/receita"),
+        api.get(urlReceita),
         api.get("/despesaMensal"),
         api.get("/despesaMensal/despesamensal"),
       ]);
@@ -77,14 +84,28 @@ export default function Financeiro() {
     }
   };
 
+  function verificarVencimento(date: string) {
+    const diaAtual = new Date();
+    const dataVericada = new Date(date);
+    if (diaAtual >= dataVericada) {
+      return true;
+    }
+
+    return false;
+  }
+
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const codigo = searchParams.get("despesaCode");
+    const receitaCode = searchParams.get("receita");
     if (codigo) {
-      setDespesaCode(Number(codigo));
+      fetchData(codigo, null);
+    } else if (receitaCode) {
+      setDefaultValue("receitas");
+      fetchData(null, receitaCode);
+    } else {
+      fetchData(null, null);
     }
-
-    fetchData(codigo);
   }, []);
 
   async function getByFilters(e: React.FormEvent) {
@@ -131,7 +152,7 @@ export default function Financeiro() {
   async function buscarPendentes(status: string) {
     try {
       if (status === "todas") {
-        fetchData(null);
+        fetchData(null, null);
         return;
       }
       const response = await api.get(`/despesa/despesastatus?status=${status}`);
@@ -156,15 +177,27 @@ export default function Financeiro() {
         </div>
         <div className="flex md:h-screen p-10 overflow-y-scroll">
           <div className="mx-auto md:w-full">
-            <Tabs defaultValue="despesas" className="flex flex-col">
+            <Tabs value={defaultValue} className="flex flex-col">
               <TabsList className="gap-4">
-                <TabsTrigger value="despesas" className="font-bold">
+                <TabsTrigger
+                  value="despesas"
+                  onClick={() => setDefaultValue("despesas")}
+                  className="font-bold"
+                >
                   Despesas
                 </TabsTrigger>
-                <TabsTrigger value="mensais" className="font-bold">
+                <TabsTrigger
+                  value="mensais"
+                  onClick={() => setDefaultValue("mensais")}
+                  className="font-bold"
+                >
                   Gastos Mensais
                 </TabsTrigger>
-                <TabsTrigger value="receitas" className="font-bold">
+                <TabsTrigger
+                  value="receitas"
+                  onClick={() => setDefaultValue("receitas")}
+                  className="font-bold"
+                >
                   Receitas
                 </TabsTrigger>
               </TabsList>
@@ -360,19 +393,19 @@ export default function Financeiro() {
                           Vencimento
                         </TableHead>
                         <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                          Origem
-                        </TableHead>
-                        <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                           Responsável
                         </TableHead>
                         <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                           Pago
                         </TableHead>
                         <TableHead className="text-black font-bold text-center hidden sm:table-cell">
+                          Valor Total
+                        </TableHead>
+                        <TableHead className="text-black font-bold text-center hidden sm:table-cell">
                           Valor Parcial
                         </TableHead>
                         <TableHead className="text-black font-bold text-center hidden sm:table-cell">
-                          Valor Total
+                          Pendente
                         </TableHead>
                       </TableRow>
                     </TableHeader>
@@ -382,14 +415,16 @@ export default function Financeiro() {
                           key={receita.id}
                           className="hover:bg-gray-200"
                         >
-                          <TableCell>
+                          <TableCell
+                            className={`font-bold ${
+                              verificarVencimento(receita.vencimento) &&
+                              "text-red-600 "
+                            }`}
+                          >
                             {format(
                               toZonedTime(parseISO(receita.vencimento), "UTC"),
                               "dd/MM/yyyy"
                             )}
-                          </TableCell>
-                          <TableCell className="hidden sm:table-cell">
-                            {receita.origemPagamento}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
                             {receita.viagem
@@ -397,16 +432,23 @@ export default function Financeiro() {
                               : "N/a"}
                           </TableCell>
 
-                          <TableCell className="hidden sm:table-cell">
+                          <TableCell
+                            className={`hidden sm:table-cell font-bold ${
+                              receita.pago ? "text-green-600" : "text-red-600"
+                            }`}
+                          >
                             {receita.pago
                               ? "sim".toUpperCase()
                               : "não".toUpperCase()}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
+                            {receita.valorTotal}
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
                             {receita.valorPago}
                           </TableCell>
                           <TableCell className="hidden sm:table-cell">
-                            {receita.valorTotal}
+                            {receita.valorTotal - receita.valorPago}
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
@@ -443,9 +485,11 @@ export default function Financeiro() {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead>Data do Vale</TableHead>
-                            <TableHead>Data do Salário</TableHead>
+                            <TableHead>Dia do Vale</TableHead>
+                            <TableHead>Dia do Salário</TableHead>
                             <TableHead>Valor Total</TableHead>
+                            <TableHead>Valor Vale</TableHead>
+                            <TableHead>A Receber</TableHead>
                             <TableHead>Responsável</TableHead>
                           </TableRow>
                         </TableHeader>
@@ -455,7 +499,25 @@ export default function Financeiro() {
                               <TableCell>{salario.diaVale}</TableCell>
                               <TableCell>{salario.diaSalario}</TableCell>
                               <TableCell>
-                                {salario.valorTotal.toLocaleString("pt-BR", {
+                                {(
+                                  salario.valorTotal + salario.valorVale
+                                ).toLocaleString("pt-BR", {
+                                  style: "currency",
+                                  currency: "BRL",
+                                })}
+                              </TableCell>
+                              <TableCell>
+                                {salario.valorVale.toLocaleString("pt-BR", {
+                                  style: "currency",
+                                  currency: "BRL",
+                                })}
+                              </TableCell>
+                              <TableCell>
+                                {(
+                                  salario.valorTotal +
+                                  salario.valorVale -
+                                  salario.valorVale
+                                ).toLocaleString("pt-BR", {
                                   style: "currency",
                                   currency: "BRL",
                                 })}

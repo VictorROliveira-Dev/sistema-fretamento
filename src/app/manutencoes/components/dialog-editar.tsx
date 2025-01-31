@@ -137,7 +137,7 @@ export default function DialogEditar({
             </Button>
           </DialogClose>
           <DialogTitle className="font-black">
-            Cadastro de Manutenção
+            Edição de Manutenção
           </DialogTitle>
         </DialogHeader>
         {carregando ? (
@@ -167,7 +167,7 @@ export default function DialogEditar({
                         })
                       }
                     >
-                      <SelectTrigger className="w-[250px]">
+                      <SelectTrigger className="w-auto">
                         <SelectValue placeholder="Selecione o tipo..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -190,7 +190,7 @@ export default function DialogEditar({
                       id="servico"
                       name="servico"
                       value={manutencaoEditar.servicoId}
-                      className="w-[250px] border rounded-md p-2"
+                      className="w-auto border rounded-md p-2"
                       disabled
                     >
                       <option value="">
@@ -207,7 +207,7 @@ export default function DialogEditar({
                       id="veiculo"
                       name="veiculo"
                       value={manutencaoEditar.veiculoId}
-                      className="w-[250px] border rounded-md p-2"
+                      className="w-auto border rounded-md p-2"
                       disabled
                     >
                       <option value="0">
@@ -222,7 +222,7 @@ export default function DialogEditar({
                     <Input
                       type="number"
                       name="kmAtual"
-                      className="border-2 font-medium w-[250px]"
+                      className="border-2 font-medium w-auto"
                       placeholder="Digite a quilometragem..."
                       value={
                         manutencaoEditar.veiculo
@@ -237,7 +237,7 @@ export default function DialogEditar({
                     <Input
                       type="date"
                       name="dataPrevista"
-                      className="border-2 font-medium  w-[250px]"
+                      className="border-2 font-medium  w-auto"
                       placeholder="Digite o valor..."
                       value={manutencaoEditar.dataPrevista}
                       onChange={(e) =>
@@ -254,7 +254,7 @@ export default function DialogEditar({
                     <Input
                       name="kmPrevista"
                       type="number"
-                      className="border-2 font-medium  w-[250px]"
+                      className="border-2 font-medium w-auto"
                       placeholder="Digite a quilometragem..."
                       value={manutencao.kmPrevista}
                       onChange={(e) =>
@@ -287,7 +287,7 @@ export default function DialogEditar({
                       }}
                       required
                     >
-                      <SelectTrigger className="w-[250px]">
+                      <SelectTrigger className="w-auto">
                         <SelectValue placeholder="Selecione o tipo..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -305,7 +305,7 @@ export default function DialogEditar({
                     <Input
                       type="date"
                       name="dataRealizada"
-                      className="border-2 font-medium w-[250px]"
+                      className="border-2 font-medium w-auto"
                       value={manutencaoEditar.dataRealizada ?? ""}
                       onChange={(e) =>
                         setManutencaoEditar({
@@ -323,7 +323,7 @@ export default function DialogEditar({
                     <Input
                       type="number"
                       name="kmRealizada"
-                      className="border-2 font-medium  w-[250px]"
+                      className="border-2 font-medium w-auto"
                       placeholder="Digite a quilometragem..."
                       value={manutencaoEditar.kmRealizada}
                       onChange={(e) =>
@@ -341,7 +341,7 @@ export default function DialogEditar({
                     <Input
                       type="number"
                       name="custo"
-                      className="border-2 font-medium  w-[250px]"
+                      className="border-2 font-medium w-auto"
                       placeholder="Digite o valor..."
                       value={manutencaoEditar.custo}
                       onChange={(e) =>
@@ -377,7 +377,7 @@ export default function DialogEditar({
                       }}
                       disabled={!manutencaoEditar.realizada}
                     >
-                      <SelectTrigger className="w-[250px]">
+                      <SelectTrigger className="w-auto">
                         <SelectValue placeholder="Selecione o tipo..." />
                       </SelectTrigger>
                       <SelectContent>
@@ -400,7 +400,7 @@ export default function DialogEditar({
                         <Input
                           type="number"
                           name="parcelas"
-                          className="border-2 font-medium w-[250px]"
+                          className="border-2 font-medium w-auto"
                           max={12}
                           value={parcelas}
                           onChange={(e) => {
@@ -433,7 +433,7 @@ export default function DialogEditar({
                               <Input
                                 type="date"
                                 name={`vencimento${index + 1}`}
-                                className="border-2 font-medium w-[250px]"
+                                className="border-2 font-medium w-auto"
                                 value={vencimentos[index] || ""}
                                 onChange={(e) =>
                                   setVencimentos((prevVencimentos) => {
@@ -458,7 +458,7 @@ export default function DialogEditar({
                       <Input
                         type="date"
                         name="dataRealizada"
-                        className="border-2 font-medium w-[250px]"
+                        className="border-2 font-medium w-auto"
                         value={vencimentoPagamento ?? ""}
                         onChange={(e) => setVencimentoPagamento(e.target.value)}
                         disabled={!manutencaoEditar.realizada}

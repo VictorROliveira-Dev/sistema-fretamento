@@ -15,11 +15,7 @@ import { useEffect, useState } from "react";
 import loading from "./assets/loading-dark.svg";
 import { parseISO } from "date-fns";
 import { format, toZonedTime } from "date-fns-tz";
-import {
-  CarIcon,
-  DollarSignIcon,
-  TrendingUpIcon,
-} from "lucide-react";
+import { CarIcon, DollarSignIcon, TrendingUpIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Overview } from "@/components/overview/overview";
 
@@ -77,17 +73,13 @@ export default function Home() {
 
     return "text-black font-medium";
   }
-  /*const stats = {
-    trips: 24,
-    expenses: 15000,
-    revenue: 45000,
-    netIncome: 30000,
-  };*/
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6 bg-[#070180]">
       <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-3xl font-bold tracking-tight text-white">Dashboard</h2>
+        <h2 className="text-3xl font-bold tracking-tight text-white">
+          Dashboard
+        </h2>
         <div className="flex items-center space-x-2"></div>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -97,7 +89,11 @@ export default function Home() {
             <CarIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{viagens}</div>
+            {carregando && viagens === 0 ? (
+              <Image src={loading} alt="loading" className="animate-spin" />
+            ) : (
+              <div className="text-2xl font-bold">{viagens}</div>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -108,9 +104,13 @@ export default function Home() {
             <DollarSignIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              R$ {despesa.toLocaleString()}
-            </div>
+            {carregando && despesa === 0 ? (
+              <Image src={loading} alt="loading" className="animate-spin" />
+            ) : (
+              <div className="text-2xl font-bold">
+                R$ {despesa.toLocaleString()}
+              </div>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -121,9 +121,13 @@ export default function Home() {
             <TrendingUpIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              R$ {receita.toLocaleString()}
-            </div>
+            {carregando && receita === 0 ? (
+              <Image src={loading} alt="loading" className="animate-spin" />
+            ) : (
+              <div className="text-2xl font-bold">
+                R$ {receita.toLocaleString()}
+              </div>
+            )}
           </CardContent>
         </Card>
         <Card>
@@ -132,9 +136,13 @@ export default function Home() {
             <DollarSignIcon className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              R$ {(receita - despesa).toLocaleString()}
-            </div>
+            {carregando && receita - despesa === 0 ? (
+              <Image src={loading} alt="loading" className="animate-spin" />
+            ) : (
+              <div className="text-2xl font-bold">
+                R$ {(receita - despesa).toLocaleString()}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

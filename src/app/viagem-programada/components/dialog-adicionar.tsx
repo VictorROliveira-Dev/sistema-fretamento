@@ -48,6 +48,7 @@ export function DialogAdicionar() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setCarregando(true);
+
     console.log(viagem);
     try {
       const response = await api.post("/viagemprogramada", viagem);
@@ -57,7 +58,7 @@ export function DialogAdicionar() {
         return;
       }
 
-      toast("adicionado com sucesso");
+      toast.success("Pacote adicionado com sucesso!");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         if (error.status === 401) {
@@ -65,9 +66,26 @@ export function DialogAdicionar() {
           router.replace("/login");
         }
       }
-      toast("erro ao tentar adicionar");
+      toast.error("Erro ao tentar adicionar pacote.");
     } finally {
       setCarregando(false);
+      setViagem(() => ({
+        id: 0,
+        titulo: "",
+        descricao: "",
+        saida: { data: "", hora: "", local: "" },
+        retorno: { data: "", hora: "", local: "" },
+        chegada: { data: "", hora: "", local: "" },
+        valorPassagem: 0,
+        formaPagto: "",
+        responsavel: "",
+        guia: "",
+        itinerario: "",
+        observacoes: "",
+        veiculoId: 0,
+        valorPassagemIdaVolta: 0,
+        passagens: []
+      }));
     }
   }
 
@@ -75,7 +93,7 @@ export function DialogAdicionar() {
     const response = await api.get("/veiculo");
 
     if (!response.data.isSucces) {
-      toast("erro ao tentar buscar veiculos, recarregue a pagina");
+      toast.error("erro ao tentar buscar veiculos, recarregue a pagina");
       return;
     }
 
@@ -125,7 +143,7 @@ export function DialogAdicionar() {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="valorPassagem">Valor</Label>
+                  <Label htmlFor="valorPassagem">Valor (Ida ou Volta)</Label>
                   <Input
                     name="valorPassagem"
                     type="number"
@@ -188,7 +206,7 @@ export function DialogAdicionar() {
                             key={veiculo.id}
                             value={veiculo.id.toString()}
                           >
-                            {veiculo.prefixo} - {veiculo.placa}
+                            {veiculo.prefixo} - {veiculo.placa.toUpperCase()}
                           </SelectItem>
                         ))}
                       </SelectGroup>
@@ -241,11 +259,12 @@ export function DialogAdicionar() {
                 </fieldset>
 
                 <fieldset className="border border-green-800 rounded-md p-4">
-                  <legend>Destino</legend>
+                  <legend>Retorno</legend>
                   <div className="flex flex-col md:items-end md:flex-row gap-2">
                     <div>
-                      <Label htmlFor="dataRetorno">Data de Chegada</Label>
+                      <Label htmlFor="dataRetorno">Data de Retorno</Label>
                       <Input
+                        name="dataRetorno"
                         type="date"
                         onChange={(e) =>
                           setViagem({
@@ -274,7 +293,7 @@ export function DialogAdicionar() {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="localRetorno">Local de Chegada</Label>
+                      <Label htmlFor="localRetorno">Local de Retorno</Label>
                       <Input
                         placeholder="Local de retorno"
                         onChange={(e) =>
@@ -292,11 +311,12 @@ export function DialogAdicionar() {
                 </fieldset>
 
                 <fieldset className="border border-green-800 rounded-md p-4">
-                  <legend>Volta</legend>
+                  <legend>Chegada</legend>
                   <div className="flex flex-col md:items-end md:flex-row gap-2">
                     <div>
-                      <Label htmlFor="dataChegada">Data de retorno</Label>
+                      <Label htmlFor="dataChegada">Data de Chegada</Label>
                       <Input
+                        name="dataChegada"
                         type="date"
                         onChange={(e) =>
                           setViagem({

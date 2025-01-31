@@ -45,7 +45,7 @@ export default function DialogRemover({
 
   return (
     <Dialog open={true}>
-      <DialogContent className="md:w-[350px] md:h-[150px] flex flex-col items-center rounded-md">
+      <DialogContent className="md:w-[450px] w-[80%] md:h-auto flex flex-col items-center rounded-md">
         <DialogHeader className="mb-5">
           <DialogClose>
             <Button

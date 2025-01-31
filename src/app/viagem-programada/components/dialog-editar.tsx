@@ -194,7 +194,7 @@ export function DialogEditar({
                             key={veiculo.id}
                             value={veiculo.id.toString()}
                           >
-                            {veiculo.modelo} - {veiculo.placa}
+                            {veiculo.prefixo} - {veiculo.placa}
                           </SelectItem>
                         ))}
                       </SelectGroup>

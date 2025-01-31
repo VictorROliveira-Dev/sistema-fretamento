@@ -32,6 +32,8 @@ import { Label } from "@/components/ui/label";
 import { Search } from "lucide-react";
 import { toast } from "sonner";
 import { SelectValue } from "@radix-ui/react-select";
+import { parseISO } from "date-fns";
+import { format, toZonedTime } from "date-fns-tz";
 
 type ManutencaoParams = {
   situacao?: boolean | null;
@@ -62,12 +64,11 @@ export default function Manutencoes() {
     setCarregando(true);
     try {
       // Busca todas as informações de uma vez
-      const [manutencoesResponse, veiculosResponse] =
-        await Promise.all([
-          api.get("/manutencao"),
-          api.get("/veiculo"),
-          api.get("/servico"),
-        ]);
+      const [manutencoesResponse, veiculosResponse] = await Promise.all([
+        api.get("/manutencao"),
+        api.get("/veiculo"),
+        api.get("/servico"),
+      ]);
 
       setManutencoes(manutencoesResponse.data.data ?? []);
       console.log(veiculosResponse.data.data);
@@ -195,7 +196,7 @@ export default function Manutencoes() {
                       }
                     >
                       <SelectTrigger className="w-[250px]">
-                        <SelectValue placeholder="Todas"/>
+                        <SelectValue placeholder="Todas" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
@@ -282,8 +283,12 @@ export default function Manutencoes() {
                           {manutencao.kmRealizada}
                         </TableCell>
                         <TableCell className="hidden sm:table-cell">
-                          {new Date(manutencao.dataPrevista).toLocaleDateString(
-                            "pt-BR"
+                          {format(
+                            toZonedTime(
+                              parseISO(manutencao.dataPrevista),
+                              "UTC"
+                            ),
+                            "dd/MM/yyyy"
                           )}
                         </TableCell>
                         <TableCell>

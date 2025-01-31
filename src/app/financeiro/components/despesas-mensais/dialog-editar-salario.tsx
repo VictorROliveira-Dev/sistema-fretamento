@@ -106,7 +106,7 @@ export function EditarSalario({
             </div>
 
             <div className="grid gap-2">
-              <Label htmlFor="ValorTotal">Valor Total</Label>
+              <Label htmlFor="ValorTotal">Valor Salario</Label>
               <Input
                 type="number"
                 step="0.01"
@@ -117,6 +117,23 @@ export function EditarSalario({
                   setSalarioAtualizado({
                     ...salarioAtualizado,
                     valorTotal: Number(e.target.value),
+                  })
+                }
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="ValorTotal">Valor Vale</Label>
+              <Input
+                type="number"
+                step="0.01"
+                id="ValorTotal"
+                required
+                value={salarioAtualizado.valorVale}
+                onChange={(e) =>
+                  setSalarioAtualizado({
+                    ...salarioAtualizado,
+                    valorVale: Number(e.target.value),
                   })
                 }
               />
