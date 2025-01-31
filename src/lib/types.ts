@@ -27,6 +27,7 @@ export interface Fornecedor extends Responsavel {
 
 export interface Colaborador extends Responsavel {
   ferias: Ferias[];
+  dataAdmissao: string;
 }
 
 export interface Viagem {
